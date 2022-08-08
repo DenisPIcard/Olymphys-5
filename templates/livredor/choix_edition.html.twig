@@ -1,0 +1,61 @@
+{% extends "base1.html.twig" %}
+
+
+
+{% block title %} Livres d'or{% endblock %}
+{% block titre3 %} Choisir le livre d'or{% endblock %}
+
+
+
+
+{% block body %}
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+
+
+    {% for edition in editions %}
+        {% if livredors[edition.id] != null %}
+            <blockquote class="blockquote ">
+                <p class="mb-0">
+                    {{ edition.ed }}<sup>e</sup> édition
+                </p>
+            </blockquote>
+            {% if action=='lire' %}
+                <a href="{{ path('livredor_lire',{choix : edition.id~'-eleves'}) }}" class="btn btn-primary"
+                   role="button" aria-pressed="true">Livre d'or des élèves</a>
+                <a href="{{ path('livredor_lire',{choix :edition.id~'-profs'}) }}" class="btn btn-primary" role="button"
+                   aria-pressed="true">Livre d'or des professeurs</a>
+                <a href="{{ path('livredor_lire',{choix : edition.id~'-comite'}) }}" class="btn btn-primary"
+                   role="button" aria-pressed="true">Livre d'or du comité</a>
+                <a href="{{ path('livredor_lire',{choix :edition.id~'-jury'}) }}" class="btn btn-primary" role="button"
+                   aria-pressed="true">Livre d'or du jury</a>
+                <hr>
+            {% endif %}
+            {% if action=='editer' %}
+                <a href="{{ path('livredor_editer',{choix : edition.id~'-equipe'}) }}" class="btn btn-primary"
+                   role="button" aria-pressed="true">Livre d'or des élèves</a>
+                <a href="{{ path('livredor_editer',{choix :edition.id~'-prof'}) }}" class="btn btn-primary"
+                   role="button" aria-pressed="true">Livre d'or des professeurs</a>
+                <a href="{{ path('livredor_editer',{choix : edition.id~'-comite'}) }}" class="btn btn-primary"
+                   role="button" aria-pressed="true">Livre d'or du comité</a>
+                <a href="{{ path('livredor_editer',{choix :edition.id~'-jury'}) }}" class="btn btn-primary"
+                   role="button" aria-pressed="true">Livre d'or du jury</a>
+                <hr>
+            {% endif %}
+
+
+
+        {% endif %}
+    {% endfor %}
+
+
+
+
+
+    <div class="well">
+
+        <center><a href="{{ path('core_home') }}">Retour à la page d'accueil</a></center>
+
+    </div>
+{% endblock %}

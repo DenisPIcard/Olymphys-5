@@ -1,0 +1,25 @@
+{% extends "base1.html.twig" %}
+{% block title %} Remplir le livre d'or{% endblock %}
+{% block titre3 %}
+    Remplir le livre d'Or  -
+    {% if type=='prof' %}
+        {{ prof.prenom }} {{ prof.nom }}
+    {% endif %}
+    {% if type=='equipe' %}
+        Equipe {{ equipe.lettre }}
+    {% endif %}
+    {% if type=='comite' or type=='jury' %}
+        {{ user.prenom }} {{ user.nom }}
+    {% endif %}
+{% endblock %}
+
+
+{% block body %}
+    <div class="well">
+
+        Saisir votre texte.
+
+
+        {{ form(form) }}
+    </div>
+{% endblock %}

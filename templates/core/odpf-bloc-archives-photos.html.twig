@@ -1,0 +1,18 @@
+<div class="bloc-archive-photo">
+    <p>
+        {% if lienparrain is defined %}
+        <a href="{{ lienparrain }}" style="background-color:#fff"><img src="{{ asset(photoparrain) }}"
+                                                                       alt="Photo du parrain" width="180" height="120"
+                                                                       class="img-thumbnail"></a></p>
+    {% else %}
+    <img src="{{ asset(photoparrain) }}" alt="Photo du parrain" width="180" height="120" class="img-thumbnail">
+    <p>
+        {% endif %}
+    <p>{{ parrain }}</p>
+    <p>{{ titreparrain }}</p>
+    <p></p>
+    <p></p>
+    <p><a href="{{ asset(afficheHR) }}" target="_blank" title="Télécharger l'affiche"><img src="{{ asset(affiche) }}"
+                                                                                           width="168" height="240"
+                                                                                           alt="affiche"></a></p>
+</div>

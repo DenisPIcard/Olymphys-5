@@ -1,0 +1,24 @@
+{% extends "base1.html.twig" %}
+{% block title %} Phrases amusantes {% endblock %}
+
+{% block titre3 %}
+    <a {% if (progression) %} class="btn btn-outline-primary btn-lg" {% else %} class="btn btn-primary btn-lg" {% endif %}
+            href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipe.id} ) }}"> {{ equipe.equipeinter.lettre }} </a>
+    {{ equipe.equipeinter.titreProjet }}
+
+    <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
+       title="En savoir plus sur cette équipe"> </a>
+
+{% endblock %}
+
+{% block navigation %}
+    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span>
+        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
+    </button>
+
+    {{ include ('cyberjury/navigation.html.twig') }}
+{% endblock %}
+{% block body %}
+
+    {{ include ("cyberjury/form-phrases.html.twig") }}
+{% endblock %}

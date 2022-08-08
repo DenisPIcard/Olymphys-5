@@ -1,0 +1,13 @@
+twig:
+  default_path: '%kernel.project_dir%/templates'
+  debug: '%kernel.debug%'
+  strict_variables: '%kernel.debug%'
+  form_themes:
+    - 'bootstrap_4_layout.html.twig'
+    - 'bootstrap_4_horizontal_layout.html.twig'
+    - 'form/custom_types.html.twig'
+
+  globals:
+    type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires' ]
+    type_fichier_lit: [ 'mémoire','annexe','résume','diaporama','fiche securité','diaporama', 'autorisations','questionnaire' ]
+  exception_controller: null

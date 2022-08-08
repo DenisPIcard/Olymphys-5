@@ -1,0 +1,166 @@
+{% extends "base1.html.twig" %}
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          id="bootstrap-css">
+
+
+{% endblock %}
+
+{% block title %} {{ edition.ed }}   Les photos des épreuves nationales {% endblock %}
+
+
+
+{% block titre3 %}
+    <center>{{ edition.ed }}<sup>e</sup> Les photos des épreuves nationales.</center></br>
+    {% if role!='ROLE_PROF' %}
+
+        {% if equipe.lettre!='' %}
+            <Font color="blue">Equipe {{ equipe.lettre }} : {{ equipe.Titreprojet }}</font>
+        {% endif %}
+        {% if equipe.lettre=='' %}
+            <Font color="blue"> {{ equipe.Titreprojet }}</font>
+        {% endif %}
+    {% endif %}
+    {% if role=='ROLE_PROF' %}
+        <Font color="blue"> Photos des équipes de {{ app.user.prenom }}  {{ app.user.nom }}</font>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    {% if role!='ROLE_PROF' %}
+        {% if concours=='cia' %}
+            <a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix}) }}">Retour à la liste des
+                centres</a>
+        {% endif %}
+
+        {% if concours=='national' %}
+            <a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix}) }}">Retour à la liste des
+                équipes</a>
+        {% endif %}
+    {% endif %}
+    <div class="container-lg-12">
+        <div class="row ">
+            {% set i=0 %}
+            {% for form in formtab %}
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                <div class="col-lg-3">
+                    <div class="d-flex h-100 align-items-center justify-content-center">
+                        {% for photo in liste_photos %}
+
+
+
+                            {% if photo.id == form.id.vars.data %}
+                                {{ form_start(form) }}
+                                <div class="my-custom-class-for-errors">
+                                    {{ form_errors(form) }}
+                                </div>
+
+                                {{ form_widget(form.id) }}
+
+
+
+                                <a href="{{ asset('upload/photos/'~photo.photo) }}">
+                                    <div class="container-sm p-3 bg-dark text-white">
+                                        {# <div class="row>"> #}
+
+                                        <div class="d-flex h-100 align-items-center justify-content-center"><img
+                                                    src="{{ asset('upload/photos/thumbs/'~photo.photo) }}"
+                                                    class="img-thumbnail"></div>
+                                        <div class="text-center">
+                                            {% if photo.coment=='' %}
+                                                {% set titre = photo.equipe.titreProjet[0:100] %}
+                                                <font size="-2">{{ titre }} </font>
+
+                                            {% else %}
+
+                                                <font size="-2">{{ photo.coment }}</font>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </a>
+                                {# </div>
+                      {% if  is_granted('ROLE_COMITE') %} #}
+                                {# <div class="container">
+              <div class="form-group row">  
+                   <div class="form-group mb-3"> #}
+                                <div class="form-group row  align-items-center  justify-content-center" backgrd="white">
+                                    {{ form_row(form.coment,{'label': 'Saisir le commentaire  ' }) }}
+                                </div>
+
+                                {# </div>
+               </div> #}
+
+                                <div class="form-group row">
+                                    <div class="col">
+                                        {{ form_widget(form.sauver,{'label':'Enregistrer'}) }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.effacer,{'label':'Supprimer'}) }}
+                                    </div>
+                                </div>
+
+                                {# {% endif %}  #}
+                                {{ form_end(form) }}
+                            {% endif %}
+
+                        {% endfor %}
+                    </div>
+
+
+                    {#   {{ form_end(form) }}{% if loop.index==loop.length %}
+       <div class="w-100"></div>
+            {{ form_start(form) }}
+                           {{ form_widget(form.save, { 'label': 'Télécharger' })}}
+ 
+                           {{ form_end(form) }}                
+            {% endif %} #}
+
+
+                    {% set i= i+1 %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% if role=='ROLE_PROF' %}
+        <div class="text-center"><a href="{{ path('core_home') }}">Retour</a></div>
+
+    {% else %}
+        {% if concours=='cia' %}
+            <div class="text-center"><a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix}) }}">Retour
+                    à la liste des centres</a></div>
+        {% endif %}
+
+        {% if concours=='national' %}
+            <div class="text-center"><a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix}) }}">Retour
+                    à la liste des équipes</a></div>
+        {% endif %}
+    {% endif %}
+    {% block javascripts %}
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
+
+
+
+
+
+
+    {% endblock %}
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base1.html.twig' %}
+
+
+{% block titre3 %}
+    <div class="text-center">Concours national des Olympiades de Physique France</div>
+{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+
+                <div class="text-center"><h3>S'inscrire aux activités du samedi 29 janvier 2022</h3></div>
+                <p></p>
+                <p>Pour participer à ces activités, <b>une inscription gratuite est obligatoire</b>. Il sera nécessaire
+                    d'imprimer le billet qui vous sera demandé à l'entrée. </p>
+
+                <div class="row">
+                    <div class="col">
+                        <p><b>Programme</b></p>
+                        <ul>
+                            <li><b>10h 15h30 </b> : Exposition des travaux des équipes.</li>
+
+                        </ul>
+
+
+                        <p>Les activités qui suivent <b>ne sont pas publiques</b></b> et font l'objet d'une procédure
+                            d'inscription pour public autorisé(limité à 140 personnes)</p>
+
+                        <ul>
+                            <li><b>17h 18h </b>: Conférence de Mme Sylvie Retailleau</li>
+
+                            <li><b>18h 19h15 </b>: Remise des prix</li>
+                            <li><b>19h15 21h </b>: cocktail dinatoire</li>
+                        </ul>
+
+                        <p></p>
+                        <p></p>
+                        <div class="d-lg-none d-sm.none d-sx"><a
+                                    href="https://widget.weezevent.com/ticket/E770832/?code=33184&locale=fr-FR&width_auto=1&color_primary=00AEEF"
+                                    onclick="var w=window.open('https://widget.weezevent.com/ticket/E770832/?code=33184&locale=fr-FR&width_auto=1&color_primary=00AEEF', 'Billetterie_weezevent', 'width=650, height=600, top=100, left=100, toolbar=no, resizable=yes, scrollbars=yes, status=no'); w.focus(); return false;"
+                                    style="text-decoration: none;color: #FFFFFF;background: #00AEEF;padding: .4em 1em;"
+                                    class="btn btn-primary" role="button" aria-pressed="true">S'inscrire</a></div>
+                        <p> Tous les participants devront présenter à l'entrée du bâtiment leur passe sanitaire et leur
+                            billet d'entrée </p>
+
+                        <div class="row">
+                            <div class="col-lg-8 col-md-12">
+                                <div class="graylight">
+                                    <p> Cette journée aura lieu à l'université Paris-Saclay :
+                                        <br> Orsay
+                                        <br>Bâtiment 625 "h-bar"
+                                        <br> Adresse : Rue de Broglie,
+                                        <br>91400 Orsay - Plateau de Moulon
+
+                                    </p>
+                                    <a href="https://www.google.fr/maps/place/Batiment+d'enseignement+de+la+physique+(bat+625)/@48.7088404,2.1711113,17z/data=!4m5!3m4!1s0x47e67fb01d8d53e3:0x2cf3ca6f3389714c!8m2!3d48.7083979!4d2.1722378"
+                                       role="button" class="btn btn-light" target="_blank"> >>>Via GOOGLE</a>
+                                </div>
+
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2632.847384987376!2d2.1700491!3d48.7083979!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e67fb01d8d53e3%3A0x2cf3ca6f3389714c!2sBatiment%20d&#39;enseignement%20de%20la%20physique%20(bat%20625)!5e0!3m2!1sfr!2sfr!4v1638902659250!5m2!1sfr!2sfr"
+                                        width="600" height="450" style="border:0;" allowfullscreen=""
+                                        loading="lazy"></iframe>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col">
+                        <div class="col">
+                            Nous nous efforcerons de diffuser la conférence de la marraine du concours sur Youtube. Le
+                            lien sera communiqué dès que possible. En fonction de l'évolutiuon des conditions
+                            sanitaires, ce sera le seul élèment disponible en ligne.<br>
+                            Si vous êtes inscrits avec le formulaire ci-dessous, vous serez contacté pour vous donner le
+                            lien et pour des informations complémentaires.
+
+                            <div class="text-center">
+                                <br><h4>Veuillez remplir le formulaire d'inscription ci dessous </h4>
+                            </div>
+                            <a title="Logiciel billetterie en ligne"
+                               href="https://weezevent.com/?c=sys_widget"
+                               class="weezevent-widget-integration"
+                               data-src="https://widget.weezevent.com/ticket/E770832/?code=33184&locale=fr-FR&width_auto=1&color_primary=B21B16"
+                               data-width="650"
+                               data-height="600"
+                               data-id="770832"
+                               data-resize="1"
+                               data-width_auto="1"
+                               data-noscroll="0"
+                               data-use-container="yes"
+                               data-type="neo"
+                               target="_blank">Billetterie Weezevent</a>
+                            <script type="text/javascript" src="https://widget.weezevent.com/weez.js"></script>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    {{ parent() }}
+{% endblock %}
+

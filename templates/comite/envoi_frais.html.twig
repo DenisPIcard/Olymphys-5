@@ -1,0 +1,19 @@
+{% extends "base1.html.twig" %}
+{% block title %} Frais du Comité {% endblock %}
+
+{% block navigation %}
+
+    {{ include ('comite/navigation.html.twig') }}
+{% endblock %}
+
+{% block titre3 %} Frais du comité {% endblock %}
+
+{% block body %}
+    Vous pouvez vérifier soigneusement le fichier reçu, pour contrôler sa conformité.
+    S'il ne vous convient pas, recommencez, en partant de l'accueil.
+    S'il vous convient, vous pouvez choisir
+    -de l'envoyer vous-même à Marine Jadoule (compta@sfpnet.fr) et Christain Usseglio (usseglio.christian@free.fr).
+    -de cliquer ci-dessous pour que l'envoi soit automatique, en y joignant éventuellement les justificatifs, en pdf.
+    {{ form(form) }}
+
+{% endblock %}

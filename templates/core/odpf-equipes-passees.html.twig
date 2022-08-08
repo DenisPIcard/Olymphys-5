@@ -1,0 +1,294 @@
+{% block title %}
+    La {{ edition_affichee.ed }} e - {{ edition_affichee.annee }}
+{% endblock %}
+
+{% block titre3 %}
+
+    <div class="text-left rougeodpf">Revivez les éditions passées</div>
+    <div class="container-fluid">
+        <div class="row graylight ">
+            <div class="col-lg-5 ">
+                <div class="d-flex justify-content-center flex-column">
+                    <div class="p-2">
+                        <div class="form-group">
+                            <form method="GET" action="{{ path('editions_fichiers_photos',{choix:0}) }}" id="form1"
+                                  name="form1">
+                                <select class="form-control-lg" id="sel" name="sel">
+                                    <option value="" selected>{{ edition_affichee.ed }}e édition -
+                                        Année {{ edition_affichee.annee|slice(5,4) }}</option>
+                                    {% for edition in editions %}
+                                        {% if edition !=edition_affichee %}
+                                            <option value="{{ edition.id }}">{{ edition.ed }}e édition -
+                                                Année {{ edition.annee|slice(5,4) }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <a href="https://www.odpf.org/archives.html" target="_blank">
+                    <div class="mediumsize">Voir les archives sur odpf.org</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="main" id="section1">
+        {# {% if date(edition_affichee.concourscn) < date()%} #}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="text-center"><h4>Le concours national</h4></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col text-left">
+                    <p><a href="#section2">Voir les concours académiques</a></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col sm-9">
+                    <div class="text-center"><h5>
+                            {% if date(edition_affichee.concourscn) < date() %}
+                            Les documents des équipes sélectionnées</h5>
+                        <p></p>
+                        {% else %}
+                            Les équipes sélectionnées</h5><p></p>
+                        {% endif %}
+
+                    </div>
+
+                    <ul class="list-group-flush">
+                        {% for equipe in equipessel %}
+                            {% if equipe.selectionnee == true %}
+                                {% set memoire=null %}{% set annexe=null %} {% set  resume= null %}{% set  presentation= null %}
+                                {% if date(edition_affichee.concourscn) < date() %}
+                                    {% for fichier in fichiersequipes %}
+                                        {% if fichier.equipe==equipe %}
+                                            {% if fichier.typefichier==0 %}
+                                                {% set memoire=fichier %}
+                                            {% endif %}
+                                            {% if fichier.typefichier==1 %}
+                                                {% set annexe=fichier %}
+                                            {% endif %}
+                                            {% if fichier.typefichier==2 %}
+                                                {% set resume=fichier %}
+                                            {% endif %}
+                                            {% if fichier.typefichier==3 %}
+                                                {% set presentation=fichier %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <li class="list-group-item">
+                                    {% if memoire is not null %}
+                                        {{ memoire.equipepassee.lettre }} - <a
+                                            href="{{ asset('odpf-archives/'.memoire.edition.edition.'/fichiers/memoires/'~memoire.nomFichier) }}">{{ memoire.equipepassee.titreProjet }}</a>
+                                        <i>Lycée {{ equipe.lycee }}, {{ equipe.ville }}, {{ equipe.academie }} </i>
+
+                                    {% else %}
+                                        {{ equipe.lettre~' ' }} - {{ ' '~equipe.titreProjet~' ' }}<i>
+                                        Lycée {{ equipe.lycee }}, {{ equipe.ville }},  {{ equipe.academie }} </i>
+                                    {% endif %}
+
+
+                                    (
+                                    {% if annexe is not null %}
+                                        <a href="{{ asset('odpf-archives/'.annexe.edition.edition.'/fichiers/memoires/'~annexe.nomFichier) }}">annexe</a>,
+                                    {% endif %}
+                                    {% if resume is not null %}
+                                        <a href="{{ asset('odpf-archives/'.resume.edition.edition.'/fichiers/resumes/'~resume.nomFichier) }}">resumé</a>,
+                                    {% endif %}
+
+                                    {% if presentation is not null %}
+                                        <a href="{{ asset('odpf-archives/'.annexe.edition.edition.'/fichiers/presentations/'~presentation.nomFichier) }}">présentation
+                                            orale</a>
+                                    {% endif %}
+                                    )
+                                </li>
+                            {% endif %}
+
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+                <div class="col-sm-3">{# block latéral droit #}
+                    <p></p>
+                    <div class="d-flex align-items-center flex-column " style="height:auto ;width:250px !important;">
+
+                        {% if photoseqcn != null %}
+                            <div class="p-2 ">
+                                <div class="row">
+                                    <div class="col text-center graylight">
+                                        <h5>Les photos du concours national</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 ">
+                                <div class="row">
+                                    <div class="col">
+                                        {% set photoscarousel = photoseqcn %}
+                                        {% set concours='cn' %}
+
+                                        {% include '/archives/carouselarchives.html.twig' %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 ">
+
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <!--    <h5><a href="{{ path('photos_voirphotoscn',{editionchoix : edition_affichee.id~'-'~0}) }}" title="Accéder à la galerie" > Accéder à la galerie</a></h5>-->
+                                    </div>
+                                </div>
+
+                            </div>
+                        {% endif %}
+
+                        {% if livresdor !=null %}
+
+                            <div class="p-2 ">
+                                <div class="row ">
+                                    <div class="col text-center graylight">
+                                        <h5> Les livres d'or</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <a href="{{ path('livredor_lire',{choix : edition_affichee.id~'-eleves'}) }}"
+                                           title="Livre d'or des élèves"> Livre d'or des élèves</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <a href="{{ path('livredor_lire',{choix : edition_affichee.id~'-profs'}) }}"
+                                           title="Livre d'or des professeurs"> Livre d'or des professeurs</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <a href="{{ path('livredor_lire',{choix : edition_affichee.id~'-jury'}) }}"
+                                           title="Livre d'or du jury"> Livre d'or du jury</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <hr>
+    {# ###################################### concours académiques ################################################################# #}
+    <div class="main" id="section2">
+    <div class="container-fluid">
+
+        <div class="text-center "><h4>Les concours interacadémiques</h4></div>
+        <div class="row"><p><a href="#section1">Voir le concours national</a></p></div>
+        <div class="row">
+            <div class="col-sm-9">
+                <div class="text-center"><h5>Les documents des équipes non sélectionnées</h5>
+                    <p></p></div>
+
+                <ul class="list-group-flush">
+                    {% for equipe in equipes %}
+                        {% if equipe.selectionnee == false %}
+                            {% set memoire=null %}{% set annexe=null %} {% set  resume= null %}{% set  presentation= null %}
+                            {% for fichier in fichiersequipes %}
+                                {% if fichier.equipe==equipe %}
+                                    {% if fichier.typefichier==0 %}
+                                        {% set memoire=fichier %}
+                                    {% endif %}
+                                    {% if fichier.typefichier==1 %}
+                                        {% set annexe=fichier %}
+                                    {% endif %}
+                                    {% if fichier.typefichier==2 %}
+                                        {% set resume=fichier %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if memoire != null %}
+                                <li class="list-group-item">
+                                    {% if memoire is not null %}
+                                        <a href="{{ asset('fichiers/memoires/'~memoire.fichier) }}">{{ memoire.equipe.titreProjet }}</a>
+                                    {% endif %}
+
+                                    <i>Lycée {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }} </i>
+
+                                    (
+                                    {% if annexe is not null %}
+                                        <a href="{{ asset('fichiers/memoires/'~annexe.fichier) }}">annexe</a>,
+                                    {% endif %}
+                                    {% if resume is not null %}
+                                        <a href="{{ asset('fichiers/resumes/'~resume.fichier) }}">resumé</a>
+                                    {% endif %}
+                                    )
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <div class="col-sm-3">{# block latéral droit #}
+                <p></p>
+                <div class=" d-flex justify-content-center flex-column" style="height:auto;width:250px !important;">
+                    <div class="p-2">
+                        <div class="row">
+                            <div class="col text-center graylight">
+                                <h5>Les photos des concours interacadémiques</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class="row">
+                            <div class="col">
+                                {% set photoscarousel = photoseqcia %}
+                                {% set concours='cia' %}
+
+                                {% include '/archives/carouselarchives.html.twig' %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class="row ">
+                            <div class="col text-center">
+                                <!-- <h5><a href="{{ path('photos_voirphotoscia',{editionchoix : edition_affichee.id~'-'~0}) }}" title="Accéder à la galerie" > Accéder à la galerie</a></h5> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        {# <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        #}
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#form1").on('change', function () {
+                    $("#form1").submit();
+                });
+            });
+        </script>
+    {% endblock %}
+
+
+
+{% endblock %}

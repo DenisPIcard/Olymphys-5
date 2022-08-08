@@ -1,0 +1,75 @@
+<div class="row ">
+    <div class="col-md-12 col-lg-4">
+        <h1 class="titre-ppal">
+            Foire aux questions
+        </h1>
+    </div>
+    <div class="col-md-12 col-lg-8">
+        <div class="row  justify-content-end">
+            <nav>
+
+                <ul class="nav flex-column flex-md-row paginactus">
+
+                    <li class="nav-item">
+                        {% if pageFCourante > 1 %}
+                            <a class="nav-link val" href="{{ path('core_faq', {tourn:'debut'}) }}">Début</a>
+                        {% else %}
+                            <div class="nav-link inval">Début</div>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item">
+
+                        {% if pageFCourante > 1 %}
+                            <a class="nav-link val" href="{{ path('core_faq', {tourn:'prec'}) }}">Page
+                                précédente</a>
+                        {% else %}
+                            <div class="nav-link inval">Page précédente</div>
+                        {% endif %}
+
+                    </li>
+                    <li class="nav-item">
+                            <span class="nav-link page-active">
+                                page <strong>{{ pageFCourante }}</strong>/{{ nbpages }}
+                            </span>
+                    </li>
+                    <li class="nav-item">
+                        {% if pageFCourante < nbpages %}
+                            <a class="nav-link val" href="{{ path('core_faq', {tourn:'suiv'}) }}">Page
+                                suivante</a>
+                        {% else %}
+                            <span class="nav-link">Suivant</span>
+                        {% endif %}
+
+                    </li>
+                    <li class="nav-item">
+
+                        {% if pageFCourante < nbpages %}
+                            <a class="nav-link val" href="{{ path('core_faq', {tourn:'fin'}) }}">Fin</a>
+                        {% else %}
+                            <span class="nav-link">Fin</span>
+                        {% endif %}
+
+                    </li>
+                </ul>
+
+
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="col-centre">
+
+    {% for faq in afffaq %}
+
+        <h4 class="titractus mb-0">
+            {{ faq.titre|raw }}
+        </h4>
+        <div class="description" style="border-bottom: 1px solid #111a21;">
+        </div>
+        <div class="contenu" style="padding-top: 15px;padding-bottom: 20px;">
+            {{ faq.texte|raw }}
+        </div>
+
+    {% endfor %}
+
+</div>

@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+{% block title %} Construire le palmarès {% endblock %}
+
+{% block titre3 %} Construire le palmarès {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <p>Le nombre total d'équipes est {{ nbre_equipes }}. </p>
+
+    {% if flag==0 %}
+        {{ include ("secretariatjury/form-classement.html.twig") }}
+        {% if niveau>1 %}
+            <a href="{{ path('secretariatjury_construire_palmares', {'niveau' : niveau-1} ) }}" class="btn btn-primary">
+                <i class="glyphicon glyphicon-chevron-left"> </i> Aller vers le niveau précédent</a>
+        {% endif %}
+
+    {% else %}
+
+        <div class="well">
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Niveau</th>
+                    <th>Montant</th>
+                    <th>Répartition</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for classement in classements %}
+                <tr>
+                    <td>{{ classement.niveau }}</td>
+                    <td>{{ classement.montant }}</td>
+                    <td>{{ classement.nbreprix }}</td>
+
+                    {% endfor %}
+
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+
+    {% endif %}
+
+    <a href="{{ path('secretariatjury_palmares') }}" class="btn btn-primary"> Aller vers le palmarès <i
+                class="glyphicon glyphicon-chevron-right"> </i> </a>
+
+
+{% endblock %}
+
+
+

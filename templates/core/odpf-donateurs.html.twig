@@ -1,0 +1,104 @@
+<div class="row ">
+    <div class="col-md-12 col-lg-4">
+        <h1 class="titre-ppal">
+            {{ categorie }}
+        </h1>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-3 col-lg-3">
+        <div class="menugche">
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item {% if choix == 'mecenes' %} active {% endif %}"><a
+                                href="{{ path('core_pages', {choix:'mecenes'}) }}" class="nav-link">Nos mécènes</a></li>
+                    <li class="nav-item {% if choix == 'donateurs' %} active {% endif %}"><a
+                                href="{{ path('core_pages' ,{choix:'donateurs'}) }}" class="nav-link">Nos donateurs</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-centre">
+    <div class="row">
+        <div class="col-sm-6 col-md-12">
+
+            {{ partenaires.0.donateurs|raw }}
+
+        </div>
+    </div>
+    <div class="row">
+        {% for logo in logos %}
+            {% if logo.part == 'donateurs' %}
+                <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
+                    <a href="{{ logo.lien }}"> <img src="{{ asset('odpf/odpf-logos/' ~ logo.image) }}"
+                                                    alt="{{ logo.alt }}"
+                                                    style="width:150px; height:auto;"/></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    <span class="split-large"></span>
+    <div class="row">
+        <div class="col-sm-6 col-md-12">
+
+            {{ partenaires.0.visites|raw }}
+
+        </div>
+    </div>
+    <div class="row">
+        {% for logo in logos %}
+            {% if logo.part == 'visites' %}
+                <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
+                    <a href="{{ logo.lien }}"> <img src="{{ asset('odpf/odpf-logos/' ~ logo.image) }}"
+                                                    alt="{{ logo.alt }}"
+                                                    style="width:150px; height:auto;"/></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    <span class="split-large"></span>
+    <div class="row">
+        <div class="col-sm-6 col-md-12">
+
+            {{ partenaires.0.cadeaux|raw }}
+
+        </div>
+    </div>
+    <div class="row">
+        {% for logo in logos %}
+            {% if logo.part == 'editeurs' %}
+                <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
+                    <a href="{{ logo.lien }}"> <img src="{{ asset('odpf/odpf-logos/' ~ logo.image) }}"
+                                                    alt="{{ logo.alt }}"
+                                                    style="width:150px; height:auto;"/></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% for logo in logos %}
+            {% if logo.part == 'materiel' %}
+                <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
+                    <a href="{{ logo.lien }}"> <img src="{{ asset('odpf/odpf-logos/' ~ logo.image) }}"
+                                                    alt="{{ logo.alt }}"
+                                                    style="width:150px; height:auto;"/></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <span class="split-large"></span>
+    <div class="row">
+        <div class="col-sm-6 col-md-12">
+
+            {{ partenaires.0.cia|raw }}
+
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,63 @@
+{% extends "base1.html.twig" %}
+{% block title %}
+    Diapositive
+{% endblock %}
+
+
+
+{% block titre3 %}
+    Déposer une nouvelle diapositive
+{% endblock %}
+
+
+{% block body %}
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+                {{ form_start(form) }}
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
+                <div class="form-group">
+                    <div class="form-group col-6">
+                        {{ form.imageFile.vars.label }}
+                        {{ form_widget(form.imageFile) }}
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group col-6">
+                        {{ form.image.vars.label }}
+                        {{ form_widget(form.image) }}
+
+                    </div>
+                    {{ form.coment.vars.label }}
+                    {{ form_widget(form.coment) }}
+                </div>
+                <div class="form-row">
+
+                    {{ form_widget(form.save) }}
+                    {% set path ='' %}
+
+                    <a href="{{ url }}" class="btn-secondary btn-lg" role="button"> Annuler </a>
+                </div>
+
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+
+        <script>
+
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+{% endblock %}

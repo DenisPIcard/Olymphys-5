@@ -1,0 +1,21 @@
+/*********************************************************************/
+/* Bootstrap 4 Multiple Item Carousel */
+/*********************************************************************/
+/* medium - display 2  */
+
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+
+
+}
+
+
+.carousel-indicators {
+    bottom: -5px;
+}
+
+.carousel-control {
+    width: 66%;
+}

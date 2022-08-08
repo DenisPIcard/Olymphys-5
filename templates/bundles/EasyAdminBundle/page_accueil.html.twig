@@ -1,0 +1,70 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+{% block head_stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+    <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+{% endblock %}
+{% block main %}
+    <div class="rougeodpf">
+        <div class="text-center"><h1>Les équipes et leurs documents</h1></div>
+    </div>
+    <hr>
+    {% set urlequipes = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\EquipesadminCrudController')
+        .setAction('index') %}
+    {% set urleleves = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\ElevesinterCrudController')
+        .setAction('index') %}
+    {% set urlprofs = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\ProfesseursCrudController')
+        .setAction('index') %}
+    {% set urletablissements = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\EquipesadminCrudController')
+        .set('lycees',1)
+        .setAction('index') %}
+    {#  <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\EquipesadminCrudController',menuIndex:4,signature:'8sSF56PFqugcn0VotqlGKWNrZOy7d6tIJkcbUuMRBgs',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des équipes</a>
+        <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\ElevesinterCrudController',menuIndex:5,signature:'8DYt51svWd9zBUvpKqLyOc-igkl9w1cNoT4RIQi5rTw',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des élèves</a>
+        <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\ProfesseursCrudController',menuIndex:6,signature:'8iCC6nXEh5A_ooMfS1KdqkfCIlAYamtHUN0V1GECyZE',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des professeurs</a>
+        <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\EquipesadminCrudController',menuIndex:6,signature:'8sSF56PFqugcn0VotqlGKWNrZOy7d6tIJkcbUuMRBgs',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des établissements</a>
+    #}
+    <a href="{{ urlequipes }}" type="button" class="btn btn-primary">Liste des équipes</a>
+    <a href="{{ urleleves }}" type="button" class="btn btn-primary">Liste des élèvess</a>
+    <a href="{{ urlprofs }}" type="button" class="btn btn-primary">Liste des professeurs</a>
+    <a href="{{ urletablissements }}" type="button" class="btn btn-primary">Liste des établissements</a>
+    <hr>
+    <div class="text-center">Les documents du concours national</div>
+    {% set urlmemoiresnat = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\FichiersequipesCrudController')
+        .set('typefichier',0)
+        .set('concours',1)
+        .set('menuIndex',10)
+        .set('submenuIndex',3)
+        .setAction('index') %}
+    {% set urlresumesnat = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\FichiersequipesCrudController')
+        .set('typefichier',2)
+        .set('concours',1)
+        .set('menuIndex',10)
+        .set('submenuIndex',4)
+        .setAction('index') %}
+    {% set urlphotosnat = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\PhotosCrudController')
+        .set('concours','national')
+        .set('menuIndex',10)
+        .set('submenuIndex',7)
+        .setAction('index') %}
+    <a href="{{ urlmemoiresnat }}" type="button" class="btn btn-primary">Les mémoires</a>
+    <a href="{{ urlresumesnat }}" type="button" class="btn btn-primary">Les résumés</a>
+    <a href="{{ urlphotosnat }}" type="button" class="btn btn-primary">Les photos</a>
+
+{% endblock %}

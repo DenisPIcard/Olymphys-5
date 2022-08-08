@@ -1,0 +1,93 @@
+{% extends "base1.html.twig" %}
+{% block title %} Les prix {% endblock %}
+
+{% block titre3 %} Les prix {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+    <h2>
+        Les premiers prix d'un montant de {{ constant('\\App\\Entity\\Prix::PREMIER') }} EUROS.
+    </h2>
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr class="danger">
+                <th>Numéro</th>
+                <th>Intitulé du prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prix in ListPremPrix %}
+                <tr class="danger">
+                    <td>
+                        {{ loop.index }}
+                    </td>
+                    <td>
+                        <a href="{{ path('secretariatjury_modifier_prix', {'id_prix': prix.id} ) }}"> {{ prix.prix }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>
+        Les deuxièmes prix d'un montant de {{ constant('\\App\\Entity\\Prix::DEUXIEME') }} EUROS.
+    </h2>
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr class="warning">
+                <th>Numéro</th>
+                <th>Intitulé du prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prix in ListDeuxPrix %}
+                <tr class="warning">
+                    <td>
+                        {{ loop.index }}
+                    </td>
+                    <td>
+                        <a href="{{ path('secretariatjury_modifier_prix', {'id_prix': prix.id} ) }}"> {{ prix.prix }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>
+        Les troisièmes prix d'un montant de {{ constant('\\App\\Entity\\Prix::TROISIEME') }} EUROS.
+    </h2>
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr class="active">
+                <th>Numéro</th>
+                <th>Intitulé du prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prix in ListTroisPrix %}
+                <tr class="active">
+                    <td>
+                        {{ loop.index }}
+                    </td>
+                    <td>
+                        <a href="{{ path('secretariatjury_modifier_prix', {'id_prix': prix.id} ) }}"> {{ prix.prix }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

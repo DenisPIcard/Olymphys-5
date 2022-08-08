@@ -1,0 +1,76 @@
+{% extends "base1.html.twig" %}
+{% block title %} Tableau de bord {% endblock %}
+
+{% block titre3 %} Classement provisoire de mes équipes {% endblock %}
+{% block navigation %}
+    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span>
+        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
+    </button>
+
+    {{ include ('cyberjury/navigation.html.twig') }}
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="table-responsive-lg">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Rang</th>
+                <th>Éq.</th>
+                <th>Projet</th>
+                <th title="Qualité de l'expérience">EXP</th>
+                <th title="Démarche scientifique">DEM</th>
+                <th title="Présentation orale">ORA</th>
+                <th title="Originalité">ORI</th>
+                <th title="Travail d'équipe">TRE</th>
+                <th title="Total des points">TOT</th>
+                <th title="Le mémoire">MEM</th>
+                <th>Liens</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for equipes in listEquipes | sortByField('total') %}
+                <tr>
+                    <th>{{ loop.index }}  </th>
+                    <td><a href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}"
+                           class="btn btn-primary btn-lg">
+                            {{ equipes.lettre }} </a></td>
+                    <td>{{ equipes.titre }} </td>
+                    <td>{{ equipes.exper }}</td>
+                    <td>{{ equipes.demarche }}</td>
+                    <td>{{ equipes.oral }}</td>
+                    <td>{{ equipes.origin }}</td>
+                    <td>{{ equipes.wgroupe }} </td>
+                    <td class="text-success">{{ equipes.total }} </td>
+                    {% if equipes.ecrit %}
+                        <td> {{ equipes.ecrit }} </td>
+                    {% else %}
+                        <td><span class="fas fa-minus-circle"> </span></td>
+                    {% endif %}
+                    <td>
+
+
+                        {% if memoires[loop.index] != null %}
+
+                            <a href="{{ asset('/fichiers/memoires/'~memoires[loop.index].fichier) }}"
+                               class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                        {% endif %}
+
+
+                        <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                           title="En savoir plus sur cette équipe"> </a>
+                        <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}"
+                           class="fas fa-pencil-alt" title="Les phrases amusantes"> </a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

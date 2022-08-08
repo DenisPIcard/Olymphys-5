@@ -1,0 +1,18 @@
+{% extends "base1.html.twig" %}
+
+
+{% block body %}
+    {{ form(form) }}
+    <a href="{{ path('odpfadmin') }}" type="button" class="btn btn-primary">Terminé</a>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">{# pour les vidéos #}
+        /* must apply only after HTML has loaded */
+        $(document).ready(function () {
+            document.getElementById('form_Cliquer').click();
+        });
+    </script>
+
+
+{% endblock %}

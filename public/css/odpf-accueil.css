@@ -1,0 +1,265 @@
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: url('../odpf/odpf-images/fond-accueil.png') no-repeat center fixed;
+    background-size: cover;
+}
+
+#barre_bas {
+    clear: both;
+    width: 100%;
+    background-color: #555f69;
+    height: 10px;
+}
+
+.cont-accueil {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.menugche-accueil {
+    background-color: black;
+}
+
+.menugche-accueil h3 {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 40px;
+    line-height: 43px;
+    font-weight: 100;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin: 14px 0 8px;
+}
+
+.menugche-accueil li:before {
+    content: '';
+    display: block;
+}
+
+.menugche-accueil li:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.menugche-accueil ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.menugche-accueil li {
+    display: block;
+    border-bottom: 5px solid black;
+}
+
+.menugche-accueil a {
+    background-color: #b1191d;
+    color: #ffffff;
+    display: inline;
+    font-size: 18px;
+    /*line-height: 18px;*/
+    text-decoration: none;
+    padding: 3px 6px 5px 6px;
+    margin-bottom: 3px;
+}
+
+.menugche-accueil a:hover {
+    background: #ffffff;
+    color: #b1191d;
+}
+
+.col-gche-accueil {
+    background-color: black;
+    width: 100%;
+    float: left;
+    position: relative;
+    padding: 46px 20px 10px;
+}
+
+.col-gche-accueil::after {
+    content: ' ';
+    background: url('../odpf/odpf-images/home-leftcol-top.png') no-repeat;
+    width: 100%;
+    height: 101px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 10;
+}
+
+.col-dte-accueil {
+    background: white;
+    position: relative;
+    width: 100%;
+    padding: 42px 0 0 38px;
+    float: left;
+}
+
+.col-dte-accueil::before {
+    content: ' ';
+    position: absolute;
+    background: url('../odpf/odpf-images/home-rightcol-top1.png');
+    width: 291px;
+    height: 49px;
+    left: 0;
+    top: 0;
+}
+
+.bloc-concours {
+    zoom: 1;
+    padding: 0 0 0;
+}
+
+.bloc-concours h3 {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 48px;
+    line-height: 51px;
+    font-weight: 200;
+    color: black;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.menudte .date {
+    background-color: white;
+    color: black;
+    display: inline;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    margin: 0;
+    padding-top: 0;
+}
+
+.menu-concours {
+    padding-left: 0;
+}
+
+.menu-concours ul {
+    list-style-type: none;
+    /*padding-top : 10px;*/
+}
+
+.menu-concours li {
+    display: block;
+    padding-left: 6px;
+    border-bottom: 5px solid white;
+}
+
+.menu-concours a {
+    background-color: #b1191d;
+    color: #ffffff;
+    display: inline;
+    font-size: 18px;
+    padding: 3px 6px 5px 6px;
+    margin-bottom: 3px;
+}
+
+.menu-concours a:hover {
+    background: black;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.bloc-concours::after {
+    content: ' ';
+    position: relative;
+    display: block;
+    background: url('../odpf/odpf-images/split-top-520x23.png');
+    width: 520px;
+    height: 23px;
+    margin-left: -38px;
+}
+
+.bloc-actus {
+    padding: 20px 34px 0 0;
+}
+
+.bloc-actus ul {
+    padding: 0 34px 0 0;
+    list-style-type: none;
+}
+
+.bloc-actus h3 {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 48px;
+    line-height: 51px;
+    font-weight: 200;
+    color: black;
+    text-transform: uppercase;
+    margin: 0 0 16px 0;
+}
+
+.actus-home-titre {
+    text-decoration: none;
+    background: white;
+    color: black;
+    list-style-type: none;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 22px;
+    font-weight: 200;
+}
+
+
+.actus-home-titre a:hover {
+    background: #ffffff;
+    color: #b1191d;
+    text-decoration: none;
+}
+
+.actus-home-introtext {
+    color: #111a21;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 0 100px 0 0;
+}
+
+.actus-home-introtext a {
+    color: #b1191d;
+    font-size: 12px;
+    line-height: 12px;
+    text-decoration: none;
+}
+
+.actus-home-lireplus {
+    display: block;
+    border-top: 1px solid #b1191d;
+    height: 0;
+    margin: 8px 0 12px;
+    position: relative;
+}
+
+.lireplus {
+    color: #b1191d;
+    background: url("../odpf/odpf-images/picto-arwr-13x27.png") no-repeat scroll right center #fff;
+    display: block;
+    line-height: 27px;
+    padding: 0 26px 0 12px;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: -15px;
+    width: 105px;
+    overflow: hidden;
+}
+
+.lireplus a {
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.bloc-actus::after {
+    content: ' ';
+    position: relative;
+    display: block;
+    background: url('../odpf/odpf-images/split-bottom-520x23.png');
+    width: 520px;
+    height: 23px;
+    left: 0;
+    top: 0;
+    margin-left: -38px;
+}

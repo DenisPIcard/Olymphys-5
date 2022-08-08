@@ -1,0 +1,26 @@
+{# email/confirm_fichier.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Un fichier a été déposé</title>
+</head>
+<body>
+<p>
+    Bonjour Webmestre, <br>
+    {{ user=  app.session.get('user') }}
+    {{ user.nom }}  {{ user.prenom }} de l'équipe {{ equipe.numero }} a déposé
+    {% if typefichier=='memoire' %} le mémoire
+    {% endif %}
+    {% if typefichier=='annexe' %} l'annexe
+    {% endif %}
+    {% if typefichier=='resume' %} le résumé
+    {% endif %}
+    {% if typefichier=='fiche_secur' %} la fiche sécurité
+    {% endif %}
+    : <br>{{ fichier }} .
+
+    <br>
+</p>
+</body>
+</html>

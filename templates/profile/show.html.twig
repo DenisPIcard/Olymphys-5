@@ -1,0 +1,21 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+
+
+    <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1>
+    <p>Nom : {{ user.nom }}</p>
+    <p>Prénom : {{ user.prenom }}</p>
+    <p>Adresse : {{ user.adresse }}</p>
+    <p>Ville : {{ user.ville }}</p>
+    <p>Code : {{ user.code }}</p>
+    <p>Téléphone : {{ user.phone }}</p>
+    <p>RNE : {{ user.rne }}</p>
+    <p></p>
+    <p>Vous souhaitez modifier le profil, changer votre mot de passe : <a href="{{ path('profile_edit') }}">cliquez
+            ici</a></p>
+{% endblock %}
+
+

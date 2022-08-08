@@ -1,0 +1,181 @@
+{% extends "base1.html.twig" %}
+
+    
+    
+
+
+{% block title %} {{ edition.ed }}   Les photos des épreuves nationales {% endblock %}
+
+
+
+{% block titre3 %}
+    <center>{{ edition.ed }}<sup>e</sup> Les photos des épreuves nationales.</center></br>
+    <font color="blue">Equipe {{ equipe.lettre }} : {{ equipe.Titreprojet }} </font>
+{% endblock %}
+
+
+{% block body %}
+    {% if is_granted('ROLE_COMITE') %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <ul class="navbar-nav">
+                <li>
+                    <a href="{{ path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-'~equipe.id~'-'~choix}) }}"
+                       class="btn btn-primary" role="button" aria-pressed="true">Gestion des photos</a></li>
+            </ul>
+        </nav>
+    {% endif %}
+    <!--Carousel Wrapper-->
+    <div class="col-lg-10">
+        <div class="row mx-auto my-auto">
+
+            <div id="carousel" class="carousel slide w-100" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    {% set i = 0 %}
+                    {% for photo in liste_photos %}
+                        {% if i==0 %}
+                            <li data-target="#carousel" data-slide-to="{{ i }}" class="active"></li>
+                        {% endif %}
+                        {% if i>0 %}
+                            <li data-target="#carousel" data-slide-to="{{ i }}"></li>
+                        {% endif %}
+                        {% set i =i+ 1 %}
+                    {% endfor %}
+                </ol>
+                <!--Slides-->
+                <div class="black">
+                    <div class="carousel-inner w-100 black" role="listbox">
+
+                        {% set i = 1 %}
+                        {% for photo in liste_photos %}
+                            {% if i ==1 %}
+                                <div class="carousel-item col-lg-4 col-md-6 active">
+                                    <div class="container-fluid">
+                                        <a href="{{ asset('upload/photos/'~photo.photo) }}">
+
+                                            <div class="containercarousel">
+                                                <div class="d-flex h-100 align-items-center justify-content-center">
+                                                    <div class="p-2">
+                                                        <img src="{{ asset('upload/photos/thumbs/'~photo.photo) }}"
+                                                             class="img-fluid ">
+                                                    </div>
+
+                                                    <div class="p-2">
+                                                        {% if photo.coment !='' %}
+                                                            <div class="text">
+                                                                <font size="-2">{{ photo.coment }}</font>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                            {% if i>1 %}
+                                <div class="carousel-item col-lg-4 col-md-6">
+                                    <div class="container-fluid">
+                                        <a href="{{ asset('upload/photos/'~photo.photo) }}">
+
+                                            <div class="containercarousel">
+                                                <div class="d-flex h-100 align-items-center justify-content-center">
+                                                    <div class="p-2">
+                                                        <img src="{{ asset('upload/photos/thumbs/'~photo.photo) }}"
+                                                             class="img-fluid ">
+                                                    </div>
+
+                                                    <div class="p-2">
+                                                        {% if photo.coment !='' %}
+                                                            <div class="text">
+                                                                <font size="-2">{{ photo.coment }}</font>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                            {% set i = i+1 %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div style="background:black;">
+                    <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <font size="-2">{{ i-1 }} photos</font>
+        <br>
+    </div>
+    {% if concours=='cia' %}
+        <a href="{{ path('photos_voirphotoscia',{edition : edition.id}) }}">Retour à la liste des centres</a>
+    {% endif %}
+
+    {% if concours=='national' %}
+        <a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix}) }}">Retour à la liste des
+            équipes</a>
+    {% endif %}
+
+    {% block javascripts %}
+
+
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            $('#carousel').carousel({
+                interval: 5000
+            })
+
+            $('.carousel .carousel-item').each(function () {
+                var minPerSlide = 4;
+                var next = $(this).next();
+                if (!next.length) {
+                    next = $(this).siblings(':first');
+                }
+                next.children(':first-child').clone().appendTo($(this));
+
+                for (var i = 0; i < minPerSlide; i++) {
+                    next = next.next();
+                    if (!next.length) {
+                        next = $(this).siblings(':first');
+                    }
+
+                    next.children(':first-child').clone().appendTo($(this));
+                }
+            });
+
+
+        </script>
+
+
+
+
+
+    {% endblock %}
+
+
+
+
+
+
+{% endblock %}

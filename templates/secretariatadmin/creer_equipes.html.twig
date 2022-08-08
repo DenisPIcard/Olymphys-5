@@ -1,0 +1,18 @@
+{% extends "base1.html.twig" %}
+{% block title %} Accueil {% endblock %}
+
+{% block titre3 %} Créer la table Équipes {% endblock %}
+
+{% block navigation %}
+
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div class='well'>
+        {{ form(form) }}
+    </div>
+
+
+
+{% endblock %}

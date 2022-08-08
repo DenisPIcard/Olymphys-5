@@ -1,0 +1,5 @@
+{# templates/bundles/EasyAdmin/liste_fichiers.html.twig #}
+ {% for message in app.session.flashbag.get('alert') %}
+     <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
+ {% endfor %}
+<a href="{{ asset('/fichiers/'~type_fichier[app.request.query.get('typefichier')]~'/'~field.value) }}">{{ field.value }}</a>

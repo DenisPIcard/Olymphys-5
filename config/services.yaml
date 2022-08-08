@@ -1,0 +1,105 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+  locale: 'fr'
+  app.path.photos: '%kernel.project_dir%/public/odpf/odpf-archives'
+  #à changer  en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
+  app.path.photos.site: /../public/odpf/odpf-archives
+  app.path.tempdirectory: '%kernel.project_dir%/public/temp'
+  app.path.thumbtmp: '%kernel.project_dir%/public/upload/images/tmp'
+  type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires' ]
+  type_fichier_lit: [ 'mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire' ]
+  app.path.fichiers: '%kernel.project_dir%/public/fichiers'
+  #à changer en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
+  app.path.fichiers.site: /../public/odpf/odpf-archives
+  app.path.docequipes: '%kernel.project_dir%/public/docequipes'
+  app.path.docequipes.site: /../public/docequipes
+  app.path.docequipes.localhost: /docequipes
+  app.path.odpf_documents: '%kernel.project_dir%/public/odpf/odpf-documents'
+  app.path.odpf_documents.site: /../public/odpf/odpf-documents
+  app.path.odpf_documents.localhost: /odpf/odpf-documents
+  app.path.odpf_logos: '%kernel.project_dir%/public/odpf-logos'
+  app.path.odpf_logos.site: /../public/odpf/odpf-logos
+  app.path.odpf_archives: '%kernel.project_dir%/public/odpf/odpf-archives'
+  app.path.odpf: '%kernel.project_dir%/public/odpf'
+  app.path.odpf_logos.localhost: '%kernel.project_dir%/public/odpf/odpf-logos'
+  app.path.imagescarousels: '%kernel.project_dir%/public/odpf/odpf-images/imagescarousels'
+  app.path.recupOdpf: '%kernel.project_dir%/public/recupOdpf'
+  status:
+    Zip: zip
+    Pdf: pdf
+    Doc: doc
+
+  env(DATABASE_URL): "mysql://root:Enthalpie@127.0.0.1:3306/olymphys4_odpf"
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    bind:
+      odpfimagecarouselsDir: '%kernel.project_dir%/public/odpf-images/imagescarousels'
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Migrations/'
+      - '../src/Kernel.php'
+      - '../src/Tests/'
+
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  App\Controller\:
+    resource: '../src/Controller/'
+    tags: [ 'controller.service_arguments' ]
+
+
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
+  App\EventListener\OdpfImagescarouselsListener:
+    tags:
+      - name: 'doctrine.event_listener'
+        # this is the only required option for the lifecycle listener tag
+        event: 'postPersist'
+
+        # listeners can define their priority in case multiple subscribers or listeners are associated
+        # to the same event (default priority = 0; higher numbers = listener is run earlier)
+        priority: 500
+
+        # you can also restrict listeners to a specific Doctrine connection
+        connection: 'default'
+      - name: 'doctrine.event_listener'
+        # this is the only required option for the lifecycle listener tag
+        event: 'postUpdate'
+
+        # listeners can define their priority in case multiple subscribers or listeners are associated
+        # to the same event (default priority = 0; higher numbers = listener is run earlier)
+        priority: 500
+
+        # you can also restrict listeners to a specific Doctrine connection
+        connection: 'default'
+  App\EventListener\PhotosListener:
+    tags:
+      - name: 'doctrine.event_listener'
+        # this is the only required option for the lifecycle listener tag
+        event: 'postPersist'
+
+        # listeners can define their priority in case multiple subscribers or listeners are associated
+        # to the same event (default priority = 0; higher numbers = listener is run earlier)
+        priority: 500
+
+        # you can also restrict listeners to a specific Doctrine connection
+        connection: 'default'
+      - name: 'doctrine.event_listener'
+        # this is the only required option for the lifecycle listener tag
+        event: 'postUpdate'
+
+        # listeners can define their priority in case multiple subscribers or listeners are associated
+        # to the same event (default priority = 0; higher numbers = listener is run earlier)
+        priority: 500
+
+        # you can also restrict listeners to a specific Doctrine connection
+        connection: 'default'

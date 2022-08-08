@@ -1,0 +1,182 @@
+{% extends 'base1.html.twig' %}
+{% block titre3 %}
+    <div class="h4">Liste des newsletters</div>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row  text-center">
+            <div class="col">
+                <a href="{{ path('newsletter_write',{id:0}) }}" role="button" aria-pressed="true">Nouvelle
+                    newsletter</a>
+            </div>
+            <div class="col">
+                <a href="{{ path('newsletter_init',{id:0}) }}" role="button" aria-pressed="true">Initialisation
+                    users(provisoire)</a>
+            </div>
+        </div>
+        <hr>
+        <div class="row text-light bg-dark text-center">
+            <div class="col-1">
+                id
+            </div>
+            <div class="col-1">
+                date de creation
+            </div>
+            <div class="col-2">
+                Titre
+            </div>
+            <div class="col-5">
+                Texte
+            </div>
+            <div class="col-1">
+                Destinataires
+            </div>
+            <div class="col-1">
+                Envoyée le
+            </div>
+            <div class="col-1">
+                Actions
+            </div>
+
+        </div>
+        <hr>
+        {% if newsletters!= null %}
+            {% for newsletter in newsletters %}
+                <div class="row">
+                    <div class="col-1">
+                        {{ newsletter.id }}
+                    </div>
+                    <div class="col-1">
+                        {{ newsletter.createdAt|date("d/m/Y") }}
+                    </div>
+                    <div class="col-2">
+                        {{ newsletter.name }}
+                    </div>
+                    <div class="col-5">
+                        {{ newsletter.texte|raw }}
+                    </div>
+                    <div class="col-1">
+                        {{ newsletter.destinataires }}
+                    </div>
+                    <div class="col-1">
+                        {% if newsletter.sendAt != null %}
+                            {{ newsletter.sendAt|date("d/m/Y") }}<br>
+                            <h8>( {{ newsletter.sendAt|date("H:i:s") }})</h8>
+                        {% endif %}
+                    </div>
+                    <div class="col-1">
+                        <a href="{{ path('newsletter_write',{id:newsletter.id}) }}" title="Editer"><i
+                                    class="fas fa-pen"></i></a>
+                        <a href="{{ path('newsletter_duplicate',{id:newsletter.id}) }}" title="Dupliquer"><i
+                                    class="fas fa-copy"></i></a>
+                        <button type="button" id="{{ newsletter.id }}" data-toggle="modal" data-target="#modalconfirm"
+                                data-idnewsletter="{{ newsletter.id }}" title="Supprimer"><i class="fas fa-trash"></i>
+                        </button>
+                        </td>
+
+                        {% if newsletter.sendAt== null %}
+
+                            <a href="{{ path('newsletter_send',{id:newsletter.id}) }}" title="Envoyer"><i
+                                        class="fas fa-share"></i></a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+                <hr>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# #############################MODAL###################################### #}
+    <div class="modal fade" id="modalconfirm" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la suppression de la newsletter </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="alert hidden" role="alert" id="modalAlert"></div>
+                    <form name="confirm_form" id="confirm_form" action="{{ path('newsletter_delete') }}">
+                        <input type="hidden" id="myModalID" name="myModalID" value="recipient-name"/>
+                        <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
+                        <p>Voulez-vous effacer cette newsletter ?.<h6 id="modal_body"></h6> </p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    {# ################################################################################## #}
+
+    {% block javascripts %}
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript">
+            $('#modalconfirm').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var recipient = button.data('idnewsletter');
+                console.log(recipient)// Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $(this)
+                modal.find('.modal-title').text('Attention')
+                modal.find('.modal-body input').val(recipient)
+            });
+        </script>
+
+        <script type="text/javascript">{# pour les newsletter #}
+            /* must apply only after HTML has loaded */
+            $(document).ready(function () {
+                $("#confirm_form").on("submit", function (e) {
+                    var formURL = $("#myModalID").action(),
+                        console
+                .
+                    log(formURL);
+                    $.ajax({
+
+                        type: "POST",
+                        id: $("#myModalID").val(),
+                        url: formURL,
+                        data: {
+                            id: $("#myModalID").val()
+                        },
+                        console.log(data);
+                        success: function (data) {
+                            alert('successfully submitted')
+                        }
+                    });
+                    $("#submit_form").on('click', function () {
+                        $("#confirm_form").submit();
+                    });
+                });
+            });
+        </script>
+
+
+
+
+
+    {% endblock %}
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{# templates/livredor.html.twig #}
+{% extends '@!EasyAdmin/default/list.html.twig' %} 
+
+
+
+
+{% block content_title %}
+
+
+    {% if app.request.query.get('entity')=='Livredoreleves' %}
+        {% set category = ' des élèves' %}
+
+    {% elseif app.request.query.get('entity')=='Livredorprofs' %}
+        {% set category = ' des professeurs' %}
+
+    {% elseif app.request.query.get('entity')=='Livredorjury' %}
+        {% set category = ' du jury' %}
+
+    {% elseif app.request.query.get('entity')=='Livredorcomite' %}
+        {% set category = ' du comité' %}
+
+    {% endif %}
+    Livre d'or {{ category }}  de  la  <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
+
+{% endblock %}
+
+{% block global_actions %}
+
+    <div class="button-action">
+        {% if app.request.query.get('entity')=='Livredoreleves' %}
+
+            {% set type = 'equipe' %}
+        {% elseif app.request.query.get('entity')=='Livredorprofs' %}
+
+            {% set type = 'prof' %}
+        {% elseif app.request.query.get('entity')=='Livredorjury' %}
+
+            {% set type = 'jury' %}
+        {% elseif app.request.query.get('entity')=='Livredorcomite' %}
+
+            {% set type = 'comite' %}
+        {% endif %}
+
+        {% if app.request.query.get('filters') != null %}
+            {% set edition= app.request.query.get('filters').edition %}
+        {% else %}
+            {% set edition=app.session.get('edition').id %}
+        {% endif %}
+
+
+        <a type="button" class="btn btn-primary" href="{{ path('livredor_editer',{ choix : edition~'-'~type}) }}">Créer
+            le fichier word </a>
+    </div>
+
+    {{ parent() }}
+{% endblock %}

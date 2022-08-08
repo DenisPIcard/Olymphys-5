@@ -1,0 +1,45 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Coefficients index{% endblock %}
+
+{% block body %}
+    <h1>Coefficients index</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Qualexp</th>
+            <th>Demscien</th>
+            <th>Preoral</th>
+            <th>Origina</th>
+            <th>Traequi</th>
+            <th>Memoire</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for coefficient in coefficients %}
+            <tr>
+                <td>{{ coefficient.id }}</td>
+                <td>{{ coefficient.qualexp }}</td>
+                <td>{{ coefficient.demscien }}</td>
+                <td>{{ coefficient.preoral }}</td>
+                <td>{{ coefficient.origina }}</td>
+                <td>{{ coefficient.traequi }}</td>
+                <td>{{ coefficient.memoire }}</td>
+                <td>
+                    <a href="{{ path('coefficients_crud_show', {'id': coefficient.id}) }}">show</a>
+                    <a href="{{ path('coefficients_crud_edit', {'id': coefficient.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('coefficients_crud_new') }}">Create new</a>
+{% endblock %}

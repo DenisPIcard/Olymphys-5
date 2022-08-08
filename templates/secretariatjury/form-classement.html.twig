@@ -1,0 +1,35 @@
+<div class="well">
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+    {# Les erreurs générales du formulaire. #}
+    {{ form_errors(form) }}
+
+    {# Génération manuelle et éclatée : #}
+    <div class="form-group">
+        {{ form_label(form.niveau, "Niveau du prix", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+        {# Affichage des erreurs pour ce champ précis. #}
+        <span class="col-sm-2">
+      {# Génération de l'input. #}
+            {{ form_widget(form.niveau, {'attr': {'class': 'form-control'}}) }}
+    </span>
+        <span class="col-sm-2">
+      {# Génération de l'input. #}
+            {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+    </span>
+        <span class="col-sm-2">
+      {# Génération de l'input. #}
+            {{ form_widget(form.nbreprix, {'attr': {'class': 'form-control'}}) }}
+    </span>
+        {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-primary'}}) }}
+    </div>
+
+
+    {# Fermeture de la balise <form> du formulaire HTML #}
+    {{ form_end(form) }}
+
+
+</div>
+
+
+
+  

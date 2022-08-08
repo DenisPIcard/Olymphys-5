@@ -1,0 +1,26 @@
+{# templates/admin/easy/form/main_theme.html.twig: #}
+
+{% extends "@EasyAdmin/form/bootstrap_4_layout.html.twig" %}
+{% block vich_image_widget %}
+    {% apply spaceless %}
+        <div class="easyadmin-vich-image">
+            {{ form_widget(form.file) }}
+            {% if form.delete is defined %}
+                {{ form_row(form.delete, { label: 'action.delete' }) }}
+            {% endif %}
+            {% if download_uri|default('') is not empty %}
+                <img src="{{ asset(image_uri) }}">
+            {% endif %}
+        </div>
+    {% endapply %}
+{% endblock %}
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+    {# <script src="./coverage/bs-custom-file-input.js"></script> #}
+    <script>
+        {# $(document).ready(function () {
+                bsCustomFileInput.init()
+            }) #}
+        bsCustomFileInput.init()
+    </script>
+{% endblock %}

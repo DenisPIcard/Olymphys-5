@@ -1,0 +1,30 @@
+{# templates/list_equipescia.html.twig #}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block content_title %}
+
+    <tittle>
+        Elèves inscrits aux interacadémiques de la <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
+    </tittle>
+{% endblock %}
+
+{% block global_actions %}
+
+    <div class="button-action">
+        {% if  app.request.query.get('filters')!=null %}
+            <a type="button" class="btn btn-primary"
+               href="{{ path('liste_eleves',{editionid :app.request.query.get('filters').edition}) }}">Liste des élèves
+                - Extraction tableau excel </a>
+        {% endif %}
+        {% if  app.request.query.get('filters')==null %}
+            <a type="button" class="btn btn-primary"
+               href="{{ path('liste_eleves',{editionid:app.session.get('edition').id}) }}">Liste des élèves - Extraction
+                tableau excel </a>
+        {% endif %}
+    </div>
+
+    {{ parent() }}
+{% endblock %}
+{% block content %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,12 @@
+/* public/css/admin.css */
+:root {
+    /* make the backend contents as wide as the browser window */
+    --body-max-width: 100%;
+    /* change the background color of the <body> */
+    --body-bg: #F999999;
+    /* make the base font size smaller */
+    --font-size-base: 18px;
+    /* remove all border radius to make corners straight */
+    --border-radius: 10px;
+
+}

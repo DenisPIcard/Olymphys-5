@@ -1,0 +1,98 @@
+{% extends "base1.html.twig" %}
+{% block title %} Photos des épreuves
+    {% if concours=='cia' %}
+        interacadémiques
+    {% endif %}
+    {% if concours =='national' %}
+        nationales
+    {% endif %}
+    de la {{ edition.ed }}
+
+
+
+
+{% endblock %}
+
+
+
+{% block titre3 %}Déposer les photos des épreuves
+    {% if concours=='cia' %}
+        interacadémiques
+    {% endif %}
+    {% if concours =='cn' %}
+        nationales
+    {% endif %}
+
+
+    de la {{ edition.ed }}<sup>e </sup>édition {% endblock %}
+
+
+{% block body %}
+    <div class="w-50 p-3">
+        {% for message in app.session.flashbag.get('info') %}
+            <div class="alert alert-info"> {{ message }}</div>
+        {% endfor %}
+        {% for message in app.session.flashbag.get('alert') %}
+            <div class="alert alert-danger"> {{ message }}</div>
+        {% endfor %}
+        {% for message in app.session.flashbag.get('success') %}
+            <div class="alert alert-info"> {{ message }}</div>
+        {% endfor %}
+    </div>
+
+
+
+
+    <div class="well">
+        {% if role=='ROLE_PROF' %}
+            <font color='red'> Ces photos ne seront visibles en public que le lendemain du concours
+                {% if concours =='cia' %}
+                    interacadémique
+                {% endif %}
+                {% if concours =='cn' %}
+                    national
+                {% endif %}</font>
+        {% endif %}
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+                {{ form_start(form) }}
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        {{ form_widget(form.equipe) }}
+                    </div>
+                    <div class="form-group col-6">
+                        {{ form_widget(form.photoFiles) }}
+                    </div>
+                </div>
+                <div class="form-row">
+
+                    {{ form_widget(form.Valider, {'label':'Charger les photos '}) }}
+                    <a href="{{ path('core_home') }}" class="btn-secondary btn-lg" role="button"> Annuler </a>
+                </div>
+
+                {{ form_end(form) }}
+                {% if role=='ROLE_PROF' %}
+                    <a href="{{ path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-prof-1'}) }}">Gerer les
+                        photos</a>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+
+        <script>
+
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+{% endblock %}

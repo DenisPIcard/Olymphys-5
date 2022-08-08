@@ -1,0 +1,68 @@
+{# empty Twig template #}
+{% extends 'base1.html.twig' %}
+{% block titre3 %}
+    <div style="text-align:center">
+        {{ app.session.get('edition').ed }}<sup>e</sup> édition :
+        {% if app.session.get('concours') =='interacadémique' %}
+            Concours interacadémique <br>
+            {% if centre != null %}
+                Centre de {{ centre.centre }}<br>
+            {% endif %}
+        {% endif %}
+        {% if app.session.get('concours') =='national' %}
+            Concours national<br>
+        {% endif %}
+        <h4> Modifications des données de l'équipe "{{ equipe.titreProjet }}" du lycée {{ equipe.rneId.nom }}
+            de {{ equipe.rneId.commune }}</h4>
+        <br>
+    </div>
+
+{% endblock %}
+{% block body %}
+
+    <div class="container-fluid">
+
+        {% for form in formtab %}
+            {% if loop.index==1 %}
+
+                {{ form_start(form) }}
+                <div class="row">
+
+                    <div class="col">
+                        {{ form_row(form.titreprojet, { 'label': ' ' }) }}
+                    </div>
+
+                    <div class="col">
+                        {{ form_row(form.saveE,{ 'label': 'Sauvegarder' }) }}
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            {% endif %}
+            {% if loop.index>1 %}
+                {{ form_start(form) }}
+                <div class="row">
+
+                    <div class="col">
+                        {{ form_row(form.nom, { 'label': ' ' }) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.prenom,{ 'label': ' ' }) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.courriel, { 'label': ' ' }) }}
+                    </div>
+                    <div class="col">
+                        {{ form(form) }}
+
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+    <div style="text-align:center">
+        <a href="{{ path('fichiers_afficher_liste_fichiers_prof',{infos:equipe.id~'-'~app.session.get('concours')~'-liste_prof'}) }}">Retour </a>
+    </div>
+{% endblock %}

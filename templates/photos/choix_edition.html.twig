@@ -1,0 +1,50 @@
+{% extends "base1.html.twig" %}
+
+
+{% block title %} Choix de la galerie{% endblock %}
+
+
+
+{% block titre3 %} Choisir la galerie {% endblock %}
+
+
+{% block body %}
+<div class="w-50 p-3">
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('alert') %}
+        <div class="alert alert-danger"> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('success') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+</div>
+
+{% for edition in editions %}
+<h2>La {{ edition.ed }}<sup>e</sup> édition </h2>
+<li><a class="button" href="{{ path('photos_voirphotoscia',{edition : edition.id}) }}">Concours interacadémiques</a>
+<li><a class="button" href="{{ path('photos_voirphotoscn',{edition : edition.id}) }}">Concours national</a>
+    <hr>
+    {% endfor %}
+
+
+
+
+
+
+
+
+
+    {% block javascripts %}
+
+
+
+
+    {% endblock %}
+
+
+
+    {% endblock %}
+
+

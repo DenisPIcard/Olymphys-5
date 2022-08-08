@@ -1,0 +1,85 @@
+{% extends "base1.html.twig" %}
+{% block title %} Frais du Comité {% endblock %}
+
+{% block navigation %}
+
+    {{ include ('comite/navigation.html.twig') }}
+
+{% endblock %}
+
+{% block titre3 %} Frais du comité pour la {{ edition }}ème  édition{% endblock %}
+
+{% block body %}
+    <div class="well">
+        <div class="table-responsive-sm">
+            <table class="table">
+                <thead>
+
+                <th scope="col">Date</th>
+
+                <th scope="col">Désignation</th>
+
+                <th scope="col">Déplacement</th>
+
+                <th scope="col">Repas</th>
+
+                <th scope="col">Fournitures</th>
+
+                <th scope="col">Poste et tél</th>
+
+                <th scope="col">Impressions</th>
+
+                <th scope="col">Autres</th>
+                </tr>
+                </thead>
+
+
+                {{ form_start(form) }}
+                {% for i in 1..nblig %}
+                    <tr>
+                        <td>
+                            {{ form_widget(attribute(form, 'date'~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'designation'~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'deplacement' ~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'repas' ~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'fournitures' ~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'poste' ~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'impressions' ~i)) }}
+                        </td>
+                        <td>
+                            {{ form_widget(attribute(form, 'autres' ~i)) }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            Si vous n'avez pas encore donné votre IBAN, veuillez entrer les données suivant le modèle en grisé :
+        </div>
+        <table class="table">
+            <tr>
+                <td>  {{ form_widget(form.iban1,{'attr': {'placeholder': 'FR76'}}) }}</td>
+                {% for j in 2..6 %}
+                    <td>  {{ form_widget(attribute(form, 'iban' ~j),{'attr': {'placeholder': '1234'}}) }}</td>
+                {% endfor %}
+                <td>  {{ form_widget(form.iban7,{'attr': {'placeholder': '123'}}) }}</td>
+            </tr>
+        </table>
+    </div>
+    {{ form_rest(form) }}
+
+    {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}

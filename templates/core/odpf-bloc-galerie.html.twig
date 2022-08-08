@@ -1,0 +1,17 @@
+{% block galerie %}
+    <div class="bloc-galerie">
+        <p class="titre">
+            Galerie
+            <a href="#" class="btn-show"></a>
+        </p>
+        <div class="diapo">
+            <img src="{{ asset( image|raw ) }}" alt="{{ alt_image|raw }}" height="'auto" width="100%">
+            <span class="arwl"><a href="#"></a></span>
+            <span class="arwr"><a href="#"></a></span>
+            <div style="clear:both;"></div>
+            <div class="diapo-description">
+                <div class="wrap">{{ descr_image }}</div>
+            </div>
+        </div><!--diapo-->
+    </div><!--bloc-galerie-->
+{% endblock %}

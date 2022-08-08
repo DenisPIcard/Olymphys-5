@@ -1,0 +1,25 @@
+.formulaire {
+
+    background-color: #EEEEEE;
+    font-size: 12px
+
+}
+
+.inscritered {
+    color: #FF0000
+
+}
+
+.inscritegreen {
+    color: #00FF00
+
+}
+
+.fichierdepose {
+
+    color: green;
+}
+
+.fichiernondepose {
+    color: red;
+}

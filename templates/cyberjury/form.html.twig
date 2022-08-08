@@ -1,0 +1,59 @@
+<div class="well">
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    {{ form_errors(form) }}
+    <div class="form-group">
+        {{ form_label(form.exper, "Qualité de l'expérience", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+        {{ form_errors(form.demarche) }}
+        <span class="col-sm-4">
+      {{ form_widget(form.exper, {'attr': {'class': 'form-control'}}) }}
+  </span>
+        <span> <i> coef : {{ coefficients.exper }} </i> </span>
+    </div>
+    <div class="form-group">
+        {{ form_label(form.demarche, "Démarche scientifique", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+        {{ form_errors(form.demarche) }}
+        <span class="col-sm-4">
+      {{ form_widget(form.demarche, {'attr': {'class': 'form-control'}}) }}
+  </span>
+        <span> <i> coef : {{ coefficients.demarche }} </i> </span>
+    </div>
+    <div class="form-group">
+        {{ form_label(form.oral, "Présentation orale", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+        {{ form_errors(form.oral) }}
+        <span class="col-sm-4">
+      {{ form_widget(form.oral, {'attr': {'class': 'form-control'}}) }}
+  </span>
+        <span> <i> coef : {{ coefficients.oral }} </i> </span>
+    </div>
+    <div class="form-group">
+        {{ form_label(form.origin, "Originalité", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+        {{ form_errors(form.origin) }}
+        <span class="col-sm-4">
+      {{ form_widget(form.origin, {'attr': {'class': 'form-control'}}) }}
+  </span>
+        <span> <i> coef : {{ coefficients.origin }} </i> </span>
+    </div>
+    <div class="form-group">
+        {{ form_label(form.Wgroupe, "Travail d'équipe", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+        {{ form_errors(form.Wgroupe) }}
+        <span class="col-sm-4">
+      {{ form_widget(form.Wgroupe, {'attr': {'class': 'form-control'}}) }}
+  </span>
+        <span> <i> coef : {{ coefficients.wgroupe }} </i> </span>
+    </div>
+    {% if flag == 1 %}
+        <div class="form-group">
+            {{ form_label(form.ecrit, "Le mémoire", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+            {{ form_errors(form.ecrit) }}
+            <span class="col-sm-4">
+        {{ form_widget(form.ecrit, {'attr': {'class': 'form-control'}}) }}
+  </span>
+            <span> <i> coef : {{ coefficients.ecrit }} </i> </span>
+        </div>
+    {% endif %}
+    <div>
+        {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-primary'}}) }}
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>

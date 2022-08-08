@@ -1,0 +1,144 @@
+<div class="row  justify-content-end">
+    <nav>
+        <ul class="nav flex-column flex-md-row">
+            <li class="nav-item dropdown menu_haut">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">Foire aux questions</a>
+                <div class="dropdown-menu">
+                    {% for question in listfaq %}
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('core_faq',{tourn: 'debut'}) }}">{{ question.titre }}</a>
+                    {% endfor %}
+                </div>
+            </li>
+
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                <li class="nav-item dropdown menu_haut">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false">Administration</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item login py-0" href="{{ path('admin') }}">Tableau de bord Concours</a>
+                        <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord Site</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatjury_accueil') }}" role="button">Secrétariat
+                            du Jury</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_user') }}"
+                           role="button" aria-pressed="true">Ajouter des utilisateurs</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_eleves_inter') }}"
+                           role="button" aria-pressed="true">Ajouter des élèves</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_equipeinter') }}"
+                           role="button" aria-pressed="true">Ajouter des équipes</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_rne') }}"
+                           role="button" aria-pressed="true">Charger le RNE</a>
+                        <a class="dropdown-item login py-0" href="{{ path('maj_profsequipes') }}" role="button"
+                           aria-pressed="true">Mises à jour nll tables profs</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_equipe_id_rne') }}"
+                           role="button" aria-pressed="true">Mise à jour id_rne</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item login py-0"
+                           href=" {{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
+                           aria-pressed="true">Déposer des photos des interacadémiques</a>
+                        <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos',{concours:'cn'}) }}"
+                           role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                        <a class="dropdown-item login py-0" href="{{ path('fichiers_choix_centre') }}" role="button">Liste
+                            des fichiers CIA</a>
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true"> Liste des mémoires et résumés CN</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_cree_equipes') }}"
+                           role="button" aria-pressed="true">Remplissage de la table Equipes</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_jures') }}"
+                           role="button" aria-pressed="true">Remplissage de la table Jures</a>
+                        <a class="dropdown-item login py-0" href="{{ path('setlastvisit') }}" role="button"
+                           aria-pressed="true">Fixer la date de lastVisit</a>
+                        <a class="dropdown-item login py-0" href="{{ path('app_recup_odpf') }}" role="button"
+                           aria-pressed="true">Récupérer les fichiers OdpF</a>
+                        <a class="dropdown-item login py-0" href="{{ path('recup_profs_eleves') }}" role="button"
+                           aria-pressed="true">Récupérer les profs et élèves passées</a>
+
+                    </div>
+                </li>
+            {% elseif is_granted('ROLE_COMITE') %}
+                <li class="nav-item dropdown menu_haut">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Page Comité</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <a class="dropdown-item login py-0" href="{{ path('admin') }}" role="button"
+                           aria-pressed="true">Gérer les équipes et leurs documents</a>
+                        <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord du Site</a>
+                        <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
+                           role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
+                        <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos',{concours:'cn'}) }}"
+                           role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                        <a class="dropdown-item login py-0" href="{{ path('fichiers_choix_centre') }}" role="button"
+                           aria-pressed="true">Liste des fichiers et vidéos des CIA</a>
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true"> Liste des mémoires et résumés CN</a>
+                    </div>
+                </li>
+            {% elseif is_granted('ROLE_ORGACIA') %}
+                <li class="nav-item  menu_haut">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Page Organisateurs</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
+                           aria-pressed="true">Les équipes et leurs documents</a>
+                    </div>
+                </li>
+            {% elseif is_granted('ROLE_JURYCIA') %}
+                <li class="nav-item  menu_haut">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Page Jury CIA</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
+                           aria-pressed="true">Les équipes et leurs documents</a>
+                    </div>
+                </li>
+            {% elseif is_granted('ROLE_JURY') %}
+                <li class="nav-item  menu_haut">
+                    <a class="nav-link" href="#">Page Jury</a>
+                </li>
+            {% elseif is_granted('ROLE_PROF') %}
+                <li class="nav-item dropdown menu_haut">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Mon espace</a>
+                    <div class="dropdown-menu login py-0" aria-labelledby="dropdownMenu5">
+                        <a class="dropdown-item" href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}"
+                           role="button" aria-pressed="true">Mes équipes </a>
+
+
+                    </div>
+                </li>
+            {% endif %}
+            <li class="nav-item dropdown menurouge">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="false">
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        Mon Compte
+                    {% else %}
+                        Connexion
+                    {% endif %}
+                </a>
+
+                <div class="dropdown-menu login py-0">
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <a class="dropdown-item login py-0" href="#">Utilisateur : {{ app.user.useridentifier }}</a>
+                        <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir le profil</a>
+                        <a class="dropdown-item login py-0" href="{{ path('logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a class="dropdown-item login py-0" href="{{ path('login') }}">Connectez
+                            vous</a> si vous avez un compte,
+                        <a class="dropdown-item login py-0" href="{{ path('register') }}">Créez un
+                            compte</a> si vous en souhaitez un
+                    {% endif %}
+                </div>
+            </li>
+        </ul>
+    </nav>
+</div>

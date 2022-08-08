@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+{% block title %} Préparation {% endblock %}
+{% block titre3 %} Fichier Excel {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariat/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <table class="table table-striped">
+
+            {% for lig,cols in table %}
+                <tr>
+
+                    {% for col in cols %}
+                        <td>  {{ col }}  </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        {#   {{dump(table)}}
+       {{nblignes}}
+       {{nbcol}} #}
+    </div>
+{% endblock %}

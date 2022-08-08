@@ -1,0 +1,12 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+   {% block head_favicon %}
+       <link rel="shortcut icon" href="{{ asset('images/admicon.ico') }}">
+   {% endblock %}
+{% block page_title %} Admin {% endblock %}
+{% block main %}
+    <div class="rougeodpf"><h1>Administration du site</h1></div>
+    <hr>
+
+    <a href="{{ path('elfinder') }}" type="button" class="btn btn-primary" target="_blank">Gérer les médias</a>
+
+{% endblock %}

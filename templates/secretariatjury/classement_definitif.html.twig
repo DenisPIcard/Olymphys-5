@@ -1,0 +1,39 @@
+{% extends "base1.html.twig" %}
+{% block title %}    Classement des équipes{% endblock %}
+
+{% block titre3 %} Classement des équipes {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    {% set bouton=['btn btn-outline-dark','btn btn-danger','btn btn-warning','btn btn-primary'] %}
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+
+                <table class="table table-striped">
+                    {% for equipe in classement %}
+                        <tr>
+
+                            <td class="col-1 ">
+                                <button class="{{ bouton[equipe.couleur] }} btn-lg">{{ equipe.equipeinter.lettre }}</button>
+
+
+                            </td>
+                            <td class="col-6">
+                                {{ equipe.equipeinter.titreProjet }}
+
+                            </td>
+
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

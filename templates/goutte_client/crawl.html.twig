@@ -1,0 +1,35 @@
+{% extends 'base0.html.twig' %}
+
+{% block title %}Hello GoutteClientController!{% endblock %}
+
+{% block body %}
+    {% for node in nodevalues %}
+        {{ loop.index }}::{{ node }}
+        <hr>
+    {% endfor %}
+
+    {% for lien1 in tous_liens1 %}
+        {{ loop.index }}::{{ lien1 }}
+        <hr>
+    {% endfor %}
+
+    {% for lien2 in tous_liens2 %}
+        {{ loop.index }}::{{ lien2 }}
+        <hr>
+    {% endfor %}
+
+
+    {% for nodemem in nodevaluesmem %}
+        {{ loop.index }}::{{ nodemem }}
+        <hr>
+    {% endfor %}
+
+    {% for lienmem in tous_liensmem %}
+        {{ loop.index }}::{{ lienmem }}
+        <hr>
+    {% endfor %}
+
+
+
+
+{% endblock %}

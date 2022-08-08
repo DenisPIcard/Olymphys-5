@@ -1,0 +1,14 @@
+{% extends '@!EasyAdmin/crud/index.html.twig' %}
+
+{% block content_title %}
+    {{ parent() }}
+
+    {% for message in app.session.flashBag.get('alert') %}
+        <div class="alert alert-success" role="alert"> {{ message }}</div>
+    {% endfor %}
+
+
+
+
+
+{% endblock %}

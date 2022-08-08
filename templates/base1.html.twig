@@ -1,0 +1,130 @@
+{# templates/base1.html.twig
+Layout de départ du site #}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Olymphys{% endblock %}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+              crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+        <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+        <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
+        {#  <link rel="stylesheet" href="{{ asset('css/imagesgalery.css') }}"> #}
+        <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+              integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+              crossorigin="anonymous">
+    {% endblock %}
+</head>
+
+<body>
+{% if is_granted('IS_IMPERSONATOR') %}
+    <div class="alert alert-warning" style="margin-bottom: 0;">
+        Vous êtes switché à un compte User
+        <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>
+    </div>
+{% endif %}
+<div class="container-fluid">
+    <div class="page-header">
+        <img src="{{ asset('images/Phicomplet.png') }}" alt="logo des OdpF" width="300"/>
+
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-lg-3 col-md-first">
+        </div>
+        <div class="col-md-9 order-md-last">
+            <h3> {% block titre3 %}
+                {% endblock %}
+            </h3>
+        </div>
+
+    </div>
+    <div class="row">
+
+        <div id="menu" class="col-md-8 col-lg-3 col-md-first">
+            <ul class="nav flex-column nav-pills ml-1">
+                {% if app.session.get('resetpwd')== true %}
+                    <a href="{{ path('logout') }}">Accueil du site</a>
+                {% else %}
+                    <a href="{{ path('core_home') }}">Accueil du site</a>
+                {% endif %}
+                <p></p>
+                {% block navigation %}
+                    <ul class="nav flex-column nav-pills">
+
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            <li>Utilisateur : {{ app.user.useridentifier }}</li>
+                            <li><a href="{{ path('profile_show') }}">Voir le profil</a></li>
+                            <li><a href="{{ path('logout') }}">Déconnexion</a></li>
+                        {% else %}
+                            <li><a href="{{ path('login') }}">Connectez vous</a> si vous avez un compte,</li>
+                            <li>Ou <a href="{{ path('register') }}">créez un compte</a> si vous en souhaitez un</li>
+                            <li>Sinon, entrez dans le menu</li>
+
+                        {% endif %}
+                    </ul>
+                {% endblock %}
+            </ul>
+        </div>
+
+
+        <div id="content" class="col-md-9 order-md-last">
+
+            <hr>
+            {% block body %}
+
+            {% endblock %}
+            {% block nav_eq %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <hr>
+
+
+</div>
+
+
+<hr>
+
+<footer>
+    {% block flash %}
+        {{ include('flash.html.twig') }}
+    {% endblock %}
+    <p>
+    <div class="ml-3">Réalisé sous Symfony5 <a href="https://symfony.com/" target="_blank"><img
+                    src="{{ asset("images/logosymfony.png") }}" class="img-thumbnail"></a> à l'aide de PhpStorm <a
+                href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"> <img
+                    src="{{ asset('images/logophpstorm.jpg') }}" class="img-thumbnail"></a></div>
+    </p>
+    <p>
+    <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a>
+</footer>
+
+
+{% block javascripts %}
+    {# <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> #}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+</body>
+</html>

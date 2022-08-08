@@ -1,0 +1,99 @@
+{{% extends "base1.html.twig" %}
+{% block title %} Autorisations photos{% endblock %}
+
+
+
+{% block titre3 %}
+    <div style="text-align:center">
+        Concours {{phase}}
+        <br>
+
+
+        {% if role=='ROLE_PROF' %}
+
+            {%if choix=='autorisation_photos' %}
+                <br>Déposer les autorisations photos
+{%endif %}
+<div class="well">
+    <h6>Cliquer sur le nom pour déposer le fichier</h6>
+</div>
+{% endif %}
+
+</div>
+
+{% endblock %}
+
+
+{% block body %}
+    {# {% if role=='ROLE_PROF' %}#}
+<div class="well">
+    {% for message in app.session.flashbag.get('info') %}
+    <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+
+    <table>
+        {% for eleve in eleves %}
+            <div class="row">
+                <div class="col">
+                    {% if eleve.autorisationphotos == null %}
+
+                        <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~phase~'-'~choix~'-'~eleve.id}) }}"
+                           style="color:red"> <b>{{ eleve.nom }} {{ eleve.prenom }} - Equipe
+                                : {{ eleve.equipe.numero }}</b> - {{ eleve.equipe.titreProjet }} </a>
+
+                    {% else %}
+
+
+                        <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~phase~'-'~choix~'-'~eleve.id} ) }}"
+                           style="color:green"><b>{{ eleve.nom }} {{ eleve.prenom }} - Equipe
+                                : {{ eleve.equipe.numero }}</b> - {{ eleve.equipe.titreProjet }} </a>
+                        <a href="{{ asset('/fichiers/autorisations/'~eleve.autorisationphotos.fichier) }}">{{ eleve.autorisationphotos.fichier }}</a>
+
+                    {% endif %}
+                </div>
+
+            </div>
+            <hr>
+        {% endfor %}
+        <hr>
+        Autorisations des professeurs
+        <hr>
+        {% for  prof in liste_prof %}
+            <div class="col">
+                {% if prof.autorisationphotos == null %}
+
+                    <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~phase~'-'~choix~'-'~prof.id}) }}"
+                       style="color:red"> <b>{{ prof.nom }} {{ prof.prenom }} </b></a>
+
+                {% else %}
+
+
+                    <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~phase~'-'~choix~'-'~prof.id} ) }}"
+                       style="color:green"><b>{{ prof.nom }} {{ prof.prenom }}</b> </a>
+                    <a href="{{ asset('/fichiers/autorisations/'~prof.autorisationphotos.fichier) }}">{{ prof.autorisationphotos.fichier }}</a>
+
+                {% endif %}
+
+
+            </div>
+            <hr>
+        {% endfor %}
+
+
+    </table>
+
+</div>
+<a href="{{ path('fichiers_choix_equipe',{choix:choix}) }}">Retourner à la liste des équipes</a>
+</center>
+
+{# {% endif %}   #}
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+
+        <script>
+
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+{% endblock %}

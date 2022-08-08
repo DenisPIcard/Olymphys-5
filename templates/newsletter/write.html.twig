@@ -1,0 +1,38 @@
+{% extends 'base1.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col>">titre
+                {{ form_widget(form.name,{'label': 'Titre'}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col>">
+                Contenu
+                {{ form_widget(form.texte,{'label': 'Contenu'}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col>">
+                Destinataires
+                {{ form_widget(form.destinataires,{'label': 'Destinataires'}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6>"></div>
+            <div class="col-6">
+                {{ form_widget(form.save,{'label': 'Valider'}) }}
+                <a href="{{ path('newsletter_liste') }}" type="button" class="btn btn-primary">Annuller</a>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+
+{% block titre3 %}
+    <div class="h4">Rédaction d'une Newsletter</div>
+{% endblock %}
+

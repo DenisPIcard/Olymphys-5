@@ -1,0 +1,28 @@
+{# templates/list_etablissements.html.twig #}
+{% extends '@!EasyAdmin/default/list.html.twig' %} 
+
+{% block content_title %}
+    {% if app.request.query.get('entity')=='equipesadmin' %}
+        {% set category = 'Liste des équipes' %}
+
+    {% elseif app.request.query.get('entity')=='etablissements' %}
+        {% set category = 'Liste des etablissements' %}
+    {% endif %}
+    <tittle>
+        {{ category }} aux interacadémiques de la <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
+    </tittle>
+{% endblock %}
+
+{% block global_actions %}
+
+    <div class="button-action">
+        {% if app.request.query.get('entity')=='equipesadmin' %}
+            <a type="button" class="btn btn-primary" href="{{ path('liste_equipes') }}">Extraction tableau excel </a>
+        {% elseif app.request.query.get('entity')=='etablissements' %}
+            <a type="button" class="btn btn-primary" href="{{ path('liste_etablissements') }}">Extraction tableau
+                excel </a>
+        {% endif %}
+    </div>
+
+    {{ parent() }}
+{% endblock %}

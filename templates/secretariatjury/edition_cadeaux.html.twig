@@ -1,0 +1,69 @@
+{% extends "base1.html.twig" %}
+{% block title %} Attribution des cadeaux {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block titre3 %} Attribution des cadeaux {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <table class="table table-responsive">
+            <thead>
+            <tr>
+                <th>Lettre</th>
+                <th>Prix</th>
+                <th>Titre projet</th>
+                {% if compteur <= nbreEquipes %}
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr
+                    {% if equipe.classement == '1er' %} class="danger" {% elseif  equipe.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
+            >
+                <td><span class="btn btn-primary btn-lg">{{ equipe.equipeinter.lettre }} </span></td>
+                <td>{{ equipe.classement }}</td>
+                <td>{{ equipe.titreProjet }}</td>
+            </tr>
+
+
+            {% if attribue == 0 %}
+                {{ include ("secretariatjury/form-cadeaux.html.twig") }}
+            {% else %}
+                {{ include ("secretariatjury/form-cadeaux2.html.twig") }}
+            {% endif %}
+
+            {% else %}
+            <th>Cadeau</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for equipes in listEquipesCadeaux %}
+
+                <tr
+                        {% if equipes.classement == '1er' %} class="danger" {% elseif  equipes.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
+                >
+                    <th><a class="btn btn-primary btn-lg"
+                           href="{{ path('secretariatjury_attrib_cadeaux', {'id_equipe': equipes.id} ) }}"
+                           target="_blank">{{ equipes.lettre }} </a></th>
+                    <td>{{ equipes.classement }} prix</td>
+                    <td>{{ equipes.titreProjet }}</td>
+                    <td>{% if equipes.cadeau != NULL %}
+                            {{ equipes.cadeau.contenu }} offert par {{ equipes.cadeau.fournisseur|upper }} d'une valeur de {{ equipes.cadeau.montant }} euros.
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% block nav_eq %}
+                {{ include('secretariatjury/nav_equipe.html.twig') }}
+            {% endblock %}
+
+
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

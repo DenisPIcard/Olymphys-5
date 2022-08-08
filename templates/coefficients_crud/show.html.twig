@@ -1,0 +1,46 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Coefficients{% endblock %}
+
+{% block body %}
+    <h1>Coefficients</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ coefficient.id }}</td>
+        </tr>
+        <tr>
+            <th>Qualexp</th>
+            <td>{{ coefficient.qualexp }}</td>
+        </tr>
+        <tr>
+            <th>Demscien</th>
+            <td>{{ coefficient.demscien }}</td>
+        </tr>
+        <tr>
+            <th>Preoral</th>
+            <td>{{ coefficient.preoral }}</td>
+        </tr>
+        <tr>
+            <th>Origina</th>
+            <td>{{ coefficient.origina }}</td>
+        </tr>
+        <tr>
+            <th>Traequi</th>
+            <td>{{ coefficient.traequi }}</td>
+        </tr>
+        <tr>
+            <th>Memoire</th>
+            <td>{{ coefficient.memoire }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('coefficients_crud_index') }}">back to list</a>
+
+    <a href="{{ path('coefficients_crud_edit', {'id': coefficient.id}) }}">edit</a>
+
+    {{ include('coefficients_crud/_delete_form.html.twig') }}
+{% endblock %}

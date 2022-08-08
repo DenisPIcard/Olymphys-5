@@ -1,0 +1,72 @@
+<div class="container-fluid ">
+    <div id="carousel" class="carousel slide " data-ride="carousel">
+        <div class="d-flex align-items-center flex-column" style="height: 300px;">
+            <div class="p-2 ">
+                <div class="carousel-inner black" style="width:271px !important; height:230px !important ;">
+                    {% set i = 1 %}
+                    {% if photos!=null %}
+
+                        {% for photo in photos %}
+
+                            {% if i==1 %}
+
+                                <div class="carousel-item active" data-interval="5000">
+                                    <a href="{{ asset('odpf/odpf-archives/'~photo.editionspassees.edition~'/photoseq/'~photo.photo) }}">
+                                        <div class="text-center"><img
+                                                    src=" {{ asset('odpf/odpf-archives/'~photo.editionspassees.edition~'/photoseq/thumbs/'~photo.photo) }}"
+                                                    alt="{{ photo.coment }}" class="img-fluid"
+                                                    style="width:auto !important; height:200px !important ;">
+
+                                            <div class="carousel-caption d-none d-md-block"
+                                                 style="transform: translateY(110%);background:rgba(0, 0, 0, 0.0)">
+
+                                                <div class="smallsize">{{ photo.coment }}</div>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                            {% endif %}
+                            {% if i>1 %}
+                                <div class="carousel-item">
+                                    <a href="{{ asset('odpf/odpf-archives/'~photo.editionspassees.edition~'/photoseq/'~photo.photo) }}">
+                                        <div class="text-center"><img
+                                                    src=" {{ asset('odpf/odpf-archives/'~photo.editionspassees.edition~'/photoseq/thumbs/'~photo.photo) }}"
+                                                    alt="{{ photo.coment }}" class="img-fluid"
+                                                    style="width:auto !important; height:200px !important ;">
+                                            <div class="carousel-caption d-none d-md-block"
+                                                 style="transform: translateY(110%); background:rgba(0, 0, 0, 0.0)">
+
+                                                <div class="smallsize">{{ photo.coment }}</div>
+                                            </div>
+
+                                        </div>
+                                    </a>
+
+                                </div>
+
+                            {% endif %}
+                            {% set i= i+1 %}
+
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="carousel-control"></div>
+                    <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                        {# <span class="carousel-control-prev-icon" aria-hidden="false"></span> #}
+                        <img src="{{ asset('odpf/odpf-images/diapo-arwl-37x37.png') }}" style="align-self: flex-end; "/>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                        {# }<span class="carousel-control-next-icon" aria-hidden="false" ></span>--> #}
+                        <img src="{{ asset('odpf/odpf-images/diapo-arwr-37x37.png') }}" style="align-self: flex-end; "/>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

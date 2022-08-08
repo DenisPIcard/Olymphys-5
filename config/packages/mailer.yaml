@@ -1,0 +1,7 @@
+framework:
+  mailer:
+    dsn: '%env(MAILER_DSN)%'
+      #envelope:
+      #   sender: 'info@olymphys.fr'
+      #  recipients: ['redirected@example.org']
+        

@@ -1,0 +1,181 @@
+{% if (role != 'ROLE_JURYCIA' ) and  (role != 'ROLE_JURY') %}
+
+    <div class="row text-center">
+        <div class="col">
+            <h5>Autorisations photos</h5>
+        </div>
+    </div>
+    {% if liste_autorisations is defined %}
+
+        <div class="row text-center text-white bg-dark">
+            <div class="col-3">Nom Prénom
+            </div>
+            <div class="col-8">
+                Fichier
+            </div>
+            <div class="col-1">
+                Déposer
+            </div>
+        </div>
+        <form id="autorisations" method="GET" action="{{ path('fichiers_charge_autorisations') }}">{# #}
+
+            <div class="row text-center">
+                <div class="col-3">
+
+                </div>
+                <div class="col-8">
+                    Des élèves
+                </div>
+            </div>
+
+            {% for eleve in listeEleves %}
+                <div class="row text-center">
+                    {% if eleve.autorisationphotos == null %}
+
+
+                        <div class="col-1">
+                            <div class="form-check">
+                                <input type="checkbox" name="check-eleve-{{ loop.index }}"
+                                       id="check- eleve-{{ loop.index }}">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="fichiernondepose"><b>{{ eleve.nom }} {{ eleve.prenom }} </b></div>
+                        </div>
+                        <div class="col-8">
+
+                        </div>
+                        <div class="col-1">
+                            {% if (role=='ROLE_PROF') %}
+                                {% set attrib=0 %}
+                                <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~concours~'-6-'~eleve.id~'-'~attrib} ) }}">
+                                    <button type="button" title="Déposer"><i class="fas fa-upload"></i></button>
+                                </a>
+
+
+                            {% endif %}
+                        </div>
+
+                    {% else %}
+
+
+                        <div class="col-1">
+                            <div class="form-check">
+
+                                <input type="checkbox" name="check-eleve-{{ loop.index }}"
+                                       id="check- eleve-{{ loop.index }}" checked/>
+                                <input type="hidden" name="eleve-{{ loop.index }}"
+                                       id="eleve-{{ eleve.autorisationphotos.id }}"
+                                       value="eleve-{{ eleve.autorisationphotos.id }}"/>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="fichierdepose"><b>{{ eleve.nom }} {{ eleve.prenom }} </b></div>
+                        </div>
+                        <div class="col-8">
+                            <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/autorisations/'~eleve.autorisationphotos.fichier) }}">{{ eleve.autorisationphotos.fichier }}</a>
+                        </div>
+
+                        <div class="col-1">
+                            {% if (role=='ROLE_PROF') %}
+                                {#   <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~concours~'-6-'~eleve.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                #}{% set attrib=1 %}
+                                <button type="button" id="{{ eleve.autorisationphotos.id }}" data-toggle="modal"
+                                        data-target="#modalfichier" data-idfichier="{{ eleve.autorisationphotos.id }}"
+                                        title="Déposer"><i class="fas fa-upload"></i></button>
+
+                            {% endif %}
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            {% endfor %}
+
+            <div class="row text-center">
+                <div class="col-3">
+
+                </div>
+                <div class="col-8">
+                    Des professeurs
+                </div>
+            </div>
+
+            {% for prof in liste_prof %}
+                <div class="row text-center">
+
+                    {% if prof.autorisationphotos == null or  prof.autorisationphotos.edition!=edition %}
+                        <div class="col-1">
+                            <div class="form-check">
+                                <input type="checkbox" name="check-prof-{{ loop.index }}"
+                                       id="check-prof-{{ loop.index }}"/>
+
+                            </div>
+                        </div>
+
+                        <div class="col-2">
+                            <div class="fichiernondepose"><b>{{ prof.nom }} {{ prof.prenom }}</b></div>
+                        </div>
+                        <div class="col-8"></div>
+                        {% if role=='ROLE_PROF' %}
+                            <div class="col-1">
+                                {% set attrib=0 %}
+                                <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~concours~'-6-'~prof.id~'-'~equipe.id~'-'~attrib} ) }}">
+                                    <button type="button" title="Déposer"><i class="fas fa-upload"></i></button>
+                                </a>
+
+                            </div>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="col-1">
+                            <div class="form-check">
+                                <input type="checkbox" name="check-prof-{{ loop.index }}"
+                                       id="check-prof-{{ loop.index }}" checked/>
+                                <input type="hidden" name="prof-{{ loop.index }}"
+                                       id="prof-{{ prof.autorisationphotos.id }}"
+                                       value="prof-{{ prof.autorisationphotos.id }}"/>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="fichierdepose"><b>{{ prof.nom }} {{ prof.prenom }}</b></div>
+                        </div>
+                        <div class="col-8">
+                            <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/autorisations/'~prof.autorisationphotos.fichier) }}">{{ prof.autorisationphotos.fichier }}</a>
+                        </div>
+                        {% set attrib=1 %}
+                        {% if role=='ROLE_PROF' %}
+                            <div class="col-1">
+                                {#  <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~concours~'-6-'~prof.id~'-'~equipe.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a> #}
+                                <button type="button" id="{{ prof.autorisationphotos.id }}" data-toggle="modal"
+                                        data-target="#modalfichier" data-idfichier="{{ prof.autorisationphotos.id }}"
+                                        title="Déposer"><i class="fas fa-upload"></i></button>
+
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+            <div class="row">
+                <div class="col">
+                    {% if (role=='ROLE_COMITE' )  or (role=='ROLE_ORGACIA') %}
+                        <button type="submit" class="btn btn-primary" id="button">Télécharger</button>
+                    {% endif %}
+                </div>
+            </div>
+
+        </form>
+
+
+    {% else %}
+        <div class="alert alert-light">
+            Cette équipe n'a pas encore déposé d'autorisations photos
+        </div>
+    {% endif %}
+    </div>
+
+{% endif %}

@@ -1,0 +1,75 @@
+{% extends "base1.html.twig" %}
+{% block title %} Vidéos {% endblock %}
+{% block titre3 %}  Vidéos de l'équipe  :
+
+    {% if donnees_equipe is defined %}
+        {{ donnees_equipe }}
+    {% endif %}
+{% endblock %}
+
+{% block navigation %}
+
+{% endblock %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block body %}
+
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('alert') %}
+        <div class="alert alert-danger"> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('success') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+    <div class="well">
+        {% if liste_videos != null %}
+            Vidéos déjà déposées :
+            <ul>
+                {% for  video in liste_videos %}
+
+
+                <li><a href="{{ video.lien }}" target="blank">{{ video.nom }}</a>
+                    <h8><i>(Dernière mise à jour : {{ video.updatedAt|date('Y-m-d : H:i:s') }})</i></h8>
+
+                    {% endfor %}
+            </ul>
+        {% endif %}
+        <hr>
+        <div style="text-align:center">
+            Déposer une nouvelle vidéo
+        </div>
+        {{ form_start(form) }}
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+        <div class="form-group col-md-6">
+            {{ form_row(form.nom,{'label': 'Saisir un nom pour cette vidéo'}) }}
+
+
+            {{ form_row(form.lien,{ 'label': 'Saisir le lien de la vidéo, youtube obligatoire' } ) }}
+        </div>
+        <div class="form-group col-md-6">
+            {{ form_widget(form.save, { 'label': 'Valider le lien de la vidéo' }) }}
+            <a href="{{ path('fichiers_afficher_liste_fichiers_prof',{infos: infos}) }}" type="button"
+               class="btn btn-danger">Quitter</a>
+        </div>
+        {{ form_end(form) }}
+
+
+        {# {{ form(form) }} #}
+
+
+    </div>
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        {# <script src="./coverage/bs-custom-file-input.js"></script> #}
+        <script>
+            {# $(document).ready(function () {
+                bsCustomFileInput.init()
+            }) #}
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+{% endblock %}

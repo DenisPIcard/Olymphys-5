@@ -1,0 +1,19 @@
+{# templates/bundles/EasyAdminBunble/odpf_images_carousels.html.twig #}
+{% for value in field.value %}
+
+    <div class="row-cols-2 text-center border-danger fa-border-style">
+        <div class="col">
+            <a href="{{ asset('odpf/odpf-images/imagescarousels/'~value.name~'?m=\' . filemtime('~value.name~') . ') }}"
+               target="_blank">
+                <center><img
+                            src="{{ asset('odpf/odpf-images/imagescarousels/'~value.name)~'?m=\' . filemtime('~value.name~') . ' }}"
+                            alt="{{ value.name }}" class="img-thumbnail img-fluid" style="width: auto; height :120px">
+                </center>
+            </a>
+        </div>
+        <div class="col">
+            {{ value.coment }}
+        </div>
+    </div>
+
+{% endfor %}

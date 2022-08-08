@@ -1,0 +1,65 @@
+{# templates/Admin/customizations/list_equipescia.html.twig #}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block content %}
+    <div class="content">
+        {% block content_header_wrapper %}
+            {% block content_header %}
+                <section class="content-header">
+                    <div class="d-flex flex-row justify-content-between align-content-center w-100">
+                        <div class="content-header-title">
+                            <h3 class=\"title\">
+                                {% block page_title %}
+
+                                    {% if  app.request.query.get('filters')==null %}
+                                        {% set titre_page='Professeurs de l\'édition '~ app.session.get('edition').ed %}
+
+                                    {% endif %}
+                                    {% if  app.request.query.get('filters')!=null %}
+                                        {% if  app.request.query.get('filters').edition is defined %}
+                                            {% set titre_page='Professeurs de l\' édition'~ app.session.get('titreedition').ed %}
+
+                                        {% endif %}
+
+                                    {% endif %}
+
+                                    {{ titre_page|raw }}
+
+                                {% endblock %}
+                            </h3>
+                        </div>
+                        {% block page_actions_wrapper %}
+                            <div class="page-actions">
+
+                                {% if  app.request.query.get('filters')==null %}
+                                    <a href="{{ path('profs_tableau_excel',{choix:app.session.get('edition').id}) }}"
+                                       type="button" class="btn btn-primary">Extraire un tableau excel des
+                                        professeurs</a>
+
+                                {% endif %}
+                                {% if  app.request.query.get('filters')!=null %}
+
+                                    {% if  app.request.query.get('filters').edition is defined %}
+
+                                        <a href="{{ path('profs_tableau_excel',{choix:app.request.query.get('filters').edition}) }}"
+                                           type="button" class="btn btn-primary">Extraire un tableau excel des
+                                            professeurs</a>
+
+                                    {% endif %}
+                                {% endif %}
+
+                            </div>
+
+                        {% endblock page_actions_wrapper %}
+                    </div>
+                </section>
+            {% endblock content_header %}
+        {% endblock content_header_wrapper %}
+        <section id="main" class="content-body">
+            {% block main %}
+
+                {{ parent() }}
+            {% endblock %}
+        </section>
+    </div>
+{% endblock %}

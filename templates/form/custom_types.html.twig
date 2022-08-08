@@ -1,0 +1,32 @@
+{# templates/form/custom_types.html.twig #}
+{% block odpf_image_row %}
+
+    <img src="{{ asset('odpf/odpf-images/imagescarousels/'.Nomimage) }}" alt="Pas de photo disponible">
+
+
+{% endblock %}
+
+{# {% block _OdpfCarousels_image_widget %}
+
+
+
+    {% for child in form.children|filter(child => not child.rendered) %}
+
+        <div class="form-group">
+            {% if child.vars.value.name is defined %}
+                <div>
+                    {{child.vars.value.name}}
+                </div>
+                <div>
+                    <img src="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto">
+            {% endif %}
+                </div>
+    <div class="form-group">
+        {{ form_label(child) }}
+        {{ form_widget(child) }}
+        {{ form_errors(child) }}
+    </div>
+
+   {% endfor %}
+
+{% endblock %} #}

@@ -1,0 +1,56 @@
+{# templates/livredor.html.twig #}
+{% extends '@!EasyAdmin/default/list.html.twig' %}
+
+
+
+
+{% block content_title %}
+    {% if app.request.query.get('filters') != null %}
+        {% set edition= app.request.query.get('filters')['edition'] %}
+    {% else %}
+        {% set edition=app.session.get('edition').id %}
+    {% endif %}
+
+    Liste des professeurs  de  la  <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
+
+{% endblock %}
+
+{% block global_actions %}
+
+    <div class="button-action">
+        {% if app.request.query.get('filters') != null %}
+            {% set edition= app.request.query.get('filters').edition %}
+        {% else %}
+            {% set edition=app.session.get('edition').id %}
+        {% endif %}
+
+
+        <a type="button" class="btn btn-primary" href="{{ path('list_prof_excel',{ choix:edition}) }}">Extraction
+            tableau excel</a>
+    </div>
+
+    {{ parent() }}
+{% endblock %}
+{% block table_body %}
+
+    {% if app.request.query.get('filters') != null %}
+        {% set edition= app.request.query.get('filters').edition %}
+    {% else %}
+        {% set edition=app.session.get('edition').id %}
+    {% endif %}
+
+    {% for item in  paginator.currentPageResults %}
+        {% for equipe in item.equipes %}
+            {% if equipe.edition.id == edition %}
+                {% set prof='' %}
+                {% if equipe.idProf1 == item.user %} {% set prof = '(prof1)' %} {% endif %}
+                {% if equipe.idProf2 == item.user %}{% set prof = '(prof2)' %}  {% endif %}
+                {# {% set equipestring =  item.equipestring~equipe.titreProjet~prof %} #}
+
+
+
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    {{ parent() }}
+{% endblock table_body %}

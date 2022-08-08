@@ -1,0 +1,750 @@
+@media screen and (min-width: 809px) {
+    .ppal-pages {
+        position: absolute !important;
+        text-align: center;
+        padding: 0 0;
+        z-index: 9;
+    }
+
+    .ppal-pages span.site-logo {
+
+        width: 285px;
+        height: 78px;
+        position: relative;
+        top: -16px;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 810px) {
+    .ppal-pages {
+        z-index: 0;
+    }
+
+    .ppal-pages span.site-logo {
+        background: url('../odpf/odpf-images/site-logo-285x75.png') #fff;
+        width: 285px;
+        height: 78px;
+        position: relative;
+        display: block;
+    }
+}
+
+.centrer {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.menu-ppal {
+    display: inline;
+    line-height: 1;
+    box-sizing: content-box;
+}
+
+.container ul.menu-ppal {
+    display: table;
+    width: 100%;
+    height: 80px;
+    margin: 0;
+    position: relative;
+}
+
+.menu-ppal li {
+    display: block;
+    padding: 0 15px 0 0;
+    box-sizing: content-box;
+}
+
+.menu-ppal a {
+    text-decoration: none;
+    margin: 0;
+    padding: 0 12px 0 12px;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    background: #d6dbdf;
+    color: #111a21;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.menu-ppal a:hover {
+    background: #111a21;
+    color: #ffffff;
+}
+
+.menu-ppal:last-child a. {
+    margin: 0;
+
+}
+
+.menu-ppal a.active {
+    background: #b1191d;
+    color: #ffffff;
+    cursor: default;
+}
+
+h1.titre-ppal {
+    font-size: 42px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    padding: 144px 10px 20px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+h1.titre-principal {
+    font-size: 42px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    font-weight: 300;
+    padding: 144px 10px 20px;
+}
+
+.paginactus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 12px;
+    font-weight: 300;
+    text-transform: uppercase;
+    position: relative;
+    padding-top: 144px;
+    /*top: -70px;*/
+}
+
+.paginactus .val a {
+    font-weight: 400;
+}
+
+h4.titractus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 22px;
+    font-weight: 300;
+}
+
+.menugche {
+    padding-left: 10px;
+}
+
+.menugche ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.menugche li {
+    display: block;
+}
+
+.menugche li::before {
+    content: '';
+    display: block;
+}
+
+.menugche li::after {
+    content: '';
+    display: table;
+    clear: both
+}
+
+.menugche a {
+    background-color: #111a21;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 14px;
+    text-decoration: none;
+    padding: 3px 10px 7px;
+    margin-bottom: 3px;
+}
+
+.menugche a:hover {
+    background: #b1191d;
+    color: #ffffff;
+}
+
+.menugche .active a,
+.menugche .active a:hover {
+    background: #b1191d;
+    color: #ffffff;
+    cursor: default;
+}
+
+.bloc-archive-photo {
+    padding: 40px 0 0;
+}
+
+.bloc-archive-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 0 8px;
+    text-align: center;
+}
+
+.bloc-archive-photo p {
+    text-align: center;
+    font-size: 11px;
+    color: #111a21;
+    line-height: 15px;
+    margin: 0;
+
+}
+
+.col-centre {
+    float: left;
+    margin: 0 15px 0 20px;
+    width: auto;
+    z-index: 4;
+}
+
+.col-centre h2.sous-titre {
+    font-size: 30px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    font-weight: 300;
+    padding: 0 0 18px;
+}
+
+.col-centre .contenu h3 {
+    color: #111a21;
+    font-family: Oxygen, sans-serif;
+    font-size: 24px;
+    padding: 20px 0 5px 0;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.col-centre .description {
+    font-size: 16px;
+    color: #b1191d;
+    border-bottom: 1px solid #111a21;
+    margin: 0 0 8px;
+    padding: 0 0 5px;
+}
+
+.col-centre .contenu h4 {
+    color: #b1191d;
+    font-size: 22px;
+    font-family: Oxygen, sans-serif;
+    font-weight: 300;
+    padding: 10px 0 2px;
+}
+
+.col-centre .contenu ul {
+    font-size: 14px;
+    padding: 0 0 0 18px;
+    color: #111a21;
+}
+
+.col-centre .contenu li {
+    display: block;
+    font-size: 14px;
+    line-height: 16px;
+    margin: 0 0 12px;
+    position: relative;
+}
+
+.col-centre .contenu a {
+    color: #b1191d;
+    text-decoration: none;
+}
+
+.col-centre .contenu a:hover {
+    text-decoration: underline;
+}
+
+.col-centre .contenu li:before {
+    background: #b1191d;
+    content: " ";
+    height: 8px;
+    left: -14px;
+    position: absolute;
+    top: 5px;
+    width: 8px;
+}
+
+.col-centre .content p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0;
+    line-height: 16px;
+}
+
+.col-centre .contenu p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0 0 18px;
+    line-height: 16px;
+}
+
+.col-centre .contenu p {
+    z-index: 3;
+}
+
+.col-centre .contenu p em {
+    color: #B1191D;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.col-centre .contenu p a {
+    color: #b1191d;
+    font-size: 14px;
+}
+
+.col-centre .contenu p a:hover {
+    text-decoration: none;
+}
+
+.col-centre2 {
+    float: left;
+    margin: 0;
+    width: auto;
+    z-index: 4;
+}
+
+.col-centre2 h2.sous-titre {
+    font-size: 30px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    font-weight: 300;
+    padding: 0 0 18px;
+}
+
+.col-centre2 .contenu h3 {
+    color: #111a21;
+    font-family: Oxygen, sans-serif;
+    font-size: 24px;
+    padding: 20px 0 5px 0;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.col-centre2 .description {
+    font-size: 16px;
+    color: #b1191d;
+    border-bottom: 1px solid #111a21;
+    margin: 0 0 8px;
+    padding: 0 0 5px;
+}
+
+.col-centre2 .contenu h4 {
+    color: #b1191d;
+    font-size: 22px;
+    font-family: Oxygen, sans-serif;
+    font-weight: 300;
+    padding: 10px 0 2px;
+}
+
+.col-centre2 .contenu ul {
+    font-size: 14px;
+    padding: 0 0 0 18px;
+    color: #111a21;
+}
+
+.col-centre2 .contenu li {
+    display: block;
+    font-size: 14px;
+    line-height: 16px;
+    margin: 0 0 12px;
+    position: relative;
+}
+
+.col-centre2 .contenu a {
+    color: #b1191d;
+    text-decoration: none;
+}
+
+.col-centre2 .contenu a:hover {
+    text-decoration: underline;
+}
+
+.col-centre2.contenu a.big-red-pdf {
+    display: inline-block;
+    font-size: 18px;
+    margin: 12px 0 12px;
+    color: #b1191d;
+    text-decoration: none;
+    position: relative;
+    padding: 0 26px 0 0;
+}
+
+.col-centre2.contenu a.big-red-pdf:after {
+    content: ' ';
+    background: url('../odpf/odpf-images/pdf.png');
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.col-centre2 .contenu li:before {
+    background: #b1191d;
+    content: " ";
+    height: 8px;
+    left: -14px;
+    position: absolute;
+    top: 5px;
+    width: 8px;
+}
+
+.col-centre2 .content p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0;
+    line-height: 16px;
+}
+
+.col-centre2 .contenu p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0 0 18px;
+    line-height: 16px;
+}
+
+.col-centre2 .contenu p {
+    z-index: 3;
+}
+
+.col-centre2 .contenu p em {
+    color: #B1191D;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.col-centre-2.contenu p a {
+    color: #b1191d;
+    font-size: 14px;
+}
+
+
+.col-centre-2 .contenu p a:hover {
+    text-decoration: none;
+}
+
+.col-actus {
+    float: left;
+    margin-top: 15px;
+    width: auto;
+    z-index: 4;
+}
+
+.col-actus h4.titractus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 22px;
+    font-weight: 300;
+}
+
+.bloc-objectifs {
+    position: relative;
+    background: #111a21;
+    padding: 18px 20px 20px;
+}
+
+.bloc-objectifs:before {
+    position: absolute;
+    content: ' ';
+    top: -38px;
+    left: 0;
+    width: 100%;
+    height: 38px;
+    background: url('../odpf/odpf-images/objectifs-top-365x38.png') no-repeat;
+}
+
+.bloc-objectifs .titre {
+    font-family: 'Oxygen', sans-serif;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 24px;
+    font-weight: 300;
+    margin: 0 0 20px;
+}
+
+.bloc-objectifs .contenu {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.bloc-objectifs .contenu p a {
+    font-size: 14px;
+    color: #b1191d;
+    text-decoration: none;
+}
+
+.bloc-galerie {
+    background: #d6dbdf;
+    padding: 20px 20px 16px;
+}
+
+.bloc-galerie p.titre {
+    position: relative;
+    padding: 0 40px 0 0;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: #111a21;
+    line-height: 32px;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+}
+
+.bloc-galerie p.titre a.btn-show {
+    display: block;
+    position: absolute;
+    background: url('../odpf/odpf-images/picto-loupe-32x32.png');
+    width: 32px;
+    height: 32px;
+    top: 0;
+    right: 0;
+}
+
+.bloc-galerie div.diapo {
+    width: 311px;
+    height: 218px;
+    margin-left: 9px;
+    position: relative;
+}
+
+.bloc-galerie div.diapo ul li {
+    width: 311px;
+    float: left;
+    background: #000;
+}
+
+.bloc-galerie div.diapo ul li img {
+    display: block;
+    width: auto;
+    height: 218px;
+    margin: 0 auto;
+}
+
+.arwl,
+.arwr {
+    position: absolute;
+    bottom: 14px;
+    display: block;
+    width: 37px;
+    height: 37px;
+    cursor: pointer;
+}
+
+.arwl a,
+.arwr a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.arwl {
+    background: url('../odpf/odpf-images/diapo-arwl-37x37.png');
+    left: 20px;
+}
+
+.arwr {
+    background: url('../odpf/odpf-images/diapo-arwr-37x37.png');
+    right: 20px;
+}
+
+.bloc-galerie div.diapo .bx-wrapper {
+    position: relative;
+    width: 311px;
+}
+
+.diapo-description {
+    font-size: 11px;
+    text-align: center;
+    color: #111a21;
+    line-height: 16px;
+    margin: 8px 0 0;
+    height: 48px;
+    /* display: table;*/
+    width: 100%;
+}
+
+.wrap {
+    /* display: table-cell;*/
+    vertical-align: middle;
+    text-align: center;
+}
+
+.split-large {
+    clear: both;
+    display: block;
+    background: url("../odpf/odpf-images/split-bottom-911x23.png") no-repeat scroll center bottom rgba(0, 0, 0, 0);
+    height: 43px;
+    padding: 0;
+    width: 100%;
+}
+
+.logos:after {
+    background: url('../odpf/odpf-images/split-bottom-911x23.png') no-repeat center top;
+}
+
+.gd-rouge {
+    display: inline-block;
+    font-size: 18px;
+    margin: 12px 0 12px;
+    color: #b1191d;
+    text-decoration: none;
+    position: relative;
+    padding: 0 0 0 0;
+}
+
+.gd-rouge:after {
+    content: ' ';
+    background: url('../odpf/odpf-images/pdf.png');
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.menu-bas ul {
+    background: #d6dbdf;
+    width: 100%;
+    padding: 10px;
+}
+
+.menu-bas li {
+    display: block;
+}
+
+.menu-bas ul li a {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    color: #111a21;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 0 10px 0 0;
+    line-height: 20px;
+}
+
+.menu-bas ul li ul {
+    display: inline;
+    background: none;
+}
+
+.menu-bas ul li ul li {
+    display: inline;
+    position: relative;
+}
+
+.menu-bas ul li ul li a {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    text-transform: none;
+    font-weight: normal;
+    /*top: -1px;*/
+    position: relative;
+    padding: 0 14px 0 0;
+}
+
+.menu-bas ul li ul li a:hover {
+    text-decoration: underline;
+}
+
+.menu-bas ul li ul li:after {
+    content: ' | ';
+    position: absolute;
+    right: 4px;
+    top: 0;
+}
+
+.menu-bas ul li ul li:last-child:after {
+    display: none;
+}
+
+.orga {
+    padding-top: 10px;
+}
+
+.orga span.site-logo {
+    float: left;
+    background: url('../odpf/odpf-images/site-logo-239x66.png');
+    width: 239px;
+    height: 66px;
+    margin: 44px 36px 0 0;
+    display: block;
+}
+
+.orga span.split {
+    float: left;
+    display: block;
+    background: url('../odpf/odpf-images/split-vertical-23x177.png');
+    width: 23px;
+    height: 177px;
+    margin: 0 16px 0 0;
+}
+
+.orga div.txt {
+    float: left;
+    width: 452px;
+    padding: 48px 0 0;
+}
+
+.orga div.txt p {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    color: #111a21;
+    line-height: 20px;
+    margin: 0 0 10px;
+}
+
+.orga .sponsors div.txt img {
+    float: left;
+    margin: 0 12px 0 0;
+}
+
+.orga:after {
+    position: relative;
+    content: ' ';
+    width: 100%;
+    height: 23px;
+    left: 0;
+
+    background: url('../odpf/odpf-images/split-bottom-911x23.png') no-repeat center top;
+}
+
+.pied {
+    padding: 0 100px 0 18px;
+}
+
+.pied-texte ul {
+    text-align: center;
+    padding: 2px 0 18px;
+}
+
+.pied-texte li {
+    display: inline;
+}
+
+.pied-texte a {
+    text-decoration: none;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 12px;
+    color: #111a21;
+    position: relative;
+    margin: 0 10px;
+}
+
+.pied-texte a:hover {
+    text-decoration: underline;
+}
+
+.pied-texte a:after {
+    position: relative;
+    content: ' | ';
+    right: -12px;
+    top: 0;
+}
+
+.tableequipes {
+    height: 16px;
+    font-size: 12px;
+    line-height: 15px
+}

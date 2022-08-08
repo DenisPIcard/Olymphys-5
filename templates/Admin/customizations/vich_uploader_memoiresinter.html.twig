@@ -1,0 +1,6 @@
+{# templates/vich_uploader_memoiresinter.html.twig #}
+{% for message in app.session.flashbag.get('info') %}
+    <div class="alert alert-info"> {{ message }}</div>
+{% endfor %}
+
+<a href="{{ field_options.base_path ~ '/' ~ value }}" target="_blank"> {{ value }}</a>

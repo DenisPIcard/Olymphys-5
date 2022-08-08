@@ -1,0 +1,228 @@
+{% extends "base1.html.twig" %}
+{% block title %} Mon espace{% endblock %}
+
+
+
+{% block titre3 %}
+    <div class="text-center">Concours {{ phase }}<br>
+        {% if role=='ROLE_JURY' %}
+            {{ jure.prenomJure }}   {{ jure.nomJure }}
+            <br> membre du jury
+        {% elseif role=='ROLE_PROF' %}
+            {{ user.prenom }} {{ user.nom }}<br>
+            Lycée {{ rneObj.nom }} de {{ rneObj.commune }}
+        {% endif %}
+        {% if role =='ROLE_ORGACIA' or role =='ROLE_JURYCIA'    or role =='ROLE_COMITE' %}
+            {% if role=='ROLE_COMITE' %}
+                <br>Membre du comité national
+            {% endif %}
+            {% if phase=='interacadémique' %}
+                {% if (choix=='deposer') or (choix=='presentation') %}
+                    <br>Dépot du fichier  d'une équipe
+                    {% if role!= 'ROLE_COMITE' %}
+                        du centre {{ centre }}
+                    {% endif %}
+                {% endif %}
+                {% if choix=='liste_prof' %}
+                    <br>Voir les fichiers d'une équipe du centre {{ centre }}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {% if phase=='national' %}
+            {% if (choix=='deposer') or (choix=='presentation') %}
+                <br>Dépôt du fichier  d'une équipe
+            {% endif %}
+            {% if choix=='liste_prof' %}
+                <br>Voir les fichiers d'une équipe
+            {% endif %}
+        {% endif %}
+
+        {% if role=='ROLE_PROF' %}
+            {% if choix=='liste_prof' %}
+                <br>Les  équipes de l'établissement
+            {% endif %}
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        {% for message in app.session.flashbag.get('info') %}
+            <div class="alert alert-info"> {{ message }}</div>
+        {% endfor %}
+
+        Pour modifier l'équipe ou déposer des documents choisir l'équipe correspondante.
+        <hr>
+        {% if   phase =='interacadémique' %}
+            {% set concours='inter' %}
+            {% if liste_equipes == null %}
+                <p> Pas d'équipe inscrite</p>
+
+            {% endif %}
+            <table>
+                {% for equipe in liste_equipes %}
+                    <div class="row">
+                        <div class="col">
+                            <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }}
+                            {% if role != 'ROLE_PROF' %}
+                                <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
+                            {% endif %}
+                            {% if equipe.inscrite== false %}
+                                <div class="inscritered"><i>(Equipe non inscrite)</i></div>
+                            {% endif %}
+                            <hr>
+                            {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
+                        </div>
+
+                        <div class="col">
+
+                            {% if choix=='liste_prof' %}
+                                <a class="btn btn-primary"
+                                   href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
+                                    cette équipe</a>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                    <hr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        {% if   phase =='national' %}
+            {% set concours='cn' %}
+            <table>
+                {% for equipe in liste_equipes %}
+                    <div class="row">
+                        <div class="col">
+                            {% if   equipe.lettre!=null %} <b> {{ equipe.lettre }}</b>  {% else %}
+                                <b>{% set phase='academique' %}{{ equipe.numero }}</b>{% endif %}
+                            - {{ equipe.titreProjet }}
+                            {% if role != 'ROLE_PROF' %}
+                                <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="col">
+                            {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
+                            {% if (choix=='liste_prof') or (choix=='liste_cn_comite') %}
+                                <a class="btn btn-primary"
+                                   href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
+                                    cette équipe</a>
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+    {% if role==('ROLE_PROF') %}
+        <div class="table">
+            <tr>
+                <td>
+                    <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
+                       title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    {% if  date()<= app.session.get('datelimphotoscia') %}
+                        <a type="button" class="btn btn-warning"
+                           href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
+                           aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
+                            photos </a>
+                        <a type="button" class="btn btn-info"
+                           href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
+                           title="Modifier ou supprimer certaines photos">Gerer les photos</a>
+                    {% endif %}
+                    {% if (date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn')) %}
+                        <a type="button" class="btn btn-warning"
+                           href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
+                           title="Déposer des photos du concours national">Déposer des photos </a>
+                        <a type="button" class="btn btn-info"
+                           href="{{ path('photos_gestion_photos',{infos:'national-'~app.session.get('edition').id~'-prof'}) }}"
+                           role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
+                            photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
+
+                    {% endif %}
+                </td>
+            </tr>
+        </div>
+        {% if doc_equipes!=null %}
+            <div class="container-fluid">
+                <h3 style="text-align:center">
+                    Documents à télécharger
+                </h3>
+                <table class="table table-responsive table-bordered text-center">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Titre du document</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Télécharger</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for fichier in doc_equipes %}
+                        <tr>
+                            <td>{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png') }}" width="50px"
+                                                                  alt="pdf">
+                                {% elseif fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png') }}"
+                                                                      width="50px" alt="zip">
+                                {% elseif fichier.type=='doc' %} <img src="{{ asset('images/Doc-icon.svg') }}"
+                                                                      width="50px" alt="doc">
+
+                                {% endif %}
+
+                            </td>
+                            <td>{{ fichier.titre }}</td>
+                            <td>{{ fichier.description }}</td>
+                            <td><a href="{{ asset('docequipes/'~fichier.fichier) }}">
+                                    <button type="button" title="Téléchargerr"><i class="fas fa-download"></i></button>
+                                </a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        {% endif %}
+    {% endif %}
+    {% if centre is defined %}
+        {% if (role=='ROLE_ORGACIA') or (role=='ROLE_JURYCIA') %}
+            <div style="text-align:center">
+                <a href="{{ path('core_home') }}">Retour à l'accueil</a>
+            </div>
+        {% else %}
+            <div style="text-align:center">
+                <a href="{{ path('fichiers_choix_centre') }}">Retour à la liste des centres</a>
+            </div>
+
+
+        {% endif %}
+    {% endif %}
+
+
+
+
+
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+
+        <script>
+
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+{% endblock %}

@@ -1,0 +1,6 @@
+
+RewriteOptions inherit
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^.*$
+RewriteRule ^/?$ "https\:\/\/www\.olymphys\.fr\/public\/index\.php" [R=301,L]

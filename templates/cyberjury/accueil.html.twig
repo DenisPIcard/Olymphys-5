@@ -1,0 +1,59 @@
+{% extends "base1.html.twig" %}
+{% block title %} Accueil Jury {% endblock %}
+
+
+
+{% block navigation %}
+
+    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc pl-0">{# <span class="fas fa-user">  </span> #}
+
+        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
+    </button>
+    {{ include ('cyberjury/navigation.html.twig') }}
+
+{% endblock %}
+{% block titre3 %} Mes équipes {% endblock %}
+
+{% block body %}
+    <div class="small">Dans l'ordre de passage</div>
+    {% for equipes in listeEquipes %}
+        {% if equipes.equipeinter.lettre in progression|keys %}
+
+            {% set lettre = equipes.equipeinter.lettre %}
+            <p>
+                <a
+                        {% if (progression[lettre]) %}  class="btn btn-outline-primary btn-lg"
+                        {% else %}class ="btn btn-primary btn-lg"
+                        {% endif %}
+                        href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}">{{ equipes.equipeinter.lettre }}</a>
+                {{ equipes.equipeinter.titreProjet }}
+                {% if equipes.heure==null %}
+                    {% set heure=' x ' %}
+                {% else %}
+                    {% set heure=equipes.heure %}
+                {% endif %}
+                {% if equipes.salle==null %}
+                    {% set salle=' x ' %}
+                {% else %}
+                    {% set salle=equipes.salle %}
+                {% endif %}
+                <a href="#" class="fas fa-clock" title="{{ heure }} {{ salle }}"> </a>
+                {% for key,mem in memoires %}
+                    {% if key == lettre %}
+                        {% if mem!=null %}
+                            <a href="{{ asset('fichiers/memoires/'~ mem.fichier) }}" class="fas fa-book-reader"
+                               title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                   title="En savoir plus sur cette équipe"> </a>
+                <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt"
+                   title="Les phrases amusantes"> </a>
+                <a href="{{ equipes.salleZoom }}" class="fas fa-wifi"
+                   title="Vers la salle Zoom de l'équipe" target="_blank"> </a>
+            </p>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}

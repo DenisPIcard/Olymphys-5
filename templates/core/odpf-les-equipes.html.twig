@@ -1,0 +1,43 @@
+{% if listEquipes != [] %}
+    <div class="table-responsive">
+        <table class="table table-borderless table-striped tableequipes">
+            <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Lettre</th>
+                <th>Équipe</th>
+                <th>Lycée Ville</th>
+                <th>Académie</th>
+                <th>Nb élèves</th>
+                <th>Prof1</th>
+                <th>Prof2</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for equipe in listEquipes %}
+                {% set numero = equipe.numero %}
+                <tr>
+                    <td>{{ equipe.numero }}</td>
+                    <td>{{ equipe.lettre }}</td>
+                    <td>{{ equipe.titreprojet }}</td>
+
+                    {% for lycee in lycee[numero] %}
+                        <td> Lycée {{ lycee.nom|title }} {{ lycee.commune|title }}  </td>
+                        <td> {{ lycee.academie }}</td>
+                    {% endfor %}
+
+                    <td>{{ equipe.nbeleves }}</td>
+                    {% for prof1 in prof1[numero] %}
+                        <td>{{ prof1.prenom|title }} {{ prof1.nom|upper }}</td>
+                    {% endfor %}
+                    {% for prof2 in prof2[numero] %}
+                        <td>{{ prof2.prenom|title }} {{ prof2.nom|upper }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    Il n'y a pas encore d'équipe inscrite
+{% endif %}

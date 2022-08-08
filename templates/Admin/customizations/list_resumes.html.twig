@@ -1,0 +1,10 @@
+{# templates/list_resumes.html.twig #}
+{% extends '@!EasyAdmin/default/list.html.twig' %} 
+
+{% block content_title %}
+    <tittle>
+        Résumés du concours de la <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
+    </tittle>
+{% endblock %}
+
+

@@ -1,0 +1,92 @@
+{% extends "base1.html.twig" %}
+{% block title %} Vidéos  de l'équipe {{ equipe.infoequipe }}{% endblock %}
+
+
+
+{% block titre3 %}
+    <div style="text-align:center">
+        {{ edition.ed }}<sup>e</sup> édition :
+        {% if concours =='interacadémique' %}
+            Concours interacadémique <br>
+            {% if equipe.centre != null %}
+                Centre de {{ equipe.centre.centre }}<br>
+            {% endif %}
+        {% endif %}
+        {% if concours =='national' %}
+            Concours national<br>
+        {% endif %}
+        <h4> Liste des vidéos de l'équipe "{{ equipe.titreProjet }}" du lycée {{ equipe.rneId.nom }}
+            , {{ equipe.rneId.commune }}</h4>
+        <br>
+    </div>
+
+{% endblock %}
+
+
+{% block body %}
+    <div class="well">
+    <table>
+        {% for form in formtab %}
+            {% form_theme form 'bootstrap_4_layout.html.twig' %}
+            {{ form_start(form) }}
+            <div class="my-custom-class-for-errors">
+                {{ form_errors(form) }}
+            </div>
+            <div class="row">
+
+                <div class="col" id="some-custom-id">
+                    {% for video in liste_videos %}
+
+                    {% if video.id == form.vars.value.id %}
+
+                    <li><a href="{{ video.lien }}" target="blank">{{ video.nom }}</a>
+                        <h8><i>(Dernière mise à jour : {{ video.updatedAt|date('Y-m-d : H:i:s') }})</i></h8>
+                        {% endif %}
+                        {% endfor %}
+                        {% if role=='ROLE_PROF' %}
+
+                            {{ form_widget(form.change, { 'label': 'Modifier' }) }}
+
+
+                            {{ form_widget(form.delete, { 'label': 'Supprimer' }) }}
+                        {% endif %}
+                </div>
+            </div>
+            {{ form_end(form) }}
+            <hr>
+        {% endfor %}
+    </table>
+    {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN') %}
+
+        {% if concours=='interacadémique' %}
+            <div style="text-align:center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}">Retour à
+                    la liste des équipes</a></div>
+        {% endif %}
+        {% if concours=='national' %}
+            <div style="text-align:center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'}) }}">Retour
+                    à la liste des équipes</a></div>
+        {% endif %}
+    {% endif %}
+    {% if role=='ROLE_PROF' %}
+
+    <div style="text-align:center">
+    <a href="{{ path('fichiers_choix_equipe',{choix:'liste_video'}) }}">Retour à la liste des équipes </a> -
+
+    <a href="{{ path('videos_liens_videos',{ infos :equipe.id ~ '-'~concours~'-video' }) }}">Déposer une vidéo pour
+        cette équipe</a>
+    <div style="text-align:center">
+
+        {% endif %}
+    </div>
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        {# <script src="./coverage/bs-custom-file-input.js"></script> #}
+        <script>
+            {# $(document).ready(function () {
+                bsCustomFileInput.init()
+            }) #}
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+{% endblock %}

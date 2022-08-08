@@ -1,0 +1,17 @@
+{# security/verif_mail.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Vérification de l'adresse mail</title>
+</head>
+<body>
+<p>
+    Bonjour, <br>
+    Cliquez sur ce lien pour finaliser votre inscription avant le {{ expiration_date|date('d-m-Y H:i:s') }}
+    {# pour que le lien fonctionne, il est indispensable que le lien soit absolu. #}
+    <a href="{{ absolute_url(path('verif_mail', {'id': user.id, 'token': user.token})) }}">Finaliser l'inscription</a>
+</p>
+</body>
+</html>
+

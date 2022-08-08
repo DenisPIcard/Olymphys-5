@@ -1,0 +1,41 @@
+.smallsize {
+    font-size: 15px;
+}
+
+.rougeodpf {
+    color: #B21B16;
+}
+
+select#sel {
+    background: url('../odpf/odpf-images/picto-arwb-32x15.png') no-repeat right center;
+    appearance: none;
+    font-size: 28px;
+    color: #b1191d;
+    font-weight: 300;
+    font-family: 'Oxygen', sans-serif;
+    padding: 4px 16px 10px 16px;
+}
+
+select:valid {
+
+    color: #B21B16;
+}
+
+select option {
+    color: black;
+    font-family: 'Oxygen', sans-serif;
+    font-weight: 300;
+    font-size: 22px;
+}
+
+select:invalid {
+    color: black;
+}
+
+.list-group {
+    font-size: 1vw;
+}
+
+h5 {
+    font-size: 1vw;
+}

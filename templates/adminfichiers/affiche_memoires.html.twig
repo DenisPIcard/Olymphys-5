@@ -1,0 +1,94 @@
+{% extends "base1.html.twig" %}
+{% block title %} Liste des memoires{% endblock %}
+
+
+
+{% block titre3 %}
+    {% if concours=='cia' %}
+        Liste des memoires des équipes non sélectionnées lors des épreuves interacadémiques
+    {% endif %}
+    {% if concours=='cn' %}
+        Liste des memoires des épreuves nationales
+    {% endif %}
+
+    de la {{ edition.ed }}<sup>e</sup> édition.
+{% endblock %}
+
+
+{% block body %}
+    <div class="well">
+
+
+        {% for fichiers in fichiersequipes %}
+
+            <div class="col">
+
+                {% set memoire=null %}{% set annexe=null %} {% set  resume= null %}
+                {% for fichier in fichiers %}
+
+
+                    {% if fichier.typefichier==0 %}
+                        {% set memoire=fichier %}
+
+                    {% endif %}
+                    {% if fichier.typefichier==1 %}
+                        {% set annexe=fichier %}
+                    {% endif %}
+                    {% if fichier.typefichier==2 %}
+                        {% set resume=fichier %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if memoire is not null %}
+
+
+
+                    {% if concours=='cn' %}
+                        {{ memoire.equipe.lettre }} -
+                    {% endif %}
+                    <a href="{{ asset('/fichiers/memoires/'~memoire.fichier) }}">{{ memoire.equipe.titreProjet }}</a>
+
+                    <h8><i>Lycée {{ memoire.equipe.rneId.nom }}, {{ memoire.equipe.rneId.commune }} </i></h8>
+                {% endif %}
+                {% if memoire is null %}
+                    {% if resume is not null %}
+                        <h8><i>Lycée {{ resume.equipe.rneId.nom }}, {{ resume.equipe.rneId.commune }} </i></h8>
+
+                    {% endif %}
+                {% endif %}
+
+                (
+                {% if annexe is not null %}
+                    <a href="{{ asset('/fichiers/memoires/'~annexe.fichier) }}">annexe</a>
+                {% endif %}
+                {% if resume is not null %}
+                    <a href="{{ asset('/fichiers/resumes/'~resume.fichier) }}">resumé</a>
+                {% endif %}
+                )
+
+            </div>
+        {% endfor %}
+
+
+    </div>
+
+
+    <div class="well">
+
+        <center><a href="{{ path('fichiers_choixedition',{num_type_fichier : 0}) }}">Retour au choix des mémoires</a>
+        </center>
+
+    </div>
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        {# <script src="./coverage/bs-custom-file-input.js"></script> #}
+        <script>
+            {# $(document).ready(function () {
+                bsCustomFileInput.init()
+            }) #}
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+{% endblock %}
+

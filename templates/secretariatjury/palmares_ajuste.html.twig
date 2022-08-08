@@ -1,0 +1,94 @@
+{% extends "base1.html.twig" %}
+{% block title %} Palmarès - réglage fin {% endblock %}
+
+{% block titre3 %} Palmarès - réglage fin {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    {# <div class="well"> #}
+    <h2>
+        Les {{ NbrePremierPrix }} premiers prix
+    </h2>
+    <table class="table table-striped">
+        <thead>
+        <tr class="danger">
+            <th>Équipe</th>
+            <th>Titre du projet</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for premier in ListPremPrix %}
+            <tr class="danger">
+                <td>
+                    <a class="btn btn-primary btn-lg"
+                       href="{{ path('secretariatjury_modifier_rang', {'id_equipe': premier.id} ) }}">{{ premier.lettre }}</a>
+                </td>
+                <td>{{ premier.TitreProjet }}</td>
+                <td>{{ premier.total }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {# </div> #}
+
+    {# <div class="well"> #}
+    <h2>
+        Les {{ NbreDeuxPrix }} deuxièmes prix
+    </h2>
+    <table class="table table-striped">
+        <thead>
+        <tr class="warning">
+            <th>Équipe</th>
+            <th>Titre du projet</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for deux in ListDeuxPrix %}
+            <tr class="warning">
+                <td>
+                    <a class="btn btn-primary btn-lg"
+                       href="{{ path('secretariatjury_modifier_rang', {'id_equipe': deux.id} ) }}">{{ deux.lettre }}</a>
+                </td>
+                <td>{{ deux.TitreProjet }}</td>
+                <td>{{ deux.total }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {# </div> #}
+
+    {# <div class="well"> #}
+    <h2>
+        Les {{ NbreTroisPrix }} troisièmes prix
+    </h2>
+    <table class="table table-striped">
+        <thead>
+        <tr class="active">
+            <th>Équipe</th>
+            <th>Titre du projet</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for trois in ListTroisPrix %}
+            <tr class="active">
+                <td>
+                    <a class="btn btn-primary btn-lg"
+                       href="{{ path('secretariatjury_modifier_rang', {'id_equipe': trois.id} ) }}">{{ trois.lettre }}</a>
+                </td>
+
+                <td>{{ trois.TitreProjet }}</td>
+                <td>{{ trois.total }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {# </div> #}
+    <a href="{{ path('secretariatjury_palmares_definitif') }}" class="btn btn-primary"> Éditer le palmarès définitif <i
+                class="glyphicon glyphicon-chevron-right"> </i> </a>
+{% endblock %}

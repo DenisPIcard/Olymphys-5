@@ -1,0 +1,14 @@
+{% extends "base1.html.twig" %}
+
+{% block body %}
+    {{ form(form) }}
+
+{% endblock %}
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+
+    <script>
+
+        bsCustomFileInput.init()
+    </script>
+{% endblock %}

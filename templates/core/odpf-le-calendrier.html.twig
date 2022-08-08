@@ -1,0 +1,66 @@
+<p><strong>PHASE D’INSCRIPTION</strong></p>
+<ul>
+    <li>{{ date(app.session.get('edition').dateouverturesite)|date('j') }}&nbsp;mai : ouverture des inscriptions</li>
+    <li>{{ date(app.session.get('edition').dateclotureinscription)|date('j') }} octobre à 22h <span style="color: red;"><strong>(heure de Paris)</strong></span>
+        : clôture des inscriptions
+    </li>
+</ul>
+<p>&nbsp;<br/><strong>CONCOURS INTERACADÉMIQUES</strong></p>
+<ul>
+    <li>début novembre&nbsp;: affectation des équipes à un concours interacadémique</li>
+    <li>du début novembre au 1er décembre&nbsp;:
+        <ul>
+            <li>contact avec les organisateurs du concours interacadémique pour régler les détails de la
+                visioconférence
+            </li>
+            <li>dépôt du mémoire (pdf), du résumé, des autorisations photos&nbsp; ainsi que de la fiche matériel et
+                sécurité (doc) sur le site Olymphys, dans l'espace du Professeur, avant
+                le {{ date(app.session.get('edition').datelimcia)|date('j ') }}
+                novembre {{ date(app.session.get('edition').datelimcia)|date('Y') }}</li>
+        </ul>
+    </li>
+    <li>avant le concours inter académique&nbsp;: compléter les documents d''inscription (adresses...)</li>
+    <li><strong>Mercredi {{ date(app.session.get('edition').concourscia)|date('j') }}
+            décembre {{ date(app.session.get('edition').concourscia)|date('Y') }}</strong> : concours interacadémiques
+    </li>
+</ul>
+<p>&nbsp;<br/><strong>CONCOURS NATIONAL</strong></p>
+<ul>
+    <li>pour les équipes sélectionnées : réponse aux demandes du Comité concernant le transport, l’hébergement, la fiche
+        matériel et sécurité
+    </li>
+    <li>avant le 15 janvier, dépôt sur Olymphys, dans l'espace du Professeur, du mémoire, du résumé, ainsi que de la
+        fiche matériel et sécurité.
+    </li>
+
+    {# #}
+    <li><strong>Vendredi {{ date(app.session.get('edition').date)|date('j') }} et
+            samedi {{ date(app.session.get('edition').concourscn)|date('j m Y') }}</strong> : Concours National,
+        organisé par l'<em><strong>{{ app.session.get('edition').lieu }}</strong><br/></em></li>
+
+</ul>
+<p><strong>DATES LIMITES</strong></p>
+<ul>
+    <li>{{ date(app.session.get('edition').datelimcia)|date('j') }}
+        octobre {{ date(app.session.get('edition').datelimcia)|date('Y') }} 22h (heure de Paris) : dépôt sur Olymphys,
+        dans l'espace du Professeur, des mémoires et fiches matériel et sécurité, autorisations photos
+    </li>
+    <li>14 décembre {{ date(app.session.get('edition').datelimcia)|date('Y') }} : retour des fiches d'hébergement pour
+        le concours national
+    </li>
+    <li>1er janvier {{ date(app.session.get('edition').datelimnat)|date('Y') }} : toutes les informations d'adresses
+        (professeurs et élèves) devront avoir été complétées, sinon, les récompenses sous forme d'abonnement ne pourront
+        pas être données. Date limite pour l'intitulé des projets.&nbsp;
+    </li>
+    <li>{{ date(app.session.get('edition').datelimnat)|date('j') }}
+        janvier {{ date(app.session.get('edition').datelimnat)|date('Y') }} à 22h (heure de Paris) : dépôt sur
+        Olymphys.fr, dans l'espace du Professeur, des mémoires, résumés, des fiches matériel et sécurité et des
+        présentations
+    </li>
+    <li>15 janvier {{ date(app.session.get('edition').datelimnat)|date('Y') }} : retour des éléments financiers des
+        équipes non sélectionnées
+    </li>
+    <li>15 mars {{ date(app.session.get('edition').datelimnat)|date('Y') }} : clôture financière : toutes les demandes
+        de remboursement devront être parvenues au Comité national
+    </li>
+</ul>

@@ -1,0 +1,54 @@
+{% extends "base1.html.twig" %}
+{% block title %} Modifier un prix {% endblock %}
+
+{% block titre3 %}
+    {{ prix.prix }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="well">
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+        {# Les erreurs générales du formulaire. #}
+        {{ form_errors(form) }}
+
+        {# Génération manuelle et éclatée : #}
+        <div class="form-group">
+            {{ form_label(form.prix, " " ) }}
+            {# Affichage des erreurs pour ce champ précis. #}
+            <span class="col-sm-8">
+      {# Génération de l'input. #}
+                {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+    </span>
+
+            <span>
+    {{ form_label(form.classement, " " ) }}
+                {# Affichage des erreurs pour ce champ précis. #}
+    </span>
+            <span class="col-sm-2">
+      {# Génération de l'input. #}
+                {{ form_widget(form.classement, {'attr': {'class': 'form-control'}}) }}
+    </span>
+
+        </div>
+
+
+        <div>
+            {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-primary'}}) }}
+        </div>
+
+
+        {# Fermeture de la balise <form> du formulaire HTML #}
+        {{ form_end(form) }}
+
+
+    </div>
+
+
+
+{% endblock %}

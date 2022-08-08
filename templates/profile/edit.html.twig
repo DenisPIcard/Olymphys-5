@@ -1,0 +1,30 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}
+ {% block body %}
+     <p style="color: red">
+         {{ app.session.get('message') }}
+     </p>
+     <div class="container">
+         <div class="row">
+             <div class="col-12 col-md-8">
+                 <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1><br>
+                 Vous souhaitez changer votre mot de passe <a href="{{ path('forgotten_password') }}">Cliquez ici</a>
+                 <br/><br/>
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-12 col-md-8">
+                 {{ form_start(form) }}
+                 {{ form_end(form) }}
+             </div>
+         </div>
+     </div>
+
+
+ {% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base1.html.twig" %}
+{% block title %} Les  centres interacadémiques {% endblock %}
+
+
+
+{% block titre3 %}Liste des  centres  {% endblock %}
+
+
+{% block body %}
+    <div class="well">
+        {% for message in app.session.flashbag.get('info') %}
+            <div class="alert alert-info"> {{ message }}</div>
+        {% endfor %}
+
+        <table>
+            {% for centre in liste_centres %}
+                <div class="row">
+                    <div class="col">
+                        {{ centre.centre }}
+                        <hr>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-primary"
+                           href="{{ path('fichiers_choix_equipe', {'choix': centre.centre} ) }}"> Choisir ce centre</a>
+
+                    </div>
+
+                </div>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        {# <script src="./coverage/bs-custom-file-input.js"></script> #}
+        <script>
+            {# $(document).ready(function () {
+                bsCustomFileInput.init()
+            }) #}
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+{% endblock %}

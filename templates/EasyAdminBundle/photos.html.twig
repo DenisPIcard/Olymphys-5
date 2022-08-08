@@ -1,0 +1,7 @@
+{# templates/bundles/EasyAdminBunble/photos.html.twig #}
+
+
+<a href="{{ asset('upload/photos/'~field.value) }}" target="_blank">
+    <center><img src="{{ asset('upload/photos/thumbs/'~field.value) }}" alt="{{ field.value }}"
+                 class="img-thumbnail img-fluid"></center>
+</a>

@@ -1,0 +1,239 @@
+{# templates/core/index.html.twig #}
+{% extends "base1.html.twig" %}
+
+{% block title %}
+    Page d'accueil - {{ parent() }}
+
+{% endblock %}
+
+{% block body_gche %}
+
+
+{% endblock %}
+{% block titre3 %}
+    <div class="text-center"> Le concours {{ app.session.get('edition').annee }}<br>{{ app.session.get('edition').ed }}
+        <sup>e</sup> édition des Olympiades de Physique France
+    </div>
+{% endblock %}
+{% block body %}
+
+    <p class="container-fluid text-center">
+
+    {# On affiche tous les messages flash dont le nom est « info » #}
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('alert') %}
+        <div class="alert alert-danger"> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('success') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+    <h3></h3>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
+        <ul class="navbar-nav ">
+            <li>
+
+            <li>
+                <div class="btn-group">
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Administration
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+
+
+                        <a class="dropdown-item" href="{{ path('admin') }}" role="button" aria-pressed="true">Tableau de
+                            bord</a>
+                        <a class="dropdown-item" href="{{ path('secretariatjury_accueil') }}" role="button">Secrétariat
+                            du Jury</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ path('newsletter_liste') }}" role="button"
+                           aria-pressed="true">Gérer les newsletters</a>
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_user') }}" role="button"
+                           aria-pressed="true">Ajouter des utilisateurs</a>
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_eleves_inter') }}" role="button"
+                           aria-pressed="true">Ajouter des élèves</a>
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_equipeinter') }}" role="button"
+                           aria-pressed="true">Ajouter des équipes</a>
+
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_rne') }}" role="button"
+                           aria-pressed="true">Charger le RNE</a>
+                        <a class="dropdown-item" href="{{ path('maj_profsequipes') }}" role="button"
+                           aria-pressed="true">Mises à jour nll tables profs</a>
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_equipe_id_rne') }}"
+                           role="button" aria-pressed="true">Mise à jour id_rne</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href=" {{ path('photos_deposephotos', {concours:'inter'}) }}"
+                           role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
+                        <a class="dropdown-item" href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button"
+                           aria-pressed="true">Déposer des photos des épreuves nationales</a>
+
+                        <a class="dropdown-item" href="{{ path('fichiers_choix_centre') }}" role="button">Liste des
+                            fichiers CIA</a>
+                        <a class="dropdown-item btn btn-outline-primary"
+                           href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true"> Liste des mémoires et résumés CN</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_cree_equipes') }}" role="button"
+                           aria-pressed="true">Remplissage de la table Equipes</a>
+
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_jures') }}" role="button"
+                           aria-pressed="true">Remplissage de la table Jures</a>
+
+                        <a class="dropdown-item" href="{{ path('setlastvisit') }}" role="button" aria-pressed="true">Fixer
+                            la date de lastVisit</a>
+                    </div>
+
+                    {% elseif is_granted('ROLE_COMITE') %}
+
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pages Comité
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                        <a class="dropdown-item" href="{{ path('admin') }}" role="button" aria-pressed="true">Gérer les
+                            équipes et leurs documents</a>
+                        {# <a  class="dropdown-item" href="{{ path('easyadmin/docequipes' ) }}"role="button" aria-pressed="true">Liste des équipes</a> #}
+                        <a class="dropdown-item" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
+                           role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
+                        <a class="dropdown-item" href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button"
+                           aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                        <a class="dropdown-item" href="{{ path('fichiers_choix_centre') }}" role="button"
+                           aria-pressed="true">Liste des fichiers et vidéos des CIA</a>
+                        <a class="dropdown-item btn btn-outline-primary"
+                           href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true"> Liste des mémoires et résumés CN</a>
+                    </div>
+
+
+                    {% elseif is_granted('ROLE_ORGACIA') %}
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Les équipes du centre de {{ app.user.centrecia.centre }}</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                        <a class="dropdown-item" href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}"
+                           role="button">Les équipes et leurs documents</a>
+                    </div>
+
+                    {% elseif is_granted('ROLE_JURYCIA') %}
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Centre de {{ app.user.centrecia.centre }}</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu4">
+                        <a class="dropdown-item" href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}"
+                           role="button">Liste des fichiers</a>
+                    </div>
+                    {% elseif is_granted('ROLE_JURY') %}
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Jury
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu5">
+
+                        <a class="dropdown-item btn btn-outline-primary"
+                           href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true"> Voir les mémoires</a>
+                        <a class="dropdown-item btn btn-outline-primary" href="{{ path('cyberjury_accueil') }}"
+                           role="button" aria-pressed="true"> Accueil du Jury</a>
+                    </div>
+                    {% elseif is_granted('ROLE_PROF') %}
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Mon espace
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu5">
+
+                        <a class="dropdown-item btn btn-outline-primary"
+                           href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}" role="button"
+                           aria-pressed="true">Mes équipes </a>
+
+                        {% if  date()<= app.session.get('datelimphotoscia') %}
+                            <a class="dropdown-item" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
+                               role="button" aria-pressed="true">Déposer des photos des épreuves interacadémiques</a>
+                            <a class="dropdown-item"
+                               href="{{ path('photos_gestion_photos',{infos:'cia-'~app.session.get('edition').id~'-prof'}) }}"
+                               role="button" aria-pressed="true">Gérer les photos des épreuves interacadémiques de
+                                la {{ app.session.get('edition').ed }}<sup>e</sup></a>
+                        {% endif %}
+                        {% if (date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn')) %}
+                            <a class="dropdown-item" href="{{ path('photos_deposephotos',{concours:'cn'}) }}"
+                               role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                            <a class="dropdown-item"
+                               href="{{ path('photos_gestion_photos',{infos:'national-'~app.session.get('edition').id~'-prof'}) }}"
+                               role="button" aria-pressed="true">Gérer les photos des épreuves nationales de
+                                la {{ app.session.get('edition').ed }}<sup>e</sup></a>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% if date()>= app.session.get('datelivredor') and  date()<= app.session.get('datelimlivredor') %}
+                <div class="btn-group">
+                    <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu7"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Remplir les livres d'or
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu6">
+                        <a class="dropdown-item btn btn-outline-primary"
+                           href="{{ path('livredor_saisie_texte',{id : 'prof-'~app.user.id}) }}" role="button"
+                           aria-pressed="true">Remplir le livre d'or des professeurs</a>
+                        {% if  date()<= app.session.get('datelimlivredoreleve') %}
+                            <a class="dropdown-item btn btn-outline-primary" href="{{ path('livredor_choix_equipe') }}"
+                               role="button" aria-pressed="true">Remplir le livre d'or des élèves</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% endif %}
+
+            {% if date()<=app.session.get('edition').dateclotureinscription %}
+                <li><a href="{{ path('inscrire_equipe',{idequipe:'x'}) }}" class="btn btn-primary" role="button"
+                       aria-pressed="true">Inscrire une équipe(avant le 17-10-21 22 h)</a></li>
+            {% endif %}
+            {% if date()>app.session.get('edition').concourscia %}
+                <li><a href="{{ path('archives_fichiers_photos',{choix:1}) }}" class="btn btn-primary" role="button"
+                       aria-pressed="true">Les equipes de la {{ app.session.get('edition').ed }}<sup>e</sup> édition</a>
+                </li>
+
+                {#   {% if is_granted('ROLE_COMITE')%}
+            <li><a href="{{ path('inscriptionscn') }}"  class="btn btn-primary" role="button" aria-pressed="true">Pour s'inscrire à la journée du 29 janvier 2022</a></li>
+        {% endif %} #}
+            {% endif %}
+            <li><a href="{{ path('archives_fichiers_photos',{choix:0}) }}" class="btn btn-primary" role="button"
+                   aria-pressed="true">Les éditions passées</a></li>
+
+            {% if (date()>app.session.get('edition').concourscn) or (is_granted('ROLE_COMITE')) %}
+                {% if is_granted('ROLE_COMITE')  or  is_granted('ROLE_SUPER_ADMIN') %}
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu7"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Le livre d'or
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu7">
+                            {# <a class="dropdown-item" href="{{path('livredor_choix_edition',{action:'editer'})}}" class="btn btn-primary" role="button" aria-pressed="true">Editer les livres d'or</a> #}
+                            <a class="dropdown-item btn btn-primary"
+                               href="{{ path('livredor_saisie_texte',{id : 'comite-'~app.user.id}) }}" role="button"
+                               aria-pressed="true">Remplir le livre d'or du comite</a>
+                        </div>
+                    </div>
+                {% elseif  is_granted('ROLE_JURY') %}
+
+                    <li><a href="{{ path('livredor_saisie_texte',{id : 'jury-'~app.user.id}) }}" class="btn btn-primary"
+                           role="button" aria-pressed="true">Remplir le livre d'or du jury</a></li>
+                {% endif %}
+
+            {% endif %}
+            {# <li><a href="https://forum.olymphys.fr/" class="btn btn-primary" role="button" aria-pressed="true">FORUM</a></li> #}
+        </ul>
+    </nav>
+    {#
+    <i><font color="red">Nous effectuons des travaux sur le site pour le préparer pour le concours national, il se peut que vous rencontriez parfois des dysfonctionnements. Veuillez nous en excuser.</font></i>
+    <font color='blue'> Le dépôt des documents n'est pas encore actif.<br></font> #}
+
+{% endblock %}

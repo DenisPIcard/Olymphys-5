@@ -1,0 +1,8 @@
+{# templates/bundles/EasyAdminBunble/photos.html.twig #}
+
+{% set array_fichier=field.value|split('-') %}
+{% set edition=array_fichier[0] %}
+<a href="{{ asset('odpf/odpf-archives/'~edition~'/photoseq/'~field.value) }}" target="_blank">
+    <center><img src="{{ asset('odpf/odpf-archives/'~edition~'/photoseq/thumbs/'~field.value) }}"
+                 alt="{{ field.value }}" class="img-thumbnail img-fluid"></center>
+</a>

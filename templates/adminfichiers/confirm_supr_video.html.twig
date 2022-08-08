@@ -1,0 +1,45 @@
+{% extends "base1.html.twig" %}
+{% block title %} Suppression d'une vidéo{% endblock %}
+{% block titre3 %}  Suprrimer  la vidéo de l'équipe :
+
+    {% if equipe.lettre  is defined %}
+        {{ equipe.lettre }}
+    {% else %}
+
+        {{ equipe.numero }}
+
+    {% endif %}
+    {{ equipe.titreProjet }}
+{% endblock %}
+
+{% block navigation %}
+
+{% endblock %}
+
+{% block body %}
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-danger" role="alert"> {{ message }}</div>
+    {% endfor %}
+
+
+    {{ form_start(form) }}
+
+    <div class="form-group row">
+        <div class="coll">
+            {{ form_row(form.OUI) }}
+        </div>
+
+        <div class="coll-10">
+            {{ form_row(form.NON) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+
+    {#
+    <div class="row">
+        <div class="col-sm-10" >form_row(form.OUI)</div>
+        <div class="col-sm-2" >form_row(form.NON)</div>
+    </div> #}
+
+{% endblock %}

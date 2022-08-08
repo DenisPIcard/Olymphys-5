@@ -1,0 +1,102 @@
+{# templates/Core/olympiades.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{ titre }} - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/odpf-olympiades.css') }}">
+{% endblock %}
+
+{% block contenu %}
+    <div id="wrapper">
+    <div class="container bg-white">
+        {% include 'core/odpf-menu-haut.html.twig' %}
+        {% include 'core/odpf-en-tete-ppal.html.twig' %}
+
+        <div class="row ">
+            <div class="col-md-12 col-lg-8">
+                <h1 class="titre-ppal">
+                    Les Olympiades <br>de Physique France
+                </h1>
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        <div class="menugche">
+                            <nav>
+                                <ul class="nav flex-column">
+
+                                    <li class="nav-item {% if choix == 'c_est_quoi' %} active {% endif %}"><a
+                                                href="{{ path('core_pages', {choix:'c_est_quoi'}) }}" class="nav-link">C'est
+                                            quoi ?</a></li>
+                                    <li class="nav-item {% if choix == 'comment_ca_se_passe' %} active {% endif %}"><a
+                                                href="{{ path('core_pages' ,{choix:'comment_ca_se_passe'}) }}"
+                                                class="nav-link">Comment ça se passe ?</a></li>
+                                    <li class="nav-item {% if choix == 'pourquoi_participer' %} active {% endif %}"><a
+                                                href="{{ path('core_pages' ,{choix:'pourquoi_participer'}) }}"
+                                                class="nav-link">Pourquoi participer ?</a></li>
+                                    <li class="nav-item {% if choix == 'les_aides' %} active {% endif %}"><a
+                                                href="{{ path('core_pages' ,{choix:'les_aides'}) }}" class="nav-link">Les
+                                            aides ?</a></li>
+                                    <li class="nav-item {% if choix == 'les_recompenses' %} active {% endif %}"><a
+                                                href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}"
+                                                class="nav-link">Les récompenses ?</a></li>
+                                    <li class="nav-item {% if choix == 'qui_organise' %} active {% endif %}"><a
+                                                href="{{ path('core_pages' ,{choix:'qui_organise'}) }}"
+                                                class="nav-link">Qui organise ?</a></li>
+                                    <li class="nav-item {% if choix == 'la_presse_en_parle' %} active {% endif %}"><a
+                                                href="{{ path('core_pages' ,{choix:'la_presse_en_parle'}) }}"
+                                                class="nav-link">La presse en parle</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 col-lg-8">
+                        <div class="col-centre">
+                            <h2 class="sous-titre">{{ titre|raw }}</h2>
+                            <div class="contenu">
+                                {{ texte|raw }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-4 pr-0">
+                <img src="{{ asset('odpf/odpf-images/colright-illustration-01.png') }}" alt="image_en_tete"
+                     style="width:100%; height:auto;">
+
+                <div class="bloc-objectifs">
+                    <div class="titre">
+                        <p>{{ titre_objectifs|raw }}</p>
+                    </div>
+                    <div class="contenu">
+                        {{ texte_objectifs|raw }}
+                    </div>
+                </div>
+                <div class="bloc-galerie">
+                    <p class="titre">
+                        Galerie
+                        <a href="#" class="btn-show"></a>
+                    </p>
+                    <div class="diapo">
+                        {{ include('OdpfAdmin/carousel.html.twig') }}
+                        {# <img src="{{ asset( image|raw )}}" alt="{{ alt_image|raw }}" height="'auto" width="100%">
+                        <span class="arwl"><a href="#"></a></span>
+                        <span class="arwr"><a href="#"></a></span>
+                        <div style="clear:both;"></div>
+                        <div class="diapo-description">
+                        <div class="wrap">{{ descr_image }}</div>
+                        </div> #}
+                    </div><!--diapo-->
+
+                </div><!--bloc-galerie-->
+            </div><!--col dte-->
+        </div><!--row-->
+        {{ include('core/odpf-menu-complet.html.twig') }}
+        {{ include('core/odpf-pied.html.twig') }}
+
+    </div><!--wrapper-->
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base1.html.twig' %}
+{% block title %}Création de compte !{% endblock %}
+
+{% block body %}
+    {% block navigation %}
+    {% endblock %}
+    {% for message in app.session.flashbag.get('alert') %}
+        <div class="alert alert-danger"> {{ message }}</div>
+    {% endfor %}
+    <h1 class="h3 mb-3 font-weight-normal">Création d'un compte (réservé aux membres de l'équipe enseignante)</h1>
+    <h3 class="mb-3">Chaque item de ce formulaire est obligatoire</h3>
+    <div class="container">
+        {{ form_start(form) }}
+        {{ form_end(form) }}
+    </div>
+
+
+    {% block javascripts %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#user_registration_form").on('click', function () {
+                    console.log('OK')
+                });
+            });
+        </script>
+    {% endblock %}
+
+{% endblock %}

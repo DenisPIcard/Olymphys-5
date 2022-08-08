@@ -1,0 +1,10 @@
+{# templates/list_autorisations.html.twig #}
+{% extends '@!EasyAdmin/default/list.html.twig' %} 
+
+{% block content_title %}
+    <tittle>
+        Autorisations photos de la <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
+    </tittle>
+{% endblock %}
+
+

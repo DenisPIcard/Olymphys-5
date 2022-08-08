@@ -1,0 +1,80 @@
+{% extends "base.html.twig" %}
+{% block title %} Accueil {% endblock %}
+
+{% block titre3 %} Les équipes participantes {% endblock %}
+
+{% block navigation %}
+
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            {% for equipe in listEquipes %}
+                {% set lettre = equipe.lettre %}
+                <tr class="active">
+                    <th>
+                        <button type="button" class="btn btn-primary btn-lg">{{ equipe.equipeinter.lettre }}</button>
+                    </th>
+
+                    <td>
+                        <div class="container">
+                            <div class="row justify-content-md-center">
+                                <div class="col col-md-auto">
+                                    <div class="alert alert-primary" role="alert">{{ equipe.equipeinter.titreProjet }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <th>Les élèves</th>
+                    <td>
+                        {% for eleve in lesEleves[lettre] %}
+                            {% if loop.index < lesEleves[lettre]|length %}
+                                {{ eleve.prenom|title }} {{ eleve.nom|title }} ({{ eleve.classe }}),
+                            {% else %}
+                                {{ eleve.prenom|title }} {{ eleve.nom|title }} ({{ eleve.classe }})
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Les enseignants</th>
+                    <td>
+                        {% for prof in prof1[lettre] %}
+
+                            {{ prof.prenom|title }} {{ prof.nom|upper }} , mail  :  <a
+                                href="mailto:{{ prof.email }}">{{ prof.email }}</a>,  tel :  {{ prof.phone }}
+                        {% endfor %}
+                        {% for prof in prof2[lettre] %}
+                            - {{ prof.prenom|title }} {{ prof.nom|upper }} , mail : <a
+                                href="mailto:{{ prof.email }}">{{ prof.email }}</a>, tel   :  {{ prof.phone }}
+
+                        {% endfor %}
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>L'établissement</th>
+                    <td>
+                        {% for lycee in lycee[lettre] %}
+                            <i>Lycée {{ lycee.nom|title }} </i>, <b> ville : </b> {{ lycee.commune |title }}  -
+                            <b>{{ lycee.academie|upper }} </b>
+                        {% endfor %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

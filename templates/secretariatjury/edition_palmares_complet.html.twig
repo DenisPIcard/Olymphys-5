@@ -1,0 +1,109 @@
+{% extends "base1.html.twig" %}
+% block title %} Palmarès complet {% endblock %}
+
+{% block titre3 %} Palmarès complet {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Académie</th>
+                <th>Lycée, titre du projet, élèves</th>
+                <th>Professeurs</th>
+                <th colspan="2">Prix spécial - Visite de laboratoire - Prix en matériel scientifique</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for equipe in listEquipes %}
+                {% set lettre = equipe.equipeinter.lettre %}
+                <tr>
+                    {% for lycee in lycee[lettre] %}
+                        <td rowspan="4"><b>{{ lycee.academie|upper }} </b>
+                        </td>
+                        <td> Lycée {{ lycee.nom |upper }} - {{ lycee.commune |upper }} </td>
+                    {% endfor %}
+                    <td>
+                        {% for prof in prof1[lettre] %}
+                            {{ prof.prenom|title }} {{ prof.nom|upper }}
+                        {% endfor %}
+                    </td>
+                    <td
+                            {% if equipe.classement == '1er' %} class="danger"
+                            {% elseif  equipe.classement == '2ème' %} class="warning"
+                            {% else %} class="active" {% endif %} >
+
+                        <p style="color:blue">{{ equipe.classement }} prix </p>
+                    </td> {# espace insécable entre classement et prix grace à alt+espace #}
+
+                    <td
+                            {% if equipe.classement == '1er' %} class="danger"
+                            {% elseif  equipe.classement == '2ème' %} class="warning"
+                            {% else %} class="active" {% endif %} >
+                        {% if  equipe.phrase is null %}
+                        {% else %}
+
+                        <p style="color:blue">{{ equipe.phrase.phrase }} {{ equipe.phrase.liaison.liaison }} {{ equipe.phrase.prix }}</p>
+                    </td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td rowspan="2"><p style="color:red">{{ equipe.equipeinter.titreProjet }} </p></td>
+                    <td>
+                        {% for prof in prof2[lettre] %}
+                            {{ prof.prenom|title }} {{ prof.nom|upper }}
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        {% if equipe.classement == '1er' %}
+
+                        {% elseif  equipe.classement == '2ème' %}
+
+                        {% else %}
+
+                        {% endif %}
+                    </td>
+
+                    <td><b>{% if  equipe.prix is not null %}{{ equipe.prix.prix }}{% endif %}</b></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><b>Visite : </b></td> {# espace insécable entre Viste et : grace à alt+espace #}
+                    {% if equipe.visite is not null %}
+                        <td><b>{{ equipe.visite.intitule }}</b></td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    {% set lettre = equipe.equipeinter.lettre %}
+                    <td>
+                        {% for eleve in lesEleves[lettre] %}
+                            {% if loop.index < lesEleves[lettre]|length %}
+                                {{ eleve.prenom|title }} {{ eleve.nom|upper }},
+                            {% else %}
+                                {{ eleve.prenom|title }} {{ eleve.nom|upper }}
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </td>
+                    <td></td>
+                    {% if equipe.cadeau != null %}
+                        <td colspan="2"><i>{{ equipe.cadeau.contenu }} offert par {{ equipe.cadeau.fournisseur|upper }}
+                                d'une valeur de {{ equipe.cadeau.montant }} euros.</i></td>
+                    {% else %}
+                        <td colspan="2"></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+{% endblock %}

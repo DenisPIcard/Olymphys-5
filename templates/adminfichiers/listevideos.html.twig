@@ -1,0 +1,86 @@
+<div class="row">
+    <div class="col-12">
+        <hr>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col"><h5>Vidéos de l'équipe</h5>
+    </div>
+</div>
+<div class="row text-center text-white bg-dark">
+
+    <div class="col-3 ">
+        Nom de la vidéo
+    </div>
+    <div class="col-7">
+        Lien
+    </div>
+    {% if role=="ROLE_PROF" %}
+        <div class="col-1">
+            Modifier
+        </div>
+        <div class="col-1">
+            Supprimer
+        </div>
+    {% endif %}
+</div>
+<div class="row ">
+    <div class="col-3 text-center">
+        {% if role=='ROLE_PROF' %}
+            Nouvelle vidéo :  <a
+                href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'nouvelle-'} ) }}" ">
+            <button type="button" title="Nouvelle vidéo"><i class="fa fa-plus"></i></button></a></td>
+        {% endif %}
+    </div>
+    <div class="col-7"></div>
+    {% if (role=='ROLE_PROF' ) %}
+        <div class="col-1">
+
+        </div>
+        <div class="col-1">
+
+
+        </div>
+    {% endif %}
+</div>
+{% if listevideos !=null %}
+    {% for video in listevideos %}
+        <div class="row text-center">
+            <div class="col-3">
+                {{ video.nom }}
+                <div class="majdate">({{ video.updatedAt|date('d-m-Y H:i:s') }})</div>
+            </div>
+
+            <div class="col-7">
+                <a href="{{ video.lien }}" target="blank">{{ video.lien }}</a>
+            </div>
+            {% if (role=='ROLE_PROF' ) %}
+                <div class="col-1 align-self-end">
+                    <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'modifier-'~video.id} ) }}"
+                    ">
+                    <button type="button" title="Modifier"><i class="fas fa-edit"></i></button>
+                    </a>
+                </div>
+                <div class="col-1 align-self-end">
+                    <button type="button" id="{{ video.id }}" data-toggle="modal" data-target="#modalconfirm"
+                            data-idvideo="{{ video.id }}" title="Supprimer"><i class="fas fa-trash"></i></button>
+                    </td>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="row ">
+        <div class="col">
+            <div class="alert alert-light">
+                Cette équipe n'a pas encore déposé de vidéo.
+            </div>
+        </div>
+    </div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <hr>
+    </div>
+</div>

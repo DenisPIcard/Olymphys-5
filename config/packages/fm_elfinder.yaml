@@ -1,0 +1,40 @@
+fm_elfinder:
+  assets_path: /assets
+  instances:
+    default:
+      locale: fr # Langue
+      editor: ckeditor # Editeur utilisé
+      fullscreen: true # Taille d'affichage
+      theme: smoothness # Thème à utiliser
+      #path_prefix : 'public'
+      where_is_multi:
+        roots: 0
+      multi_home_folder: true
+      folder_separator: "|"
+      connector:
+        debug: false # Désactive le débug
+        roots:
+          uploads:
+            show_hidden: false # Masque les fichiers cachés
+            driver: LocalFileSystem # Pilote des fichiers
+            path: 'odpf/'
+            #sur le site ajouter url : '..'
+            upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG','application/pdf' ] # Fichiers autorisés
+            upload_deny: [ 'all' ] # Fichiers interdits
+            upload_max_size: 100M # Taille maximum
+
+
+    form:
+      locale: fr # defaults to current request locale
+      editor: form # other choices are tinymce or simple, and form
+      fullscreen: true # defaults true, applies to simple and ckeditor editors
+      connector:
+        debug: false # defaults to false
+        roots: # at least one root must be defined
+          uploads:
+            driver: LocalFileSystem
+            path: 'odpf/'
+            #sur le site ajouter url : '..'
+            upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg', 'image/JPG','application/pdf' ]
+            upload_deny: [ 'all' ]
+            upload_max_size: 10M

@@ -1,0 +1,20 @@
+<div class="well">
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    {{ form_errors(form) }}
+
+    {% for equipe in ListEquipes %}
+        <div class="form-group">
+            {{ form_label(form.equipe.equipeinter.lettre, "Lettre ",{'label_attr': {'class': 'col-sm-8 control-label'}} ) }}
+            {{ form_errors(form.l) }}
+        </div>
+
+    {% endfor %}
+
+    <div>
+        {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-primary'}}) }}
+
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+
+</div>

@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block form_row %}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+
+    {{- form_label(form, null, {
+        label_attr: { class: 'sr-only' }
+    }) -}}
+    {{- form_errors(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_help(form) -}}
+
+{% endblock %}
+{% block title %}Profil{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}
+ {% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.username }}</h1>
+            Vous souhaitez changer votre mot de passe <a href="{{ path('forgotten_password') }}">Cliquez ici</a>
+            <br/><br/>
+            {{ form_start(form, {
+                'attr': {'class': 'form-signin'}
+            }) }}
+            {{ form_row(form.nom, {
+                attr: { placeholder: 'Nom' }
+            }) }}
+            {{ form_row(form.prenom, {
+                attr: { placeholder: 'Prénom' }
+            }) }}
+            {{ form_row(form.adresse, {
+                attr: { placeholder: 'Votre adresse:numéro + rue + lieu-dit'}
+            }) }}
+            {{ form_row(form.ville, {
+                attr: { placeholder: 'Votre ville' }
+            }) }}
+            {{ form_row(form.code, {
+                attr: { placeholder: 'Votre code postal' }
+            }) }}
+            {{ form_row(form.phone, {
+                attr: { placeholder: 'Votre téléphone, portable de préférence' }
+            }) }}
+            {{ form_row(form.rne, {
+                attr: { placeholder: 'Le RNE de votre établissement, si vous inscrivez une équipe' }
+            }) }}
+
+
+            {{ form_widget(form) }}
+            <button name="register" class="btn btn-lg btn-primary btn-block" type="submit">
+                Valider les modifications
+            </button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% endblock %}

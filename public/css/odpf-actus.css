@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: url('../odpf/odpf-images/fond-actus.png') no-repeat center fixed;
+    background-size: cover;
+}
+
+.col-centre {
+    float: left;
+    margin: 0 15px 0 10px;
+    width: auto;
+    z-index: 4;
+}
+
+.en-tete {
+    padding: 144px 20px 40px;
+    float: right;
+}
+
+.col-centre .liste-actus {
+    padding: 0 0 40px;
+}
+
+.paginactus input.input-gotopage {
+    width: 78px;
+    height: 24px;
+    border: 1px solid #111a21;
+    text-align: center;
+    font-size: 11px;
+    font-family: Oxygen, sans-serif;
+    text-transform: uppercase;
+    color: #111a21;
+    float: left;
+    margin: 4px 10px 0 0;
+}
+
+.paginactus a {
+    color: #b1191d;
+}
+
+.bouton-debut {
+    background: url('../odpf/odpf-images/pagination-fleche-debut.png') no-repeat left center;
+    padding: 0 10px 0 18px;
+}
+
+.paginactus span.bouton-precedent {
+    background: url('../odpf/odpf-images/pagination-fleche-prec.png') no-repeat left center;
+    padding: 0 10px 0 18px;
+}
+
+.paginactus span.bouton-suivant {
+    background: url('../odpf/odpf-images/pagination-fleche-suiv.png') no-repeat left center;
+    padding: 0 10px 0 18px;
+}
+
+.paginactus span.bouton-fin {
+    background: url('../odpf/odpf-images/pagination-fleche-dernier.png') no-repeat left center;
+    padding: 0 10px 0 18px;
+}
+
+.paginactus span.pagenav {
+    color: #d6dbdf;
+}
+
+.paginactus .pagenav {
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 11px;
+    color: #111a21;
+}

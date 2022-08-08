@@ -1,0 +1,84 @@
+vich_uploader:
+  db_driver: orm
+
+  mappings:
+
+    fichiersequipes:
+      uri_prefix: '%app.path.odpf_archives%'
+      upload_destination: '%app.path.odpf_archives%'
+      inject_on_load: false
+      delete_on_update: true
+      delete_on_remove: true
+      directory_namer:
+        service: vich_uploader.namer_directory_property
+        options: { property: 'directoryName' }
+      namer:
+        service: vich_uploader.namer_property
+        options: { property: 'personalNamer' }
+    odpfFichierspasses:
+      uri_prefix: '%app.path.odpf_archives%'
+      upload_destination: '%app.path.odpf_archives%'
+      inject_on_load: false
+      delete_on_update: true
+      delete_on_remove: true
+      directory_namer:
+        service: vich_uploader.namer_directory_property
+        options: { property: 'directoryName' }
+      namer:
+        service: vich_uploader.namer_property
+        options: { property: 'personalNamer' }
+
+    photos:
+      uri_prefix: '%app.path.odpf_archives%'
+      upload_destination: '%app.path.odpf_archives%'
+      inject_on_load: true
+      delete_on_update: true
+      delete_on_remove: true
+      namer:
+        service: vich_uploader.namer_property
+        options: { property: 'personalNamer' }
+      directory_namer:
+        service: vich_uploader.namer_directory_property
+        options: { property: 'directoryName' }
+
+
+    docequipes:
+      uri_prefix: '%app.path.docequipes%'
+      upload_destination: '%app.path.docequipes%'
+      inject_on_load: true
+      delete_on_update: true
+      delete_on_remove: true
+
+    odpfImagescarousels:
+      uri_prefix: 'odpf/odpf-images/imagescarousels'
+      upload_destination: 'odpf/odpf-images/imagescarousels'
+      inject_on_load: true
+      delete_on_update: true
+      delete_on_remove: true
+      namer:
+        service: vich_uploader.namer_property
+        options: { property: 'personalNamer' }
+
+    odpfDocuments:
+      uri_prefix: '%app.path.odpf_documents%'
+      upload_destination: '%app.path.odpf_documents%'
+      inject_on_load: true
+      delete_on_update: true
+      delete_on_remove: true
+
+    odpfLogos:
+      uri_prefix: '%app.path.odpf_logos%'
+      upload_destination: '%app.path.odpf_logos%'
+      inject_on_load: true
+      delete_on_update: true
+      delete_on_remove: true
+      namer:
+        service: vich_uploader.namer_property
+        options: { property: 'personalNamer' }
+
+
+  #mappings:
+  #    products:
+  #        uri_prefix: /images/products
+  #        upload_destination: '%kernel.project_dir%/public/images/products'
+

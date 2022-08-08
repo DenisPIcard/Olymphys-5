@@ -1,0 +1,124 @@
+{# templates/Core/odpf-pages-editions.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{ titre }} - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if categorie.categorie == 'editions' %}
+        <link rel="stylesheet" href="{{ asset('css/odpf-editions.css') }}">
+    {% endif %}
+{% endblock %}
+
+{% block contenu %}
+    <div id="wrapper">
+    <div class="container bg-white">
+        {% include 'core/odpf-menu-haut.html.twig' %}
+        {% include 'core/odpf-en-tete-ppal.html.twig' %}
+
+        <div class="row ">
+            <div class="col-md-12 col-lg-9">
+                <h1 class="titre-ppal">
+                    Revivez les <br>éditions passées
+                </h1>
+
+
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                        <div class="menugche">
+                            <nav>
+
+                                <ul class="nav flex-column">
+                                    <li class="nav-item {% if choice == 'editions' %} active {% endif %}"><a
+                                                class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a>
+                                    </li>
+                                    {#  <li class="nav-item {% if choice == 'les_memoires' %} active {% endif %}"><a class="nav-link" href="#">Les mémoires</a></li>
+                                    <li class="nav-item {% if choice == 'les_videos' %} active {% endif %}"><a class="nav-link" href="#">Les vidéos</a></li> #}
+                                </ul>
+                                <img alt="{{ edition_affichee.nomParrain }}"
+                                     src="{{ asset('odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain) }}"
+                                     class="img-thumbnail">
+                                <div class="smallsize text-center">{{ edition_affichee.nomParrain }}<br>
+                                    {{ edition_affichee.titreParrain }}
+                                </div>
+
+                                <p><img alt="affiche"
+                                        src="{{ asset('odpf-archives/'~edition_affichee.edition~'/affiche/'~edition_affichee.affiche) }}"
+                                        class="img-thumbnail"></p>
+
+
+                            </nav>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-9 col-lg-9">
+                        <div class="col-centre2">
+                            <div class="form-group" style="border: #2c3034;">
+                                <form method="GET" action="{{ path('odpf_editionspassees_editions') }}" id="form1"
+                                      name="form1">
+
+                                    <label for="sel"></label>
+
+                                    <select class="form-control form-control-lg" type="text" id="sel" name="sel">
+                                        <option value="{{ edition_affichee.id }}" selected>{{ edition_affichee.pseudo }}
+                                            e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
+                                        {% for edition in editions %}
+                                            {% if edition !=edition_affichee %}
+                                                <option value="{{ edition.id }}">{{ edition.pseudo }}e édition -
+                                                    Année {{ edition.annee|slice(5,4) }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="contenu">
+                                {{ texte|raw }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-8 col-lg-3 pr-0"><!--col dte-->
+
+                <img src="{{ asset('odpf/odpf-images/colright-illustration-03.png') }}" alt="image_en_tete"
+                     style="width:100%; height:auto;">
+
+
+                <div class="bloc-objectifs">
+                    <div class="titre">
+                        <p>{{ titre_objectifs|raw }}</p>
+                    </div>
+                    <div class="contenu">
+                        {{ texte_objectifs|raw }}
+                    </div>
+                </div>
+                {% if article.carousel != null %}
+                    {{ include('OdpfAdmin/carousel.html.twig') }}
+                {% endif %}
+            </div><!--col dte-->
+
+
+        </div><!--row-->
+
+        {{ include('core/odpf-menu-complet.html.twig') }}
+        {{ include('core/odpf-pied.html.twig') }}
+
+    </div><!--wrapper-->
+    {# {% block javascripts %}
+
+        {{ parent() }}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#form1").on('change', function () {
+                    $("#form1").submit();
+                });
+            });
+        </script>
+    {% endblock %} #}
+{% endblock %}

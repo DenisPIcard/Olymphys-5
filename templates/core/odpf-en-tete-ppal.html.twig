@@ -1,0 +1,30 @@
+<div class="row  justify-content-around">
+    <div class="ppal-pages">
+        <span class="site-logo"><a href="{{ path('core_home') }}"><img
+                        src="{{ asset('odpf/odpf-images/site-logo-285x75.png') }}" alt="logo du site"></a></span>
+        <nav class="menu-ppal">
+            <ul class="nav flex-column flex-md-row">
+                <li class="nav-item">
+                    <a class="nav-link{% if categorie=='Les actus' %} active{% endif %}"
+                       href="{{ path('core_actus', {tourn:'rien'}) }}">Actus</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if categorie=='Les Olympiades' %} active{% endif %}"
+                       href="{{ path('core_pages',{'choix': 'c_est_quoi'}) }}">Les Olympiades de Physique France</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if categorie=='Le Concours' %} active{% endif %}"
+                       href="{{ path('core_pages',{'choix': 'le_calendrier'}) }}">Le Concours {{ edition.annee }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if categorie=='editions' or choix=='equipepassee' %} active{% endif %}"
+                       href="{{ path('core_pages',{'choix': 'editions'}) }}">Revivez les éditions passées</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if categorie=='Partenaires' %} active{% endif %}"
+                       href="{{ path('core_pages',{'choix': 'mecenes'}) }}">Partenaires</a>
+                </li>
+            </ul>
+        </nav>
+    </div><!--ppal-pages_-->
+</div><!--row-->

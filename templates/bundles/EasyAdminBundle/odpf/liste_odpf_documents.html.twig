@@ -1,0 +1,6 @@
+{# templates/liste_odpf-documents.html.twig #}
+{% for message in app.session.flashbag.get('info') %}
+    <div class="alert alert-info"> {{ message }}</div>
+{% endfor %}
+
+<a href="{{ 'odpf/odpf-documents/'~  entity.instance.fichier }}" target="_blank"> {{ entity.instance.fichier }}</a>

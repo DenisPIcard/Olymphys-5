@@ -1,0 +1,43 @@
+{% extends "base1.html.twig" %}
+{% block title %} Préparation {% endblock %}
+{% block titre3 %}  {{ titre }} {% endblock %}
+
+
+
+{% block body %}
+    <div class='well'>
+        {{ form_start(form) }}
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+        <div class="form-group col-md-6">
+
+
+            {{ form_row(form.fichier,{  'class':'custom-file-input'}) }}
+        </div>
+
+        <div class="form-group col-md-6">
+            {{ form_widget(form.save, { 'label': 'Choisir ce fichier' }) }}
+        </div>
+        {{ form_end(form) }}
+
+
+        {# {{ form(form) }} #}
+
+    </div>
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        {# <script src="./coverage/bs-custom-file-input.js"></script> #}
+        <script>
+            {# $(document).ready(function () {
+                bsCustomFileInput.init()
+            }) #}
+            bsCustomFileInput.init()
+        </script>
+    {% endblock %}
+
+
+
+
+
+{% endblock %}

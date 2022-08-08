@@ -1,0 +1,40 @@
+{% extends "base1.html.twig" %}
+{% block title %} Édition des prix {% endblock %}
+
+{% block titre3 %} Édition des prix {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+{% block body %}
+
+    <div class="container">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Lettre</th>
+                <th>Titre projet</th>
+                <th>Prix</th>
+                <th>Intitulé</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            {% for equipes in listEquipes %}
+                <tr
+                        {% if equipes.classement == '1er' %} class="danger" {% elseif  equipes.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
+                >
+                    <th><span class="btn btn-primary btn-lg">{{ equipes.lettre }} </span></th>
+                    <td>{{ equipes.titreProjet }}</td>
+                    <td>{{ equipes.classement }} prix</td>
+                    <td>{% if  equipes.prix is not null %}{{ equipes.prix.prix }}{% endif %}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

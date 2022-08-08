@@ -1,0 +1,47 @@
+<span class="split-large"></span>
+<div class="menu-bas">
+    <ul>
+        <li><a href="{{ path('core_actus', {tourn:'rien'}) }}">Actus</a>
+        </li>
+        <li><a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">Les olympiades de Physique France</a>
+            <ul>
+                <li><a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">C'est quoi ?</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'comment_ca_se_passe'}) }}">Comment ça se passe ?</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'pourquoi_participer'}) }}">Pourquoi participer ?</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'les_aides'}) }}">Les aides</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}">Les récompenses</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'qui_organise'}) }}">Qui organise ?</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'la_presse_en_parle'}) }}">La presse en parle</a></li>
+            </ul>
+        </li>
+        <li><a href="{{ path('core_pages' ,{choix:'le_calendrier'}) }}">Le
+                concours {{ app.session.get('edition').annee }}</a>
+            <ul>
+                <li><a href="{{ path('core_pages' ,{choix:'inscriptions'}) }}">Inscrire une équipe !</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'le_calendrier'}) }}">Le calendrier</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'les_equipes'}) }}">Les équipes</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'la_carte_des_equipes'}) }}">Les cartes des équipes</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Les Concours
+                        Interacadémiques</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Les épreuves nationales</a></li>
+            </ul>
+        </li>
+        <li><a href="{{ path('core_pages',{choix:'editions'}) }}">Revivez les Editions passées</a>
+            <ul>
+                <li><a href="{{ path('core_pages',{choix:'editions'}) }}">Les éditions</a></li>
+                {#  <li><a href="#">Les mémoires</a></li>
+
+                <li><a href="{{ path('core_pages' ,{choix:'les_videos'}) }}">Les vidéos</a></li> #}
+            </ul>
+        </li>
+        <li><a href="{{ path('core_pages', {choix:'mecenes'}) }}">Partenaires</a>
+            <ul>
+                <li><a href="{{ path('core_pages', {choix:'mecenes'}) }}">Nos mécènes</a></li>
+                <li><a href="{{ path('core_pages' ,{choix:'donateurs'}) }}">Nos donateurs</a></li>
+            </ul>
+        </li>
+        {# <li><a href="#">Espace Presse</a></li>
+        <li><a href="#">Nos liens</a></li> #}
+    </ul>
+</div>
+

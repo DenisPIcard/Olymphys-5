@@ -1,0 +1,41 @@
+{% extends "base1.html.twig" %}
+{% block title %} Attribution des prix {% endblock %}
+
+{% block titre3 %} Attribution des {{ NbrePrix }} {{ niveau }} prix {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        <table>
+            {% for form in formtab %}
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+                {{ form_start(form) }}
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                    <tr>
+                        <td>
+                            <div class="form-row">
+                                <div class='form-col'>
+                                    {{ form_row(form.Enregistrer) }}
+                                </div>
+
+                                <div class='form-col'>
+                                    {{ form_row(form.Effacer) }}
+                                </div>
+                                <div class='form-col'>
+                                    {{ form(form) }}
+                                </div>
+                            </div>
+                            <hr>
+                        </td>
+                    </tr>
+
+                </div>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

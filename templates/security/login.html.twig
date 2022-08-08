@@ -1,0 +1,45 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+
+    <h1> Connexion </h1>
+
+    <form class="form-signin" method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        <h1 class="h3 mb-3 font-weight-normal">Connectez vous</h1>
+        <label for="inputUsername" class="sr-only">Pseudo</label>
+        <input autofocus class="form-control" id="inputUsername" name="_username" placeholder="Pseudo" required>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="_password" id="inputPassword" class="form-control" placeholder="Mot de Passe"
+               required>
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" name="_remember_me"> Se rappeler de moi
+            </label>
+        </div>
+        <input name="_csrf_token" type="hidden"
+               value="{{ csrf_token('authenticate') }}"
+        >
+        <button class="btn btn-lg btn-primary btn-block" type="submit">
+            Se connecter
+        </button>
+
+
+    </form>
+    <div class="row">
+        <div class="col text-center">
+            <a href="{{ path('forgotten_password') }}">Mot de passe oublié</a>
+        </div>
+    </div>
+    {#   <a href="{{path('register')}}" class="btn btn-primary" type="submit">
+            Je n'ai pas de compte
+        </a> #}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base1.html.twig" %}
+
+
+
+{% block title %} Choix des {{ type_fichier_lit[num_type_fichier] }}s{% endblock %}
+{% block titre3 %} Choisir les {{ type_fichier_lit[num_type_fichier] }}s{% endblock %}
+
+{% if num_type_fichier==3 %}
+    {% set type_fichier = 'presentation' %}
+{% endif %}
+
+
+{% block body %}
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-info"> {{ message }}</div>
+    {% endfor %}
+    
+
+  {% for edition in editions %}
+<h2>La {{ edition.ed }}<sup>e</sup> édition </h2>
+{% if num_type_fichier != 3 %}
+<li><a class="button"
+       href="{{ path('fichiers_voirfichiers',{editionId_concours : edition.id~'-cia-'~num_type_fichier}) }}">Concours
+        interacadémiques</a>
+    {% endif %}
+<li><a class="button"
+       href="{{ path('fichiers_voirfichiers',{editionId_concours : edition.id~'-cn-'~num_type_fichier}) }}">Concours
+        national</a>
+    <hr>
+    {% endfor %}
+
+
+    <div class="well">
+
+        <center><a href="{{ path('core_home') }}">Retour à la page d'accueil</a></center>
+
+    </div>
+
+
+    {% block javascripts %}
+
+
+
+
+    {% endblock %}
+
+
+
+    {% endblock %}
+
+

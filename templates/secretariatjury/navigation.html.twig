@@ -1,0 +1,124 @@
+<button type="button" class="btn btn-outline-primary btn-lg btn-block " style="width: auto">
+    {# <i class="fas fa-user"></i> #}
+    {{ app.user.useridentifier }}
+</button>
+
+
+<nav class="navbar navbar-default" style="padding-left: 0">
+
+    <ul class="dropdown" style="list-style-type:none;padding-left: 0 ">
+        <li>
+            <button class="fas fa-child btn btn-outline btn-sm btn-block dropdown-toggle" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Accueil du Jury
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ path('secretariatjury_accueil_jury') }}">Accueil du Jury</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_vueglobale') }}">Vue Globale</a>
+            </div>
+        </li>
+        <li>
+            <button class="fas fa-leaf btn btn-outline btn-sm btn-block dropdown-toggle" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Classement des équipes
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ path('secretariatjury_classement') }}">Classement des équipes (total
+                    des points décroissant)</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_lesprix') }}">Les Prix</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_approche') }}">Approche du classement </a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_classement_definitif') }}">Le classement
+                    définitif</a>
+            </div>
+        </li>
+        <li>
+            <button class="fas fa-list-alt btn btn-outline btn-sm btn-block dropdown-toggle" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Les prix
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <!-- <a class="dropdown-item" href="{{ path('secretariatjury_mise_a_zero') }}">Initialisation des tables</a> -->
+                <a class="dropdown-item" id="raz" data-toggle="modal" data-target="#modalraz"
+                   title="remise à zéro des tables">Initialisation des tables</a>
+                {# <a class="dropdown-item" href="{{ path('secretariatjury_remplissage_nbnotes_equipes') }}">remplissage des notes(pour simulation)</a>
+                #}
+                <a class="dropdown-item" href="{{ path('secretariatjury_lesprix') }}">Les Prix</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_attrib_prix', {'niveau' : 1 }) }}">Attribution
+                    des premiers prix</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_attrib_prix', {'niveau' : 2 }) }}">Attribution
+                    des deuxièmes prix</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_attrib_prix', {'niveau' : 3 }) }}">Attribution
+                    des troisièmes prix</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_edition_prix') }}">Édition des Prix</a>
+            </div>
+        </li>
+        <li>
+            <button class="fas fa-gifts btn btn-outline btn-sm btn-block dropdown-toggle" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Les récompenses
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ path('secretariatjury_edition_visites') }}">Édition des visites</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_lescadeaux') }}">Attribution des cadeaux</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_edition_cadeaux') }}">Édition des cadeaux</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_edition_phrases') }}">Édition des phrases et
+                    prix amusants</a>
+            </div>
+        </li>
+        <li>
+            <button class="fas fa-graduation-cap btn btn-outline btn-sm btn-block dropdown-toggle" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Édition du palmarès
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ path('secretariatjury_edition_palmares_complet') }}">Édition du
+                    palmarès complet</a>
+                <a class="dropdown-item" href="{{ path('secretariatjury_tableau_excel_palmares_site') }}">Fichier Excel
+                    pour le site</a>
+
+                <a class="dropdown-item" href="{{ path('secretariatjury_tableau_excel_palmares_jury') }}">Création du
+                    Fichier Excel pour la proclamation du palmarès</a>
+
+            </div>
+        </li>
+        <li><a href="{{ path('admin') }}" class="fas fa-list btn btn-outline btn-sm" role="button" aria-pressed="true">
+                Administration</a>
+        </li>
+        <li><a href="{{ path('logout') }}" class="fas fa-procedures btn btn-outline btn-sm" role="button"
+               aria-pressed="true"> Déconnexion</a>
+        </li>
+    </ul>
+</nav>
+
+<!--- Fenêtre modale  -->
+<div class="modal fade" id="modalraz" tabindex="-1"
+     role="dialog">{# pour les vidéosconfirmation d'effacement des tables prix,visite, cadeaux #}
+    <div class="modal-dialog" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la désattribution des prix </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="alert hidden" role="alert" id="modalAlert"></div>
+                <form name="confirm_form" id="confirm_form" action="{{ path('secretariatjury_mise_a_zero') }}">
+                    <input type="hidden" id="myModalID" name="myModalID" value="recipient-name"/>
+                    <p>Voulez-vous désattribuer les prix ? </p><h6 id="modal_body"></h6>
+                    <button type="submit" id="submit_form" class="btn btn-primary">OUI</button>
+
+                    <button type="button" class="btn btn-primary" style="  background-color: red; border-color: red"
+                            data-dismiss="modal">NON
+                    </button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>

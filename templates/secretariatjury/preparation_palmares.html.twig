@@ -1,0 +1,66 @@
+{% extends "base1.html.twig" %}
+{% block title %} Préparation du tableau excel remise des prix{% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block titre3 %} Préparation du palmarès pour la remise des prix{% endblock %}
+
+{% block body %}
+
+    <table class="table table-responsive">
+        {% set i=0 %}
+        {% for equipe in listequipes %}
+        <div class="jumbotron">
+
+            <div class="row">
+                {% if equipe.classement == '1er' %}
+                <div class="alert alert-primary" role="alert">
+                    {% elseif  equipe.classement == '2ème' %}
+                    <div class="alert alert-warning" role="alert">
+                        {% else %}
+                        <div class="alert alert-success" role="alert">
+                            {% endif %}
+
+                            {{ equipe.equipeinter.lettre }}
+
+                        </div>
+                        <div class="alert alert-light" role="alert">
+                            {{ equipe.prix.prix() }} attribué à l'équipe
+                            "{{ equipe.titreProjet }}" ({{ equipe.classement }} prix) du
+                            lycée {{ equipe.infoequipe.rneId.nom }} de {{ equipe.infoequipe.rneId.commune }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form(formtab[i] ) }}
+                    </div>
+                    <div class="row">
+                        {% if equipe.phrases !=null %}
+                            <div class="alert alert-warning" role="alert">
+                                {{ equipe.phrases.phrase }}  {{ equipe.liaison.liaison }} {{ equipe.phrases.prix }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="row">
+                        {% if equipe.cadeau != NULL %}
+                            <div class="alert alert-secondary" role="alert">
+                                Cadeau :
+                                {{ equipe.cadeau.contenu }} offert par {{ equipe.cadeau.fournisseur|upper }} d'une
+                                valeur de {{ equipe.cadeau.montant }} euros.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+
+                <hr>
+                {% set i= i+1 %}
+                {% endfor %}
+
+    </table>
+
+{% endblock %}

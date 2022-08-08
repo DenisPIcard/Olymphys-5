@@ -1,0 +1,61 @@
+{# templates/Admin/customizations/list_equipescia.html.twig #}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+                        {% block content_header %}
+
+                            <div class="d-flex flex-row justify-content-between align-content-center w-100">
+                                {% block page_title %}
+                                    <div class="content-header-title">
+
+                                        {% if  app.request.query.get('filters')==null %}
+                                            <h3 class="title">Equipes de la {{ app.session.get('edition').ed }}
+                                                <sup>e</sup> édition</h3>
+                                        {% endif %}
+                                        {% if  app.request.query.get('filters')!=null %}
+                                            {% if  app.request.query.get('filters').edition is defined %}
+                                                <h3 class="title">Equipes de la {{ app.session.get('titreedition').ed }}
+                                                    <sup>e</sup> édition</h3>
+
+                                            {% endif %}
+                                            {% if  app.request.query.get('filters').centre is defined %}
+                                                <h3 class="title">Centre cia
+                                                    : {{ app.session.get('titrecentre').centre }}</h3>
+
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                {% endblock %}
+                                {% block page_actions_wrapper %}
+                                    {% if  app.request.query.get('filters')==null %}
+                                        <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.session.get('edition').id~'-'~0}) }}"
+                                           type="button" class="btn btn-primary">Extraire un tableau excel des
+                                            équipes</a>
+                                        {{ parent() }}
+                                    {% endif %}
+                                    {% if  app.request.query.get('filters')!=null %}
+                                        {% if  app.request.query.get('filters').centre is defined %}
+                                            {% set idcentre= app.request.query.get('filters').centre.value %}
+                                        {% else %}
+                                            {% set idcentre= 0 %}
+                                        {% endif %}
+
+                                        {% if  app.request.query.get('filters').edition is defined %}
+
+                                            <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.request.query.get('filters').edition.value~'-'~idcentre}) }}"
+                                               type="button" class="btn btn-primary">Extraire un tableau excel des
+                                                équipes</a>
+
+
+
+                                        {% else %}
+
+                                            <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.session.get('edition').id~'-'~idcentre}) }}"
+                                               type="button" class="btn btn-primary">Extraire un tableau excel des
+                                                équipes</a>
+
+                                        {% endif %}
+                                    {% endif %}
+                                {% endblock page_actions_wrapper %}
+                            </div>
+
+                        {% endblock content_header %}

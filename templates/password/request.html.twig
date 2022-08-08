@@ -1,0 +1,17 @@
+{% extends 'base1.html.twig' %}
+ 
+{% block title %}Reset password{% endblock %}
+ 
+{% block body %}
+    <form method="post">
+
+    <h1 class="h3 mb-3 font-weight-normal">Renouveler le mot de passe</h1>
+
+    <p>Demandez à réinitialiser votre mot de passe en renseignant votre mail.</p>
+    <p>Vous recevrez un email, vous donnant un lien de retour.</p>
+
+    {{ form_start(form) }}
+    {{ form_row(form.email) }}
+    <button type="submit">Envoyer</button>
+    {{ form_end(form) }}
+{% endblock %}
