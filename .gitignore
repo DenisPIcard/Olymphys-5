@@ -26,7 +26,8 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-
+**/photoseq/
+**/fichiers/
 /public/odpf-archives/27/photoseq/
 /public/odpf-archives/28/photoseq/
 /public/odpf-archives/29/photoseq/
@@ -37,6 +38,6 @@ yarn-error.log
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-/public/odpf/odpf-archives/
+
 /public/odpf/.tmb/
 /public/recupOdpf/
