@@ -128,7 +128,7 @@ class SecurityController extends AbstractController
             $em->flush();
             $mailer->sendVerifEmail($user);
             $request->getSession()->getFlashBag()->add('success', "Un mail va vous être envoyé afin que vous puissiez finaliser votre inscription. Le lien que vous recevrez sera valide 24h.");
-
+            $this->requestStack->getSession()->set('nluser', true);
             return $this->redirectToRoute("core_home");
 
         }
