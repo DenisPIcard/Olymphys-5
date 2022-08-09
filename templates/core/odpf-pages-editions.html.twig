@@ -38,14 +38,14 @@
                                     <li class="nav-item {% if choice == 'les_videos' %} active {% endif %}"><a class="nav-link" href="#">Les vidéos</a></li> #}
                                 </ul>
                                 <img alt="{{ edition_affichee.nomParrain }}"
-                                     src="{{ asset('odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain) }}"
+                                     src="{{ asset('odpf/odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain) }}"
                                      class="img-thumbnail">
                                 <div class="smallsize text-center">{{ edition_affichee.nomParrain }}<br>
                                     {{ edition_affichee.titreParrain }}
                                 </div>
 
                                 <p><img alt="affiche"
-                                        src="{{ asset('odpf-archives/'~edition_affichee.edition~'/affiche/'~edition_affichee.affiche) }}"
+                                        src="{{ asset('odpf/odpf-archives/'~edition_affichee.edition~'/affiche/'~edition_affichee.affiche) }}"
                                         class="img-thumbnail"></p>
 
 

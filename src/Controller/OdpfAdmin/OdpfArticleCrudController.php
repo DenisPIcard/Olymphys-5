@@ -47,7 +47,8 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
+            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig')
+            ->setPaginatorPageSize(100);
     }
 
     public function configureFields(string $pageName): iterable
@@ -86,14 +87,12 @@ class OdpfArticleCrudController extends AbstractCrudController
 
 
     }
-
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
             ->add(EntityFilter::new('categorie'));
 
     }
-
     public function configureActions(Actions $actions): Actions
     {
         $actions
@@ -104,7 +103,6 @@ class OdpfArticleCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
         return $actions;
     }
-
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $context = $this->adminContextProvider->getContext();
