@@ -34,10 +34,5 @@ yarn-error.log
 /public/odpf-archives/30/photoseq/
 
 
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
 /public/odpf/.tmb/
 /public/recupOdpf/
