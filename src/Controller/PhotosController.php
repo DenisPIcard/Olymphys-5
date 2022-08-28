@@ -15,7 +15,6 @@ use datetime;
 use ImagickException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -696,5 +695,35 @@ class PhotosController extends AbstractController
 
 
     }
+
+    /**
+     *
+     *
+     * @Route("/photos/voirgalerie {infos}", name="photos_voir_galerie")
+     *
+     */
+
+    public function voirgalerie(Request $request, $infos)
+    {
+        $repositoryPhotos = $this->doctrine
+            ->getManager()
+            ->getRepository(Photos::class);
+        if (explode('-', $infos)[0] == 'equipe') {
+            $idEquipe = explode('-', $infos)[1];
+            $equipe = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['id' => $idEquipe]);
+            $photos = $repositoryPhotos->findBy(['equipepassee' => $equipe]);
+            $listeEquipes = [$equipe];
+            $edition = $equipe->getEditionspassees();
+        }
+        if (explode('-', $infos)[0] == 'edition') {
+            $idEdition = explode('-', $infos)[1];
+            $edition = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
+            $photos = $repositoryPhotos->findBy(['edition' => $edition]);
+            $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findBy(['edition' => $edition]);
+        }
+        return $this->render('photos/affiche_galerie.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition]);
+
+    }
+
 }
 
