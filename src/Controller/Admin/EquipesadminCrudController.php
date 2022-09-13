@@ -296,8 +296,9 @@ class EquipesadminCrudController extends AbstractCrudController
             //->andWhere('e.inscrite = TRUE')
             ->andWhere('e.numero < 100')
             ->orderBy('e.numero', 'ASC');
-        if ($idcentre != 0) {
+        if (($idcentre != 0) and ($idcentre != 'na')) {
             $centre = $repositoryCentre->findOneBy(['id' => $idcentre]);
+
             $queryBuilder
                 ->andWhere('e.centre =:centre')
                 ->setParameter('centre', $centre);
@@ -314,6 +315,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $numEdition = '';
         }
         $liste_equipes = $queryBuilder->getQuery()->getResult();
+
         //dd($edition);
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
@@ -437,7 +439,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $queryBuilder->andWhere('e.numero < 100');
 
 
-        if ($idcentre != 0) {
+        if (($idcentre != 0) and ($idcentre != 'na')) {
             $centre = $repositoryCentre->findOneBy(['id' => $idcentre]);
             $queryBuilder
                 ->andWhere('e.centre =:centre')
