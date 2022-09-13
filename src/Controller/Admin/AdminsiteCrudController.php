@@ -59,7 +59,7 @@ class AdminsiteCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, 'Réglage du site')
+            ->setPageTitle(Crud::PAGE_INDEX, 'Réglage des éditions')
             ->setSearchFields(['id', 'ed', 'ville', 'lieu'])
             ->setPaginatorPageSize(30);
     }
