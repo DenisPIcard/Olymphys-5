@@ -212,7 +212,19 @@
     background-color: rgba(0, 0, 0); /* Black w/ opacity */
 
 }
+@media (max-width: 420px) {
+    .modal-gal {
+        left: unset;
+        margin: auto;
+    }
 
+    .modal-content-gal {
+
+        width: 100%;
+
+
+    }
+}
 .
     /* Modal Content (Image) */
 .modal-content-gal {
@@ -236,11 +248,7 @@
     height: 50px;
 }
 
-/* Add Animation - Zoom in the Modal */
-.modal-content, #caption {
-    animation-name: zoom;
-    animation-duration: 0.6s;
-}
+
 
 @keyframes zoom {
     from {
@@ -256,7 +264,7 @@
     position: absolute;
     top: 15px;
     right: 35px;
-    color: #f1f1f1;
+    color: #960004;
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
