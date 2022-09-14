@@ -1,0 +1,200 @@
+{% extends "base1.html.twig" %}
+
+
+
+
+{% block title %}
+
+    {{ edition.edition }}   Les photos des Olympiades de Physique {% endblock %}
+
+
+
+{% block titre3 %}
+    <div class="text-center"> Les photos de la {{ edition.edition }}<sup>e</sup> édition</div></br>
+    {% if liste_equipes|length ==1 %}
+        <div class="color" style="color:blue">Equipe
+            {% if  liste_equipes[0].lettre!=null %}
+                {{ liste_equipes[0].lettre }}
+            {% else %}
+                Equipe {{ liste_equipes[0].numero }}
+            {% endif %}
+
+            : {{ liste_equipes[0].Titreprojet }} </div>
+    {% elseif liste_equipes|length >1 %}
+        <div class="color" style="color:blue">Edition {{ edition.edition }}  </div>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+    <div class="container" style="align-items: center">
+        <a class="btn-primary" href="{{ path('odpf_editionspassees_equipe', {'id':liste_equipes[0].id}) }}">Retour</a>
+        <div class="containergalerie">
+
+            <!-- Full-width images with number text -->
+            {% set i=1 %}
+            {% for photo in photos %}
+                <div class="mySlides" id="mySlides{{ i }}" style="text-align: center;display: block; height:310px">
+                    <div class="numbertext">{{ i }} / {{ photos|length }}</div>
+                    {#  <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}"> #}
+
+
+                    <img id="photo{{ i }}"
+                         src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
+                         class="img-fluid" alt="Photo indisponible" style="color : blue;height: 300px;width: auto">
+
+
+                    {% if photo.coment !='' %}
+                        <div class="text">
+                            <div style="font-size:12px">{{ photo.coment }}</div>
+                        </div>
+                    {% endif %}
+
+                    <!-- </a> -->
+                </div>
+                {% set i=i+1 %}
+            {% endfor %}
+
+
+            <!-- Next and previous buttons -->
+            <a class="carousel-control-prev" onclick="plusSlides(-1)">
+                <img src="{{ asset('odpf/odpf-images/diapo-arwl-37x37.png') }}" style="alignment: center; "/>
+                <span class="sr-only">Previous</span></a>
+            <a class="carousel-control-next" onclick="plusSlides(1)">
+                <img src="{{ asset('odpf/odpf-images/diapo-arwr-37x37.png') }}" style="alignment: center; "/>
+                <span class="sr-only">Next</span>
+            </a>
+
+            <!-- Image text -->
+            <div class="caption-container">
+                <p id="caption">
+
+                </p>
+            </div>
+        </div>
+
+        <!-- Thumbnail images -->
+        <div class="rowgalerie" style="display: flex;flex-flow: row nowrap;justify-content: center ">
+            {% set i= 1 %}
+
+            {% for photo in photos %}
+
+                <img id="image{{ i }}" class="demo cursor"
+                     src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
+                     onclick="currentSlide({{ i }})" style="width:auto;height: 100px" alt="">
+
+                {% set i=i+1 %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- The Modals -->
+    {% for i in 1..photos|length %}
+        <div id="myModal{{ i }}" class="modal">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="image{{ i }}">
+            <div id="caption{{ i }}"></div>
+        </div>
+    {% endfor %}
+
+
+    {% block javascripts %}
+
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
+        <script type="text/javascript">
+
+            <script type="text/javascript">
+                $('#carousel').carousel({
+                interval: 4000
+            })
+        </script>
+        <script type="text/javascript">
+            let slideIndex = 1;
+            showSlides(slideIndex);
+
+            // Next/previous controls
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+            }
+
+            // Thumbnail image controls
+            function currentSlide(n) {
+                showSlides(slideIndex = n);
+            }
+
+            function showSlides(n) {
+                let i;
+                let slides = document.getElementsByClassName("mySlides");
+                let dots = document.getElementsByClassName("demo");
+                let captionText = document.getElementById("caption");
+                if (n > slides.length) {
+                    slideIndex = 1
+                }
+                if (n < 1) {
+                    slideIndex = slides.length
+                }
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";
+                }
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" active", "");
+                }
+                slides[slideIndex - 1].style.display = "block";
+                dots[slideIndex - 1].className += " active";
+                captionText.innerHTML = dots[slideIndex - 1].alt;
+            }
+
+
+        </script>
+        <script type="text/javascript">
+            // Get the modal
+            let i;
+            let imgs = document.getElementsByClassName("img-fluid");
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            for (i = 1; i < imgs.length; i++) {
+                let modal
+                [i] = document.getElementById("myModal".concat(i));
+                let img
+                [i] = document.getElementById("mySlides".concat(i));
+                let modalImg
+                [i] = document.getElementById("image".concat(i));
+                let captionText
+                [i] = document.getElementById("caption".concat(i));
+                img[i].onclick = function (i) {
+
+                    modal[i].style.display = "block";
+                    modalImg[i].src = document.getElementById("image".concat(i)).src;
+                    captionText[i].innerHTML = this.alt;
+                }
+                let span = document.getElementsByClassName("close")[0];
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function (i) {
+                    modal[i].style.display = "none";
+                }
+            }
+
+            // Get the <span> element that closes the modal
+
+        </script>
+
+
+
+    {% endblock %}
+
+
+
+
+{% endblock %}

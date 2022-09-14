@@ -21,7 +21,7 @@
     "easycorp/easyadmin-bundle": "^4.0",
     "egulias/email-validator": "^3.1",
     "fabpot/goutte": "^4.0",
-    "friendsofsymfony/ckeditor-bundle": "^2.3",
+    "friendsofsymfony/ckeditor-bundle": "^2.4",
     "helios-ag/fm-elfinder-bundle": "^12.0",
     "howtomakeaturn/pdfinfo": "1.*",
     "laminas/laminas-code": "^4.3.0",
