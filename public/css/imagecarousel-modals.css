@@ -202,61 +202,78 @@
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 25%;
+    top: 0;
+    width: 50%; /* Full width */
+    height: auto; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+}
+
+.modal-thb {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
     padding-top: 2px; /* Location of the box */
     left: 50%;
     top: 0;
     width: fit-content; /* Full width */
-    height: auto; /* Full height */
+    height: 320px; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0); /* Black w/ opacity */
-
+    background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
 }
-@media (max-width: 420px) {
-    .modal-gal {
-        left: unset;
-        margin: auto;
-    }
 
-    .modal-content-gal {
-
-        width: 100%;
-
-
-    }
-}
-.
-    /* Modal Content (Image) */
+/* Modal Content (Image) */
 .modal-content-gal {
     margin: auto;
     display: block;
-    width: 50%;
+    width: 80%;
     max-width: 700px;
-
 }
 
-
-/* Caption of Modal Image (Image Text) - Same Width as the Image */
-.modal-caption-gal {
+.modal-content-thb {
     margin: auto;
     display: block;
-    width: 150px;
+    height: 300px;
+    max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
     max-width: 700px;
     text-align: center;
     color: #ccc;
     padding: 10px 0;
-    height: 50px;
+    height: 150px;
 }
 
+/* Add Animation - Zoom in the Modal */
+.modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
 
-
+@keyframes zoom {
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
+}
 
 /* The Close Button */
 .close {
     position: absolute;
     top: 15px;
     right: 35px;
-    color: #960004;
+    color: #f1f1f1;
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
