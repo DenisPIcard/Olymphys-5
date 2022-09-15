@@ -102,9 +102,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
-     * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" )
+     * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" , nullable= true)
      */
-    private Centrescia $centrecia;
+    private ?Centrescia $centrecia;
     /**
      * @ORM\Column(name="createdAt", type="datetime", nullable=true)
      */
