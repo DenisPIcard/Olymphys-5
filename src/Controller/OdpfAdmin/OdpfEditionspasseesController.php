@@ -55,7 +55,7 @@ class OdpfEditionspasseesController extends AbstractController
             ->getQuery()->getResult();
 
         $photos = $this->em->getRepository(Photos::class)->findBy(['equipepassee' => $equipe]);
-
+        count($photos) != 0 ? $photostest = true : $photostest = false;
         // dd($photos);
         $choix = 'equipepassee';
         $tab = $createArray->getArray($choix);
@@ -63,6 +63,7 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['texte'] = $this->createTextEquipe($equipe, $listeFichiers);
         $tab['memoires'] = $listeFichiers;
         $tab['photos'] = $photos;
+        $tab['photostest'] = $photostest;
         $tab['listfaq'] = $listfaq;
         // $tab['categorie']='editions';
 
@@ -98,7 +99,9 @@ class OdpfEditionspasseesController extends AbstractController
 
         }
         $editionAffichee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
+        $photosed = $this->doctrine->getRepository(photos::class)->findBy(['editionspassees' => $editionAffichee]);
 
+        count($photosed) != 0 ? $photostest = true : $photostest = false;
         $choix = 'edition' . $editionAffichee->getEdition();
         $tab = $createArray->getArray($choix);
         $tab['edition_affichee'] = $editionAffichee;
@@ -109,7 +112,7 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['lien'] = $editionAffichee->getLienparrain();
         $tab['affiche'] = 'odpf-archives/' . $editionAffichee->getEdition() . '/affiche/' . $editionAffichee->getAffiche();
         $tab['listfaq'] = $listfaq;
-
+        $tab['photostest'] = $photostest;
         //dd($tab);
         return $this->render('core/odpf-pages-editions.html.twig', $tab);
     }

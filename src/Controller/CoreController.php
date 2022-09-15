@@ -8,6 +8,7 @@ use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfPartenaires;
+use App\Entity\Photos;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -142,11 +143,14 @@ class CoreController extends AbstractController
             $choice = 'editions';
             $choix = 'edition' . $doctrine->getRepository(OdpfEditionsPassees::class)
                     ->findOneBy(['edition' => $editionaffichee->getEdition()])->getEdition();
+            $photosed = $this->doctrine->getRepository(photos::class)->findBy(['editionspassees' => $editionaffichee]);
+            count($photosed) != 0 ? $photostest = true : $photostest = false;
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee'] = $editionaffichee;
             $tab['editions'] = $editions;
             $tab['choice'] = $choice;
             $tab['listfaq'] = $listfaq;
+            $tab['photostest'] = $photostest;
             // dd($tab);
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 

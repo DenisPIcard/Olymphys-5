@@ -721,7 +721,12 @@ class PhotosController extends AbstractController
 
             $idEdition = explode('-', $infos)[1];
             $edition = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
-            $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findBy(['editionspassees' => $edition]);
+            $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)
+                ->createQueryBuilder('e')
+                ->andWhere('e.editionspassees =:edition')
+                ->setParameter('edition', $edition)
+                ->addOrderBy('e.numero', 'ASC')
+                ->getQuery()->getResult();
             foreach ($listeEquipes as $equipe) {
                 $listPhotos = $repositoryPhotos->createQueryBuilder('p')
                     ->andWhere('p.equipepassee =:equipe')
@@ -734,8 +739,13 @@ class PhotosController extends AbstractController
                 }
 
             }
-            return $this->render('photos/affiche_galerie_edition.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition]);
+            if (isset($photos)) {
+                return $this->render('photos/affiche_galerie_edition.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition]);
+            } else {
 
+                return $this->redirectToRoute('core_home');
+
+            }
         };
 
     }
