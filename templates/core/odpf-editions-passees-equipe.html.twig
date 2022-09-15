@@ -83,10 +83,10 @@
                     {% if  categorie.categorie =='opdfequipepassee' %}
 
                         {{ include('core/Odpf-Equipe-Carousel.html.twig') }}
-                        {# {% if photostest == true %}
+                        {% if photostest == true %}
                             <a href="{{ path('photos_voir_galerie',{infos : 'equipe-'~equipe.id}) }}"
                                title="Accéder à la galerie"> Accéder à la galerie photo</a>
-                        {% endif %} #}
+                        {% endif %}
                     {% endif %}
 
                 </div><!--col dte-->
