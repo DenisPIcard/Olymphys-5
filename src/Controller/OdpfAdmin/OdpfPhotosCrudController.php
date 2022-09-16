@@ -236,7 +236,8 @@ class OdpfPhotosCrudController extends AbstractCrudController
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer une photo')->setHtmlAttributes(['concours' => $this->requestStack->getCurrentRequest()->query->get('concours')]);
             })
-            ->add(Crud::PAGE_INDEX, $attribEditionPassee);
+            ->add(Crud::PAGE_INDEX, $attribEditionPassee)
+            ->setPermission($attribEditionPassee, 'ROLE_SUPER_ADMIN');;
 
     }
 

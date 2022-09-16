@@ -48,14 +48,14 @@ class Photos
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private $equipe;
+    private Equipesadmin $equipe;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
      *
      * @var string
      */
-    private $photo;
+    private ?string $photo;
 
     /**
      *
@@ -221,7 +221,7 @@ class Photos
 
     public function directoryName(): string
     {
-        $path = '/';
+
 
         $path = $this->equipepassee->getEditionspassees()->getEdition() . '/photoseq/';
 
