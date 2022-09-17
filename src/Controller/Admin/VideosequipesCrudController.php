@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 use App\Entity\Edition;
 use App\Entity\Fichiersequipes;
 use App\Entity\Videosequipes;
@@ -60,8 +61,7 @@ class VideosequipesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'))
-            ->add(EntityFilter::new('equipe'));
+            ->add(CustomEquipespasseesFilter::new('equipe'));
     }
 
     public function configureFields(string $pageName): iterable
