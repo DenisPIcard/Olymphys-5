@@ -86,20 +86,20 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
         $dateinscription = TextField::new('dateinscription');
         $nomParrain = TextField::new('nomParrain');
         $titreParrain = TextField::new('titreParrain');
-
+        $lienParrain = TextField::new('lienparrain');
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$edition, $pseudo, $annee, $lieu, $ville, $datecia, $datecn];
         }
         if (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $edition, $pseudo, $annee, $lieu, $ville, $datecia, $datecn, $dateinscription, $nomParrain, $titreParrain, $photoParrain, $affiche];
+            return [$id, $edition, $pseudo, $annee, $lieu, $ville, $datecia, $datecn, $dateinscription, $nomParrain, $titreParrain, $photoParrain, $lienParrain, $affiche];
         }
         /*if (Crud::PAGE_NEW === $pageName) {
             return [$edition, $pseudo, $annee, $lieu, $ville, $datecia, $datecn, $dateinscription, $nomParrain, $titreParrain, $photoFiLe, $afficheFile];
 
         }*/
         if (Crud::PAGE_EDIT === $pageName) {
-            return [$edition, $pseudo, $annee, $lieu, $ville, $datecia, $datecn, $dateinscription, $nomParrain, $titreParrain, $photoFile, $afficheFile];
+            return [$edition, $pseudo, $annee, $lieu, $ville, $datecia, $datecn, $dateinscription, $nomParrain, $titreParrain, $lienParrain, $photoFile, $afficheFile];
 
         }
 
@@ -143,6 +143,7 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
             $fileParrain = new UploadedFile($pathParrain . $photoParrain, $photoParrain, null, null, true);
             $ext = $fileParrain->guessExtension();
             $parrainUploader->upload($fileParrain);
+
             $photoParraintmp = new Imagick();
             $photoParraintmp->readImage($pathParrain . 'parrain' . $entityInstance->getEdition() . '.' . $ext);
             $width = $photoParraintmp->getImageWidth();

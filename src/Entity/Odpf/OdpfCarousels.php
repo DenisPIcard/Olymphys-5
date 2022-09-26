@@ -42,7 +42,7 @@ class OdpfCarousels
     private ?bool $blackbgnd = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist", "remove"})
      */
     private ?Collection $images;
 
@@ -134,11 +134,10 @@ class OdpfCarousels
 
         // set the owning side to null (unless already changed)
         if ($image->getCarousel() === $this) {
-            if (file_exists('odpf/odpf-images/imagescarousels/' . $image->getName())) {
-                unlink('odpf/odpf-images/imagescarousels/' . $image->getName());
-            }
+
 
             $image->setCarousel(null);
+
         }
 
 

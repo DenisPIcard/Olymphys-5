@@ -163,7 +163,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
      * @Route("/Admin/PhotosCrud/charge-photos",name="charge-photos")
      */
     public function charger_photos(Request $request, AdminContext $context)
-    {//fontion appelée à disparaître lorsque le bascullement odpf vers Olymphys sera achvé
+    {//fontion appelée à disparaître lorsque le basculement odpf vers Olymphys sera achevé
         $qb = $this->doctrine->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('e')
             ->leftJoin('e.editionspassees', 'ed')
             ->addOrderBy('ed.edition', 'DESC')
@@ -175,7 +175,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
                  'label' => 'Choisir le numéro de l\'édition'
              ])*/
 
-            ->add('equipe', EntityType::class, [
+            ->add('equipepassee', EntityType::class, [
                 'class' => OdpfEquipesPassees::class,
                 'query_builder' => $qb
             ])
@@ -193,7 +193,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $files = $form->get('fichiers')->getData();
-            $equipe = $form->get('equipe')->getData();
+            $equipe = $form->get('equipepassee')->getData();
             $national = !$form->get('national')->getData();
 
             //$files=$form->get('serveur')->getData();

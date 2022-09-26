@@ -75,7 +75,7 @@ class OdpfCreateArray
             'affiche' => $affiche,
             'afficheHR' => $afficheHr
         ];
-        // dd($tab);
+
         return ($tab);
     }
 }

@@ -10,6 +10,9 @@ use App\Form\OdpfImagesType;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -24,7 +27,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 
 
 class OdpfCarouselsCrudController extends AbstractCrudController
@@ -55,6 +60,107 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     }
 
+    public function configureAssets(Assets $assets): Assets
+    {
+        $url = $this->generateUrl('supr_diapo');
+
+        return $assets
+            ->addHtmlContentToBody('
+            <div class="modal fade" id="modaldiapo" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+        
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="ModaldiapoLabel">La diapositive sera supprimée </h4>
+                            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <div class="alert hidden" role="alert" id="modalAlert"></div>
+                            
+                               <p><h6 >Attention ! <br>Supprimer la diapositive ? </h6> </p>
+                        
+                        </div>
+                        <div class="modal-footer">
+                            <form action="' . $url . '">
+                                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
+                                        <span class="btn-label">Annuler</span>
+                                </button>
+                                
+                                <input type="hidden" class="form-control" id="diapoId" name="diapoID" value="recipient-name"/>
+                                <button type="submit"  class="btn btn-danger" data-bs-dismiss="modal" id="diapo-delete-button">
+                                        <span class="btn-label">Supprimer</span>
+                                </button>
+                            </form>
+                        </div>
+                        
+        
+                    </div>
+                </div>
+            </div>
+    <script text/javascript>
+
+        var modal = document.getElementById(\'modaldiapo\')
+        modal.addEventListener(\'show.bs.modal\', function (event) {
+                // Button that triggered the modal
+                var button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                var recipient = button.getAttribute(\'data-bs-idDiapo\')
+                console.log(recipient)
+                var modalFooterInput = modal.querySelector(\'.modal-footer input\')
+                modalFooterInput.value = recipient
+        }) 
+           
+
+
+
+</script>
+<script text/javascript>
+ $("#modaldiapo").on("submit", function (e) {
+                    var formURL = $(this).attr("action");
+                    console.log(formURL);
+                    $.ajax({
+                        url: formURL,
+                        type: "GET",
+                        data: {
+                            idDiapo: $("#diapoId").val(),
+                           
+                        },
+                        console.log(data);
+
+                       
+                    });
+                });    
+
+
+</script>');
+    }
+
+
+    public function new(AdminContext $context): RedirectResponse
+    {
+        $carousel = new OdpfCarousels();
+        $carousel->setName('Nouveau carousel');
+        $this->doctrine->getManager()->persist($carousel);
+        $this->doctrine->getManager()->flush();
+        $idCarousel = $carousel->getId();
+        $url = $this->adminUrlGenerator
+            ->setController(OdpfCarouselsCrudController::class)
+            ->setAction('edit')
+            ->setEntityId($idCarousel)
+            ->setDashboard(OdpfDashboardController::class)
+            ->generateUrl();
+        return new RedirectResponse($url);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+            ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste');
+        return parent::configureActions($actions); // TODO: Change the autogenerated stub
+    }
+
     public function configureFields(string $pageName): iterable
     {
         if ($pageName == 'edit') {
@@ -64,7 +170,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         }
         $name = TextField::new('name', 'nom');
         $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)
-            ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true])
+            ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true, 'allow_delete' => false])
             ->setEntryIsComplex(true)
             ->renderExpanded(true);
         $blackbgnd = BooleanField::new('blackbgnd', 'Fond noir');
@@ -84,11 +190,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     }
 
-
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $repositoryArticle = $this->doctrine->getRepository(OdpfArticle::class);
-        $em = $this->doctrine->getManager();;
+        $em = $this->doctrine->getManager();
 
         $articles = $repositoryArticle->findBy(['carousel' => $entityInstance]);
         foreach ($articles as $article) {
@@ -162,10 +267,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     /**
      * @Security("is_granted('ROLE_ADMIN')")
      *
-     * @Route("/admin/OdpfCarousels,{idCarousel},{idDiapo}", name="add_diapo")
+     * @Route("/admin/OdpfCarousels/add_diapo,{idCarousel},{idDiapo}", name="add_diapo")
      *
      */
-    public function addDiapo(Request $request, $idCarousel, $idDiapo): RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function addDiapo(Request $request, $idCarousel, $idDiapo): RedirectResponse|Response
     {
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
         $url = $this->adminUrlGenerator
@@ -224,12 +329,19 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     }
 
-    public function new(AdminContext $context): RedirectResponse
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     *
+     * @Route("/admin/OdpfCarousels/supr_diapo", name="supr_diapo")
+     *
+     */
+    public function suprDiapo(Request $request): RedirectResponse|Response
     {
-        $carousel = new OdpfCarousels();
-        $carousel->setName('Nouveau carousel');
-        $this->doctrine->getManager()->persist($carousel);
-        $this->doctrine->getManager()->flush();
+        dump($idDiapo = $request->query);
+        $idDiapo = str_replace('"', '', $request->query->get('diapoID'));
+        $diapo = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);
+
+        $carousel = $diapo->getCarousel();
         $idCarousel = $carousel->getId();
         $url = $this->adminUrlGenerator
             ->setController(OdpfCarouselsCrudController::class)
@@ -237,7 +349,37 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setEntityId($idCarousel)
             ->setDashboard(OdpfDashboardController::class)
             ->generateUrl();
+        $carousel->removeImage($diapo);
+        $listImages = $carousel->getImages();
+
+        /*  if (count($listImages) != 0) {
+              $i = 0;
+              foreach ($listImages as $image) {
+                  $numeros[$i] = $image->getNumero();
+              }
+              $nummax = max($numeros);
+              $numero = $nummax + 1;
+              foreach ($listImages as $image) {
+                  if ($idDiapo == $image->getId()) {
+                      $numero = $image->getNumero();
+                  }
+              }
+
+          } else {
+              $numero = 1;
+          }*/
+
+        $em = $this->doctrine->getManager();
+        $em->remove($diapo);
+        $em->flush();
+        $em->persist($carousel);
+        $em->flush();
+
+        if (file_exists('odpf/odpf-images/imagescarousels/' . $diapo->getName())) {
+            unlink('odpf/odpf-images/imagescarousels/' . $diapo->getName());
+        }
         return new RedirectResponse($url);
+
     }
 
 }

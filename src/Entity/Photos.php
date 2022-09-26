@@ -46,9 +46,9 @@ class Photos
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
+     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE", nullable=true)
      */
-    private Equipesadmin $equipe;
+    private ?Equipesadmin $equipe = null;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
@@ -165,12 +165,12 @@ class Photos
         return $this->id;
     }
 
-    public function getEquipe()
+    public function getEquipe(): ?Equipesadmin
     {
         return $this->equipe;
     }
 
-    public function setEquipe($equipe)
+    public function setEquipe(?Equipesadmin $equipe)
     {
         $this->equipe = $equipe;
         return $this;
@@ -181,7 +181,7 @@ class Photos
         return $this->national;
     }
 
-    public function setNational($national)
+    public function setNational(?bool $national)
     {
         $this->national = $national;
         return $this;
@@ -206,10 +206,10 @@ class Photos
         $slugger = new AsciiSlugger();
         $nom_equipe = $slugger->slug($nom_equipe)->toString();
 
-        if ($equipepassee->getSelectionnee() == FALSE) {
+        if ($this->getNational() == FALSE) {
             $fileName = $ed . '-' . 'CIA-eq-' . $numero_equipe . '-' . $nom_equipe . '.' . uniqid();
         }
-        if ($equipepassee->getSelectionnee() == TRUE) {
+        if ($this->getNational() == TRUE) {
             $equipepassee->getLettre() === null ? $idEquipe = $equipepassee->getNumero() : $idEquipe = $equipepassee->getLettre();
 
             $fileName = $ed . '-CN-eq-' . $idEquipe . '-' . $nom_equipe . '.' . uniqid();

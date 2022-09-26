@@ -20,7 +20,8 @@
                             <a href="{{ asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name) }}"
                                target="_blank">  <img
                                         src="{{ asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name) }}"
-                                        style="height:100px;width:auto" id="diapo{{ loop.index }}"></a>
+                                        style="height:100px;width:auto" id="diapo{{ loop.index }}"
+                                        title="{{ child.vars.value.name }}"></a>
                         </div>
 
             {% endif %}
@@ -28,12 +29,16 @@
                        class="btn btn-primary">Modifier l'image</a>
 
                     <div class="form-group">
+
                         {{ form_label(child) }}
                         {{ form_row(child) }}
                         {{ form_errors(child) }}
 
                     </div>
-
+                    <button id="delete" type="button"
+                            class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modaldiapo"
+                            data-bs-idCarousel="{{ idCarousel }}" data-bs-idDiapo="{{ child.vars.value.id }}"
+                            title="Supprimer">Supprimer la diapo</button>
 
             </span>
 
@@ -43,9 +48,9 @@
     {% if allow_add|default(false) %}
 
         {# <button type="submit" class="btn btn-link field-collection-add-button" id="'ea.collection.item-added"> {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}<i class="fa fa-plus pr-1"></i></button> #}
-        Ajouter une diapositive<a href="{{ path('add_diapo',{idCarousel:idCarousel, idDiapo:0}) }}" type="button"
-                                  class="btn btn-link field-collection-add-button"><i class="fa fa-plus pr-1"></i>Ajouter
-        une diapositive</a>
+        <a href="{{ path('add_diapo',{idCarousel:idCarousel, idDiapo:0}) }}" type="button"
+           class="btn btn-link field-collection-add-button"><i class="fa fa-plus pr-1"></i>Ajouter
+            une diapositive</a>
 
     {% endif %}
 

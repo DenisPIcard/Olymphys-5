@@ -69,7 +69,7 @@ class OdpfEquipesPassees
 
     public function __toString()
     {
-        $this->getLettre() != null ? $num = $this->getLettre() : $num = $this->getNumero();
+        $this->getLettre() != null ? $num = $this->getNumero() . '-' . $this->getLettre() : $num = $this->getNumero();
         if ($this->editionspassees !== null) {
             $Ed = $this->editionspassees->getEdition();
         } else {

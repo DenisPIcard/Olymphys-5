@@ -33,6 +33,7 @@ class OdpfListeEquipes
         $editionpassee = $this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $edition->getEd()]);
         $photoparrain = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/parrain/' . $editionpassee->getPhotoParrain();
         $parrain = $editionpassee->getNomParrain();
+        $lienparrain = $editionpassee->getLienparrain();
         $titreparrain = $editionpassee->getTitreParrain();
         $affiche = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche();
         $nomaffiche = explode('.', $editionpassee->getAffiche());
@@ -71,6 +72,7 @@ class OdpfListeEquipes
                 'parrain' => $parrain,
                 'photoparrain' => $photoparrain,
                 'titreparrain' => $titreparrain,
+                'lienparrain' => $lienparrain,
                 'affiche' => $affiche,
                 'afficheHR' => $afficheHr
             ];
@@ -84,6 +86,7 @@ class OdpfListeEquipes
                 'parrain' => $parrain,
                 'photoparrain' => $photoparrain,
                 'titreparrain' => $titreparrain,
+                'lienparrain' => $lienparrain,
                 'affiche' => $affiche,
                 'afficheHR' => $afficheHr
 

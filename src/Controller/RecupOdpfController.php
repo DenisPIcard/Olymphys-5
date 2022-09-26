@@ -203,7 +203,7 @@ class RecupOdpfController extends AbstractController
 
     }
 
-    public function extractDonneesEdition($lien): array
+    public function extractDonneesEdition($lien): array //A partir d'un fichier.html du site odpf
     {
 
         $pathFichier = u($lien)->before('.pdf', true);
