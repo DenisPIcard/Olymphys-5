@@ -11,6 +11,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Professeurs;
 use App\Entity\User;
 use App\Form\Type\CentreType;
+use App\Service\Maj_profsequipes;
 use App\Service\OdpfRempliEquipesPassees;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -566,6 +567,8 @@ class EquipesadminCrudController extends AbstractCrudController
         $entityInstance->setNomLycee($uai->getNom());
         $entityInstance->setLyceeLocalite($uai->getCommune());
         $entityInstance->setLyceeAcademie($uai->getAcademie());
+        $maj_profsequipes = new Maj_profsequipes($this->doctrine);
+        $maj_profsequipes->maj_profsequipes($entityInstance);
         $rempliOdpfEquipesPassees = new OdpfRempliEquipesPassees($this->doctrine);
         $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($entityInstance);
 

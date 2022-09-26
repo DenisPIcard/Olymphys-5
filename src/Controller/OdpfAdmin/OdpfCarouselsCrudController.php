@@ -337,7 +337,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
      */
     public function suprDiapo(Request $request): RedirectResponse|Response
     {
-        dump($idDiapo = $request->query);
+
         $idDiapo = str_replace('"', '', $request->query->get('diapoID'));
         $diapo = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);
 
