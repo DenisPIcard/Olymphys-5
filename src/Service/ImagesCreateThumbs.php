@@ -26,10 +26,10 @@ class ImagesCreateThumbs
             $pathtmp = 'odpf/odpf-images/imagescarousels/tmp';
             $fileImage = $image->getImageFile();
             $imagetmp = new Imagick($fileImage);
-            dump($image);
+
             if ($image->getCarousel() !== null) {
                 $image->getCarousel()->getBlackbgnd() == false ? $fond = new Imagick('images/fond_blanc_carousel.jpg') : $fond = new Imagick('images/fond_noir_carousel.jpg');
-                dump('Ok1');
+
             }
             try {
                 $imagetmp->readImage('odpf/odpf-images/imagescarousels/' . $image->getName());
@@ -53,9 +53,9 @@ class ImagesCreateThumbs
 
                 $imagetmp->resizeImage($nllwidth, $nllheight, imagick::FILTER_LANCZOS, 1);
 
-                dump($image->getImageFile()->getExtension());
+
                 if ($image->getImageFile()->getExtension() == 'png') {
-                    dump('OK2');
+
                     $fond->compositeImage($imagetmp, imagick::COMPOSITE_OVER, $x, $y);
                 }
                 if (($image->getImageFile()->getExtension() == 'jpg') or ($image->getImageFile()->getExtension() == 'jpeg') or ($image->getImageFile()->getExtension() == 'JPG')) {
