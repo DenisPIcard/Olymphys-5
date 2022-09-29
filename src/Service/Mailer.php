@@ -76,8 +76,8 @@ class Mailer
         $email = (new Email())
             ->from('info@olymphys.fr')
             ->to('webmestre2@olymphys.fr')//'webmestre2@olymphys.fr', 'Denis'
-            ->cc('webmestre3@olymphys.fr')
-            ->subject('Depot du ' . $type_fichier . 'de l\'équipe ' . $equipe->getInfoequipe())
+            ->addCc('webmestre3@olymphys.fr')
+            ->subject('Depot du fichier ' . $type_fichier . 'de l\'équipe ' . $equipe->getInfoequipe())
             ->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier);
 
         $this->mailer->send($email);

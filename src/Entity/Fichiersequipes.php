@@ -47,7 +47,7 @@ class Fichiersequipes //extends BaseMedia
      *
      *
      */
-    private File $fichierFile;
+    private ?File $fichierFile;
     /**
      *
      * @ORM\Column(type="integer", nullable=true)
@@ -95,7 +95,7 @@ class Fichiersequipes //extends BaseMedia
     private ?Elevesinter $eleve = null;
 
 
-    public function getFichierFile(): File
+    public function getFichierFile(): ?File
     {
 
         return $this->fichierFile;
@@ -162,12 +162,7 @@ class Fichiersequipes //extends BaseMedia
             $slugger = new AsciiSlugger();
             $nom_equipe = $slugger->slug($nom_equipe)->toString();
 
-            //$nom_equipe= str_replace("'","",$nom_equipe);
-            //$nom_equipe= str_replace("`","",$nom_equipe);
 
-            //$nom_equipe= str_replace("?","",$nom_equipe);
-        } else {
-            $libel_equipe = 'prof';
 
         }
         if ($this->getTypefichier() == 0) {

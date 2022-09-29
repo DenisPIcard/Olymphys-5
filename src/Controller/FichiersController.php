@@ -22,12 +22,14 @@ use datetime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,8 +40,11 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Vich\UploaderBundle\Entity\File;
 use ZipArchive;
+use function Symfony\Component\String\u;
 
 class FichiersController extends AbstractController
 {
@@ -505,6 +510,7 @@ class FichiersController extends AbstractController
                 $citoyen = $repositoryEleve->find(['id' => $id_citoyen]);
                 $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
                 $prof = false;
+
             } else {//autorisation photo des profs
                 $citoyen = $repositoryUser->find(['id' => $id_citoyen]);
                 $id_equipe = $info[4];
@@ -583,7 +589,6 @@ class FichiersController extends AbstractController
             /** @var UploadedFile $file */
             $file = $form1->get('fichier')->getData();
 
-            $ext = $file->guessExtension();
             $num_type_fichier = $form1->get('choice')->getData();
 
             if (!isset($num_type_fichier)) {//sert pour les mémoires et annexes
@@ -593,9 +598,11 @@ class FichiersController extends AbstractController
                     'infos' => $infos,
                 ]);
             }
+
             $idFichier = null;
             if (isset($fichier)) {
                 $idFichier = $fichier->getId();
+                $fichier->getProf() == null ? $prof = false : $prof = true;
             }
             $violations = $validFichier->validation_fichiers($file, $num_type_fichier, $idFichier)['text'];
             if ($violations != '') {
@@ -606,102 +613,105 @@ class FichiersController extends AbstractController
 
             }
             $em = $this->doctrine->getManager();
-            $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
+            $edition = $this->requestStack->getSession()->get('edition');
+            $edition = $em->merge($edition);
+            if ($num_type_fichier == 6) {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $slugger = new AsciiSlugger();
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '.' . $file->guessExtension();
 
-            if ($attrib == 0) {
+                // Move the file to the directory where brochures are stored
+                try {
+                    $file->move('temp/', $newFilename);
 
-                $fichier = new Fichiersequipes();
-                if ($num_type_fichier == 6) {//Vérification pour les autorisation photos prof, en cas de bug lors d'un dépôt le fichier existe mais n'est l'user n'est pas lié à lui : conflit clef unique
-                    $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
-                        ->andWhere('f.prof =:citoyen')
-                        ->setParameter('citoyen', $citoyen)
-                        ->getQuery()->getOneOrNullResult();
-                    if ($fichier != null) {
-                        $idfichier = $fichier->getId();
-                        $attrib = 1;
-                    }
-
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
                 }
-                $fichier = new Fichiersequipes();
-            }
-            if ($attrib > 0) {
-                $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
+
+                $fichier = $this->deposeAutorisations($newFilename, $citoyen, $attrib, $prof);
                 $message = '';
+                $nom_fichier = $fichier->getFichier();
+            } else {
+                if ($attrib == 0) {
 
-            }
-            $fichier->setFichierFile($file);
-
-            if ($attrib == 0) {
-
-                if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
-                    if ($num_type_fichier < 6) {
-                        try {
-                            $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
-                                ->where('f.equipe=:equipe')
-                                ->setParameter('equipe', $equipe)
-                                ->andWhere('f.typefichier =:type')
-                                ->setParameter('type', $num_type_fichier)
-                                ->andWhere('f.national =:valeur')
-                                ->setParameter('valeur', '0')
-                                ->getQuery()->getSingleResult();
-                        } catch (Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
-                            $message = '';
-                            $fichier = new Fichiersequipes();
-                            $nouveau = true;
-                        }
-                        if (!isset($nouveau)) {
-                            $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
-                        }
-                    }
-                    if ($num_type_fichier == 6) {
-                        $fichier = new Fichiersequipes();
-
-                    }
-                }
-
-                if ($session->get('concours') == 'interacadémique') {
                     $fichier = new Fichiersequipes();
+
+                }
+                if ($attrib > 0) {
+                    $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
                     $message = '';
-                }
-                $fichier->setTypefichier($num_type_fichier);
-                $fichier->setEdition($edition);
-                if (isset($equipe)) {
-                    $fichier->setEquipe($equipe);
-                }
-                $fichier->setNational(0);
 
-
-                if ($phase == 'national') {
-                    $fichier->setNational(1);
-                }
-
-                if ($num_type_fichier == 6) {
-                    $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
-                    if ($prof == false) {
-                        $fichier->setEleve($citoyen);
-                    } else {
-
-                        $fichier->setProf($citoyen);
-                    }
                 }
                 $fichier->setFichierFile($file);
-            }
-            $em->persist($fichier);
-            $em->flush();
-            if ($num_type_fichier == 6) {
 
-                $citoyen->setAutorisationphotos($fichier);
-                $em->persist($citoyen);
-                $em->flush();
+                if ($attrib == 0) {
+
+                    if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
+                        if ($num_type_fichier < 6) {
+                            try {
+                                $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
+                                    ->where('f.equipe=:equipe')
+                                    ->setParameter('equipe', $equipe)
+                                    ->andWhere('f.typefichier =:type')
+                                    ->setParameter('type', $num_type_fichier)
+                                    ->andWhere('f.national =:valeur')
+                                    ->setParameter('valeur', '0')
+                                    ->getQuery()->getSingleResult();
+                            } catch (Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
+                                $message = '';
+                                $fichier = new Fichiersequipes();
+                                $nouveau = true;
+                            }
+                            if (!isset($nouveau)) {
+                                $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
+                            }
+                        }
+
+                    }
+
+                    if ($session->get('concours') == 'interacadémique') {
+                        $fichier = new Fichiersequipes();
+                        $message = '';
+                    }
+                    $fichier->setTypefichier($num_type_fichier);
+                    $fichier->setEdition($edition);
+                    if (isset($equipe)) {
+                        $fichier->setEquipe($equipe);
+                    }
+                    $fichier->setNational(0);
+
+
+                    if ($phase == 'national') {
+                        $fichier->setNational(1);
+                    }
+
+
+                    $fichier->setFichierFile($file);
+                }
+                try {
+                    $em->persist($fichier);
+                    $em->flush();
+                    $nom_fichier = $fichier->getFichier();
+                } catch (FileException $e) {
+                    $message = 'Une erreur est survenue, le fichier n\'a pas été déposé, veuillez prévenir l\'administrateur du site';
+                    $request->getSession()
+                        ->getFlashBag()
+                        ->add('alert', $message);
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
+
+
+                }
             }
-            $nom_fichier = $fichier->getFichier();
+
 
             $request->getSession()
                 ->getFlashBag()
                 ->add('info', $message . 'Votre fichier renommé selon : ' . $nom_fichier . ' a bien été déposé. Merci !');
 
-            $user = $this->getUser();//Afin de rappeler le nom du professeur qui a envoyé le fichier dans le mail
-            $type_fichier = $this->getParameter('type_fichier')[$num_type_fichier];
+            //$user = $this->getUser();//Afin de rappeler le nom du professeur qui a envoyé le fichier dans le mail
+            //$type_fichier = $this->getParameter('type_fichier')[$num_type_fichier];
 
             $type_fichier = $this->getParameter('type_fichier_lit')[$num_type_fichier];
 
@@ -716,9 +726,12 @@ class FichiersController extends AbstractController
             } else {
 
                 $info_equipe = 'prof ' . $citoyen->getNomPrenom();
+            };
+            if (($num_type_fichier != 7) and ($num_type_fichier != 4)) {
+                $this->RempliOdpfFichiersPasses($fichier);
             }
             $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
-            $this->RempliOdpfFichiersPasses($fichier);
+
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
         }
 
@@ -733,28 +746,102 @@ class FichiersController extends AbstractController
         return new Response($content);
     }
 
+    public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof)
+    {
+        $em = $this->doctrine->getManager();
+        $edition = $this->requestStack->getSession()->get('edition');
+        $edition = $em->merge($edition);
+        $repositoryFichiersequipes = $this->doctrine->getRepository(Fichiersequipes::class);
+
+        $fileFichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $newFilename, $newFilename, null, null, true);
+
+        try {
+            if ($prof == true) {
+                $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
+                    ->andWhere('f.prof =:citoyen')
+                    ->setParameter('citoyen', $citoyen)
+                    ->getQuery()->getOneOrNullResult();
+                if ($fichier != null) {
+                    $citoyen->setAutorisationphotos(null);
+                    $em->persist($citoyen);
+                    $em->flush();
+                    $em->remove($fichier);
+                    $em->flush();
+                }
+                $fichier = new Fichiersequipes();
+                $fichier->setProf($citoyen);
+                $fichier->setFichierFile($fileFichier);
+                $fichier->setEdition($edition);;
+                $fichier->setTypefichier(6);
+                $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
+                $fichier->setNational(0);
+                $em->persist($fichier);
+                $em->flush();
+                $citoyen->setAutorisationphotos($fichier);
+                $em->persist($citoyen);
+                $em->flush();
+
+            }
+            if ($prof == false) {
+
+                if ($attrib == 0) {
+                    $fichier = new Fichiersequipes();
+
+                    $fichier->setEleve($citoyen);
+                    $fichier->setEquipe($citoyen->getEquipe());
+                    $fichier->setFichierFile($fileFichier);
+                    $fichier->setEdition($edition);;
+                    $fichier->setTypefichier(6);
+                    $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
+                    $em->persist($fichier);
+                    $em->flush();
+                }
+                if ($attrib != 0) {
+                    $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
+                        ->where('f.eleve =:eleve')
+                        ->andWhere('f.edition =:edition')
+                        ->setParameters(['eleve' => $citoyen, 'edition' => $edition])
+                        ->getQuery()->getOneOrNullResult();
+                    $fichier->setEquipe($citoyen->getEquipe());
+                    $fichier->setFichierFile($fileFichier);
+                    $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
+                    $em->persist($fichier);
+                    $em->flush();
+                }
+            }
+        } catch (Exception $e) {
+
+            $message = 'Une erreur est survenue, le fichier n\'a pas été déposé, veuillez prévenir l\'administrateur du site';
+            $this->requestStack->getCurrentRequest()->getSession()
+                ->getFlashBag()
+                ->add('alert', $message);
+
+            return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $citoyen->getEquipe()->getId() . '-' . $this->requestStack->getSession()->get('concours') . '-liste_prof'));
+
+        }
+
+        return $fichier;
+    }
+
     /**
      * @throws NonUniqueResultException
      */
     public function RempliOdpfFichiersPasses($fichier)
     {
-
         $em = $this->doctrine->getManager();
-        $equipe = $fichier->getEquipe();
         $edition = $fichier->getEdition();
-        //dd($equipe,$edition);
         $repositoryOdpfFichierspasses = $this->doctrine->getRepository(OdpfFichierspasses::class);
         $repositoryOdpfEquipesPassees = $this->doctrine->getRepository(OdpfEquipesPassees::class);
         $repositoryOdpfEditionsPassees = $this->doctrine->getRepository(OdpfEditionsPassees::class);
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
-        $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
-            ->where('e.numero =:numero')
-            ->andWhere('e.editionspassees= :edition')
-            ->setParameters(['numero' => $equipe->getNumero(), 'edition' => $editionPassee])
-            ->getQuery()->getOneOrNullResult();
+
         if ($fichier->getTypefichier() != 6) {
-
-
+            $equipe = $fichier->getEquipe();
+            $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
+                ->where('e.numero =:numero')
+                ->andWhere('e.editionspassees= :edition')
+                ->setParameters(['numero' => $equipe->getNumero(), 'edition' => $editionPassee])
+                ->getQuery()->getOneOrNullResult();
             $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier()]);
             if ($odpfFichier === null) {
                 $odpfFichier = new OdpfFichierspasses();
@@ -762,22 +849,30 @@ class FichiersController extends AbstractController
             }
             $odpfFichier->setEquipePassee($OdpfEquipepassee);
         }
+
         if ($fichier->getTypefichier() == 6) {
             $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['nomautorisation' => $fichier->getNomautorisation(), 'typefichier' => $fichier->getTypefichier()]);
             if ($odpfFichier === null) {
                 $odpfFichier = new OdpfFichierspasses();
                 $odpfFichier->setTypefichier(6);
             }
+            if (!str_contains($fichier->getFichier(), 'prof')) {
 
+                $odpfEquipepassee = $repositoryOdpfEquipesPassees->findOneBy(['numero' => $fichier->getEquipe()->getNumero(), 'editionspassees' => $editionPassee]);
+                $odpfFichier->setEquipepassee($odpfEquipepassee);
+            }
+
+            $odpfFichier->setNational(false);
             $odpfFichier->setNomautorisation($fichier->getNomautorisation());
-
         }
+
         $odpfFichier->setEditionspassees($editionPassee);
         $odpfFichier->setNomFichier($fichier->getFichier());
 
         $odpfFichier->setUpdatedAt(new DateTime('now'));
         $em->persist($odpfFichier);
         $em->flush();
+
     }
 
     /**
@@ -788,10 +883,11 @@ class FichiersController extends AbstractController
 
         $email = (new Email())
             ->from('info@olymphys.fr')
-            ->cc('webmestre3@olymphys.fr')
-            ->to('webmestre2@olymphys.fr');
+            ->to('webmestre2@olymphys.fr')
+            ->addCc('webmestre3@olymphys.fr');
+
         if ($type_fichier == 'autorisation') {
-            $email->cc('gilles.pauliat@institutoptique.fr');
+            $email->addCc('gilles.pauliat@institutoptique.fr');
         }
         $email->subject('Depot du ' . $type_fichier . ' de ' . $info_equipe)
             ->text($info_equipe . ' a déposé un fichier : ' . $type_fichier . '.');
@@ -1006,20 +1102,25 @@ class FichiersController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $edition);
         $listevideos = $qb->getQuery()->getResult();
+
         if ($request->isMethod('POST')) {
-            if ($request->request->has('FormAll')) {
+            if ($request->request->has('listefichiers')) {
                 $zipFile = new ZipArchive();
                 $FileName = $edition->getEd() . '-Fichiers-eq-' . $equipe_choisie->getNumero() . '-' . date('now');
                 if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE) {
-                    $fichiers = $repositoryFichiersequipes->findByEquipe(['equipe' => $equipe_choisie]);
+                    $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
+                        ->where('f.equipe =:equipe')
+                        ->andWhere('f.typefichier !=:value')
+                        ->setParameters(['equipe' => $equipe_choisie, 'value' => 6])
+                        ->getQuery()->getResult();
 
                     foreach ($liste_fichiers as $fichier) {
                         if ($fichier) {
                             if ($fichier->getTypefichier() == 1) {
 
-                                $fichierName = $this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[0] . '/' . $fichier->getFichier();
+                                $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[0] . '/' . $fichier->getFichier();
                             } else {
-                                $fichierName = $this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier()] . '/' . $fichier->getFichier();
+                                $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier()] . '/' . $fichier->getFichier();
                             }
 
                             $zipFile->addFromString(basename($fichierName), file_get_contents($fichierName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file

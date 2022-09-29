@@ -9,5 +9,5 @@ twig:
 
   globals:
     type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires' ]
-    type_fichier_lit: [ 'mémoire','annexe','résume','diaporama','fiche securité','diaporama', 'autorisations','questionnaire' ]
+    type_fichier_lit: [ 'mémoire','annexe','résume','diaporama(cn)','fiche securité','diaporama(cia)', 'autorisations','questionnaire' ]
   exception_controller: null

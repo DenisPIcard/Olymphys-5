@@ -9,6 +9,7 @@ parameters:
   #à changer  en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
   app.path.photos.site: /../public/odpf/odpf-archives
   app.path.tempdirectory: '%kernel.project_dir%/public/temp'
+
   app.path.thumbtmp: '%kernel.project_dir%/public/upload/images/tmp'
   type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires' ]
   type_fichier_lit: [ 'mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire' ]

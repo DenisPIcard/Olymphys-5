@@ -12,9 +12,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -29,7 +28,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 
 
 class OdpfCarouselsCrudController extends AbstractCrudController
@@ -54,11 +52,45 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return Crud::new()->setFormThemes(['bundles/EasyAdminBundle/odpf/odpf_form_images_carousels.html.twig', '@EasyAdmin/crud/form_theme.html.twig'])
-            ->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/crud/edit.html.twig');
+        $title1 = '';
+        $title2 = '';
 
+        if (isset($_REQUEST['crudAction'])) {
+            if ($_REQUEST['crudAction'] == 'edit') {
+                $title1 = 'Edition du carousel : ' . $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $_REQUEST['entityId']])->getName();
+            }
+            if ($_REQUEST['crudAction'] == 'new') {
+                $title2 = 'Nouveau carousel ';
+            }
 
+        }
+        $crud = Crud::new()->setFormThemes(['bundles/EasyAdminBundle/odpf/odpf_form_images_carousels.html.twig', '@EasyAdmin/crud/form_theme.html.twig'])
+            ->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/crud/edit.html.twig')
+            ->setPageTitle('edit', $title1)
+            ->setPageTitle('new', $title2)
+            ->setHelp('new', ' Veuillez saisir le nom et puis cliquer sur créer et  continuer pour ajouter des diapositives');
+
+        return $crud;
     }
+
+    /*
+        public function new(AdminContext $context): RedirectResponse
+        {
+            $carousel = new OdpfCarousels();
+            $nombre = count($this->doctrine->getRepository(OdpfCarousels::class)->findAll());
+            $carousel->setName('Nouveau carousel' . $nombre);
+            //$this->doctrine->getManager()->persist($carousel);
+            //$this->doctrine->getManager()->flush();
+            //$idCarousel = $carousel->getId();
+            $url = $this->adminUrlGenerator
+                ->setController(OdpfCarouselsCrudController::class)
+                ->setAction('new')
+                ->setDashboard(OdpfDashboardController::class)
+                ->generateUrl();
+            return new RedirectResponse($url);
+
+        }
+    */
 
     public function configureAssets(Assets $assets): Assets
     {
@@ -112,12 +144,9 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 modalFooterInput.value = recipient
         }) 
            
-
-
-
-</script>
-<script text/javascript>
- $("#modaldiapo").on("submit", function (e) {
+        </script>
+        <script text/javascript>
+         $("#modaldiapo").on("submit", function (e) {
                     var formURL = $(this).attr("action");
                     console.log(formURL);
                     $.ajax({
@@ -128,36 +157,19 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                            
                         },
                         console.log(data);
-
-                       
                     });
                 });    
-
-
-</script>');
-    }
-
-
-    public function new(AdminContext $context): RedirectResponse
-    {
-        $carousel = new OdpfCarousels();
-        $carousel->setName('Nouveau carousel');
-        $this->doctrine->getManager()->persist($carousel);
-        $this->doctrine->getManager()->flush();
-        $idCarousel = $carousel->getId();
-        $url = $this->adminUrlGenerator
-            ->setController(OdpfCarouselsCrudController::class)
-            ->setAction('edit')
-            ->setEntityId($idCarousel)
-            ->setDashboard(OdpfDashboardController::class)
-            ->generateUrl();
-        return new RedirectResponse($url);
+    
+         </script>
+         ');
     }
 
     public function configureActions(Actions $actions): Actions
     {
         $actions->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
-            ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste');
+            ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
+            ->add(Crud::PAGE_NEW, Action::SAVE_AND_CONTINUE)
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
         return parent::configureActions($actions); // TODO: Change the autogenerated stub
     }
 
@@ -166,7 +178,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         if ($pageName == 'edit') {
 
             $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->find($_REQUEST['entityId']);
-            $listeImages = $this->doctrine->getRepository(OdpfImagescarousels::class)->findBy(['carousel' => $carousel]);
+            $listeImages = $this->doctrine->getRepository(OdpfImagescarousels::class)->createQueryBuilder('i')
+                ->where('i.carousel =:carousel')
+                ->setParameter('carousel', $carousel)
+                ->addOrderBy('i.numero', 'ASC');
         }
         $name = TextField::new('name', 'nom');
         $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)
@@ -181,7 +196,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$name, $images, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $blackbgnd, $images];
+            return [$name, $blackbgnd];
         } elseif (Crud::PAGE_EDIT === $pageName) {
 
             return [$name, $blackbgnd, $images];
@@ -189,6 +204,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
 
     }
+
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
@@ -215,6 +231,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
+
         $this->doctrine->getManager()->persist($entityInstance);
         $this->doctrine->getManager()->flush();
         $images = $entityInstance->getImages();
@@ -340,7 +357,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
         $idDiapo = str_replace('"', '', $request->query->get('diapoID'));
         $diapo = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);
-
+        $numeroDiapoSupr = $diapo->getNumero();
         $carousel = $diapo->getCarousel();
         $idCarousel = $carousel->getId();
         $url = $this->adminUrlGenerator
@@ -350,24 +367,12 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setDashboard(OdpfDashboardController::class)
             ->generateUrl();
         $carousel->removeImage($diapo);
-        $listImages = $carousel->getImages();
-
-        /*  if (count($listImages) != 0) {
-              $i = 0;
-              foreach ($listImages as $image) {
-                  $numeros[$i] = $image->getNumero();
-              }
-              $nummax = max($numeros);
-              $numero = $nummax + 1;
-              foreach ($listImages as $image) {
-                  if ($idDiapo == $image->getId()) {
-                      $numero = $image->getNumero();
-                  }
-              }
-
-          } else {
-              $numero = 1;
-          }*/
+        $listImages = $this->doctrine->getRepository(OdpfImagescarousels::class)->createQueryBuilder('i')
+            ->where('i.carousel =:carousel')
+            ->andWhere('i.numero >:numsupr')
+            ->setParameters(['carousel' => $carousel, 'numsupr' => $numeroDiapoSupr])
+            ->addOrderBy('i.numero', 'ASC')
+            ->getQuery()->getResult();
 
         $em = $this->doctrine->getManager();
         $em->remove($diapo);
@@ -375,6 +380,19 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         $em->persist($carousel);
         $em->flush();
 
+        if ($listImages) {
+            foreach ($listImages as $image) {
+                $nvNumero = $image->getNumero() - 1;
+                $ancNom = $image->getName();
+                $image->setNumero($nvNumero);
+                $image = $this->renameDiapo($nvNumero, $image);
+                $em->persist($image);
+                $em->flush();
+                if (file_exists('odpf/odpf-images/imagescarousels/' . $ancNom)) {
+                    unlink('odpf/odpf-images/imagescarousels/' . $ancNom);
+                }
+            }
+        }
         if (file_exists('odpf/odpf-images/imagescarousels/' . $diapo->getName())) {
             unlink('odpf/odpf-images/imagescarousels/' . $diapo->getName());
         }
@@ -382,4 +400,66 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     }
 
+    public function renameDiapo($numero, $diapo): OdpfImagescarousels
+    {
+        $nomPhoto = $diapo->getName();
+        $noms = explode('diapo', $nomPhoto);
+        $pos = strpos($noms[1], '_');
+        $substr = substr($noms[1], $pos);
+        $substr = $numero . $substr;
+        $nvNomPhoto = $noms[0] . 'diapo' . $substr;
+        $diapo->setName($nvNomPhoto);
+        rename('odpf/odpf-images/imagescarousels/' . $nomPhoto, 'odpf/odpf-images/imagescarousels/' . $nvNomPhoto);
+        return $diapo;
+    }
+
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     *
+     * @Route("/admin/OdpfCarousels/bouge_diapo,{idDiapo},{updown}", name="bouge_diapo")
+     *
+     */
+    public function bougeDiapo($idDiapo, $updown): RedirectResponse|Response
+    {
+        $diapoBouge = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);
+        $idCarousel = $diapoBouge->getCarousel()->getId();
+        $listeImages = $this->doctrine->getRepository(OdpfImagescarousels::class)->createQueryBuilder('i')
+            ->where('i.carousel =:carousel')
+            ->setParameter('carousel', $diapoBouge->getCarousel())
+            ->addOrderBy('i.numero', 'ASC')
+            ->getQuery()->getResult();
+        $numeroMax = $listeImages[count($listeImages) - 1]->getNumero();
+        $url = $this->adminUrlGenerator
+            ->setController(OdpfCarouselsCrudController::class)
+            ->setAction('edit')
+            ->setEntityId($idCarousel)
+            ->setDashboard(OdpfDashboardController::class)
+            ->generateUrl();
+        $numero = $diapoBouge->getNumero();
+
+        if (($updown == 'up') and ($numero == 1)) {
+            return new RedirectResponse($url);
+        }
+        if (($updown == 'down') and ($numero == $numeroMax)) {
+            return new RedirectResponse($url);
+        }
+        $updown == 'down' ? $nvNumero = $numero + 1 : $nvNumero = $numero - 1;
+        $ancNomDiapoBouge = $diapoBouge->getName();
+        $diapoBouge->setNumero($nvNumero);
+        $diapoBouge = $this->renameDiapo($nvNumero, $diapoBouge);
+
+        $diapoUpDown = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['numero' => $nvNumero, 'carousel' => $diapoBouge->getCarousel()]);
+        $diapoUpDown->setNumero($numero);
+        $ancNomDiapoUpDown = $diapoUpDown->getName();
+        $diapoUpDown = $this->renameDiapo($numero, $diapoUpDown);
+
+        $this->doctrine->getManager()->persist($diapoBouge);
+        $this->doctrine->getManager()->persist($diapoUpDown);
+        $this->doctrine->getManager()->flush();
+
+        unlink('odpf/odpf-images/imagescarousels/' . $ancNomDiapoBouge);
+        unlink('odpf/odpf-images/imagescarousels/' . $ancNomDiapoUpDown);
+
+        return new RedirectResponse($url);
+    }
 }
