@@ -95,10 +95,16 @@ class ImagesCreateThumbs
             $heightOrig = $imageOrig->getImageHeight();
             $widthOrig = $imageOrig->getImageWidth();
             if (isset($properties['exif:Orientation'])) {
-                if ($properties['exif:Orientation'] == 8) {
+
+                if ($properties['exif:Orientation'] == 8) {//(270°)
                     $heightOrig = $imageOrig->getImageWidth();
                     $widthOrig = $imageOrig->getImageHeight();
                     $imageOrig->rotateImage('#000', -90);
+                }
+                if ($properties['exif:Orientation'] == 6) {
+                    $heightOrig = $imageOrig->getImageWidth();
+                    $widthOrig = $imageOrig->getImageHeight();
+                    $imageOrig->rotateImage('#000', 90);
                 }
             }
             $percent = 200 / $heightOrig;

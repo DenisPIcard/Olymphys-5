@@ -392,8 +392,8 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->setColumns('col-sm-4 col-lg-3 col-xxl-2');
         $national = BooleanField::new('national');
         $updatedAt = DateTimeField::new('updatedAt');
-        $nomautorisation = TextField::new('nomautorisation');
-        $edition = AssociationField::new('editionpassee');
+        $nomautorisation = TextField::new('nomautorisation', 'NOM');
+        $edition = AssociationField::new('editionpassee', 'Edition');
         $eleve = AssociationField::new('eleve')->setQueryBuilder(function ($queryBuilder) {
             return $queryBuilder->select()->leftJoin('entity.equipe', 'eq')
                 ->where('eq.edition =:edition')
@@ -412,10 +412,10 @@ class FichiersequipesCrudController extends AbstractCrudController
                 // ->setParameter('roles','%i:0;s:9:"ROLE_PROF";i:2;s:9:"ROLE_USER";%')
                 ->addOrderBy('entity.nom', 'ASC');//    ->addOrderBy('entity.numero','ASC'))
         });
-        $editionEd = TextareaField::new('edition.ed');
-        $equipeNumero = IntegerField::new('equipe.numero');
-        $equipeLettre = TextareaField::new('equipe.lettre');
-        $equipeTitreprojet = TextareaField::new('equipe.titreprojet');
+        $editionEd = TextareaField::new('edition.ed', 'Edition');
+        $equipeNumero = IntegerField::new('equipe.numero', 'N° équipe');
+        $equipeLettre = TextareaField::new('equipe.lettre', 'Lettre');
+        $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet');
         $updatedat = DateTimeField::new('updatedat', 'Déposé le ');
 
         if (Crud::PAGE_INDEX === $pageName) {

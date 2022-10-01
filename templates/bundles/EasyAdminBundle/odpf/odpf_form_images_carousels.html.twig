@@ -1,72 +1,82 @@
 {# templates/bundles/EasyAdminBunble/odpf/odpf_form_images_carousels.html.twig
 #}
 {% block _OdpfCarousels_image_row %}
-
-    {% set idCarousel = form.parent.vars.data.id %}
+    <div class="container text-center">
+        {% set idCarousel = form.parent.vars.data.id %}
     {% if idCarousel!='' %}
         <a href="{{ path('add_diapo',{idCarousel:idCarousel, idDiapo:0}) }}" type="button"
            class="btn btn-link field-collection-add-button" title="Ajouter une diapositive"><i
                     class="fa fa-plus pr-1"></i>Ajouter
-            une diapositive</a>
-        <div class="text-center">
-            {% for child in form.children|filter(child => not child.rendered)|sort((a, b) => a.vars.value.numero <=> b.vars.value.numero) %}
+            une diapositive
+        </a>
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+                {% for child in form.children|filter(child => not child.rendered)|sort((a, b) => a.vars.value.numero <=> b.vars.value.numero) %}
 
-                <hr>
+                    <hr>
+                    <div class="border  border-secondary"
+                         style="background-color:lightgrey; align-items: center;width: 400px; text-align: center; display: block ">
 
-                <div class="border border-primary"
-                     style="background-color:lightgrey; align-items: center;width: min-content; text-align: center">
+                        Diapo{{ child.vars.value.numero }}
 
-                    Diapo{{ child.vars.value.numero }}
+                        {% if child.vars.value.name is defined %}
+                            <table class="table">
 
-                    {% if child.vars.value.name is defined %}
-                        <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="form-widget">
+                                            <a href="{{ asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name) }}"
+                                               target="_blank"> <img
+                                                        src="{{ asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name) }}"
+                                                        style="height:100px;width:auto" id="diapo{{ loop.index }}"
+                                                        title="{{ child.vars.value.name }}"></a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p style="font-size: 200%"><a
+                                                    href="{{ path('bouge_diapo',{idDiapo:child.vars.value.id,updown:'up'}) }}"
+                                                    title="Monter d'un niveau"> <i class="fa-solid fa-angles-up"></i>
+                                            </a>
+                                        </p>
+                                        <p style="font-size: 200%"><a
+                                                    href="{{ path('bouge_diapo',{idDiapo:child.vars.value.id,updown:'down'}) }}"
+                                                    title="Descendre d'un niveau"> <i
+                                                        class="fa-solid fa-angles-down"></i>
+                                            </a></p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        {% endif %}
+                        <a href="{{ path('add_diapo',{idCarousel:idCarousel,idDiapo:child.vars.value.id}) }}"
+                           type="button"
+                           class="btn btn-primary">Modifier l'image</a>
 
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <div class="form-widget">
-                                        <a href="{{ asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name) }}"
-                                           target="_blank"> <img
-                                                    src="{{ asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name) }}"
-                                                    style="height:100px;width:auto" id="diapo{{ loop.index }}"
-                                                    title="{{ child.vars.value.name }}"></a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p style="font-size: 200%"><a
-                                                href="{{ path('bouge_diapo',{idDiapo:child.vars.value.id,updown:'up'}) }}"
-                                                title="Monter d'un niveau"> <i class="fa-solid fa-angles-up"></i> </a>
-                                    </p>
-                                    <p style="font-size: 200%"><a
-                                                href="{{ path('bouge_diapo',{idDiapo:child.vars.value.id,updown:'down'}) }}"
-                                                title="Descendre d'un niveau"> <i class="fa-solid fa-angles-down"></i>
-                                        </a></p>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    {% endif %}
-                    <a href="{{ path('add_diapo',{idCarousel:idCarousel,idDiapo:child.vars.value.id}) }}" type="button"
-                       class="btn btn-primary">Modifier l'image</a>
 
-                    <div class="form-group">
-
-                        {{ form_label(child) }}
-                        {{ form_row(child) }}
-                        {{ form_errors(child) }}
-
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(child) }}
+                                {{ form_row(child) }}
+                                {{ form_errors(child) }}
+                            </div>
+                        </div>
+                        <button id="delete" type="button"
+                                class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modaldiapo"
+                                data-bs-idCarousel="{{ idCarousel }}" data-bs-idDiapo="{{ child.vars.value.id }}"
+                                title="Supprimer">Supprimer la diapo
+                        </button>
                     </div>
-                    <button id="delete" type="button"
-                            class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modaldiapo"
-                            data-bs-idCarousel="{{ idCarousel }}" data-bs-idDiapo="{{ child.vars.value.id }}"
-                            title="Supprimer">Supprimer la diapo
-                    </button>
-
-                </div>
 
 
-            {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col">
+            </div>
         </div>
+
 
         {% if allow_add|default(false) %}
 
@@ -79,6 +89,7 @@
 
     {% endif %}
 
+    </div>
 {% endblock %}
 
 

@@ -162,23 +162,23 @@ class PhotosCrudController extends AbstractCrudController
             }
             );
         $edition = AssociationField::new('edition');
-        $editionpassee = AssociationField::new('editionspassees', 'edition');
+        $editionpassee = AssociationField::new('editionspassees', 'Edition');
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')
             ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
-            ->setLabel('Nom de la photo')
+            ->setLabel('Photo')
             ->setFormTypeOptions(['disabled' => 'disabled']);
         //
 
-        $coment = TextField::new('coment', 'commentaire');
+        $coment = TextField::new('coment', 'Commentaire');
         $concours == 'national' ? $valnat = true : $valnat = false;
         $national = Field::new('national')->setFormTypeOption('data', $valnat);
 
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
 
 
-        $equipeCentreCentre = TextareaField::new('equipe.centre.centre', 'centre académique');
-        $equipeNumero = IntegerField::new('equipe.numero', 'numéro');
+        $equipeCentreCentre = TextareaField::new('equipe.centre.centre', 'Centre académique');
+        $equipeNumero = IntegerField::new('equipe.numero', 'N° équipe');
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet');
         $equipeLettre = TextField::new('equipe.lettre', 'Lettre');
         $imageFile = Field::new('photoFile')
@@ -313,8 +313,13 @@ class PhotosCrudController extends AbstractCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $name = $entityInstance->getPhoto();
-        unlink('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name);
-        unlink('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+        if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name)) {
+            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name);
+        }
+        if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
+            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+
+        }
         $entityInstance->setPhoto($name);
 
 

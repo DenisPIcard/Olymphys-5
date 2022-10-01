@@ -1,7 +1,7 @@
 {# templates/bundles/EasyAdminBunble/odpf_images_carousels.html.twig #}
 {% for value in field.value %}
 
-    <div class="row-cols-2 text-center border-danger fa-border-style">
+    <div class="row-cols-1 text-center border-danger fa-border-style">
         <div class="col">
             <a href="{{ asset('odpf/odpf-images/imagescarousels/'~value.name~'?m=\' . filemtime('~value.name~') . ') }}"
                target="_blank">
