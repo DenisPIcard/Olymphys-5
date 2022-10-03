@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -20,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
@@ -75,95 +77,15 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         return $crud;
     }
 
-    /*
-        public function new(AdminContext $context): RedirectResponse
-        {
-            $carousel = new OdpfCarousels();
-            $nombre = count($this->doctrine->getRepository(OdpfCarousels::class)->findAll());
-            $carousel->setName('Nouveau carousel' . $nombre);
-            //$this->doctrine->getManager()->persist($carousel);
-            //$this->doctrine->getManager()->flush();
-            //$idCarousel = $carousel->getId();
-            $url = $this->adminUrlGenerator
-                ->setController(OdpfCarouselsCrudController::class)
-                ->setAction('new')
-                ->setDashboard(OdpfDashboardController::class)
-                ->generateUrl();
-            return new RedirectResponse($url);
-
-        }
-    */
-
     public function configureAssets(Assets $assets): Assets
     {
-        $url = $this->generateUrl('supr_diapo');
+        $modaltext = file_get_contents('build/admin/modalcarousels.html');
 
         return $assets
-            ->addHtmlContentToBody('
-            <div class="modal fade" id="modaldiapo" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-        
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="ModaldiapoLabel">La diapositive sera supprimée </h4>
-                            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            
-                            <div class="alert hidden" role="alert" id="modalAlert"></div>
-                            
-                               <p><h6 >Attention ! <br>Supprimer la diapositive ? </h6> </p>
-                        
-                        </div>
-                        <div class="modal-footer">
-                            <form action="' . $url . '">
-                                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
-                                        <span class="btn-label">Annuler</span>
-                                </button>
-                                
-                                <input type="hidden" class="form-control" id="diapoId" name="diapoID" value="recipient-name"/>
-                                <button type="submit"  class="btn btn-danger" data-bs-dismiss="modal" id="diapo-delete-button">
-                                        <span class="btn-label">Supprimer</span>
-                                </button>
-                            </form>
-                        </div>
-                        
-        
-                    </div>
-                </div>
-            </div>
-    <script text/javascript>
+            ->addHtmlContentToBody(Asset:: new($modaltext))
+            ->addJsFile(Asset::new('build/admin/modalcarousels.js'))
+            ->addJsFile(Asset::new('build/admin/showmodal.js')->defer());
 
-        var modal = document.getElementById(\'modaldiapo\')
-        modal.addEventListener(\'show.bs.modal\', function (event) {
-                // Button that triggered the modal
-                var button = event.relatedTarget
-                // Extract info from data-bs-* attributes
-                var recipient = button.getAttribute(\'data-bs-idDiapo\')
-                console.log(recipient)
-                var modalFooterInput = modal.querySelector(\'.modal-footer input\')
-                modalFooterInput.value = recipient
-        }) 
-           
-        </script>
-        <script text/javascript>
-         $("#modaldiapo").on("submit", function (e) {
-                    var formURL = $(this).attr("action");
-                    console.log(formURL);
-                    $.ajax({
-                        url: formURL,
-                        type: "GET",
-                        data: {
-                            idDiapo: $("#diapoId").val(),
-                           
-                        },
-                        console.log(data);
-                    });
-                });    
-    
-         </script>
-         ');
     }
 
     public function configureActions(Actions $actions): Actions
@@ -190,11 +112,14 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true, 'allow_delete' => false])
             ->setEntryIsComplex(true)
             ->renderExpanded(true);
+        $nbimages = IntegerField::new('nbimages', 'Nb Images');
+
         $blackbgnd = BooleanField::new('blackbgnd', 'Fond noir');
         $updatedAt = DateTimeField::new('updatedAt');
+        $createdAt = DateTimeField::new('createdAt');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$name, $images, $updatedAt];
+            return [$name, $nbimages, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$name, $images, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
@@ -262,15 +187,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 $i = +1;
             }
         }
+        $entityInstance->setUpdatedAt(new DateTime());
         $this->doctrine->getManager()->persist($entityInstance);
         $this->doctrine->getManager()->flush();
-        //$imagesCreateThumbs = new ImagesCreateThumbs();
-        /*foreach ($images as $image) {
-            if (file_exists('odpf-images/imagescarousels/'.$image->getName())) {
 
-                $imagesCreateThumbs->createThumbs($image);
-            }
-        }*/
         if ($imagesRemoved !== null) {   //pour effacer les images intiales après leur remplacement dans le carousel
             foreach ($imagesRemoved as $imageRemoved) {
                 if ($imageRemoved !== null) {
@@ -280,6 +200,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 }
             }
         }
+
+
         parent::updateEntity($entityManager, $entityInstance);
     }
 
@@ -305,10 +227,17 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         if ($form->isSubmitted() && $form->isValid()) {
 
             if (null !== $form->get('image')->getData()) {
+
                 $filePath = substr($form->get('image')->getData(), 1);
                 $filePath = str_replace("%20", " ", $filePath);
                 $filePath = str_replace("%2C", ",", $filePath);
-                $pathtmp = $this->getParameter('app.path.odpf') . '/odpf-images/imagescarousels/tmp/';
+                $filePath = str_replace("%C3%A9", "é", $filePath);
+
+                if ($_SERVER['HTTP_HOST'] == 'www.olymphys.fr') {
+                    /*sur le site */
+                    $filePath = explode('../', $filePath)[1];
+                }
+                $pathtmp = 'odpf/odpf-images/imagescarousels/tmp/';
                 $arrayPath = explode('/', $filePath);
                 $filename = $arrayPath[array_key_last($arrayPath)];
                 try {
@@ -316,7 +245,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                     $file = new UploadedFile($pathtmp . $filename, $filename, null, null, true);
                     $diapo->setImageFile($file);
                 } catch (Exception $e) {
-
+                    dd($e);
                 }
 
             }
@@ -338,8 +267,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             } else {
                 $numero = 1;
             }
+            $carousel->setUpdatedAt(new DateTime());
             $diapo->setNumero($numero);
             $em = $this->doctrine->getManager();
+            $em->persist($carousel);
             $em->persist($diapo);
             $em->flush();
             return new RedirectResponse($url);
@@ -357,7 +288,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     public function suprDiapo(Request $request): RedirectResponse|Response
     {
 
-        $idDiapo = str_replace('"', '', $request->query->get('diapoID'));
+        $idDiapo = $request->query->get('diapoID');//recupère la valeur de l'input hidden de la modale
+
         $diapo = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);
         $numeroDiapoSupr = $diapo->getNumero();
         $carousel = $diapo->getCarousel();
@@ -375,7 +307,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setParameters(['carousel' => $carousel, 'numsupr' => $numeroDiapoSupr])
             ->addOrderBy('i.numero', 'ASC')
             ->getQuery()->getResult();
-
+        $carousel->setUpdatedAt(new DateTime());
         $em = $this->doctrine->getManager();
         $em->remove($diapo);
         $em->flush();

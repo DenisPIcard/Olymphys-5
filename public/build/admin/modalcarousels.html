@@ -1,0 +1,34 @@
+<div class="modal fade" id="modaldiapo" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModaldiapoLabel">La diapositive sera supprimée </h4>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="alert hidden" role="alert" id="modalAlert"></div>
+
+                <p><h6 >Attention ! <br>Supprimer la diapositive ? </h6> </p>
+
+            </div>
+            <div class="modal-footer">
+                <form action="/admin/OdpfCarousels/supr_diapo">
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
+                        <span class="btn-label">Annuler</span>
+                    </button>
+
+                    <input type="hidden" class="form-control" id="diapoId" name="diapoID" value="recipient-name"/>
+                    <button type="submit"  class="btn btn-danger" data-bs-dismiss="modal" id="diapo-delete-button">
+                        <span class="btn-label">Supprimer</span>
+                    </button>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+

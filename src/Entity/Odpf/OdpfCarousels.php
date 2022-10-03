@@ -144,5 +144,10 @@ class OdpfCarousels
         return $this;
     }
 
+    public function getNbimages()
+    {
+
+        return count($this->getImages());
+    }
 
 }

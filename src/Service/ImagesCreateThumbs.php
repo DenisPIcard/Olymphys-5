@@ -23,7 +23,9 @@ class ImagesCreateThumbs
         if ($image instanceof OdpfImagescarousels) {
 
             $path = 'odpf/odpf-images/imagescarousels/';
-            $pathtmp = 'odpf/odpf-images/imagescarousels/tmp';
+            if (!file_exists('odpf/odpf-images/imagescarousels/tmp')) {
+                mkdir('odpf/odpf-images/imagescarousels/tmp');
+            };
             $fileImage = $image->getImageFile();
             $imagetmp = new Imagick($fileImage);
 
@@ -35,6 +37,21 @@ class ImagesCreateThumbs
                 $imagetmp->readImage('odpf/odpf-images/imagescarousels/' . $image->getName());
                 $heightOrig = $imagetmp->getImageHeight();
                 $widthOrig = $imagetmp->getImageWidth();
+                $properties = $imagetmp->getImageProperties();
+                if (isset($properties['exif:Orientation'])) {
+
+                    if ($properties['exif:Orientation'] == 8) {//(270°)
+                        $heightOrig = $imagetmp->getImageWidth();
+                        $widthOrig = $imagetmp->getImageHeight();
+                        $imagetmp->rotateImage('#000', -90);
+                    }
+                    if ($properties['exif:Orientation'] == 6) {
+                        $heightOrig = $imagetmp->getImageWidth();
+                        $widthOrig = $imagetmp->getImageHeight();
+                        $imagetmp->rotateImage('#000', 90);
+                    }
+                }
+
                 $percent = 200 / $heightOrig;
                 $nllwidth = $widthOrig * $percent;
                 $nllheight = 200;
