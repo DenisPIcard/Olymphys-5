@@ -168,13 +168,18 @@ class OdpfPhotosCrudController extends AbstractCrudController
             ->leftJoin('e.editionspassees', 'ed')
             ->addOrderBy('ed.edition', 'DESC')
             ->addOrderBy('e.numero', 'ASC');
-
+        $qb2 = $this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('ed')
+            ->addOrderBy('ed.edition', 'DESC')
+            ->addOrderBy('ed.edition', 'DESC');
         $form = $this->createFormBuilder()
             /* ->add('edition',ChoiceType::class,[
                  'choices'=> range(1, 30),
                  'label' => 'Choisir le numéro de l\'édition'
              ])*/
-
+            ->add('editionpassee', EntityType::class, [
+                'class' => OdpfEditionsPassees::class,
+                'query_builder' => $qb2
+            ])
             ->add('equipepassee', EntityType::class, [
                 'class' => OdpfEquipesPassees::class,
                 'query_builder' => $qb
@@ -199,6 +204,8 @@ class OdpfPhotosCrudController extends AbstractCrudController
             //$files=$form->get('serveur')->getData();
 
             if ($files !== null) {
+
+
                 foreach ($files as $photoFile) {
                     $photo = new Photos();
                     $photo->setEquipepassee($equipe);

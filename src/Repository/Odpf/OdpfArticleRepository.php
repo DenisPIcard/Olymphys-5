@@ -72,8 +72,10 @@ class OdpfArticleRepository extends ServiceEntityRepository
         $affActus = $this->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.choix =:choix')
+            ->andWhere('e.publie !=:valeur')
+            ->setParameter('valeur', false)
             ->setParameter('choix', $choix)
-            ->orderBy('e.updatedAt', 'DESC')
+            ->orderBy('e.createdAt', 'DESC')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();
@@ -100,8 +102,10 @@ class OdpfArticleRepository extends ServiceEntityRepository
         $listActus = $this->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.choix =:choix')
+            ->andWhere('e.publie !=:valeur')
+            ->setParameter('valeur', false)
             ->setParameter('choix', $choix)
-            ->orderBy('e.updatedAt', 'DESC')
+            ->orderBy('e.createddAt', 'DESC')
             ->getQuery()
             ->getResult();
 

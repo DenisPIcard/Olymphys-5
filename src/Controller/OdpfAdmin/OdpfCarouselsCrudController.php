@@ -255,7 +255,9 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 $i = 0;
                 foreach ($listImages as $image) {
                     $numeros[$i] = $image->getNumero();
+                    $i = $i + 1;
                 }
+
                 $nummax = max($numeros);
                 $numero = $nummax + 1;
                 foreach ($listImages as $image) {

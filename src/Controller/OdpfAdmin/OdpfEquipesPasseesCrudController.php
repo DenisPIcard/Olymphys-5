@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -139,9 +140,14 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
                 $rneObj = $this->doctrine->getRepository(Rne::class)->findOneBy(['rne' => $rne]);
                 $numeroEquipe = intval($worksheet->getCellByColumnAndRow(4, $row)->getValue());
                 $lettreEquipe = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
-                $nomLycee = $rneObj->getNom();
-                $localiteLycee = $rneObj->getCommune();
-                $academieLycee = $rneObj->getAcademie();
+
+
+                if ($rneObj !== null) {
+                    $nomLycee = $rneObj->getNom();
+                    $localiteLycee = $rneObj->getCommune();
+                    $academieLycee = $rneObj->getAcademie();
+
+                }
                 $prenomProf1 = u(u($worksheet->getCellByColumnAndRow(22, $row)->getValue())->lower())->camel()->title()->toString();
                 $nomProf1 = strtoupper($worksheet->getCellByColumnAndRow(23, $row)->getValue());
                 $profs = $prenomProf1 . ' ' . $nomProf1;

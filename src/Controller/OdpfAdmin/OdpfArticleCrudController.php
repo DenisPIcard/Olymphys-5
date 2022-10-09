@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -74,15 +75,15 @@ class OdpfArticleCrudController extends AbstractCrudController
         $createdAt = DateTimeField::new('createdAt', 'Créé  le ');
         $updatedAt = DateTimeField::new('updatedAt');
         $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
-
+        $publie = BooleanField::new('publie', 'publié');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedat];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedat];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$titre, $choix, $texte, $categorie, $publie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$tab1, $titre, $panel1, $choix, $texte, $categorie, $panel2, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$tab1, $titre, $publie, $panel1, $choix, $texte, $categorie, $panel2, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         }
 
 

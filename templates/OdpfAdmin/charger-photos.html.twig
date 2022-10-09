@@ -6,9 +6,60 @@
 {% endblock %}
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
 
         bsCustomFileInput.init()
     </script>
+    <script type="text/javascript">
+        function removeAll(selectEquipe) {
+            while (selectEquipe.options.length > 0) {
+                selectEquipe.remove(0);
+            }
+        }
+
+        $(document).ready(function () {
+            let editions = document.getElementById('form_editionpassee');
+            let listequipe = document.getElementById("form_equipepassee");
+            let selectEquipe = document.getElementById("form_equipepassee");
+            let equipesIni = []
+
+
+            if (sessionStorage.getItem('refresh') === null) {
+                console.log('OK1')
+                sessionStorage.setItem('refresh', 'false')
+                let j = 0
+                for (let i = 0; i < listequipe.length; i++) {
+                    equipesIni[j] = [listequipe[i].value, listequipe[i].label]
+                    j++;
+                }
+            }
+
+            $('#form_editionpassee').change(function () {
+                editionselect = $(this).find('option:selected').text()
+
+                let equipesEd = document.getElementById("form_equipepassee");
+                removeAll(equipesEd)
+
+                for (let i = 0; i < equipesIni.length; i++) {
+
+                    if (equipesIni[i][1].split('-')[0] === editionselect) {
+                        equipesEd.add(new Option(equipesIni[i][1], equipesIni[i][0]));
+
+                    }
+                }
+
+
+                sessionStorage.setItem('refresh', 'true')
+
+            })
+        })
+
+
+        window.addEventListener('unload', function (event) {
+            sessionStorage.removeItem('refresh')
+        })
+    </script>
+
+
 {% endblock %}

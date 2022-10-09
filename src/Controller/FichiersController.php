@@ -730,7 +730,11 @@ class FichiersController extends AbstractController
             if (($num_type_fichier != 7) and ($num_type_fichier != 4)) {
                 $this->RempliOdpfFichiersPasses($fichier);
             }
-            $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+            try {
+                $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+            } catch (Exception $e) {
+
+            }
 
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
         }
