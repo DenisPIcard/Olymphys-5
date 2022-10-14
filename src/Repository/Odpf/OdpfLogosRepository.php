@@ -33,7 +33,8 @@ class OdpfLogosRepository extends ServiceEntityRepository
         $logos = $this->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.choix =:choix')
-            ->setParameter('choix', $choix)
+            ->andWhere('e.en_service =:value')
+            ->setParameters(['choix' => $choix, 'value' => 1])
             ->getQuery()
             ->getResult();
         $titre = 'Partenaires';

@@ -72,6 +72,8 @@ class OdpfLogosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$type, $nom, $lien, $imageFile, $alt, $choix, $part, $en_service];
         }
+
+
     }
 }
 

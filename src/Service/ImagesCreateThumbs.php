@@ -4,6 +4,7 @@ namespace App\Service;
 
 
 use App\Entity\Odpf\OdpfImagescarousels;
+use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Photos;
 use EasyCorp;
 
@@ -20,11 +21,16 @@ class ImagesCreateThumbs
      */
     public function createThumbs($image)
     {
-        if ($image instanceof OdpfImagescarousels) {
+        if (($image instanceof OdpfImagescarousels) or ($image instanceof OdpfLogos)) {
+            if ($image instanceof OdpfImagescarousels) {
+                $path = 'odpf/odpf-images/imagescarousels/';
+            }
+            if ($image instanceof OdpfLogos) {
 
-            $path = 'odpf/odpf-images/imagescarousels/';
-            if (!file_exists('odpf/odpf-images/imagescarousels/tmp')) {
-                mkdir('odpf/odpf-images/imagescarousels/tmp');
+                $path = 'odpf/odpf-logos/';
+            }
+            if (!file_exists($path . 'tmp')) {
+                mkdir($path . 'tmp');
             };
             $fileImage = $image->getImageFile();
             $imagetmp = new Imagick($fileImage);
@@ -34,7 +40,7 @@ class ImagesCreateThumbs
 
             }
             try {
-                $imagetmp->readImage('odpf/odpf-images/imagescarousels/' . $image->getName());
+                $imagetmp->readImage($path . $image->getName());
                 $heightOrig = $imagetmp->getImageHeight();
                 $widthOrig = $imagetmp->getImageWidth();
                 $properties = $imagetmp->getImageProperties();
@@ -101,7 +107,6 @@ class ImagesCreateThumbs
 
 
         if ($image instanceof Photos) {
-
             $path = 'odpf/odpf-archives/' . $image->getEditionspassees()->getEdition() . '/photoseq/';
             $pathThumb = $path . 'thumbs/';
 
@@ -152,6 +157,8 @@ class ImagesCreateThumbs
             $fond->writeImage($pathThumb . $image->getPhoto());
 
         }
+
+
     }
 
 

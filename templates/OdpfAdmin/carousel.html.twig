@@ -7,7 +7,7 @@
                 <div class="carousel-inner black" style="width:271px !important; height:230px !important ;">
                     {% set i = 1 %}
                     {% if article is defined and article.carousel!=null %}
-                        {% for image in article.carousel.images %}
+                        {% for image in article.carousel.images|sort((a, b) => a.numero <=> b.numero) %}
 
                             {% if i==1 %}
 
