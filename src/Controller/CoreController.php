@@ -188,7 +188,6 @@ class CoreController extends AbstractController
         $tab = $repo->actuspaginees();
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
-        $tab['categorie'] = $categorie;
         $nbpages = $tab['nbpages'];
         $pageCourante = $this->requestStack->getSession()->get('pageCourante');
 
@@ -207,7 +206,7 @@ class CoreController extends AbstractController
                 break;
 
         }
-
+        $tab['categorie'] = $categorie;
         $tab['pageCourante'] = $pageCourante;
         $this->requestStack->getSession()->set('pageCourante', $pageCourante);
 

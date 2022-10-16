@@ -2,6 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Controller\Admin\Filter\CustomEditionspasseesFilter;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
@@ -53,7 +54,7 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('editionspassees', 'edition'))
+            ->add(CustomEditionspasseesFilter::new('editionspassees', 'edition'))
             ->add(BooleanFilter::new('selectionnee'));
 
 

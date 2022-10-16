@@ -5,12 +5,14 @@ namespace App\Controller\OdpfAdmin;
 use App\Controller\Admin\Filter\CustomCentreFilter;
 use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Controller\Admin\Filter\CustomEditionspasseesFilter;
+use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 use App\Entity\Centrescia;
 use App\Entity\Edition;
 use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
+use App\Form\Type\Admin\CustomEquipespasseesFilterType;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -82,7 +84,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
     {
         return $filters
             ->add(CustomEditionspasseesFilter::new('editionspassees'))
-            ->add(EntityFilter::new('equipepassee'))
+            ->add(CustomEquipespasseesFilter::new('equipepassee'))
             ->add(BooleanFilter::new('national'));
     }
 

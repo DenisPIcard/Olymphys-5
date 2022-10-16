@@ -105,7 +105,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->andWhere('e.publie !=:valeur')
             ->setParameter('valeur', false)
             ->setParameter('choix', $choix)
-            ->orderBy('e.createddAt', 'DESC')
+            ->orderBy('e.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
 

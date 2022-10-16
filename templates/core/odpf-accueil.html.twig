@@ -90,7 +90,8 @@
                         <div class="bloc-actus">
                             <h3>Actus</h3>
                             <ul class="actus-home">
-                                {% for actu in affActus %}
+
+                            {% for actu in affActus %}
                                     <li>
                                         <a class="actus-home-titre"
                                            href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a>

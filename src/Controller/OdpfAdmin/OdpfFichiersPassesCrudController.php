@@ -2,6 +2,9 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Controller\Admin\Filter\CustomEditionspasseesFilter;
+use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use Doctrine\ORM\QueryBuilder;
@@ -9,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -20,6 +24,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -41,6 +46,15 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return OdpfFichierspasses::class;
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(CustomEditionspasseesFilter::new('editionspassees', 'edition'))
+            ->add(CustomEquipespasseesFilter::new('equipespassees', 'equipe'));
+
+
     }
 
     public function set_type_fichier($valueIndex, $valueSubIndex): int
@@ -69,7 +83,6 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-
         $context = $this->adminContextProvider->getContext();
         $typefichier = $context->getRequest()->query->get('typefichier');
         $qb = $this->doctrine->getRepository(OdpfFichierspasses::class)->createQueryBuilder('f');
@@ -86,6 +99,13 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
             ->leftJoin('f.editionspassees', 'ed')
             //->addOrderBy('eq.numero','ASC')
             ->addOrderBy('ed.edition', 'DESC');
+        if (isset($_REQUEST['filters'])) {
+            $qb->andWhere('f.editionspassees =:edition')
+                ->setParameter('edition', $this->doctrine->getRepository(OdpfEditionspassees::class)->findOneBy(['id' => $_REQUEST['filters']['editionspassees']]));
+
+        }
+
+
         return $qb;
     }
 
