@@ -3,6 +3,8 @@
   "description": "Olympiades de physique. Gestion des équipes, des documents et du jury du concours",
   "type": "project",
   "license": "proprietary",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "require": {
     "php": "^8.1",
     "ext-ctype": "*",
@@ -38,7 +40,7 @@
     "symfony/debug-bundle": "6.1.*",
     "symfony/dotenv": "6.1.*",
     "symfony/expression-language": "6.1.*",
-    "symfony/flex": "^1.13",
+    "symfony/flex": "^2",
     "symfony/form": "6.1.*",
     "symfony/framework-bundle": "6.1.*",
     "symfony/http-client": "6.1.*",
@@ -54,6 +56,7 @@
     "symfony/property-info": "6.1.*",
     "symfony/proxy-manager-bridge": "6.1.*",
     "symfony/requirements-checker": "^2.0",
+    "symfony/runtime": "6.1.*",
     "symfony/security-bundle": "6.1.*",
     "symfony/serializer": "6.1.*",
     "symfony/stopwatch": "6.1.*",
@@ -80,6 +83,7 @@
     "symfony/var-dumper": "6.1.*"
   },
   "config": {
+    "optimize-autoloader": true,
     "preferred-install": {
       "*": "dist"
     },
@@ -88,16 +92,19 @@
       "symfony/flex": true
     }
   },
+
   "autoload": {
     "psr-4": {
       "App\\": "src/"
     }
   },
   "autoload-dev": {
-    "psr-4": {
-      "App\\Tests\\": "tests/"
-    }
+      "psr-4": {
+        "App\\Tests\\": "tests/"
+      }
   },
+
+
   "replace": {
     "paragonie/random_compat": "2.*",
     "symfony/polyfill-ctype": "*",
@@ -133,4 +140,5 @@
       "docker": true
     }
   }
+
 }

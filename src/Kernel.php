@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use function dirname;
 
+
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
@@ -36,4 +37,5 @@ class Kernel extends BaseKernel
             (require $path)($routes->withPath($path), $this);
         }
     }
+
 }

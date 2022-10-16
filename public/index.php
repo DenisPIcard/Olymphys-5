@@ -26,3 +26,4 @@ $date->modify('+600 seconds');
 $response->setExpires($date);
 $response->send();
 $kernel->terminate($request, $response);
+

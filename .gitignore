@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 /.idea
 ###> symfony/framework-bundle ###
+/.env
+
+
+###> symfony/framework-bundle ###
+>>>>>>> 3f64d87 (Add initial set of files)
 /.env
 /.env.local
 /.env.local.php
@@ -39,3 +45,4 @@ yarn-error.log
 /public/odpf/odpf-images/imagescarousels/
 /public/odpf/odpf-archives/30/parrain/Hélène Fischer-parrain30.jpg
 /public/odpf/odpf-archives/30/parrain/parrain30.jpg
+
