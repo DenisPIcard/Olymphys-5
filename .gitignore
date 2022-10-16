@@ -1,48 +1,20 @@
-<<<<<<< HEAD
-/.idea
-###> symfony/framework-bundle ###
-/.env
-
 
 ###> symfony/framework-bundle ###
->>>>>>> 3f64d87 (Add initial set of files)
-/.env
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/public/fichiers/
-/public/odpf-images/imagescarousels/
-/public/odpf-logos/
-/public/odpf-archives/
-/public/upload/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
-
-###> symfony/webpack-encore-bundle ###
-/node_modules/
-
-npm-debug.log
-yarn-error.log
-###< symfony/webpack-encore-bundle ###
-**/photoseq/
-**/fichiers/
-/public/odpf-archives/27/photoseq/
-/public/odpf-archives/28/photoseq/
-/public/odpf-archives/29/photoseq/
-/public/odpf-archives/30/photoseq/
-
-
-/public/odpf/.tmb/
-/public/recupOdpf/
-/public/odpf/odpf-images/imagescarousels/
-/public/odpf/odpf-archives/30/parrain/Hélène Fischer-parrain30.jpg
-/public/odpf/odpf-archives/30/parrain/parrain30.jpg
-
