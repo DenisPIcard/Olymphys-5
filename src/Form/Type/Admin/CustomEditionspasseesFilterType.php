@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CustomEditionspasseesFilterType extends AbstractType
 {
     private $requestStack;
-    private EntityManager $doctrine;
+    private EntityManagerInterface $doctrine;
 
     public function __construct(RequestStack $requestStack, EntityManagerInterface $doctrine)
     {

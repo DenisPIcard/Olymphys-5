@@ -21,12 +21,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CustomEquipespasseesFilterType extends AbstractType
 {
-    private $requestStack;
+
     private EntityManagerInterface $doctrine;
 
     public function __construct(RequestStack $requestStack, EntityManagerInterface $doctrine)
     {
-        $this->requestStack = $requestStack;
+
         $this->doctrine = $doctrine;
     }
 

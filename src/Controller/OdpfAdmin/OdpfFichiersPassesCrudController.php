@@ -97,11 +97,13 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         }
         $qb->leftJoin('f.equipepassee', 'eq')
             ->leftJoin('f.editionspassees', 'ed')
-            //->addOrderBy('eq.numero','ASC')
-            ->addOrderBy('ed.edition', 'DESC');
+            ->addOrderBy('ed.edition', 'DESC')
+            ->addOrderBy('eq.numero', 'ASC');
+
         if (isset($_REQUEST['filters'])) {
             $qb->andWhere('f.editionspassees =:edition')
                 ->setParameter('edition', $this->doctrine->getRepository(OdpfEditionspassees::class)->findOneBy(['id' => $_REQUEST['filters']['editionspassees']]));
+
 
         }
 
