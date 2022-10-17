@@ -87,8 +87,7 @@ class ElevesinterCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(CustomEquipeFilter::new('equipe'))
-            ->add(CustomEditionFilter:: new('edition'));
+            ->add(CustomEquipeFilter::new('equipe'));
 
 
     }
