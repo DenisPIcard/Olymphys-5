@@ -62,8 +62,9 @@ class Elevesinter
 
     /**
      * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="eleve", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="autorisationphotos_id",  referencedColumnName="id" , nullable=true)
      */
-    private ?Fichiersequipes $autorisationphotos = null;
+    private ?Fichiersequipes $autorisationphotos;
 
 
     public function __toString()
