@@ -52,6 +52,7 @@ class ModifEquipeType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
                         ->setParameter('rne', $rne)
+                        ->andWhere('u.isActive = 1')
                         ->addOrderBy('u.nom', 'ASC');
                 },
                 'choice_value' => 'getId',
@@ -66,6 +67,7 @@ class ModifEquipeType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
                         ->setParameter('rne', $rne)
+                        ->andWhere('u.isActive = 1')
                         ->addOrderBy('u.nom', 'ASC');
                 },
                 'choice_value' => 'getId',

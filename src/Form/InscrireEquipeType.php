@@ -32,6 +32,7 @@ class InscrireEquipeType extends AbstractType
                 'query_builder' => function (EntityRepository $er) use ($rne) {
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
+                        ->andWhere('u.isActive = 1')
                         ->setParameter('rne', $rne)
                         ->addOrderBy('u.nom', 'ASC');
                 },
@@ -47,6 +48,7 @@ class InscrireEquipeType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
                         ->setParameter('rne', $rne)
+                        ->andWhere('u.isActive = 1')
                         ->addOrderBy('u.nom', 'ASC');
                 },
                 'choice_value' => 'getId',

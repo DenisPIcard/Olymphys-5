@@ -86,10 +86,10 @@ class UserCrudController extends AbstractCrudController
         $civilite = TextField::new('civilite');
         $autorisationphotos = AssociationField::new('autorisationphotos');
         $interlocuteur = AssociationField::new('interlocuteur');
-        $centreciaCentre = TextareaField::new('centrecia.centre', 'Centre CIA');
+        //$centreciaCentre = TextField::new('centrecia.centre', 'Centre CIA');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $email, $username, $nomPrenom, $roles, $isActive, $centreciaCentre];
+            return [$id, $email, $username, $nomPrenom, $roles, $isActive,];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rneId, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $centrecia, $autorisationphotos, $interlocuteur];
         } elseif (Crud::PAGE_NEW === $pageName) {

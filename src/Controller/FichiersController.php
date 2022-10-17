@@ -252,11 +252,7 @@ class FichiersController extends AbstractController
         if (($choix == 'liste_prof')) {
 
             if (($phase == 'interacadémique') or ($role == 'ROLE_ORGACIA')) {
-                if ($role == 'ROLE_PROF') {
-                    $liste_equipes = $qb3->getQuery()->getResult();
-                    $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
 
-                }
 
                 if ($role == 'ROLE_ORGACIA') {
                     $centre = $this->getUser()->getCentrecia();
@@ -281,6 +277,13 @@ class FichiersController extends AbstractController
                         $rne_objet = null;
                     }
                 }
+                if (in_array('ROLE_PROF', $user->getRoles()) == true) {
+                    $liste_equipes = $qb3->getQuery()->getResult();
+                    $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+                    $role = 'ROLE_PROF';
+                }
+
+
             }
 
             //if($liste_equipes!=null) {
