@@ -3,7 +3,7 @@ fm_elfinder:
   instances:
     default:
       locale: fr # Langue
-      editor: ckeditor # Editeur utilisé
+      editor: ckeditor # Éditeur utilisé
       fullscreen: true # Taille d'affichage
       theme: smoothness # Thème à utiliser
       #path_prefix : 'public'
@@ -12,7 +12,7 @@ fm_elfinder:
       multi_home_folder: true
       folder_separator: "|"
       connector:
-        debug: false # Désactive le débug
+        debug: false # Désactive le debug
         roots:
           uploads:
             show_hidden: false # Masque les fichiers cachés
