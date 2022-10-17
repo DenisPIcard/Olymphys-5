@@ -151,7 +151,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $equipe = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
 
             $rne = $equipe->getRne();
-            $listProfs = $this->doctrine->getManager()->getRepository(User::class)->findBy(['rne' => $rne]);
+            $listProfs = $this->doctrine->getManager()->getRepository(User::class)->findBy(['rne' => $rne, 'isActive' => true]);
             $listeCentres = $this->doctrine->getManager()->getRepository(Centrescia::class)->findBy(['actif' => true]);
         } else {
             $listProfs = [];
@@ -192,7 +192,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $rneId = AssociationField::new('rneId');
         $edition = AssociationField::new('edition', 'Edition');
         $editionEd = TextareaField::new('edition.ed', 'Edition');
-        $centreCentre = TextareaField::new('centre.centre', 'Centre CIA');
+        $centreCentre = AssociationField::new('centre', 'Centre CIA');
         $lycee = TextareaField::new('Lycee');
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');

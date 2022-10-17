@@ -66,7 +66,7 @@
                     <div class="row">
                         <div class="col">
                             <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }}
-                            {% if role != 'ROLE_PROF' %}
+                            {% if is_granted('ROLE_PROF' ) %}
                                 <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
                             {% endif %}
                             {% if equipe.inscrite== false %}
@@ -100,7 +100,7 @@
                             {% if   equipe.lettre!=null %} <b> {{ equipe.lettre }}</b>  {% else %}
                                 <b>{% set phase='academique' %}{{ equipe.numero }}</b>{% endif %}
                             - {{ equipe.titreProjet }}
-                            {% if role != 'ROLE_PROF' %}
+                            {% if is_granted('ROLE_PROF') %}
                                 <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
                             {% endif %}
 
@@ -122,12 +122,13 @@
             </table>
         {% endif %}
     </div>
-    {% if role==('ROLE_PROF') %}
+    {% if is_granted('ROLE_PROF') %}
         <div class="table">
             <tr>
-                <td>
-                    <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
-                       title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
+                <td> {% if date()< app.session.get('edition').dateclotureinscription %}
+                        <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
+                           title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
+                    {% endif %}
                 </td>
             </tr>
 
