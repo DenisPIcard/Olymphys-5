@@ -68,6 +68,15 @@ class ElevesinterCrudController extends AbstractCrudController
             $equipeTitre = 'de l\'équipe ' . $equipe;
 
             $crud->setPageTitle('index', 'Liste des élèves ' . $equipeTitre);
+
+        }
+
+        if ($_REQUEST['crudAction'] == 'edit') {
+            $idEleve = $_REQUEST['entityId'];
+            $eleve = $this->doctrine->getRepository(Elevesinter::class)->findOneBy(['id' => $idEleve]);
+            $crud->setPageTitle('edit', 'Eleve ' . $eleve->getPrenom() . ' ' . $eleve->getNom());
+
+
         }
 
         return $crud
@@ -125,11 +134,17 @@ class ElevesinterCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+
+        $listEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
+            ->addOrderBy('e.numero', 'ASC')
+            ->getQuery()->getResult();
         $nom = TextField::new('nom');
         $prenom = TextField::new('prenom');
         $genre = TextField::new('genre');
         $courriel = TextField::new('courriel');
-        $equipe = AssociationField::new('equipe');
+        $equipe = AssociationField::new('equipe')->setFormTypeOptions(['choices' => $listEquipes]);;
         $id = IntegerField::new('id', 'ID');
         $numsite = IntegerField::new('numsite');
         $classe = TextField::new('classe');

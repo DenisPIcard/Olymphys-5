@@ -9,10 +9,14 @@
                         <div class="content-header-title">
                             <h3 class=\"title\">
                                 {% block page_title %}
-
+                                    {{ dump( app.request) }}
                                     {% if  app.request.query.get('filters')==null %}
-                                        {% set titre_page='Elèves de la '~ app.session.get('edition').ed ~'<sup>e</sup> édition' %}
+                                        {% if app.request.query.get('crudAction') !='edit' %}
+                                            {% set titre_page='Elèves de la '~ app.session.get('edition').ed ~'<sup>e</sup> édition' %}
+                                        {% else %}
+                                            {% set titre_page = page_title %}
 
+                                        {% endif %}
                                     {% endif %}
                                     {% if  app.request.query.get('filters')!=null %}
                                         {% if  app.request.query.get('filters').edition is defined %}
