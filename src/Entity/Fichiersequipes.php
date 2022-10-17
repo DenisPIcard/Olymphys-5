@@ -91,8 +91,9 @@ class Fichiersequipes //extends BaseMedia
 
     /**
      * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist"})
+     * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true)
      */
-    private ?Elevesinter $eleve = null;
+    private ?Elevesinter $eleve;
 
 
     public function getFichierFile(): ?File

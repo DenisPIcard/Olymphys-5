@@ -2,9 +2,10 @@
 
 namespace App\Controller\Admin\Filter;
 
-use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 
-use App\Form\Type\Admin\CustomEditionspasseesFilterType;
+use App\Form\Type\Admin\CustomEquipeFilterType;
+use App\Form\Type\Admin\CustomEquipespasseesFilterType;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -13,7 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
 
 
-class CustomEditionspasseesFilter implements FilterInterface
+class CustomEquipeFilter implements FilterInterface
 {
     use FilterTrait;
 
@@ -23,13 +24,13 @@ class CustomEditionspasseesFilter implements FilterInterface
             ->setFilterFqcn(__CLASS__)
             ->setProperty($propertyName)
             ->setLabel($label)
-            ->setFormType(CustomEditionspasseesFilterType::class);
+            ->setFormType(CustomEquipeFilterType::class);
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
-        $queryBuilder->addOrderBy('entity.editionspassees', 'DESC')
-            ->andWhere('entity.editionspassees =:value')
+        $queryBuilder
+            ->andWhere('entity.id =:value')
             ->setParameter('value', $filterDataDto->getValue());
 
 

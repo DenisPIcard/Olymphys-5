@@ -39,11 +39,13 @@ use function Symfony\Component\String\u;
 class OdpfEquipesPasseesCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $doctrine;
+    private EntityRepository $entityRepository;
 
-    public function __construct(EntityManagerInterface $doctrine)
+    public function __construct(EntityManagerInterface $doctrine, EntityRepository $entityRepository)
     {
 
         $this->doctrine = $doctrine;
+        $this->entityRepository = $entityRepository;
     }
 
     public static function getEntityFqcn(): string
@@ -80,18 +82,10 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $repositoryEdition = $this->doctrine->getRepository(OdpfEditionsPassees::class);
-        $qb = $this->doctrine->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('e');
-        $qb->leftJoin('e.editionspassees', 'ed')
+        $qb = $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $qb->leftJoin('entity.editionspassees', 'ed')
             ->addOrderBy('ed.edition', 'DESC')
-            ->addOrderBy('e.numero', 'ASC');;
-        if (isset($_REQUEST['filters']['editionspassees'])) {
-
-            $idEdition = $_REQUEST['filters']['editionspassees'];
-
-            $qb->andWhere('e.editionspassees =:edition')
-                ->setParameter('edition', $repositoryEdition->findOneBy(['id' => $idEdition]));
-
-        }
+            ->addOrderBy('entity.numero', 'ASC');;
 
 
         return $qb;

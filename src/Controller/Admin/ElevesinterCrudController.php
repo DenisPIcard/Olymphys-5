@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomEditionFilter;
+use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
@@ -77,7 +78,7 @@ class ElevesinterCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('equipe'))
+            ->add(CustomEquipeFilter::new('equipe'))
             ->add(CustomEditionFilter:: new('edition'));
 
 
@@ -116,6 +117,7 @@ class ElevesinterCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_INDEX, $tableauexcelnonsel)
             ->add(Crud::PAGE_INDEX, $elevessel)
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_INDEX, Action::DELETE);
 
@@ -137,7 +139,7 @@ class ElevesinterCrudController extends AbstractCrudController
         $equipeTitreProjet = TextareaField::new('equipe.titreProjet', 'Projet');
         $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville');
         $equipeEdition = TextareaField::new('equipe.edition', 'Edition');
-        $autorisationphotosFichier = TextareaField::new('autorisationphotos.fichier', 'Autorisation photos');
+        $autorisationphotosFichier = AssociationField::new('autorisationphotos', 'Autorisation photos');
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
