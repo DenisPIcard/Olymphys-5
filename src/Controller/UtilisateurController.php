@@ -125,7 +125,7 @@ class UtilisateurController extends AbstractController
 
 
             $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
-            if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
+            if ($this->isGranted('ROLE_PROF')) {
                 $edition = $session->get('edition');
                 $idEdition = $edition->getId();
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);

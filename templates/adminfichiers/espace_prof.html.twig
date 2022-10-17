@@ -80,7 +80,7 @@
 
             </div>
         </div>
-        {% if role =='ROLE_PROF' %}
+        {% if is_granted( 'ROLE_PROF') %}
             <div class="row">
                 <div class="col">
 
@@ -88,7 +88,7 @@
                        class="btn btn-primary">Modifier </a>
                 </div>
                 <div class="col">
-                    {% if role=='ROLE_PROF' %}
+                    {% if is_granted('ROLE_PROF') %}
 
                         <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}">Retour
                                 à la liste des équipes</a></div>
@@ -118,7 +118,7 @@
 
     {# ############################# FIN DE LA PAGE ESPACE PROFESSEUR ################################################### #}
     <div class="well">
-        {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN') %}
+        {% if (is_granted('ROLE_JURY')) or (is_granted('ROLE_COMITE')) or (is_granted( 'ROLE_JURYCIA')) or (is_granted('ROLE_ORGACIA'))or (is_granted('ROLE_SUPER_ADMIN')) %}
 
             {% if concours=='interacadémique' %}
                 <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}">Retour à
@@ -129,7 +129,7 @@
                         à la liste des équipes</a></div>
             {% endif %}
         {% endif %}
-        {% if role=='ROLE_PROF' %}
+        {% if is_granted('ROLE_PROF') %}
 
             <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}">Retour à la
                     liste des équipes</a></div>

@@ -16,7 +16,7 @@
     <div class="col-7">
         Lien
     </div>
-    {% if role=="ROLE_PROF" %}
+    {% if is_granted('ROLE_PROF') %}
         <div class="col-1">
             Modifier
         </div>
@@ -27,14 +27,14 @@
 </div>
 <div class="row ">
     <div class="col-3 text-center">
-        {% if role=='ROLE_PROF' %}
+        {% if is_granted('ROLE_PROF') %}
             Nouvelle vidéo :  <a
                 href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'nouvelle-'} ) }}" ">
             <button type="button" title="Nouvelle vidéo"><i class="fa fa-plus"></i></button></a></td>
         {% endif %}
     </div>
     <div class="col-7"></div>
-    {% if (role=='ROLE_PROF' ) %}
+    {% if is_granted('ROLE_PROF' ) %}
         <div class="col-1">
 
         </div>

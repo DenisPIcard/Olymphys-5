@@ -144,9 +144,10 @@ class FichiersController extends AbstractController
 
         $id_user = $user->getId();
         $roles = $user->getRoles();
-        $role = $roles[0];
+        //dd($roles);
+        //$role = $roles[0];
 
-        if ($role == 'ROLE_JURY') {
+        if ($this->isGranted('ROLE_JURY')) {
             $nom = $user->getUsername();
 
             $repositoryJures = $this->doctrine->getRepository(Jures::class);
@@ -180,11 +181,11 @@ class FichiersController extends AbstractController
 
 
         if (($choix == 'liste_cn_comite')) {
-            if (($role == 'ROLE_COMITE') or ($role == 'ROLE_JURY') or ($role == 'ROLE_SUPER_ADMIN')) {
+            if (($this->isGranted('ROLE_COMITE')) or ($this->isGranted('ROLE_JURY')) or ($this->isGranted('ROLE_SUPER_ADMIN'))) {
 
                 $liste_equipes = $qb1->getQuery()->getResult();
                 if ($liste_equipes != null) {
-                    if (($role == 'ROLE_COMITE') or ($role == 'ROLE_SUPER_ADMIN')) {
+                    if (($this->isGranted('ROLE_COMITE')) or ($this->isGranted('ROLE_SUPER_ADMIN'))) {
 
                         $content = $this
                             ->renderView('adminfichiers\choix_equipe.html.twig', array(
@@ -192,7 +193,7 @@ class FichiersController extends AbstractController
                                 )
                             );
                     }
-                    if ($role == 'ROLE_JURY') {
+                    if ($this->isGranted('ROLE_JURY')) {
                         $content = $this
                             ->renderView('adminfichiers\choix_equipe.html.twig', array(
                                 'liste_equipes' => $liste_equipes, 'user' => $user, 'phase' => 'national', 'role' => $role, 'choix' => $choix, 'jure' => $jure)//Jure necessaire pour le titre
@@ -216,7 +217,7 @@ class FichiersController extends AbstractController
 
 
         if (isset($centre) or ($choix == 'centre')) { //pour le jurycia, comité, superadmin liste des équipes d'un centre
-            if (($role == 'ROLE_COMITE') or ($role == 'ROLE_JURY') or ($role == 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_ORGACIA') or ($role == 'ROLE_JURYCIA')) {
+            if (($this->isGranted('ROLE_COMITE')) or ($this->isGranted('ROLE_JURY')) or ($this->isGranted('ROLE_SUPER_ADMIN')) or ($this->isGranted('ROLE_ORGACIA')) or ($this->isGranted('ROLE_JURYCIA'))) {
                 if (!isset($centre)) {
                     $centre = $this->getUser()->getCentrecia();
                 }
@@ -251,10 +252,10 @@ class FichiersController extends AbstractController
 
         if (($choix == 'liste_prof')) {
 
-            if (($phase == 'interacadémique') or ($role == 'ROLE_ORGACIA')) {
+            if (($phase == 'interacadémique') or ($this->isGranted('ROLE_ORGACIA'))) {
 
 
-                if ($role == 'ROLE_ORGACIA') {
+                if ($this->isGranted('ROLE_ORGACIA')) {
                     $centre = $this->getUser()->getCentrecia();
 
                     $liste_equipes = $repositoryEquipesadmin->createQueryBuilder('t')
@@ -267,7 +268,7 @@ class FichiersController extends AbstractController
                 }
 
 
-                if (($role != 'ROLE_ORGACIA') and ($role != 'ROLE_PROF')) {
+                if (($this->isGranted('ROLE_ORGACIA') == false) and ($this->isGranted('ROLE_PROF') == false)) {
                     $liste_equipes = null;
                     if ($dateconnect > $datecia) {
                         /*$qb3->andWhere('t.selectionnee=:selectionnee')
@@ -317,7 +318,7 @@ class FichiersController extends AbstractController
 
         if (($choix == 'deposer')) {//pour le dépôt des fichiers autres que les présentations
 
-            if ($role == 'ROLE_PROF') {
+            if ($this->isGranted('ROLE_PROF')) {
 
                 if ($choix == 'diaporama_jury') {
                     if ($dateconnect <= $datecia) {
@@ -365,7 +366,7 @@ class FichiersController extends AbstractController
                 }
             }
 
-            if (($role == 'ROLE_COMITE')) {
+            if ($this->isGranted('ROLE_COMITE')) {
 
 
                 if (($dateconnect > $datelimcia)) {
@@ -409,7 +410,7 @@ class FichiersController extends AbstractController
 
 
             }
-            if (($role == 'ROLE_ORGACIA') or ($role == 'ROLE_JURYCIA')) {
+            if (($this->isGranted('ROLE_ORGACIA')) or ($this->isGranted('ROLE_JURYCIA'))) {
 
                 $centre = $user->getCentrecia()->getCentre();
                 $qb5 = $repositoryEquipesadmin->createQueryBuilder('t')
@@ -1054,9 +1055,10 @@ class FichiersController extends AbstractController
         }
 
 
-        $roles = $this->getUser()->getRoles();
-        $role = $roles[0];
-        if ($role == 'ROLE_COMITE') {
+        //$roles = $this->getUser()->getRoles();
+        //$role = $roles[0];
+        if ($this->isGranted('ROLE_COMITE')) {
+
             $liste_fichiers = $qb2->getQuery()->getResult();
             $autorisations = $qb1
                 ->andWhere('t.typefichier =:type3')
@@ -1064,7 +1066,7 @@ class FichiersController extends AbstractController
                 ->getQuery()->getResult();
 
         }
-        if ($role == 'ROLE_PROF') {  // Liste de tous les fichiers
+        if ($this->isGranted('ROLE_PROF')) {  // Liste de tous les fichiers
 
             $liste_fichiers = $qb1->getQuery()->getResult();
             $autorisations = $qb1->andWhere('t.national =:national')
@@ -1073,13 +1075,13 @@ class FichiersController extends AbstractController
                 ->getQuery()->getResult();
 
         }
-        if (($role == 'ROLE_ORGACIA') or ($role == 'ROLE_SUPER_ADMIN')) {
+        if (($this->isGranted('ROLE_ORGACIA')) or ($this->isGranted('ROLE_SUPER_ADMIN'))) {
             $liste_fichiers = $qb1->getQuery()->getResult();
             $autorisations = $qb1
                 ->andWhere('t.typefichier = 6')
                 ->getQuery()->getResult();
         }
-        if ($role == 'ROLE_JURYCIA') {
+        if ($this->isGranted('ROLE_JURYCIA')) {
             $qb1->andWhere('t.typefichier in (0,1,2,5)');
 
             $liste_fichiers = $qb1->getQuery()->getResult();
@@ -1087,7 +1089,7 @@ class FichiersController extends AbstractController
 
             $autorisations = [];
         }
-        if ($role == 'ROLE_JURY') {
+        if ($this->isGranted('ROLE_JURY')) {
             $liste_fichiers = $qb4->getQuery()->getResult();
 
         }
@@ -1173,7 +1175,7 @@ class FichiersController extends AbstractController
 
         $content = $this
             ->renderView('adminfichiers\espace_prof.html.twig', array('form' => $Form, 'listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
-                    'equipe' => $equipe_choisie, 'centre' => $equipe_choisie->getCentre(), 'concours' => $concours, 'edition' => $edition, 'choix' => $choix, 'role' => $role,
+                    'equipe' => $equipe_choisie, 'centre' => $equipe_choisie->getCentre(), 'concours' => $concours, 'edition' => $edition, 'choix' => $choix,
                     'liste_prof' => $liste_prof, 'listeEleves' => $listeEleves, 'liste_fichiers' => $liste_fichiers)
             );
         return new Response($content);
