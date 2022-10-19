@@ -635,7 +635,7 @@ class SecretariatadminController extends AbstractController
                 if (count($user) > 1) {
                     foreach ($user as $jury) {//certains jurés sont parfois aussi organisateur des cia avec un autre compte.on ne sélectionne que le compte de role jury
 
-                        if ($jury->getRoles()[0] == 'ROLE_JURY') {
+                        if (in_array('ROLE_JURY', $jury->getRoles())) {
                             $jure->setIduser($jury);
                         }
                     }

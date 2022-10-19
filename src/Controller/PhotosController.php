@@ -68,8 +68,7 @@ class PhotosController extends AbstractController
 
         $user = $this->getUser();
         $id_user = $user->getId();
-        $roles = $user->getRoles();
-        $role = $roles[0];
+        $this->isGranted('ROLE_PROF') ? $role = 'ROLE_PROF' : $role = '';
 
         $Photos = new Photos();
 //$Photos->setSession($session);
@@ -175,7 +174,7 @@ class PhotosController extends AbstractController
         $Form = $form->createView();
 
         return $this->render('photos/deposephotos.html.twig', [
-            'form' => $Form, 'edition' => $edition, 'concours' => $concours, 'role' => $role
+            'form' => $Form, 'edition' => $edition, 'concours' => $concours,
         ]);
     }
 
@@ -209,8 +208,7 @@ class PhotosController extends AbstractController
             ->getRepository(Centrescia::class);
         $user = $this->getUser();
         $id_user = $user->getId();
-        $roles = $user->getRoles();
-        $role = $roles[0];
+
         $concourseditioncentre = explode('-', $infos);
         $concours = $concourseditioncentre[0];
         $idedition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
@@ -229,12 +227,12 @@ class PhotosController extends AbstractController
                     ->add('info', 'Les centres interacadémiques ne sont pas encore attribués pour la ' . $edition->getEd() . 'e édition');
                 $this->redirectToRoute('core_home');
             }
-            if (($role == 'ROLE_ORGACIA') or ($role == 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
+            if (($this->isGranted('ROLE_ORGACIA')) or ($this->isGranted('ROLE_SUPER_ADMIN')) or ($this->isGranted('ROLE_COMITE'))) {
                 $ville = $centre->getCentre();
                 $qb->andWhere('e.centre=:centre')
                     ->setParameter('centre', $centre);
             }
-            if ($role == 'ROLE_PROF') {
+            if ($this->isGranted('ROLE_PROF')) {
                 $ville = 'prof';
                 $qb->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
                     ->setParameter('prof', $id_user);
@@ -278,7 +276,7 @@ class PhotosController extends AbstractController
                 ->setParameter('edition', $edition)
                 ->andWhere('p.national = 1')
                 ->setParameter('equipe', $equipe);
-            if ($role == 'ROLE_PROF') {
+            if ($this->isGranted('ROLE_PROF')) {
                 $equipes = $repositoryEquipesadmin->createQueryBuilder('eq')
                     ->andWhere('eq.selectionnee = TRUE')
                     ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')
@@ -377,14 +375,14 @@ class PhotosController extends AbstractController
             $content = $this
                 ->renderView('photos/gestion_photos_cia.html.twig', array('formtab' => $formtab,
                     'liste_photos' => $liste_photos, 'centre' => $ville, 'choix' => $choix,
-                    'edition' => $edition, 'liste_equipes' => $liste_equipes, 'concours' => 'cia', 'role' => $role));
+                    'edition' => $edition, 'liste_equipes' => $liste_equipes, 'concours' => 'cia'));
             return new Response($content);
         }
 
         if ($concours == 'national') {
             $content = $this
                 ->renderView('photos/gestion_photos_cn.html.twig', array('formtab' => $formtab, 'liste_photos' => $liste_photos,
-                    'edition' => $edition, 'equipe' => $equipe, 'concours' => 'national', 'role' => $role, 'choix' => $choix));
+                    'edition' => $edition, 'equipe' => $equipe, 'concours' => 'national', 'choix' => $choix));
             return new Response($content);
         }
 

@@ -13,7 +13,7 @@
 
 {% block titre3 %}
     <center>{{ edition.ed }}<sup>e</sup> Les photos des épreuves nationales.</center></br>
-    {% if role!='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF') %}
 
         {% if equipe.lettre!='' %}
             <Font color="blue">Equipe {{ equipe.lettre }} : {{ equipe.Titreprojet }}</font>
@@ -22,12 +22,12 @@
             <Font color="blue"> {{ equipe.Titreprojet }}</font>
         {% endif %}
     {% endif %}
-    {% if role=='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF') %}
         <Font color="blue"> Photos des équipes de {{ app.user.prenom }}  {{ app.user.nom }}</font>
     {% endif %}
 {% endblock %}
 {% block body %}
-    {% if role!='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF')== false %}
         {% if concours=='cia' %}
             <a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix}) }}">Retour à la liste des
                 centres</a>
@@ -125,7 +125,7 @@
 
         </div>
     </div>
-    {% if role=='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF') %}
         <div class="text-center"><a href="{{ path('core_home') }}">Retour</a></div>
 
     {% else %}

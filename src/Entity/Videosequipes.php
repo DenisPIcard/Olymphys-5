@@ -25,9 +25,8 @@ class Videosequipes
     private ?int $id = null;
 
     /**
-     * @Assert\Url(
-     *    message = "L\'url '{{ value }}' n'est pas valide",
-     *  )
+     *
+     *
      * @ORM\Column(name="lien", type="string")
      */
     private ?string $lien;

@@ -55,7 +55,7 @@
             <div class="col-7">
                 <a href="{{ video.lien }}" target="blank">{{ video.lien }}</a>
             </div>
-            {% if (role=='ROLE_PROF' ) %}
+            {% if is_granted('ROLE_PROF' ) %}
                 <div class="col-1 align-self-end">
                     <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'modifier-'~video.id} ) }}"
                     ">

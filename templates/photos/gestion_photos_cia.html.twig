@@ -21,7 +21,7 @@
 
 {% endblock %}
 {% block body %}
-    {% if role!='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF') == false %}
         {% if concours=='cia' %}
 
             <div class="text-center"><a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix}) }}">Retour
@@ -34,7 +34,7 @@
                     à la liste des équipes</a></div>
         {% endif %}
     {% endif %}
-    {% if role=='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF') %}
         <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}">Retour</a></div>
     {% endif %}
     <div class="container-fluid">
@@ -108,7 +108,7 @@
 
         </div>
     </div>
-    {% if role=='ROLE_PROF' %}
+    {% if is_granted('ROLE_PROF') %}
         <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}">Retour</a></div>
 
     {% else %}

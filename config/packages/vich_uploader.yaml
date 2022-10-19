@@ -67,8 +67,8 @@ vich_uploader:
       delete_on_remove: true
 
     odpfLogos:
-      uri_prefix: '%app.path.odpf_logos%'
-      upload_destination: '%app.path.odpf_logos%'
+      uri_prefix: '%app.path.odpf_logos.localhost%'
+      upload_destination: '%app.path.odpf_logos.localhost%'
       inject_on_load: true
       delete_on_update: true
       delete_on_remove: true

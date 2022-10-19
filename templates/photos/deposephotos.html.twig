@@ -44,7 +44,7 @@
 
 
     <div class="well">
-        {% if role=='ROLE_PROF' %}
+        {% if is_granted('ROLE_PROF') %}
             <font color='red'> Ces photos ne seront visibles en public que le lendemain du concours
                 {% if concours =='cia' %}
                     interacadémique
@@ -77,7 +77,7 @@
                 </div>
 
                 {{ form_end(form) }}
-                {% if role=='ROLE_PROF' %}
+                {% if is_granted('ROLE_PROF') %}
                     <a href="{{ path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-prof-1'}) }}">Gerer les
                         photos</a>
 
