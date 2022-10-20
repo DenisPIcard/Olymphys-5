@@ -177,7 +177,7 @@ class OdpfPartenaires
     /**
      * Updates the hash value to force the preUpdate and postUpdate events to fire.
      */
-    public function refreshUpdated()
+    public function refreshUpdated(): void
     {
         $this->setUpdatedAt(new DateTime());
     }

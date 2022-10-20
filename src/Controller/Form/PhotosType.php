@@ -3,6 +3,7 @@
 
 namespace App\Controller\Form;
 
+use App\Entity\Equipesadmin;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

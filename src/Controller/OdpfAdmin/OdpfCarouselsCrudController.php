@@ -399,7 +399,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         return new RedirectResponse($url);
     }
 
-    public function edit(AdminContext $context)
+    public function edit(AdminContext $context): \EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore|RedirectResponse|Response
     {
         $idCarousel = $context->getRequest()->get('entityId');
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);

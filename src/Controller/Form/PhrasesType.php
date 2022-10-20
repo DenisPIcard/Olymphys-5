@@ -3,6 +3,7 @@
 namespace App\Controller\Form;
 
 use App\Entity\Phrases;
+use App\Entity\Liaison;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
