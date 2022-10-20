@@ -87,6 +87,8 @@
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>
+                        <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
+                           role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
                     </div>
                 </li>
             {% elseif is_granted('ROLE_JURYCIA') %}

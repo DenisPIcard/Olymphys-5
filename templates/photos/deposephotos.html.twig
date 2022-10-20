@@ -41,10 +41,9 @@
     </div>
 
 
-
-
     <div class="well">
-        {% if is_granted('ROLE_PROF') %}
+        {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
+
             <font color='red'> Ces photos ne seront visibles en public que le lendemain du concours
                 {% if concours =='cia' %}
                     interacadémique
@@ -64,10 +63,10 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-6">
-                        {{ form_widget(form.equipe) }}
+                        {{ form_row(form.equipe,{'label': 'Choisissez l\'équipe'}) }}
                     </div>
                     <div class="form-group col-6">
-                        {{ form_widget(form.photoFiles) }}
+                        {{ form_row(form.photoFiles,{'label': 'Choisissez le fichier'}) }}
                     </div>
                 </div>
                 <div class="form-row">
@@ -77,7 +76,7 @@
                 </div>
 
                 {{ form_end(form) }}
-                {% if is_granted('ROLE_PROF') %}
+                {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
                     <a href="{{ path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-prof-1'}) }}">Gerer les
                         photos</a>
 

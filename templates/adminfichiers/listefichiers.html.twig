@@ -1,15 +1,15 @@
     {% if  equipe.selectionnee == true %}
 
-          {%  set liste=[0,1,2,3,4]%}
-                {% if is_granted('ROLE_JURY') or is_granted('ROLE_JURYCIA') %}
+                {%  set liste=[0,1,2,3,4]%}
+                {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
                                           {%  set liste=[0,1,2,3]%}
                 {% endif %}
     {% endif %}
     {% if equipe.selectionnee ==false %}
-           {%  set liste=[0,1,2,4,5,7]%}
-                        {% if is_granted('ROLE_JURY') or is_granted('ROLE_JURYCIA') %}
+                        {%  set liste=[0,1,2,4,5,7]%}
+                        {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
                                                 {%  set liste=[0,1,2,5]%}
-                      {% endif %}
+                        {% endif %}
     {% endif %}
 
   <div class="container-fluid">
@@ -60,39 +60,52 @@
                                                    {% endif  %}
 
                                                </div>
-                                                {% if is_granted('ROLE_JURY')==false%}
-                                                    {%if is_granted('ROLE_JURYCIA')==false %}
+                                                {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]%}
+                                                    {%if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
                                                         {%  if is_granted('ROLE_PROF')%}
                                                             {% if i!=4%}
                                                                 {% if (app.session.get('concours')=='interacadémique') %}
                                                                     {% if i!=5 %}
-                                                                        {% if  (date()<= app.session.get('edition').datelimcia)%}
-                                                                                    <div class="col-1 " >
-                                                                                       <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                                                    </div>
+                                                                        {%if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
+                                                                            {% if  (date()<= app.session.get('edition').datelimcia)%}
+                                                                                        <div class="col-1 " >
+                                                                                           <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                                                        </div>
 
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                        {%if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or  app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[]  or is_granted('ROLE_SUPER_ADMIN')%}
+                                                                                <div class="col-1 " >
+                                                                                       <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                                                 </div>
                                                                         {% endif %}
                                                                     {% endif %}
                                                                 {% endif %}
                                                             {% endif %}
                                                             {% if i<3 %}
                                                                 {% if (app.session.get('concours')=='national') %}
-                                                                    {% if  (date()<= app.session.get('edition').datelimnat)%}
-                                                                        <div class="col-1 " >
-                                                                             <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                                        </div>
+                                                                     {%if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
+                                                                        {% if  (date()<= app.session.get('edition').datelimnat)%}
+                                                                            <div class="col-1 " >
+                                                                                 <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                    {%if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or  app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[]  or app.user.roles|filter(v => v =='ROLE_SUPE_ADMIN')!=[]%}
+                                                                                <div class="col-1 " >
+                                                                                       <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                                                 </div>
                                                                     {% endif %}
                                                                 {% endif %}
                                                             {% endif %}
-                                                        {% elseif is_granted('ROLE_COMITE') or is_granted('ROLE_ORGACIA')%}
-                                                            <div class="col-1"><button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button></div>
-                                                       {% endif %}
-                                                       {% if( i==4 or i==3 or i == 5 ) and (role=='ROLE_PROF')%}
+
+                                                       {% if( i==4 or i==3 or i == 5 or i==7) %}
                                                                 <div class="col-1"><button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                                                 </div>
                                                        {% endif %}
                                                     {% endif %}
                                                 {% endif %}
+                                        {% endif %}
                                         {% endif %}
                             {% endfor %}
                    {% endif %}
@@ -105,41 +118,56 @@
 
 
                                                 <div class="col-8">  Non encore déposé</div>
-                                                {% if is_granted('ROLE_JURY')==false%}
-                                                         {%if is_granted('ROLE_JURYCIA')==false %}
+                                                {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]%}
+                                                    {%if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
                                                              {%  if is_granted('ROLE_PROF')%}
                                                                      {% if i!=4%}
+
+                                                                         {%if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
                                                                           {% if (app.session.get('concours')=='interacadémique') %}
                                                                                  {% if i!=5 %}
-                                                                                        {% if  (date()<= app.session.get('edition').datelimcia)%}
-                                                                                               <div class="col-1 " >
+                                                                                        {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[]%}
+                                                                                            {% if  (date()<= app.session.get('edition').datelimcia)%}
+                                                                                                   <div class="col-1 " >
 
-                                                                                                   <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"><button type="button" title="Déposer"> <i class="fas fa-upload"></i></button></a>
+                                                                                                       <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"><button type="button" title="Déposer"> <i class="fas fa-upload"></i></button></a>
 
-                                                                                               </div>
+                                                                                                   </div>
 
+                                                                                            {% endif %}
                                                                                         {% endif %}
+                                                                                        {% if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[]%}
+                                                                                            <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                                                                                        {% endif %}
+
                                                                                 {% endif %}
+                                                                               {% endif %}
                                                                           {% endif %}
+
+
+
                                                                      {% endif%}
                                                                      {% if i<3%}
-                                                                             {% if (app.session.get('concours')=='national') %}
-                                                                                     {% if  (date()<= app.session.get('edition').datelimnat)%}
-                                                                                               <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
-                                                                                     {% endif %}
+                                                                            {% if app.user.roles|filter(v => v =='ROLE_PROF') !=[]%}
+                                                                                 {% if (app.session.get('concours')=='national') %}
+                                                                                         {% if  (date()<= app.session.get('edition').datelimnat)%}
+                                                                                                   <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                                                                                         {% endif %}
+                                                                                 {% endif %}
+                                                                             {% endif %}
+                                                                             {% if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[]%}
+                                                                                            <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
                                                                              {% endif %}
                                                                      {% endif %}
 
-                                                             {% elseif role=='ROLE_COMITE' or role=='ROLE_ORGACIA'%}
-                                                                            <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
-                                                             {% endif %}
-                                                             {% if( i==4 or i==3 or i == 5 ) and (is_granted('ROLE_PROF'))%}
+
+                                                             {% if( i==4 or i==3 or i == 5 or i==7)%}
                                                                     <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
                                                              {% endif %}
                                                          {% endif %}
                                                 {% endif %}
                                           
-
+                    {% endif %}
 
 
                   {% endif %}

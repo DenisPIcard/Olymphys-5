@@ -68,11 +68,13 @@ class PhotosController extends AbstractController
 
         $user = $this->getUser();
         $id_user = $user->getId();
-        $this->isGranted('ROLE_PROF') ? $role = 'ROLE_PROF' : $role = '';
-
-        $Photos = new Photos();
+        $roles = $user->getRoles();
+        in_array('ROLE_PROF', $roles) ? $role = 'ROLE_PROF' : $role = 'ROLE_COMITE';
+        in_array('ROLE_ORGACIA', $roles) ? $centre = $user->getCentrecia()->getCentre() : $centre = '';
+        $photos = new Photos();
+        $photos->setEdition($edition);
 //$Photos->setSession($session);
-        $form = $this->createForm(PhotosType::class, ['concours' => $concours, 'role' => $role, 'prof' => $user]);
+        $form = $this->createForm(PhotosType::class, ['concours' => $concours, 'role' => $role, 'prof' => $user, 'centre' => $centre]);
 
         $form->handleRequest($request);
 
@@ -189,7 +191,7 @@ class PhotosController extends AbstractController
     public function gestion_photos(Request $request, $infos)
     {
         $choix = explode('-', $infos)[3];
-
+        $roles = $this->getUser()->getRoles();
 
         $repositoryEdition = $this->doctrine
             ->getManager()
@@ -227,12 +229,12 @@ class PhotosController extends AbstractController
                     ->add('info', 'Les centres interacadémiques ne sont pas encore attribués pour la ' . $edition->getEd() . 'e édition');
                 $this->redirectToRoute('core_home');
             }
-            if (($this->isGranted('ROLE_ORGACIA')) or ($this->isGranted('ROLE_SUPER_ADMIN')) or ($this->isGranted('ROLE_COMITE'))) {
+            if ((in_array('ROLE_ORGACIA', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles)) or (in_array('ROLE_COMITE', $roles))) {
                 $ville = $centre->getCentre();
                 $qb->andWhere('e.centre=:centre')
                     ->setParameter('centre', $centre);
             }
-            if ($this->isGranted('ROLE_PROF')) {
+            if (in_array('ROLE_PROF', $user->getRoles())) {
                 $ville = 'prof';
                 $qb->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
                     ->setParameter('prof', $id_user);
@@ -276,7 +278,7 @@ class PhotosController extends AbstractController
                 ->setParameter('edition', $edition)
                 ->andWhere('p.national = 1')
                 ->setParameter('equipe', $equipe);
-            if ($this->isGranted('ROLE_PROF')) {
+            if (in_array('ROLE_PROF', $roles)) {
                 $equipes = $repositoryEquipesadmin->createQueryBuilder('eq')
                     ->andWhere('eq.selectionnee = TRUE')
                     ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')

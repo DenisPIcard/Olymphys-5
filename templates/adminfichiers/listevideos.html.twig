@@ -27,14 +27,15 @@
 </div>
 <div class="row ">
     <div class="col-3 text-center">
-        {% if is_granted('ROLE_PROF') %}
+        {% if (app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]) and  (app.user.roles|filter(v => v =='ROLE_JURY'))==[] %}
             Nouvelle vidéo :  <a
-                href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'nouvelle-'} ) }}" ">
-            <button type="button" title="Nouvelle vidéo"><i class="fa fa-plus"></i></button></a></td>
+                href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'nouvelle-'} ) }}">
+            <button type="button" title="Nouvelle vidéo"><i class="fa fa-plus"></i></button>
+        </a>
         {% endif %}
     </div>
     <div class="col-7"></div>
-    {% if is_granted('ROLE_PROF' ) %}
+    {% if (app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]) and  (app.user.roles|filter(v => v =='ROLE_JURY'))==[] %}
         <div class="col-1">
 
         </div>
@@ -55,17 +56,17 @@
             <div class="col-7">
                 <a href="{{ video.lien }}" target="blank">{{ video.lien }}</a>
             </div>
-            {% if is_granted('ROLE_PROF' ) %}
+
+            {% if (app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]) and  (app.user.roles|filter(v => v =='ROLE_JURY'))==[] %}
                 <div class="col-1 align-self-end">
-                    <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'modifier-'~video.id} ) }}"
-                    ">
-                    <button type="button" title="Modifier"><i class="fas fa-edit"></i></button>
+                    <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'modifier-'~video.id} ) }}">
+                        <button type="button" title="Modifier"><i class="fas fa-edit"></i></button>
                     </a>
                 </div>
                 <div class="col-1 align-self-end">
                     <button type="button" id="{{ video.id }}" data-toggle="modal" data-target="#modalconfirm"
                             data-idvideo="{{ video.id }}" title="Supprimer"><i class="fas fa-trash"></i></button>
-                    </td>
+
                 </div>
             {% endif %}
         </div>

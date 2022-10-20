@@ -1,4 +1,4 @@
-{% if (is_granted('ROLE_JURYCIA' )==false) and  (is_granted('ROLE_JURY')==false) %}
+{% if (app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]) and  (app.user.roles|filter(v => v =='ROLE_JURY'))==[] %}
 
     <div class="row text-center">
         <div class="col">
@@ -77,6 +77,7 @@
                         </div>
 
                         <div class="col-1">
+
                             {% if is_granted('ROLE_PROF') %}
                                 {#   <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~concours~'-6-'~eleve.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
                                 #}{% set attrib=1 %}
@@ -146,7 +147,7 @@
                             <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/autorisations/'~prof.autorisationphotos.fichier) }}">{{ prof.autorisationphotos.fichier }}</a>
                         </div>
                         {% set attrib=1 %}
-                        {% if role=='ROLE_PROF' %}
+                        {% if is_granted('ROLE_PROF') %}
                             <div class="col-1">
                                 {#  <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~concours~'-6-'~prof.id~'-'~equipe.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a> #}
                                 <button type="button" id="{{ prof.autorisationphotos.id }}" data-toggle="modal"
@@ -163,19 +164,17 @@
             <div class="row">
                 <div class="col">
                     {% if (is_granted('ROLE_COMITE' ) ) or (is_granted('ROLE_ORGACIA')) %}
-                        <button type="submit" class="btn btn-primary" id="button">Télécharger</button>
+                        {% if liste_autorisations!= null %}
+                            <button type="submit" class="btn btn-primary" id="button">Télécharger</button>
+                        {% else %}
+                            <div class="alert alert-light">
+                                Cette équipe n'a pas encore déposé d'autorisations photos
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
 
         </form>
-
-
-    {% else %}
-        <div class="alert alert-light">
-            Cette équipe n'a pas encore déposé d'autorisations photos
-        </div>
     {% endif %}
-    </div>
-
 {% endif %}

@@ -5,15 +5,15 @@
 
 {% block titre3 %}
     <div class="text-center">Concours {{ phase }}<br>
-        {% if role=='ROLE_JURY' %}
+        {% if app.user.roles|filter(v => v =='ROLE_JURY') %}
             {{ jure.prenomJure }}   {{ jure.nomJure }}
             <br> membre du jury
-        {% elseif role=='ROLE_PROF' %}
+        {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             {{ user.prenom }} {{ user.nom }}<br>
             Lycée {{ rneObj.nom }} de {{ rneObj.commune }}
         {% endif %}
-        {% if role =='ROLE_ORGACIA' or role =='ROLE_JURYCIA'    or role =='ROLE_COMITE' %}
-            {% if role=='ROLE_COMITE' %}
+        {% if app.user.roles|filter(v => v =='ROLE_PROF')==[] %}
+            {% if app.user.roles|filter(v => v =='ROLE_COMITE')=='ROLE_COMITE' %}
                 <br>Membre du comité national
             {% endif %}
             {% if phase=='interacadémique' %}
@@ -37,7 +37,7 @@
             {% endif %}
         {% endif %}
 
-        {% if role=='ROLE_PROF' %}
+        {% if app.user.roles|filter(v => v =='ROLE_PROF') %}
             {% if choix=='liste_prof' %}
                 <br>Les  équipes de l'établissement
             {% endif %}
@@ -122,7 +122,7 @@
             </table>
         {% endif %}
     </div>
-    {% if is_granted('ROLE_PROF') %}
+    {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
         <div class="table">
             <tr>
                 <td> {% if date()< app.session.get('edition').dateclotureinscription %}
@@ -199,7 +199,7 @@
         {% endif %}
     {% endif %}
     {% if centre is defined %}
-        {% if (role=='ROLE_ORGACIA') or (role=='ROLE_JURYCIA') %}
+        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
             <div style="text-align:center">
                 <a href="{{ path('core_home') }}">Retour à l'accueil</a>
             </div>
