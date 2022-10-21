@@ -9,6 +9,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
+ * @extends ServiceEntityRepository<OdpfArticle>
+ *
  * @method OdpfArticle|null find($id, $lockMode = null, $lockVersion = null)
  * @method OdpfArticle|null findOneBy(array $criteria, array $orderBy = null)
  * @method OdpfArticle[]    findAll()

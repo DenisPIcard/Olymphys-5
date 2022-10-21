@@ -108,7 +108,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->orderBy('e.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
-
+dd($listActus);
         $limit = 5;
         $totactus = count($listActus);
         $nbpages = intval(ceil($totactus / $limit));

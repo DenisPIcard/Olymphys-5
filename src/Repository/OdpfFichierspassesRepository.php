@@ -23,8 +23,6 @@ class OdpfFichierspassesRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function add(OdpfFichierspasses $entity, bool $flush = true): void
     {
@@ -35,8 +33,6 @@ class OdpfFichierspassesRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function remove(OdpfFichierspasses $entity, bool $flush = true): void
     {

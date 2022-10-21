@@ -8,9 +8,9 @@
     {% elseif app.request.query.get('entity')=='etablissements' %}
         {% set category = 'Liste des etablissements' %}
     {% endif %}
-    <tittle>
+    <title>
         {{ category }} aux interacadémiques de la <b>{{ app.session.get('edition_titre') }}<sup>e</sup></b> edition.
-    </tittle>
+    </title>
 {% endblock %}
 
 {% block global_actions %}

@@ -179,13 +179,15 @@ class CoreController extends AbstractController
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
         }
-        if ($this->requestStack->getSession()->get('edition') == false) {
+        if (!$this->requestStack->getSession()->get('edition')) {
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
         }
         $repo = $doctrine->getRepository(OdpfArticle::class);
+
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
         $tab = $repo->actuspaginees();
+        dd($tab);
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
         $nbpages = $tab['nbpages'];

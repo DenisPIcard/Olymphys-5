@@ -63,18 +63,3 @@ class PalmaresType extends AbstractType
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

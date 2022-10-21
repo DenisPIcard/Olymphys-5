@@ -22,8 +22,6 @@ class OdpfVideosequipesRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function add(OdpfVideosequipes $entity, bool $flush = true): void
     {
@@ -34,8 +32,6 @@ class OdpfVideosequipesRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function remove(OdpfVideosequipes $entity, bool $flush = true): void
     {

@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\OdpfCarousels;
+use App\Entity\Odpf\OdpfCarousels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -12,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method OdpfCarousels|null find($id, $lockMode = null, $lockVersion = null)
  * @method OdpfCarousels|null findOneBy(array $criteria, array $orderBy = null)
  * @method OdpfCarousels[]    findAll()
- * @method OdpfCarousels[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method /OdpfCarousels[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class OdpfCarouselsRepository extends ServiceEntityRepository
 {
