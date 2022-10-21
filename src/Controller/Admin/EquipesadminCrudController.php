@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
@@ -165,7 +166,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $centre = AssociationField::new('centre')->setFormTypeOption('choices', $listeCentres);
         $IdProf1 = AssociationField::new('idProf1', 'Prof1')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs]);
         $IdProf2 = AssociationField::new('idProf2', 'Prof2')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs]);
-        $selectionnee = Field::new('selectionnee');
+        $selectionnee = BooleanField::new('selectionnee');
         $id = IntegerField::new('id', 'ID');
         $nomLycee = TextField::new('nomLycee', 'Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
@@ -188,7 +189,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $partenaire = TextField::new('partenaire');
         $createdAt = DateField::new('createdAt', 'Date d\'inscription');
         $description = TextareaField::new('description', 'Description du projet');
-        $inscrite = Field::new('inscrite');
+        $inscrite = BooleanField::new('inscrite');
         $rneId = AssociationField::new('rneId');
         $edition = AssociationField::new('edition', 'Edition');
         $editionEd = TextareaField::new('edition.ed', 'Edition');

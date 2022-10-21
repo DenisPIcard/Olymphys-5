@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -32,7 +33,7 @@ class CentresciaCrudController extends AbstractCrudController
         $orga1 = AssociationField::new('orga1');
         $orga2 = AssociationField::new('orga2');
         $jurycia = AssociationField::new('jurycia');
-        $actif = Field::new('actif', 'Actif');
+        $actif = BooleanField::new('actif', 'Actif');
         if (Crud::PAGE_INDEX === $pageName) {
             return [$centre, $actif];
         } elseif (Crud::PAGE_DETAIL === $pageName) {

@@ -78,7 +78,7 @@ class FichiersController extends AbstractController
         $repositoryEquipesAdmin = $this->doctrine
             ->getRepository(Equipesadmin::class);
         $edition = $session->get('edition');
-        $centres = $repositoryCentres->findAll();
+        $centres = $repositoryCentres->createQueryBuilder('c')->addOrderBy('c.centre', 'ASC')->getQuery()->getResult();
         $equipes = $repositoryEquipesAdmin->findBy(['edition' => $edition]);
         if ($equipes != null) {
             foreach ($centres as $centre) {

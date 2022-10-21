@@ -99,7 +99,7 @@
                                                                 {% endif %}
                                                             {% endif %}
 
-                                                       {% if( i==4 or i==3 or i == 5 or i==7) %}
+                                                       {% if( i==4 or i==3 or i == 5 ) %}
                                                                 <div class="col-1"><button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                                                 </div>
                                                        {% endif %}
@@ -161,7 +161,7 @@
                                                                      {% endif %}
 
 
-                                                             {% if( i==4 or i==3 or i == 5 or i==7)%}
+                                                             {% if( i==4 or i==3 or i == 5 )%}
                                                                     <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
                                                              {% endif %}
                                                          {% endif %}
