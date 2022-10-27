@@ -53,10 +53,13 @@
 
                                               <div class="col-8">
                                                   {% if type_fichier[i]!='annexes' %}
-                                                      <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                     {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>#}
+                                                      <a  href="{{ path('telecharger_un_fichier_prof',{ idFichier : fichier.id}) }}">{{ fichier.fichier}}</a>
+
                                                   {% endif  %}
                                                   {% if type_fichier[i]=='annexes' %}
-                                                       <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                       {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>#}
+                                                        <a  href="{{ path('telecharger_un_fichier_prof',{ idFichier : fichier.id}) }}">{{ fichier.fichier}}</a>
                                                    {% endif  %}
 
                                                </div>

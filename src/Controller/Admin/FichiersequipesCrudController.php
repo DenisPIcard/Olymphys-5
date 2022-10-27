@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
+
 use App\Entity\Edition;
 use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
@@ -137,7 +138,8 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
         }
         $crud->setPageTitle('new', '')
-            ->setPageTitle('edit', '');
+            ->setPageTitle('edit', '')
+            ->showEntityActionsInlined();
         $_REQUEST['typefichier'] = $typefichier;
         $_REQUEST['concours'] = $concours;
         return $crud;
@@ -206,6 +208,13 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId])
             ->createAsGlobalAction();
         //->displayAsButton()            ->setCssClass('btn btn-primary');;
+        $telechargerUnFichier = Action::new('telechargerunfichier', 'Télécharger le fichier', 'fa fa-file-download')
+            ->linkToRoute('telechargerUnFichier', function (Fichiersequipes $fichier): array {
+                return [
+                    'idEntity' => $fichier->getId(),
+
+                ];
+            });
 
         $newFichier = Action::new('deposer', 'Déposer un fichier')->linkToCrudAction('new')->setHtmlAttributes(['typefichier' => $typefichier])->createAsGlobalAction();
 
@@ -216,6 +225,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 return $action->setLabel('Déposer le fichier');
             })
             ->add(Crud::PAGE_INDEX, $telechargerFichiers)
+            ->add(Crud::PAGE_INDEX, $telechargerUnFichier)
             ->add(Crud::PAGE_INDEX, $newFichier)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
@@ -303,6 +313,28 @@ class FichiersequipesCrudController extends AbstractCrudController
         return $response;
     }
 
+    /**
+     * @Route("/Admin/FichiersequipesCrud/telechargerUnFichier", name="telechargerUnFichier")
+     */
+    public function telechargerUnFichier(AdminContext $context)
+    {
+        $idFichier = $_REQUEST['routeParams']['idEntity'];
+        $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
+        $edition = $fichier->getEdition();
+        $typefichier = $fichier->getTypefichier();
+        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+        header('Cache-Control: private', false);
+        header('Pragma: no-cache');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+
+
+    }
 
     public function configureFields(string $pageName): iterable
 
@@ -377,7 +409,6 @@ class FichiersequipesCrudController extends AbstractCrudController
         $panel2 = FormField::addPanel('<p style="color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$_REQUEST['typefichier']] . '</p> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
-
 
         $typefichier = IntegerField::new('typefichier');
         if ($pageName == Crud::PAGE_INDEX) {

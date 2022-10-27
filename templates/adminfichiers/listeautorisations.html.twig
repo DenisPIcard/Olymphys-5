@@ -73,7 +73,8 @@
                             <div class="fichierdepose"><b>{{ eleve.nom }} {{ eleve.prenom }} </b></div>
                         </div>
                         <div class="col-8">
-                            <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/autorisations/'~eleve.autorisationphotos.fichier) }}">{{ eleve.autorisationphotos.fichier }}</a>
+                            {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/autorisations/'~eleve.autorisationphotos.fichier) }}">{{ eleve.autorisationphotos.fichier }}</a> #}
+                            <a href="{{ path('telecharger_un_fichier_prof',{ idFichier : eleve.autorisationphotos.id}) }}">{{ eleve.autorisationphotos.fichier }}</a>
                         </div>
 
                         <div class="col-1">
@@ -144,7 +145,8 @@
                             <div class="fichierdepose"><b>{{ prof.nom }} {{ prof.prenom }}</b></div>
                         </div>
                         <div class="col-8">
-                            <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/autorisations/'~prof.autorisationphotos.fichier) }}">{{ prof.autorisationphotos.fichier }}</a>
+                            <a href="{{ path('telecharger_un_fichier_prof',{ idFichier : prof.autorisationphotos.id}) }}">{{ prof.autorisationphotos.fichier }}</a>
+
                         </div>
                         {% set attrib=1 %}
                         {% if is_granted('ROLE_PROF') %}

@@ -1042,9 +1042,12 @@ class FichiersController extends AbstractController
         if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_PROF', $roles)) or (in_array('ROLE_ORGACIA', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
 
             $liste_fichiers = $qbComit->getQuery()->getResult();
-            $autorisations = $qbInit
-                ->andWhere('t.typefichier =:type')
-                ->setParameter('type', 6)
+
+
+            $autorisations = $repositoryFichiersequipes->createQueryBuilder('t')//Les fichiers sans les autorisations photos
+            ->andWhere('t.typefichier =:type')
+                ->andWhere('t.edition =:edition')
+                ->setParameters(['edition' => $edition, 'type' => 6])
                 ->getQuery()->getResult();
 
         }
@@ -1366,138 +1369,34 @@ class FichiersController extends AbstractController
             @unlink($FileName);
             return $response;
         }
-
     }
-
 
     /**
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_PROF")
      *
-     * @Route("/fichiers/transpose_donnees,", name="fichiers_transpose_donnees")
+     * @Route("/fichiers/telechargerUnFichierProf,{idFichier}", name="telecharger_un_fichier_prof")
      *
      */
-    public function transpose_donnees(Request $request)
+    public function telechargerUnFichierProf($idFichier)
     {
 
-        $repositoryFichiersequipes = $this->doctrine
-            ->getRepository(Fichiersequipes::class);
+        $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
+        $edition = $fichier->getEdition();
+        $typefichier = $fichier->getTypefichier();
 
-        $repositoryEquipesadmin = $this->doctrine
-            ->getRepository(Equipesadmin::class);
-        $repositoryEdition = $this->doctrine
-            ->getRepository(Edition::class);
+        $typefichier == 1 ? $path = $this->getParameter('type_fichier')[0] : $path = $this->getParameter('type_fichier')[$typefichier];
+        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
 
-
-        $liste_memoires = $repositoryMemoires->findAll();
-        $liste_memoiresinter = $repositoryMemoiresinter->findAll();
-        $liste_resumes = $repositoryResumes->findAll();
-        $liste_Fichessecur = $repositoryFichessecur->findAll();
-        $liste_Presentations = $repositoryPresentations->findAll();
-        $File_system = new FileSystem();
-        $em = $this->doctrine->getManager();
-        if (isset($liste_memoires)) {
-            foreach ($liste_memoires as $memoire) {
-                $Fichier = new Fichiersequipes();
-                $Fichier->setEdition($memoire->getEdition());
-                $Fichier->setNational(1);
-                $Fichier->setEquipe($memoire->getEquipe());
-                if ($memoire->getAnnexe() == false) {
-                    $Fichier->setTypefichier(0);
-                } else {
-                    $Fichier->setTypefichier(1);
-                }
-                $File_system->copy($this->getParameter('app.path.memoires_nat') . '/' . $memoire->getMemoire(), $this->getParameter('app.path.tempdirectory') . '/' . $memoire->getMemoire());
-                $fichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $memoire->getMemoire(), $memoire->getMemoire(), null, null, true);
-
-                $Fichier->setFichierFile($fichier);
-
-                $em->persist($Fichier);
-                $em->flush();
-
-            }
-        }
-
-        if (isset($liste_memoiresinter)) {
-            foreach ($liste_memoiresinter as $memoire) {
-                $Fichier = new Fichiersequipes();
-                $Fichier->setEdition($memoire->getEdition());
-                $Fichier->setNational(0);
-                $Fichier->setEquipe($memoire->getEquipe());
-                if ($memoire->getAnnexe() == false) {
-                    $Fichier->setTypefichier(0);
-                } else {
-                    $Fichier->setTypefichier(1);
-                }
-                $File_system->copy($this->getParameter('app.path.memoires_inter') . '/' . $memoire->getMemoire(), $this->getParameter('app.path.tempdirectory') . '/' . $memoire->getMemoire());
-                $fichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $memoire->getMemoire(), $memoire->getMemoire(), null, null, true);
-
-                $Fichier->setFichierFile($fichier);
-
-                $em->persist($Fichier);
-                $em->flush();
-
-            }
-        }
-        if (isset($liste_resumes)) {
-            foreach ($liste_resumes as $resume) {
-                $Fichier = new Fichiersequipes();
-                $Fichier->setEdition($resume->getEdition());
-                $Fichier->setNational(0);
-                $Fichier->setEquipe($resume->getEquipe());
-                $Fichier->setTypefichier(2);
-                $File_system->copy($this->getParameter('app.path.resumes') . '/' . $resume->getResume(), $this->getParameter('app.path.tempdirectory') . '/' . $resume->getResume());
-                $fichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $resume->getResume(), $resume->getResume(), null, null, true);
-
-                $Fichier->setFichierFile($fichier);
-
-                $em->persist($Fichier);
-                $em->flush();
-
-            }
-        }
-        if (isset($liste_Fichessecur)) {
-            foreach ($liste_Fichessecur as $fiche) {
-                if ($fiche->getFiche()) {
-                    $Fichier = new Fichiersequipes();
-
-
-                    $edition = $repositoryEdition->find(['id' => 1]);
-                    $fiche->setEdition($edition);
-                    $Fichier->setEdition($edition);
-                    $Fichier->setNational(0);
-                    $Fichier->setEquipe($fiche->getEquipe());
-                    $Fichier->setTypefichier(4);
-                    $File_system->copy($this->getParameter('app.path.fichessecur') . '/' . $fiche->getFiche(), $this->getParameter('app.path.tempdirectory') . '/' . $fiche->getFiche());
-                    $fichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $fiche->getFiche(), $fiche->getFiche(), null, null, true);
-
-                    $Fichier->setFichierFile($fichier);
-
-                    $em->persist($Fichier);
-                    $em->flush();
-                }
-            }
-        }
-        if (isset($liste_Presentations)) {
-
-            foreach ($liste_Presentations as $presentation) {
-                $Fichier = new Fichiersequipes();
-                $Fichier->setEdition($presentation->getEdition());
-                $Fichier->setNational(1);
-                $Fichier->setEquipe($presentation->getEquipe());
-                $Fichier->setTypefichier(3);
-                $File_system->copy($this->getParameter('app.path.presentations') . '/' . $presentation->getPresentation(), $this->getParameter('app.path.tempdirectory') . '/' . $presentation->getPresentation());
-                $fichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $presentation->getPresentation(), $presentation->getPresentation(), null, null, true);
-
-                $Fichier->setFichierFile($fichier);
-
-                $em->persist($Fichier);
-                $em->flush();
-
-            }
-            return $this->redirectToRoute('core_home');
-        }
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+        header('Cache-Control: private', false);
+        header('Pragma: no-cache');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
 
 
     }
-
 }
