@@ -488,27 +488,6 @@ class UtilisateurController extends AbstractController
 
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/Utilisateur/setlastvisit", name="setlastvisit")
-     */
-    public function setlastvisite(Request $request, ManagerRegistry $doctrine): RedirectResponse
-    {//fonction provisoire à supprimer après le mise au point du site
 
-        $em = $doctrine->getManager();
-        $repositoryUser = $em->getRepository(User::class);
-        $users = $repositoryUser->findAll();
-        foreach ($users as $user) {
-
-            $user->setLastVisit(new datetime('now'));
-            $em->persist($user);
-            $em->flush();
-        }
-
-        return $this->redirectToRoute('core_home');
-
-    }
 
 }

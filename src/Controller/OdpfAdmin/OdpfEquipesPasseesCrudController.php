@@ -65,7 +65,7 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('editionspassees.edition', 'Edition'),
+            AssociationField::new('editionspassees', 'Edition'),
             TextField::new('numero'),
             TextField::new('lettre'),
             TextField::new('titreProjet'),
@@ -83,8 +83,8 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
     {
         $repositoryEdition = $this->doctrine->getRepository(OdpfEditionsPassees::class);
         $qb = $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $qb->leftJoin('entity.editionspassees', 'ed')
-            ->addOrderBy('ed.edition', 'DESC')
+        $qb->innerJoin('entity.editionspassees', 'edi')
+            ->addOrderBy('edi.edition', 'DESC')
             ->addOrderBy('entity.numero', 'ASC');;
 
 
@@ -109,7 +109,7 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
             ->add(
                 'file', FileType::class
             )
-            ->add('edition', ChoiceType::class, [
+            ->add('editionspassees', ChoiceType::class, [
                 'choices' => range(1, 30),
                 'label' => 'Choisir le numéro de l\'édition'
 

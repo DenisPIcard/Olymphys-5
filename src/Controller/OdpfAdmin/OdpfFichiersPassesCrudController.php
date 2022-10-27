@@ -190,9 +190,25 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         $edition = AssociationField::new('editionpassee');
 
         $editionEd = IntegerField::new('editionspassees.edition');
-        $equipeNumero = IntegerField::new('equipepassee.numero');
-        $equipeLettre = TextareaField::new('equipepassee.lettre');
-        $equipeTitreprojet = TextareaField::new('equipepassee.titreprojet');
+
+        $equipeNumero = AssociationField::new('equipepassee', 'N° équipe')->setFormTypeOptions(
+            ['data_class' => OdpfEquipesPassees::class,
+                'choices_label' => 'getNumero']);
+        $equipeLettre = AssociationField::new('equipepassee', 'Lettre équipe')->setFormTypeOptions(
+            ['data_class' => OdpfEquipesPassees::class,
+                'choice_label' => function (OdpfEquipesPassees $equipepassee = null) {
+                    if ($equipepassee !== null) {
+                        return $equipepassee->getId();
+                    } else {
+                        return '';
+                    }
+
+                }]);;
+        $equipeTitreprojet = AssociationField::new('equipepassee', 'Projet')->setFormTypeOptions(
+            [
+                'class' => OdpfEquipesPassees::class,
+                'choices_label' => 'getTitreprojet']);;;
+
         $updatedat = DateTimeField::new('updatedat', 'Déposé le ');
 
         if (Crud::PAGE_INDEX === $pageName) {

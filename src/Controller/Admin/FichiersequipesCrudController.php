@@ -4,6 +4,7 @@
 namespace App\Controller\Admin;
 
 
+use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 use App\Entity\Edition;
 use App\Entity\Equipesadmin;
@@ -76,7 +77,7 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(CustomEquipespasseesFilter::new('equipe', 'Equipe'));
+            ->add(CustomEquipeFilter::new('equipe', 'Equipe'));
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -260,10 +261,8 @@ class FichiersequipesCrudController extends AbstractCrudController
             $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
             $edition = $equipe->getEdition();
             $qb->andWhere('f.equipe =:equipe')
-                ->setParameter('equipe', $equipe)
-                ->leftJoin('f.prof', 'p')
-                ->andWhere('p.equipe =:equipeprof')
-                ->setParameter('equipeprof', $equipe);
+                ->setParameter('equipe', $equipe);
+
         }
         $qb->andWhere('f.edition =:edition')
             ->setParameter('edition', $edition);
@@ -413,13 +412,20 @@ class FichiersequipesCrudController extends AbstractCrudController
                 ->addOrderBy('entity.nom', 'ASC');//    ->addOrderBy('entity.numero','ASC'))
         });
         $editionEd = TextareaField::new('edition.ed', 'Edition');
-        $equipeNumero = IntegerField::new('equipe.numero', 'N° équipe');
-        $equipeLettre = TextareaField::new('equipe.lettre', 'Lettre');
-        $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet');
+        $equipelibel = AssociationField::new('equipe', 'Equipe');
+        if ($numtypefichier != 6) {
+            $equipeNumero = IntegerField::new('equipe.numero', 'numero');
+            $equipeLettre = TextField::new('equipe.lettre', 'Lettre equipe');
+            $equipeTitreprojet = TextField::new('equipe.titreprojet', 'Projet');
+        };
         $updatedat = DateTimeField::new('updatedat', 'Déposé le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$editionEd, $equipeNumero, $equipeLettre, $equipeTitreprojet, $fichier, $updatedat];
+            if ($numtypefichier == 6) {
+                return [$editionEd, $equipelibel, $fichier, $updatedat];
+            } else {
+                return [$editionEd, $equipeNumero, $equipeLettre, $equipeTitreprojet, $fichier, $updatedat];
+            }
         }
         if (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $fichier, $typefichier, $national, $updatedAt, $nomautorisation, $edition, $equipe, $eleve, $prof];

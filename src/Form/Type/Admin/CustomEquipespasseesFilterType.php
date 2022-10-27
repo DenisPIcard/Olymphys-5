@@ -39,7 +39,7 @@ class CustomEquipespasseesFilterType extends AbstractType
             ->addOrderBy('ed.edition', 'DESC')
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
-        $edition = $_SESSION['_sf2_attributes']['edition'];
+       // $edition = $_SESSION['_sf2_attributes']['edition'];
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'entity'],
             'value_type' => EntityType::class,

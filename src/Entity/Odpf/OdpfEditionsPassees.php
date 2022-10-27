@@ -72,7 +72,7 @@ class OdpfEditionsPassees
     private ?string $titreParrain = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="editionspassees")
+     * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="odpfEditionsPassees")
      */
     private Collection $odpfEquipesPassees;
 

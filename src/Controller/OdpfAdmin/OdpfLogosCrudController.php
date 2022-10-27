@@ -3,6 +3,8 @@
 namespace App\Controller\OdpfAdmin;
 
 use App\Entity\Odpf\OdpfLogos;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -42,6 +44,15 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setPaginatorPageSize(10);
     }
 
+    public function configureActions(Actions $actions): Actions
+    {
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
+            ->add(Crud::PAGE_NEW, Action::INDEX);
+    }
+
     public function configureFields(string $pageName): iterable
     {
         $type = ChoiceField::new('type')->setChoices(['jpg' => 'jpg', 'png' => 'png']);
@@ -54,8 +65,8 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setFormTypeOption('allow_delete', false);//sinon la case à cocher delete s'affiche//VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.odpf_documents.localhost'));
         $id = IntegerField::new('id', 'ID');
         $alt = TextField::new('alt');
-        $choix = TextField::new('choix');
-        $part = TextField::new('part');
+        $choix = ChoiceField::new('choix')->setChoices(['mecenes' => 'mecenes', 'donateurs' => 'donateurs']);
+        $part = ChoiceField::new('part')->setChoices(['mecenes' => 'mecenes', 'donateurs' => 'donateurs', 'materiel' => 'materiel', 'visites' => 'visites', 'editeurs' => 'editeur']);
         $image = TextField::new('image')
             ->setTemplatePath('bundles\EasyAdminBundle\odpf\odpf-logos.html.twig')
             ->setFormTypeOption('disabled', 'disabled');
