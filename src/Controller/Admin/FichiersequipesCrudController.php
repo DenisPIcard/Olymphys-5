@@ -90,8 +90,14 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $typefichier = $this->requestStack->getMainRequest()->query->get('typefichier');
         if ($typefichier == null) {
+            if (isset($_REQUEST['menuIndex'])) {
+                $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+            } elseif (isset($_REQUEST['entityId'])) { // dans le cas d'un affichage du fichier autorisation à partir d'un élèveinter
+                $typefichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $_REQUEST['entityId']])->getTypefichier();
 
-            $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+            } else {
+                $typefichier = 6;
+            }
         }
 
         $concours = $this->requestStack->getMainRequest()->query->get('concours');
@@ -99,7 +105,14 @@ class FichiersequipesCrudController extends AbstractCrudController
             if (key_exists('concours', $_REQUEST) == true) {
                 $_REQUEST['concours'] == 1 ? $concours = 1 : $concours = 0;
             } else {
-                $_REQUEST['menuIndex'] == 9 ? $concours = 0 : $concours = 1;
+                if (isset($_REQUEST['menuIndex'])) {
+                    $_REQUEST['menuIndex'] == 9 ? $concours = 0 : $concours = 1;
+                } else {
+                    if ($typefichier == 6) {
+                        $concours = 0;
+                    }
+                }
+
 
             }
         }
@@ -137,8 +150,9 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $crud = $crud->setPageTitle('index', 'Les questionnaires de la ' . $edition->getEd() . $exp . ' édition');
             }
         }
-        $crud->setPageTitle('new', '')
-            ->setPageTitle('edit', '')
+        $crud->setPageTitle('new', 'Nouveau fichier')
+            ->setPageTitle('edit', 'Modifier le fichier')
+            ->setPageTitle('detail', 'Détail du fichier')
             ->showEntityActionsInlined();
         $_REQUEST['typefichier'] = $typefichier;
         $_REQUEST['concours'] = $concours;
@@ -200,10 +214,16 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             }
         }
+        if (isset($_REQUEST['menuIndex'])) {
+            key_exists('typefichier', $_REQUEST) ? $typefichier = $_REQUEST['typefichier'] : $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+        } elseif (isset($_REQUEST['entityId'])) {// dans le cas d'un affichage du fichier autorisation à partir d'un élèveinter
+            $idfichier = $_REQUEST['entityId'];
+            $typefichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idfichier])->getTypefichier();
 
-        key_exists('typefichier', $_REQUEST) ? $typefichier = $_REQUEST['typefichier'] : $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+        } else {
+            $typefichier = 6;
 
-
+        }
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
             ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId])
             ->createAsGlobalAction();
@@ -318,7 +338,13 @@ class FichiersequipesCrudController extends AbstractCrudController
      */
     public function telechargerUnFichier(AdminContext $context)
     {
-        $idFichier = $_REQUEST['routeParams']['idEntity'];
+        if (isset($_REQUEST['routeParams'])) {
+            $idFichier = $_REQUEST['routeParams']['idEntity'];
+        }
+        if (isset($_REQUEST['entityId'])) {
+            $idFichier = $_REQUEST['entityId'];
+
+        }
         $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEdition();
         $typefichier = $fichier->getTypefichier();
@@ -423,7 +449,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $national = BooleanField::new('national');
         $updatedAt = DateTimeField::new('updatedAt');
         $nomautorisation = TextField::new('nomautorisation', 'NOM');
-        $edition = AssociationField::new('editionpassee', 'Edition');
+        $edition = AssociationField::new('edition', 'Edition');
         $eleve = AssociationField::new('eleve')->setQueryBuilder(function ($queryBuilder) {
             return $queryBuilder->select()->leftJoin('entity.equipe', 'eq')
                 ->where('eq.edition =:edition')
@@ -441,7 +467,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 // ->orWhere($qb->expr()->like('entity.roles',':roles'))
                 // ->setParameter('roles','%i:0;s:9:"ROLE_PROF";i:2;s:9:"ROLE_USER";%')
                 ->addOrderBy('entity.nom', 'ASC');//    ->addOrderBy('entity.numero','ASC'))
-        });
+        })->setFormTypeOptions(['placeholder' => 'Non']);
         $editionEd = TextareaField::new('edition.ed', 'Edition');
         $equipelibel = AssociationField::new('equipe', 'Equipe');
         if ($numtypefichier != 6) {
@@ -503,7 +529,11 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $concours = $context->getRequest()->query->get('concours');
         if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
+            if (isset($_REQUEST['menuIndex'])) {
+                $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
+            } else {
+                $typefichier = 6;
+            }
 
         }
         if ($typefichier == 0) {

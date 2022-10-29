@@ -3,7 +3,16 @@
      <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
  {% endfor %}
 
-<a href="#" title="Cliquer sur télécharger droite">{{ field.value }}</a>
+{% if app.request.query.get('crudAction')=='detail' %}
+    {% set urlfichier = ea_url()
+        .setDashboard('App\\Controller\\Admin\\DashboardController')
+        .setController('App\\Controller\\Admin\\FichiersequipesCrudController')
+        .setAction('telechargerUnFichier') %}
+    <a href="{{ urlfichier }}" title="voir le fichier">{{ field.value }}</a>
+{% else %}
+    <a href="#" title="Cliquer sur télécharger à droite"
+       style=" pointer-events: none; cursor:default">{{ field.value }}</a>
+{% endif %}
 {#
 <a href="{{ asset('odpf/odpf-archives/'~edition~'/fichiers/'~type_fichier[app.request.query.get('typefichier')]~'/'~field.value) }}"
    target="_blank">{{ field.value }}</a>

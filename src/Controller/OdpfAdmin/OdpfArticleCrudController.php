@@ -99,7 +99,6 @@ class OdpfArticleCrudController extends AbstractCrudController
         $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
-            ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
             ->add(Crud::PAGE_NEW, Action::INDEX)
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
         return $actions;

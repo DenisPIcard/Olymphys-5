@@ -153,10 +153,10 @@ class ElevesinterCrudController extends AbstractCrudController
         $equipeTitreProjet = TextareaField::new('equipe.titreProjet', 'Projet');
         $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville');
         $equipeEdition = TextareaField::new('equipe.edition', 'Edition');
-        //$autorisationphotosFichier = AssociationField::new('autorisationphotos', 'Autorisation photos');
+        $autorisationphotosFichier = AssociationField::new('autorisationphotos', 'Autorisation photos');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite];
+            return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$equipeEdition, $nom, $prenom, $genre, $classe, $courriel, $equipe, $autorisationphotos];
         } elseif (Crud::PAGE_NEW === $pageName) {
@@ -164,7 +164,7 @@ class ElevesinterCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$nom, $prenom, $genre, $classe, $courriel, $equipe];
         }
-        return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite];
+        return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
 
     }
 

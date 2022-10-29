@@ -207,21 +207,21 @@ class EquipesadminCrudController extends AbstractCrudController
 
                 return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
             } else {
-                return [$numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $lyceeAcademie, $nomLycee, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet, $createdAt];
+                return [$numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $nomLycee, $lyceeLocalite, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet, $createdAt];
             }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
 
             if ($this->adminContextProvider->getContext()->getRequest()->query->get('menuIndex') == 7) {
 
-                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $lyceeEmail, $rne];
+                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $rne];
             } else {
 
-                return [$id, $edition, $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $rne,];
+                return [$id, $edition, $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $rne,];
             }
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$numero, $lettre, $rneId, $lyceeAcademie, $titreProjet, $centre, $IdProf1, $IdProf2];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$numero, $lettre, $rneId, $lyceeAcademie, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire];
+            return [$numero, $lettre, $rneId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire];
         }
 
     }

@@ -803,6 +803,9 @@ class FichiersController extends AbstractController
                     $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
                     $em->persist($fichier);
                     $em->flush();
+                    $citoyen->setAutorisationphotos($fichier);
+                    $em->persist($citoyen);
+                    $em->flush();
                 }
                 if ($attrib != 0) {
                     $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
@@ -814,6 +817,9 @@ class FichiersController extends AbstractController
                     $fichier->setFichierFile($fileFichier);
                     $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
                     $em->persist($fichier);
+                    $em->flush();
+                    $citoyen->setAutorisationphotos($fichier);
+                    $em->persist($citoyen);
                     $em->flush();
                 }
             }
