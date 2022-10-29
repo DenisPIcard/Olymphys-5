@@ -187,7 +187,7 @@ class CoreController extends AbstractController
 
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
         $tab = $repo->actuspaginees();
-        dd($tab);
+        //dd($tab);
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
         $nbpages = $tab['nbpages'];

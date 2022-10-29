@@ -64,8 +64,8 @@
                                     <label for="sel"></label>
 
                                     <select class="form-control form-control-lg" type="text" id="sel" name="sel">
-                                        <option value="{{ edition_affichee.id }}" selected>{{ edition_affichee.pseudo }}
-                                            e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
+                                        <option value="{{ edition_affichee.id }}" selected>{{ edition_affichee.pseudo }}e édition - Année
+                                            {{ edition_affichee.annee|slice(5,4) }}</option>
                                         {% for edition in editions %}
                                             {% if edition !=edition_affichee %}
                                                 <option value="{{ edition.id }}">{{ edition.pseudo }}e édition -

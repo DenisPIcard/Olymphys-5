@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_10_2022_21_37_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_10_2022_21_37__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/odpf-edtions.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/odpf-editions.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/Odpf/OdpfArticleRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/Odpf/OdpfArticleRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-pages-editions.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-pages-editions.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +212,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5/vendor/easycorp/easyadmin-bundle/src/Resources/public&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -216,6 +224,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle/src/Resources/public" />
+      <recent name="$PROJECT_DIR$/public/bundles/easyadmin" />
       <recent name="$PROJECT_DIR$/Olymphys-5" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -241,6 +251,11 @@
       <workItem from="1666035706730" duration="720000" />
       <workItem from="1666079318976" duration="13302000" />
       <workItem from="1666271416376" duration="4758000" />
+      <workItem from="1666359665107" duration="9195000" />
+      <workItem from="1666455014999" duration="1239000" />
+      <workItem from="1666528586791" duration="8287000" />
+      <workItem from="1666688326247" duration="1881000" />
+      <workItem from="1666702749116" duration="1847000" />
     </task>
     <servers />
   </component>
