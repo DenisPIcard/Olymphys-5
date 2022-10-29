@@ -47,7 +47,7 @@ class Fichiersequipes //extends BaseMedia
      *
      *
      */
-    private ?File $fichierFile;
+    private ?File $fichierFile = null;
     /**
      *
      * @ORM\Column(type="integer", nullable=true)
@@ -102,7 +102,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->fichierFile;
     }
 
-    public function setFichierFile(File $fichierFile = null)
+    public function setFichierFile(?File $fichierFile)
 
     {
 
