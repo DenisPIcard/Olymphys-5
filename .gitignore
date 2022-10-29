@@ -1,10 +1,11 @@
-
+/.idea
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+/public/fichiers/
 /public/odpf/
 /public/upload
 /public/temp
