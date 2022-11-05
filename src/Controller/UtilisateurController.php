@@ -410,7 +410,13 @@ class UtilisateurController extends AbstractController
         if ($partenaire != $oldPartenaire) {
             $checkchange['partenaire'] = 'Partenaire';
         }
+        $oldInscrite=$oldEquipe->getInscrite();
+        $inscrite=$equipe->getInscrite();
 
+        if ($inscrite != $oldInscrite) {
+            $inscrite==false?$checkchange['inscrite'] = 'NON':$checkchange['inscrite'] = 'OUI';
+
+        }
         $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
         $listeEleves = $repositoryEleves->findByEquipe(['equipe' => $equipe]);
 

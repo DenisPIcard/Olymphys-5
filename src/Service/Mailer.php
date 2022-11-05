@@ -106,8 +106,19 @@ class Mailer
         if ($modif == true) {
             $changetext = '';
             if ($checkChange != null) {
+                if(isset($checkChange['inscrite'])){
+                    if($checkChange['inscrite']=='NON'){
+                        $changetext='<h1>Desinscription de l\'équipe !</h1><br>';
+                    }
+                    if($checkChange['inscrite']=='OUI'){
+                        $changetext='<h1>Réinscription de l\'équipe !</h1><br>';
+                    }
+
+                }
                 foreach ($checkChange as $change) {
-                    $changetext .= ' - ' . $change . '<br>';
+
+                        $changetext .= ' - ' . $change . '<br>';
+
                 }
             }
 
@@ -123,6 +134,7 @@ class Mailer
                     . '<br> Modifications apportées :<br>' . $changetext . '<br> <br>Le comité national des Olympiades de Physique France');
         }
         $this->mailer->send($email);
+
         return $email;
 
     }

@@ -5,15 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_10_2022_21_37_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_10_2022_21_37__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Olymphys-5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Olymphys-5.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_10_2022_15_41__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/odpf-edtions.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/odpf-editions.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/Odpf/OdpfArticleRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/Odpf/OdpfArticleRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/core/odpf-pages-editions.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-pages-editions.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/twig.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/twig.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/Mailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Mailer.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,6 +197,7 @@
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-escaper" />
       <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
       <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
+      <path value="$PROJECT_DIR$/vendor/symfony/doctrine-messenger" />
     </include_path>
   </component>
   <component name="ProblemsViewState">
@@ -211,8 +214,13 @@
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5/vendor/easycorp/easyadmin-bundle/src/Resources/public&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/alain/PhpstormProjects/Olymphys-5&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -224,10 +232,10 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle/src/Resources/public" />
       <recent name="$PROJECT_DIR$/public/bundles/easyadmin" />
       <recent name="$PROJECT_DIR$/Olymphys-5" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager">
@@ -256,6 +264,14 @@
       <workItem from="1666528586791" duration="8287000" />
       <workItem from="1666688326247" duration="1881000" />
       <workItem from="1666702749116" duration="1847000" />
+      <workItem from="1667333944934" duration="817000" />
+      <workItem from="1667334854473" duration="41000" />
+      <workItem from="1667371221010" duration="3502000" />
+      <workItem from="1667425524756" duration="2187000" />
+      <workItem from="1667427735399" duration="1452000" />
+      <workItem from="1667485210368" duration="591000" />
+      <workItem from="1667581946508" duration="1234000" />
+      <workItem from="1667588471620" duration="2729000" />
     </task>
     <servers />
   </component>
