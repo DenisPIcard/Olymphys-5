@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Filter\CustomCentreFilter;
 use App\Entity\Centrescia;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
@@ -10,6 +11,7 @@ use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Professeurs;
 use App\Entity\User;
+use App\Form\Type\Admin\CustomCentreFilterType;
 use App\Form\Type\CentreType;
 use App\Service\Maj_profsequipes;
 use App\Service\OdpfRempliEquipesPassees;
@@ -100,12 +102,8 @@ class EquipesadminCrudController extends AbstractCrudController
             $centreId = 'na';
         }
 
-        if (isset($_REQUEST['filters']['edition'])) {
-            $editionId = $_REQUEST['filters']['edition']['value'];
-            $centreId = 'na';
-        }
         if (isset($_REQUEST['filters']['centre'])) {
-            $centreId = $_REQUEST['filters']['centre']['value'];
+            $centreId = $_REQUEST['filters']['centre'];
 
         }
 
@@ -140,8 +138,8 @@ class EquipesadminCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'))
-            ->add(EntityFilter::new('centre'));
+
+            ->add(CustomCentreFilter::new('centre'));
     }
 
     public function configureFields(string $pageName): iterable
@@ -233,25 +231,14 @@ class EquipesadminCrudController extends AbstractCrudController
 
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
-        if (!isset($_REQUEST['filters'])) {
+        $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $session->get('edition'));
+         if (isset($_REQUEST['filters'])){
 
-            $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-                ->andWhere('e.edition =:edition')
-                ->setParameter('edition', $session->get('edition'));
 
-        } else {
-            $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e');
-            if (isset($_REQUEST['filters']['edition'])) {
-                $idEdition = $_REQUEST['filters']['edition']['value'];
-                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-
-                $session->set('titreedition', $edition);
-                $session->set('editionpassee', $edition->getEd());
-                $qb->andWhere('e.edition =:edition')
-                    ->setParameter('edition', $edition);
-            }
             if (isset($_REQUEST['filters']['centre'])) {
-                $idCentre = $_REQUEST['filters']['centre']['value'];
+                $idCentre = $_REQUEST['filters']['centre'];
                 $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
                 $session->set('titrecentre', $centre);
                 $qb->andWhere('e.centre =:centre')
@@ -297,6 +284,8 @@ class EquipesadminCrudController extends AbstractCrudController
 
         $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
             //->andWhere('e.inscrite = TRUE')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition',$this->requestStack->getSession()->get('edition'))
             ->andWhere('e.numero < 100')
             ->orderBy('e.numero', 'ASC');
         if (($idcentre != 0) and ($idcentre != 'na')) {

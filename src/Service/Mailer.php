@@ -109,9 +109,14 @@ class Mailer
                 if(isset($checkChange['inscrite'])){
                     if($checkChange['inscrite']=='NON'){
                         $changetext='<h1>Desinscription de l\'équipe !</h1><br>';
+                        $checkChange['inscrite']= $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
+                    '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a désinscrit l\'équipe denommée : ' . $equipe->getTitreProjet();
                     }
                     if($checkChange['inscrite']=='OUI'){
                         $changetext='<h1>Réinscription de l\'équipe !</h1><br>';
+                        $checkChange['inscrite']= $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
+                            '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a réinscrit l\'équipe denommée : ' . $equipe->getTitreProjet();
+
                     }
 
                 }

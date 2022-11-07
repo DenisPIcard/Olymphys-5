@@ -17,6 +17,7 @@ use datetime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use PHPUnit\Framework\MockObject\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -300,10 +301,18 @@ class UtilisateurController extends AbstractController
 
                     if ($modif == false) {
                         $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }
                     if (($modif == true) and ($checkChange != [])) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                        try {
+                            $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                        }
+                        catch(TransportExceptionInterface $e) {
+
+                        }
+
+
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
                     }
                 }
