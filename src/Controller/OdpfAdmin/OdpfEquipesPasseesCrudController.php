@@ -119,7 +119,7 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $fichier = $form->get('file')->getData();
-            $numeroEd = $form->get('edition')->getData() - 1;
+            $numeroEd = $form->get('editionspassees')->getData() - 1;
             $editionPasseeRepository = $this->doctrine->getRepository(OdpfEditionsPassees::class);
             $equipesPasseeRepository = $this->doctrine->getRepository(OdpfEquipesPassees::class);
             $edition = $editionPasseeRepository->findOneBy(['edition' => $numeroEd]);

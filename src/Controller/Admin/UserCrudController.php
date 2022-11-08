@@ -65,7 +65,7 @@ class UserCrudController extends AbstractCrudController
             $user = $this->doctrine->getRepository(User::class)->findOneBy(['id' => $iD]);
             $password->setFormTypeOptions(['required' => false, 'mapped' => true, 'empty_data' => $user->getPassword()]);
         }
-        $isActive = BooleanField::new('is_active');
+
         $nom = TextField::new('nom');
         $prenom = TextField::new('prenom');
         $rne = TextField::new('rne');

@@ -141,6 +141,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
         if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
             unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
         }
+        parent::updateEntity($entityManager,$entityInstance);
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
@@ -171,8 +172,8 @@ class OdpfPhotosCrudController extends AbstractCrudController
             ->addOrderBy('ed.edition', 'DESC')
             ->addOrderBy('e.numero', 'ASC');
         $qb2 = $this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('ed')
-            ->addOrderBy('ed.edition', 'DESC')
             ->addOrderBy('ed.edition', 'DESC');
+
         $form = $this->createFormBuilder()
             /* ->add('edition',ChoiceType::class,[
                  'choices'=> range(1, 30),
