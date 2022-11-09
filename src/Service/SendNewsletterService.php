@@ -5,17 +5,21 @@ namespace App\Service;
 use App\Entity\Newsletter;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 
 class SendNewsletterService
 {
-    private $mailer;
+    private MailerInterface $mailer;
 
     public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function send(User $user, Newsletter $newsletter): void
     {
         // throw new \Exception('Message non envoyé');

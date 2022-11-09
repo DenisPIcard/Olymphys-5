@@ -34,6 +34,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -619,7 +620,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/lescadeaux", name="secretariatjury_lescadeaux")
      *
      */
-    public function lescadeaux(Request $request, $compteur = 1)
+    public function lescadeaux(Request $request, $compteur = 1): RedirectResponse|Response
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
