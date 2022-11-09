@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Edition;
 use App\Utils\ExcelCreate;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpOffice\PhpSpreadsheet\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -47,7 +49,7 @@ class ComiteController extends AbstractController
      * @IsGranted ("ROLE_COMITE")
      * @Route("/comite/frais_lignes", name="comite_frais_lignes")
      */
-    public function frais_lignes(Request $request)
+    public function frais_lignes(Request $request): RedirectResponse|Response
     {
         // $user=$this->getUser();
 
@@ -78,15 +80,16 @@ class ComiteController extends AbstractController
      * @IsGranted ("ROLE_COMITE")
      *
      * @Route("/comite/frais,{nblig}", name="comite_frais", requirements={"nblig"="\d{1}|\d{2}"})
+     * @throws Exception
      */
-    public function frais(Request $request, ExcelCreate $create, $nblig)
+    public function frais(Request $request, ExcelCreate $create, $nblig): RedirectResponse|Response
     {
         $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository(Edition::class);
 
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
-
+        $user = $this->getUser();
         $task = ['nblig' => $nblig];
 
         $formBuilder = $this->createFormBuilder($task);
@@ -105,19 +108,16 @@ class ComiteController extends AbstractController
         for ($j = 2; $j < 8; $j++) {
             $formBuilder->add('iban' . $j, NumberType::class, ['required' => false]);
         }
-        $formBuilder->add('Entree', SubmitType::class);
+        $formBuilder->add('Verification', SubmitType::class);
+
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            //dd($data);
             $nblig = $data['nblig'];
 
-            $fichier = $create->excelfrais($edition, $data, $nblig);
-            //dd($fichier);
-
-            return $this->redirectToRoute('comite_envoi_frais', ['fichier' => $fichier]);
+            $create->excelfrais($user,$edition, $data, $nblig);
 
         }
         $content = $this->render('comite/frais.html.twig', ['edition' => $edition, 'nblig' => $nblig, 'form' => $form->createView()]);
@@ -129,10 +129,9 @@ class ComiteController extends AbstractController
      * @Route("/comite/envoi_frais {fichier}", name="comite_envoi_frais")
      * @throws TransportExceptionInterface
      */
-    public function envoi_frais(Request $request, MailerInterface $mailer, $fichier)
+    public function envoi_frais(Request $request, MailerInterface $mailer, $fichier): RedirectResponse|Response
     {
         $user = $this->getUser();
-        $name = $user->getNom();
         $task = ['nblig' => 2];
 
         $formBuilder = $this->createFormBuilder($task);

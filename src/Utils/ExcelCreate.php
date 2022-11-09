@@ -2,21 +2,24 @@
 // src/Utils/ExcelCreate.php
 namespace App\Utils;
 
+use phpDocumentor\Reflection\Types\Void_;
 use PhpOffice\PhpSpreadsheet\Exception;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExcelCreate
 {
     /**
      * @throws Exception
      */
-    public function excelfrais($edition, $data, $nblig): StreamedResponse
+    public function excelfrais($user, $edition, $data, $nblig): void
+    //void signifie ici qu'il n'y a pas de return : https://www.php.net/manual/fr/migration71.new-features.php
     {
+
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
             ->setCreator("Olymphys")
@@ -58,7 +61,7 @@ class ExcelCreate
             'wrapText' => TRUE
         ];
 
-        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('A')->setWidth(10);
         $sheet->getColumnDimension('B')->setWidth(24);
         $sheet->getColumnDimension('C')->setWidth(13);
         $sheet->getColumnDimension('D')->setWidth(13);
@@ -104,13 +107,17 @@ class ExcelCreate
         $total_depl = 0;
         $total_repas = 0;
         $total_autr = 0;
+        $k=0;
         setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 
         for ($i = 1; $i < $nblig + 1; $i++) {
             $k = $i + 4;
-            $date = $data['date' . $i]->getTimestamp();
-            $result = strftime('%d-%b-%g', $date);
-            $sheet->setCellValue('A' . $k, $result);
+            $date = $data['date' . $i];
+            $strDate = $date->format('d/m/y');
+
+//dd($strDate);
+
+            $sheet->setCellValue('A' . $k, $strDate);
             $design = $data['designation' . $i];
             $sheet->setCellValue('B' . $k, $design);
             $depl = $data['deplacement' . $i];
@@ -136,6 +143,7 @@ class ExcelCreate
             $total_repas = $total_repas + $repas;
             $total_autr = $total_autr + $autr;
         }
+       // dd($user);
         $k++;
         $sheet->setCellValue('B' . $k, 'TOTAL PAR CATÉGORIE');
         $sheet->setCellValue('C' . $k, $total_depl);
@@ -181,41 +189,42 @@ class ExcelCreate
         $k++;
         $k++;
         $DebutCadre = $k;
-        //$nom=$user->getLastname();
-        $nom = 'essai';
+
+        //dd($user);
+        $nom=$user->getNom();
         $sheet->setCellValue('A' . $k, 'Nom');
         $sheet->mergeCells('B' . $k . ':C' . $k);
         $sheet->setCellValue('B' . $k, $nom);
         $k++;
-        //$prenom=$user->getFirstname();
+        $prenom=$user->getPrenom();
         $sheet->setCellValue('A' . $k, 'Prénom');
         $sheet->mergeCells('B' . $k . ':C' . $k);
-        //$sheet->setCellValue('B'.$k, $prenom);
+        $sheet->setCellValue('B'.$k, $prenom);
         $k++;
-        //$adresse=$user->getAdresse();
+        $adresse=$user->getAdresse();
         $sheet->mergeCells('B' . $k . ':C' . $k);
         $sheet->setCellValue('A' . $k, 'Adresse');
-        //$sheet->setCellValue('B'.$k, $adresse);
+        $sheet->setCellValue('B'.$k, $adresse);
         $k++;
 
         $sheet->setCellValue('A' . $k, 'Code');
         $sheet->mergeCells('B' . $k . ':C' . $k);
-        //$sheet->setCellValue('B'.$k, $user->getCode());
+        $sheet->setCellValue('B'.$k, $user->getCode());
         $k++;
         $sheet->setCellValue('A' . $k, 'Ville');
         $sheet->mergeCells('B' . $k . ':C' . $k);
-        //$sheet->setCellValue('B'.$k, $user->getVille());
+        $sheet->setCellValue('B'.$k, $user->getVille());
         $k++;
 
-        //$email=$user->getEmail();
+        $email=$user->getEmail();
         $sheet->setCellValue('A' . $k, 'Email');
         $sheet->mergeCells('B' . $k . ':C' . $k);
-        //$sheet->setCellValue('B'.$k, $email);
+        $sheet->setCellValue('B'.$k, $email);
         $k++;
-        //$phone=$user->getPhone();
+        $phone=$user->getPhone();
         $sheet->setCellValue('A' . $k, 'Téléphone');
         $sheet->mergeCells('B' . $k . ':C' . $k);
-        //$sheet->setCellValue('B'.$k, $phone);
+        $sheet->setCellValue('B'.$k, $phone);
 
         $k++;
 
@@ -267,7 +276,8 @@ class ExcelCreate
         $k++;
         $k++;
         $sheet->setCellValue('F' . $k, "Date d'envoi");
-        $auj = strftime('%d-%m-%g');
+        $date = new \DateTime();
+        $auj=$date->format('d-m-y');
         $sheet->setCellValue('G' . $k, $auj);
         $sheet->getStyle('F' . $k . ':G' . $k)->applyFromArray($borderArray);
 
@@ -277,27 +287,10 @@ class ExcelCreate
         header('Content-Disposition: attachment;filename=' . $nomfic);
         header('Cache-Control: max-age=0');
 
-
-        $writer = new Xls($spreadsheet);
-        //$writer = new Xls;
-        //$adr='./Frais_comite/';
-        //    $fichier=$adr.$nomfic;
-
-        //$writer->save($fichier);
-
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        //$writer->save('/public/temp/'.$nomfic.'.xls');
         $writer->save('php://output');
 
-        $fichier = new StreamedResponse(
-            function () use ($writer) {
-                $writer->save('php://output');
-            }
-        );
-        $fichier->headers->set('Content-Type', 'application/vnd.ms-excel');
-        $fichier->headers->set('Content-Disposition', 'attachment;filename=' . $nomfic);
-        $fichier->headers->set('Cache-Control', 'max-age=0');
-        return $fichier;
-
-        //return $fichier ;
     }
 }
 

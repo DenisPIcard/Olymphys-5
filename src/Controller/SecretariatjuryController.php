@@ -34,6 +34,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -116,6 +117,8 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository(User::class);
+        $prof1=[];
+        $prof2=[];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -139,7 +142,6 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/vueglobale", name="secretariatjury_vueglobale")
      *
-     * @throws NonUniqueResultException
      */
     public function vueglobale(): Response
     {
@@ -1213,7 +1215,7 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
      */
-    public function preparation_tableau_excel_palmares_jury(Request $request)
+    public function preparation_tableau_excel_palmares_jury(Request $request): RedirectResponse|Response
     { //À quoi ça sert ? Qui l'appelle ? Semble servir à remplir voix et intervenant, équipe par équipe
 
         $em = $this->doctrine->getManager();
@@ -1267,7 +1269,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/excel_prix", name="secretariatjury_excel_prix")
      *
      */
-    public function excel_prix(Request $request)
+    public function excel_prix(Request $request): RedirectResponse|Response
     {  //fonction appelée à partir de l'admin page les prix
 
         $defaultData = ['message' => 'Charger le fichier excel pour le palmares'];
