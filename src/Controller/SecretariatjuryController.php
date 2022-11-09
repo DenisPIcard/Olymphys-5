@@ -1234,7 +1234,8 @@ class SecretariatjuryController extends AbstractController
         foreach ($listEquipes as $equipe) {
             $prix = $equipe->getPrix();
             $formBuilder[$i] = $this->get('form.factory')->createNamedBuilder('Form' . $i, PrixExcelType::class, $prix, ['voix' => $prix->getVoix(), 'intervenant' => $prix->getIntervenant()]);
-
+            // probablement utiliser $form = $formFactory->createBuilder() (doc Form Component de Symfony), et donc
+            //$formBuilder[$i] = $formFactory->->createNamedBuilder('Form' . $i, PrixExcelType::class, $prix, ['voix' => $prix->getVoix(), 'intervenant' => $prix->getIntervenant()]);
             $form[$i] = $formBuilder[$i]->getForm();
 
             $formtab[$i] = $form[$i]->createView();
@@ -1268,8 +1269,8 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/excel_prix", name="secretariatjury_excel_prix")
      *
      */
-    public function excel_prix(Request $request)
-    {  //fonction appelée à partir de l'admin page les prix
+    public function excel_prix(Request $request): RedirectResponse|Response
+    {  //fonction appelée à partir de l'admin page les prix dans le PrixCrudcontroller
 
         $defaultData = ['message' => 'Charger le fichier excel pour le palmares'];
         $form = $this->createFormBuilder($defaultData)
