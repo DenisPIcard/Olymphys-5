@@ -621,7 +621,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/lescadeaux", name="secretariatjury_lescadeaux")
      *
      */
-    public function lescadeaux(Request $request, $compteur = 1)
+    public function lescadeaux(Request $request, $compteur = 1): RedirectResponse|Response
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()

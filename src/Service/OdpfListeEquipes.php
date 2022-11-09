@@ -45,17 +45,18 @@ class OdpfListeEquipes
             ->select('e')
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $edition)
+            ->andWhere('e.inscrite !=0')
             ->orderBy('e.numero', 'ASC')
             ->getQuery()
             ->getResult();
         foreach ($listEquipes as $equipe) {
             $numero = $equipe->getNumero();
             $rne = $equipe->getRne();
-            $lycee[$numero] = $repositoryRne->findByRne($rne);
+            $lycee[$numero] = $repositoryRne->findBy(['rne'=>$rne]);
             $idprof1 = $equipe->getIdProf1();
-            $prof1[$numero] = $repositoryUser->findById($idprof1);
+            $prof1[$numero] = $repositoryUser->findBy(['id'=>$idprof1]);
             $idprof2 = $equipe->getIdProf2();
-            $prof2[$numero] = $repositoryUser->findById($idprof2);
+            $prof2[$numero] = $repositoryUser->findBy(['id'=>$idprof2]);
 
         }
         //dd($listEquipes);
@@ -93,5 +94,7 @@ class OdpfListeEquipes
             ];
         }
     }
+
+
 
 }
