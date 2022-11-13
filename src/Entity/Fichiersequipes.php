@@ -192,11 +192,12 @@ class Fichiersequipes //extends BaseMedia
             $nom = $this->getNomautorisation();
 
             if ($this->getProf() !== null) {
+
                 $libel_equipe = 'prof';
             }
-
-            $fileName = $edition . '-eq-' . $libel_equipe . '-autorisation photos-' . $nom . '-' . uniqid();
-        }
+            $slugger = new AsciiSlugger();
+            $fileName = $slugger->slug($edition . '-eq-' . $libel_equipe . '-autorisation photos-' . $nom . '-' . uniqid())->toString();
+           }
         if ($this->getTypefichier() == 7) {
 
 

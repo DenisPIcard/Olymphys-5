@@ -57,6 +57,4 @@ class FichiersequipesRepository extends ServiceEntityRepository
             ->addOrderBy('e.numero', 'ASC');
         return $qb1;
     }
-
-
 }

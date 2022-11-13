@@ -634,8 +634,16 @@ class FichiersController extends AbstractController
                     // ... handle exception if something happens during file upload
                 }
 
-                $fichier = $this->deposeAutorisations($newFilename, $citoyen, $attrib, $prof);
-                $message = '';
+                $fichier = $this->deposeAutorisations($newFilename, $citoyen, $attrib, $prof,$equipe);
+                if ($fichier===null){
+                    $message = 'Une erreur est survenue, le fichier n\'a pas été déposé, veuillez prévenir l\'administrateur du site';
+                    $this->requestStack->getCurrentRequest()->getSession()
+                        ->getFlashBag()
+                        ->add('alert', $message);
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $this->requestStack->getSession()->get('concours') . '-liste_prof'));
+
+                }
+                $message='';
                 $nom_fichier = $fichier->getFichier();
             } else {
                 if ($attrib == 0) {
@@ -754,7 +762,7 @@ class FichiersController extends AbstractController
         return new Response($content);
     }
 
-    public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof)
+    public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof,$equipe)
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
@@ -776,6 +784,7 @@ class FichiersController extends AbstractController
                     $em->remove($fichier);
                     $em->flush();
                 }
+
                 $fichier = new Fichiersequipes();
                 $fichier->setProf($citoyen);
                 $fichier->setFichierFile($fileFichier);
@@ -823,15 +832,9 @@ class FichiersController extends AbstractController
                     $em->flush();
                 }
             }
+
         } catch (Exception $e) {
-
-            $message = 'Une erreur est survenue, le fichier n\'a pas été déposé, veuillez prévenir l\'administrateur du site';
-            $this->requestStack->getCurrentRequest()->getSession()
-                ->getFlashBag()
-                ->add('alert', $message);
-
-            return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $citoyen->getEquipe()->getId() . '-' . $this->requestStack->getSession()->get('concours') . '-liste_prof'));
-
+               $fichier=null;
         }
 
         return $fichier;
