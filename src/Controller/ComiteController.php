@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Edition;
+use App\Entity\User;
 use App\Utils\ExcelCreate;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -126,26 +127,30 @@ class ComiteController extends AbstractController
     }
 
     /**
-     * @Route("/comite/envoi_frais {fichier}", name="comite_envoi_frais")
+     * @Route("/comite/envoi_frais", name="comite_envoi_frais")
      * @throws TransportExceptionInterface
      */
-    public function envoi_frais(Request $request, MailerInterface $mailer, $fichier): RedirectResponse|Response
+    public function envoi_frais(Request $request, MailerInterface $mailer): RedirectResponse|Response
     {
         $user = $this->getUser();
-        $task = ['nblig' => 2];
 
-        $formBuilder = $this->createFormBuilder($task);
-        $formBuilder->add('choix', ChoiceType::class, ['choices' => ['Envoi par moi même' => true, 'Envoi Automatique' => false]])
-            ->add('fichier', FileType::class);
-        $formBuilder->add('Entree', SubmitType::class);
-        $form = $formBuilder->getForm();
-        //    dump($form);
+        $defaultData = ['message' => 'Charger votre fichier de frais '];
+        $form = $this->createFormBuilder($defaultData)
+            ->add('fichier', FileType::class)
+            ->add('save', SubmitType::class)
+            ->getForm();
+
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $fichier = $data['fichier'];
+        }
+
+
+
             $email = (new TemplatedEmail())
-                ->from(new Address('info@olymphys.fr', 'Équipe Olymphys'))
-                ->to(new Address($user->getEmail(), $user->getNom()))
+                ->to (New Address('info@olymphys.fr', 'Équipe Olymphys'))
+                ->from(new Address($user->getEmail(), $user->getNom()))
                 ->subject('Envoi de frais')
                 ->htmlTemplate('email/envoi_frais.html.twig')
                 ->context([
@@ -155,8 +160,8 @@ class ComiteController extends AbstractController
             $mailer->send($email);
 
             return $this->redirectToroute('core_home');
-        }
-        $content = $this->render('comite/envoi_frais.html.twig', ['form' => $form->createView()]);
+
+        $content = $this->render('comite/envoi_frais.html.twig');
         return new Response($content);
 
     }
