@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Edition;
 use App\Entity\User;
 use App\Utils\ExcelCreate;
+use App\Service\Mailer;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -31,9 +32,11 @@ class ComiteController extends AbstractController
 
     private ManagerRegistry $doctrine;
 
+
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
+
     }
 
     /**
@@ -130,41 +133,24 @@ class ComiteController extends AbstractController
      * @Route("/comite/envoi_frais", name="comite_envoi_frais")
      * @throws TransportExceptionInterface
      */
-    public function envoi_frais(Request $request, MailerInterface $mailer): RedirectResponse|Response
+    public function envoi_frais(Request $request, Mailer $mailer): Response
     {
         $user = $this->getUser();
-
         $defaultData = ['message' => 'Charger votre fichier de frais '];
         $form = $this->createFormBuilder($defaultData)
             ->add('fichier', FileType::class)
-            ->add('save', SubmitType::class)
+            ->add('envoi', SubmitType::class)
             ->getForm();
-
+        $fichier = '';
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
+            $mailer->sendFrais($fichier, $user);
         }
 
 
-
-            $email = (new TemplatedEmail())
-                ->to (New Address('info@olymphys.fr', 'Équipe Olymphys'))
-                ->from(new Address($user->getEmail(), $user->getNom()))
-                ->subject('Envoi de frais')
-                ->htmlTemplate('email/envoi_frais.html.twig')
-                ->context([
-                    'user' => $user,
-                ])
-                ->attach($fichier);
-            $mailer->send($email);
-
-            return $this->redirectToroute('core_home');
-
-        $content = $this->render('comite/envoi_frais.html.twig');
+        $content = $this->render('comite/envoi_frais.html.twig', array('form' => $form->createView()));
         return new Response($content);
-
     }
-
-
 }

@@ -58,7 +58,7 @@ class UtilisateurController extends AbstractController
      * @return RedirectResponse|Response
      * @Route("profile_edit", name="profile_edit")
      */
-    public function profileEdit(Request $request, ManagerRegistry $doctrine)
+    public function profileEdit(Request $request, ManagerRegistry $doctrine): RedirectResponse|Response
     {
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
@@ -91,7 +91,7 @@ class UtilisateurController extends AbstractController
      * @Route("/Utilisateur/inscrire_equipe,{idequipe}", name="inscrire_equipe")
      * @throws TransportExceptionInterface
      */
-    public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe)
+    public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe): RedirectResponse|Response
     {
 
         if (null != $this->getUser()) {
@@ -208,7 +208,7 @@ class UtilisateurController extends AbstractController
 
                     }
 
-                    if ($modif == false) {
+                    if (!$modif) {
                         $e = null;
                         try {
                             $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
@@ -239,7 +239,7 @@ class UtilisateurController extends AbstractController
                     // voir https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008186620-Expected-parameter-of-type-App-Entity-User-object-provided-
                     /** @var Edition|object|null $edition */
                     $equipe->setEdition($edition);
-                    if ($modif == false) {
+                    if (!$modif) {
                         $equipe->setSelectionnee(false);
                     }
                     $equipe->setRne($this->getUser()->getRne());
@@ -252,7 +252,7 @@ class UtilisateurController extends AbstractController
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
                             $id = 0;
-                            if ($modif == true) {
+                            if ($modif) {
 
                                 $id = $form1->get('id' . $i)->getData();
                             }
@@ -286,7 +286,7 @@ class UtilisateurController extends AbstractController
                     $em->persist($equipe);
                     $em->flush();
                     $checkChange = '';
-                    if ($modif == true) {
+                    if ($modif) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
                     }
@@ -299,12 +299,12 @@ class UtilisateurController extends AbstractController
                     $session->set('oldListeEleves', null);
                     $session->set('supr_eleve', null);
 
-                    if ($modif == false) {
+                    if (!$modif) {
                         $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
 
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }
-                    if (($modif == true) and ($checkChange != [])) {
+                    if ($modif and ($checkChange != [])) {
                         try {
                             $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
                         }
