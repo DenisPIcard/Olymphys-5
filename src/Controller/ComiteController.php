@@ -76,7 +76,7 @@ class ComiteController extends AbstractController
 
             return $this->redirectToroute('comite_frais', ['nblig' => $nblig]);
         }
-        $content = $this->render('comite/frais_lignes.html.twig', ['edition' => $edition, 'form' => $form->createView()]);
+        $content = $this->renderView('comite/frais_lignes.html.twig', ['edition' => $edition, 'form' => $form->createView()]);
         return new Response($content);
     }
 
@@ -124,7 +124,7 @@ class ComiteController extends AbstractController
             $create->excelfrais($user,$edition, $data, $nblig);
 
         }
-        $content = $this->render('comite/frais.html.twig', ['edition' => $edition, 'nblig' => $nblig, 'form' => $form->createView()]);
+        $content = $this->renderView('comite/frais.html.twig', ['edition' => $edition, 'nblig' => $nblig, 'form' => $form->createView()]);
         return new Response($content);
 
     }
