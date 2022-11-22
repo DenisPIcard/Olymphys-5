@@ -65,11 +65,22 @@
 
                                     <select class="form-control form-control-lg" type="text" id="sel" name="sel">
                                         <option value="{{ edition_affichee.id }}" selected>{{ edition_affichee.pseudo }}e édition - Année
-                                            {{ edition_affichee.annee|slice(5,4) }}</option>
+                                            {% if edition_affichee.edition<10 %}
+                                                    {{ edition_affichee.annee }}
+                                            {% elseif edition_affichee.edition>=10 %}
+                                                    {{ edition_affichee.annee|slice(5,4) }}
+                                            {% endif %}
+                                            </option>
                                         {% for edition in editions %}
                                             {% if edition !=edition_affichee %}
-                                                <option value="{{ edition.id }}">{{ edition.pseudo }}e édition -
-                                                    Année {{ edition.annee|slice(5,4) }}</option>
+                                                <option value="{{ edition.id }}"> {{ edition.pseudo }}e édition -
+                                                    {% if edition.edition<10 %}
+                                                        {{ edition.annee }}
+                                                    {% elseif edition.edition>=10 %}
+                                                        {{ edition.annee|slice(5,4) }}
+                                                    {% endif %}
+
+                                                </option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
