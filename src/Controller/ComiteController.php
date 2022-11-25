@@ -53,7 +53,7 @@ class ComiteController extends AbstractController
      * @IsGranted ("ROLE_COMITE")
      * @Route("/comite/frais_lignes", name="comite_frais_lignes")
      */
-    public function frais_lignes(Request $request): RedirectResponse|Response
+  /*  public function frais_lignes(Request $request): RedirectResponse|Response
     {
         // $user=$this->getUser();
 
@@ -79,14 +79,14 @@ class ComiteController extends AbstractController
         $content = $this->renderView('comite/frais_lignes.html.twig', ['edition' => $edition, 'form' => $form->createView()]);
         return new Response($content);
     }
-
+*/
     /**
      * @IsGranted ("ROLE_COMITE")
      *
      * @Route("/comite/frais,{nblig}", name="comite_frais", requirements={"nblig"="\d{1}|\d{2}"})
      * @throws Exception
      */
-    public function frais(Request $request, ExcelCreate $create, $nblig): RedirectResponse|Response
+    public function frais(Request $request, ExcelCreate $create, $nblig=1): RedirectResponse|Response
     {
         $repositoryEdition = $this->doctrine
             ->getManager()
@@ -106,7 +106,8 @@ class ComiteController extends AbstractController
                 ->add('fournitures' . $i, MoneyType::class, ['required' => false])
                 ->add('poste' . $i, MoneyType::class, ['required' => false])
                 ->add('impressions' . $i, MoneyType::class, ['required' => false])
-                ->add('autres' . $i, MoneyType::class, ['required' => false]);
+                ->add('autres' . $i, MoneyType::class, ['required' => false])
+            ;
         }
         $formBuilder->add('iban1', TextType::class, ['required' => false]);
         for ($j = 2; $j < 8; $j++) {
@@ -119,10 +120,7 @@ class ComiteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $nblig = $data['nblig'];
-
             $create->excelfrais($user,$edition, $data, $nblig);
-
         }
         $content = $this->renderView('comite/frais.html.twig', ['edition' => $edition, 'nblig' => $nblig, 'form' => $form->createView()]);
         return new Response($content);
@@ -150,7 +148,7 @@ class ComiteController extends AbstractController
         }
 
 
-        $content = $this->render('comite/envoi_frais.html.twig', array('form' => $form->createView()));
+        $content = $this->renderView('comite/envoi_frais.html.twig', array('form' => $form->createView()));
         return new Response($content);
     }
 }

@@ -6,6 +6,7 @@
 {% block titre3 %} Frais du comité pour la {{ edition }}ème  édition{% endblock %}
 
 {% block body %}
+
     <div class="well">
         <div class="table-responsive-sm">
             <table class="table">
@@ -37,6 +38,9 @@
                     </tr>
                 {% endfor %}
             </table>
+            {% set nblig = nblig +1 %}
+            <p style=" color :blueviolet" >Si vous avez besoin d'une ligne supplémentaire <a href="{{ path('comite_frais',{nblig:nblig}) }}">cliquez ici</a>,  avant même de remplir le tableau.</p>
+            <br>
             Si vous n'avez pas encore donné votre IBAN, veuillez entrer les données suivant le modèle en grisé :
         </div>
         <table class="table">
@@ -49,13 +53,14 @@
             </tr>
         </table>
     </div>
-    {{ form_rest(form) }}
 
-    {{ form_end(form) }}
+
+
 
     Vous pouvez vérifier soigneusement le fichier reçu, pour contrôler sa conformité.<br>
-
-    S'il ne vous convient pas, corrigez le ci-dessus ou recommencez, en partant du choix du <a href="{{ path('comite_frais_lignes') }}" role="button">nombre de lignes</a><br>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+    S'il ne vous convient pas, corrigez le ci-dessus ou recommencez, en partant du choix <a href="{{ path('comite_frais') }}" role="button"> du tableau</a><br>
     S'il vous convient, après l'avoir enregistré sur votre machine, vous pouvez l'envoyer vous-même à Marine Jadoule (compta@sfpnet.fr) et Christian Usseglio (usseglio.christian@free.fr).<br>
     Vous pouvez y joindre les justifications (billets de train, facture).
 
@@ -67,7 +72,7 @@
         </li>
         <li>
             de pouvoir le retrouver et utiliser le service d'envoi que vous obtiendrez en cliquant ci-dessous .<br>
-            <a href="{{ path('comite_envoi_frais') }}">Envoi</a>
+
         </li>
     </ul>
     <br>
