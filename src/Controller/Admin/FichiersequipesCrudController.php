@@ -244,6 +244,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
                 return $action->setLabel('Déposer le fichier');
             })
+            ->setPermission(Action::DELETE,'ROLE_SUPER_ADMIN')
             ->add(Crud::PAGE_INDEX, $telechargerFichiers)
             ->add(Crud::PAGE_INDEX, $telechargerUnFichier)
             ->add(Crud::PAGE_INDEX, $newFichier)
@@ -348,7 +349,11 @@ class FichiersequipesCrudController extends AbstractCrudController
         $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEdition();
         $typefichier = $fichier->getTypefichier();
-        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
+        $chemintypefichier=  $this->getParameter('type_fichier')[$typefichier];
+        if ($typefichier==1){
+            $chemintypefichier=  $this->getParameter('type_fichier')[0];
+        }
+        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' .$chemintypefichier. '/' . $fichier->getFichier();
         header('Content-Description: File Transfer');
         header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
         header('Content-Transfer-Encoding: binary');
