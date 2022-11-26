@@ -1400,13 +1400,17 @@ class FichiersController extends AbstractController
         $file = 'odpf/odpf-archives/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
 
         $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
-        $response = new BinaryFileResponse($file);
+
+        //$response = new BinaryFileResponse($file);
+        $response = new Response(file_get_contents($file));
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
             $fichier->getFichier()
         );
 
-        $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad')) {
+            $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+        }
         $response->headers->set('Content-Disposition',$disposition);
         $response->headers->set('Content-Length', filesize($file));
 
