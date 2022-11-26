@@ -29,6 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -36,9 +37,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\FileinfoMimeTypeGuesser;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -1394,17 +1397,20 @@ class FichiersController extends AbstractController
         $typefichier = $fichier->getTypefichier();
 
         $typefichier == 1 ? $path = $this->getParameter('type_fichier')[0] : $path = $this->getParameter('type_fichier')[$typefichier];
-        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
+        $file = 'odpf/odpf-archives/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
 
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
-        header('Cache-Control: private', false);
-        header('Pragma: no-cache');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
+        $response = new BinaryFileResponse($file);
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fichier->getFichier()
+        );
+
+        $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+        $response->headers->set('Content-Disposition',$disposition);
+        $response->headers->set('Content-Length', filesize($file));
+
+        return $response;
 
 
     }

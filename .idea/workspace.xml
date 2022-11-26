@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="En cas d'erreur lors du chargement des autorisations photos : gestion de l'exception et création d'un message d'info à l'ulisateur.&#10;et Slugger le nom du fichier autorisation">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_10_2022_15_41__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/FichierNamer.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/core/anc_index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/anc_index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/core/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/core/odpf-pages-editions.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-pages-editions.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/photos/affiche_galerie_edition.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/photos/affiche_galerie_edition.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/photos/affiche_galerie_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/photos/affiche_galerie_equipe.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,6 +280,7 @@
       <workItem from="1668785843461" duration="2744000" />
       <workItem from="1669049883713" duration="5257000" />
       <workItem from="1669101102267" duration="643000" />
+      <workItem from="1669389737912" duration="20338000" />
     </task>
     <task id="LOCAL-00001" summary="Message pour desinscription d'une équipe">
       <created>1667630935209</created>

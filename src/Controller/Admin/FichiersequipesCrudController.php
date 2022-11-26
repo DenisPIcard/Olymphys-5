@@ -40,9 +40,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\FileinfoMimeTypeGuesser;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -354,15 +356,17 @@ class FichiersequipesCrudController extends AbstractCrudController
             $chemintypefichier=  $this->getParameter('type_fichier')[0];
         }
         $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' .$chemintypefichier. '/' . $fichier->getFichier();
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
-        header('Cache-Control: private', false);
-        header('Pragma: no-cache');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
+        $response = new BinaryFileResponse($file);
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fichier->getFichier()
+        );
+        $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+        $response->headers->set('Content-Disposition',$disposition);
+        $response->headers->set('Content-Length', filesize($file));
+
+        return $response;
 
 
     }
