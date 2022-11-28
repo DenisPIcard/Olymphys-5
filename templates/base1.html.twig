@@ -38,7 +38,7 @@ Layout de départ du site #}
 {% endif %}
 <div class="container-fluid">
     <div class="page-header">
-        <img src="{{ asset('images/Phicomplet.png') }}" alt="logo des OdpF" width="300"/>
+        <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicomplet.png') }}" alt="logo des OdpF" width="300"/></a>
 
     </div>
     <div class="row">
@@ -104,13 +104,14 @@ Layout de départ du site #}
         {{ include('flash.html.twig') }}
     {% endblock %}
     <p>
-    <div class="ml-3">Réalisé sous Symfony5 <a href="https://symfony.com/" target="_blank"><img
-                    src="{{ asset("images/logosymfony.png") }}" class="img-thumbnail"></a> à l'aide de PhpStorm <a
-                href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"> <img
-                    src="{{ asset('images/logophpstorm.jpg') }}" class="img-thumbnail"></a></div>
-    </p>
-    <p>
-    <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a>
+    <div class="ml-3">Réalisé sous Symfony6 <a href="https://symfony.com/" target="_blank"><img
+                    src="{{ asset("images/logosymfony.png") }}" class="img-thumbnail" alt="Symfony"></a> à l'aide de PhpStorm <a
+                href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank" > <img
+                    src="{{ asset('images/logophpstorm.jpg') }}" class="img-thumbnail" alt="PhpStorm"></a></div>
+
+
+    <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a></div>
+
 </footer>
 
 

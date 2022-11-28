@@ -18,7 +18,7 @@ use Twig\Environment;
 class Mailer
 {
     private $requestStack;
-    private $mailer;
+    private MailerInterface $mailer;
     private $twig;
 
     public function __construct(MailerInterface $mailer, Environment $twig, RequestStack $requestStack)
@@ -32,7 +32,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendMessage(User $user, Rne $rne_obj)
+    public function sendMessage(User $user, Rne $rne_obj): TemplatedEmail
     {
         $email = (new TemplatedEmail())
             ->from(new Address('info@olymphys.fr'))
@@ -51,7 +51,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function SendVerifEmail(User $user)
+    public function SendVerifEmail(User $user): TemplatedEmail
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
@@ -71,7 +71,10 @@ class Mailer
     }
 
 
-    public function sendConfirmFile(Equipesadmin $equipe, $type_fichier)
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendConfirmFile(Equipesadmin $equipe, $type_fichier): Email
     {
         $email = (new Email())
             ->from('info@olymphys.fr')
@@ -85,12 +88,34 @@ class Mailer
 
     }
 
+
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, UserInterface $user, $modif, $checkChange)
+    public function sendFrais($fichier, $user): TemplatedEmail
     {
-        if ($modif == false) {
+        $email = (new TemplatedEmail())
+            ->from('info@olymphys.fr')
+            ->to(new Address($user->getEmail(), $user->getNom()))
+            // ->from($user->getEmail())
+            ->subject('Envoi de frais')
+            ->htmlTemplate('email/envoi_des_frais.html.twig')
+            ->attach(fopen($fichier,'r'))
+            ->context([
+                'user' => $user,
+            ])
+
+        ;
+
+        $this->mailer->send($email);
+        return $email;
+    }
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, UserInterface $user, $modif, $checkChange): Email
+    {
+        if (!$modif) {
             $email = (new Email())
                 ->from('info@olymphys.fr')
                 ->to('webmestre2@olymphys.fr') //'webmestre2@olymphys.fr', 'Denis'
@@ -103,7 +128,7 @@ class Mailer
                     '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a inscrit une nouvelle équipe denommée : ' . $equipe->getTitreProjet() .
                     '<br> <br>Le comité national des Olympiades de Physique');
         }
-        if ($modif == true) {
+        if ($modif) {
             $changetext = '';
             if ($checkChange != null) {
                 if(isset($checkChange['inscrite'])){
