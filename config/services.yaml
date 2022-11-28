@@ -105,6 +105,12 @@ services:
 
         # you can also restrict listeners to a specific Doctrine connection
         connection: 'default'
-
+  # app/config/services.yaml
+  App\Controller\SearchController:
+    tags: [ controller.service_arguments ]
+    bind:
+      # replace "articles" with the name of your index
+      # and replace the class of the Finder
+      FOS\ElasticaBundle\Finder\TransformedFinder $fichierspassesFinder: '@fos_elastica.finder.fichierspasses'
 
 
