@@ -130,7 +130,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Les Visites', 'fas fa-asterisk', Visites::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Cadeaux', 'fas fa-asterisk', Cadeaux::class)->setPermission('ROLE_SUPER_ADMIN'),
         ];
-        yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
+
         yield MenuItem::linkToCrud('Gestion des éditions', 'fas fa-cogs', Edition::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Affectation des jurés', 'fas fa-graduation-cap', Jures::class)->setPermission('ROLE_SUPER_ADMIN');

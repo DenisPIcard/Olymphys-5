@@ -362,7 +362,8 @@ class FichiersequipesCrudController extends AbstractCrudController
             HeaderUtils::DISPOSITION_ATTACHMENT,
             $fichier->getFichier()
         );
-        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad')) {
+        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'],'Mac OS X'))
+        {   $response = new BinaryFileResponse($file);
             $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
         }
         $response->headers->set('Content-Disposition',$disposition);
@@ -667,8 +668,9 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $pos = strpos($_REQUEST['referrer'], 'typefichier');
         $typefichier = substr($_REQUEST['referrer'], $pos + 12, 5);
-
-
+        if ($typefichier==0) {//contrairement aux autres fichiers, le formulaire comporte un champ de choix memoire ou annexe
+             $typefichier=$entityInstance->getTypefichier();
+        }
         $entityInstance->setTypefichier($typefichier);
 
 
