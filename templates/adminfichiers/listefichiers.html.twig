@@ -78,9 +78,11 @@
                                                        {% endif %}
                                                   {% endif %}
                                                   {%if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or  app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[]  or is_granted('ROLE_SUPER_ADMIN')%}
-                                                       <div class="col-1 " >
+                                                      {% if i!=7 %}
+                                                        <div class="col-1 " >
                                                             <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                       </div>
+                                                        </div>
+                                                       {% endif %}
                                                   {% endif %}
                                              {% endif %}
                                         {% endif %}
@@ -95,9 +97,11 @@
                                                   {% endif %}
                                              {% endif %}
                                              {%if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or  app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[]  or app.user.roles|filter(v => v =='ROLE_SUPE_ADMIN')!=[]%}
-                                                    <div class="col-1 " >
-                                                         <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                    </div>
+                                                    {% if i!=7 %}
+                                                        <div class="col-1 " >
+                                                          <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                        </div>
+                                                    {% endif %}
                                              {% endif %}
                                         {% endif %}
                                    {% endif %}
