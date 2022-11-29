@@ -3,10 +3,14 @@ fos_elastica:
     clients:
         default: { url: '%env(ELASTICSEARCH_URL)%' }
     indexes:
-        fichierspasses:
+        odpfFichiersPasses:
             properties:
                 nomfichier: ~
-                typefichier: [0,1,2,5]
+                equipepassee : ~
+                typefichier : ~
+                editionspassees : ~
+
+
             persistence:
                 driver: orm
                 model: App\Entity\Odpf\OdpfFichierspasses

@@ -2,6 +2,7 @@
 // app/src/Controller/SearchController.php
 namespace App\Controller;
 
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
@@ -9,19 +10,25 @@ use Elastica\Util;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
-{
+{   private $finder;
+
+    public function __construct(PaginatedFinderInterface $finder)
+    {
+        $this->finder = $finder;
+    }
     /**
      * @param TransformedFinder $fichierspassesFinder
      * @return Response
      * @Route ("/search/searchAction", name="search")
      */
-    public function searchAction(TransformedFinder $fichierspassesFinder) : Response
+    public function searchAction() : Response
     {
-        $search = Util::escapeTerm("30");
+        $results = $this->finder->find('example.net');
 
-        $result = $fichierspassesFinder->findHybrid($search, 10);
-
-        dd($result);
+        // Option 2. Returns a set of hybrid results that contain all Elasticsearch results
+        // and their transformed counterparts. Each result is an instance of a HybridResult
+        $results = $this->finder->findHybrid('soleil');
+        dd($results);
 
         return $this->render("views/empty.html.twig");
     }
