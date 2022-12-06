@@ -3,7 +3,9 @@ fos_elastica:
     clients:
         default: { url: '%env(ELASTICSEARCH_URL)%' }
     indexes:
-        odpfFichiersPasses:
+        odpfFichierspasses:
+            serializer:
+                groups: [ elastica ]
             properties:
                 nomfichier: ~
                 equipepassee : ~
@@ -14,3 +16,5 @@ fos_elastica:
             persistence:
                 driver: orm
                 model: App\Entity\Odpf\OdpfFichierspasses
+                finder: ~
+                provider: ~
