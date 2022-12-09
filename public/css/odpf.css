@@ -1,4 +1,9 @@
-@import url(http://fonts.googleapis.com/css?family=Oxygen:300,400,700);
+@font-face {
+    font-family: "Oxygen";
+    src: url("Oxygen-Bold.ttf") format("truetype");
+    src: url("Oxygen-Light.ttf") format("truetype");
+    src: url("Oxygen-Regular.ttf") format("truetype");
+}
 
 .fondnoir {
     background-color: black;
