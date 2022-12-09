@@ -4,16 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="suppression de la ligne Ajax en tete (renderView et non render !)">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_10_2022_15_41__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves">
+      <change afterPath="$PROJECT_DIR$/templates/adminfichiers/listefichiers_back.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ComiteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ComiteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFrais.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/comite/frais.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/comite/frais.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/core/odpf-menu-haut.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-menu-haut.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjury/Prix.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PhotosCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/PhotosCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Docequipes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Docequipes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFichierspasses.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFichierspasses.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Photos.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Photos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Type/Admin/CustomEquipeFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Type/Admin/CustomEquipeFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/ImagesCreateThumbs.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ImagesCreateThumbs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/list_eleves.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/list_eleves.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,10 +40,6 @@
     <option name="RECENT_COMMON_BRANCH" value="main" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
-    <option name="UPDATE_TYPE" value="REBASE" />
-  </component>
-  <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="5b111e00-365b-46e5-a54b-a1f3560b7460" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -220,14 +223,19 @@
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ssh.settings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -284,6 +292,16 @@
       <workItem from="1669277254151" duration="1955000" />
       <workItem from="1669300159286" duration="5943000" />
       <workItem from="1669366326741" duration="380000" />
+      <workItem from="1670451679623" duration="2801000" />
+      <workItem from="1670454511769" duration="302000" />
+      <workItem from="1670507477011" duration="7851000" />
+      <workItem from="1670528392049" duration="1426000" />
+      <workItem from="1670529847671" duration="44000" />
+      <workItem from="1670529917765" duration="2191000" />
+      <workItem from="1670570105854" duration="599000" />
+      <workItem from="1670578993211" duration="7211000" />
+      <workItem from="1670602725511" duration="1329000" />
+      <workItem from="1670605338056" duration="1003000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -355,7 +373,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="comite" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -377,7 +395,8 @@
     <MESSAGE value="envoi frais 1" />
     <MESSAGE value="frais version provisoire" />
     <MESSAGE value="suppression de la ligne Ajax en tete (renderView et non render !)" />
-    <option name="LAST_COMMIT_MESSAGE" value="suppression de la ligne Ajax en tete (renderView et non render !)" />
+    <MESSAGE value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

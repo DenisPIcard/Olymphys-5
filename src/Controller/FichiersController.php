@@ -295,15 +295,17 @@ class FichiersController extends AbstractController
 
 
                 if (in_array('ROLE_PROF', $roles)) {
-                    $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
-                        $qb3->getQuery()->getResult();
+                    $liste_equipes = //$qb3
+                        $qb3->andWhere('t.selectionnee = 1')
+                            ->getQuery()->getResult();
                     $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
 
                 }
             }
+
             $content = $this
                 ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role, 'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
+                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix,  'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
                 ));
             return new Response($content);
 
@@ -1029,10 +1031,12 @@ class FichiersController extends AbstractController
 
         }
         if ($concours == 'national') {
-            $qbComit->andWhere('t.national =:national')
+            $qbComit= $qbInit
+                ->andWhere('t.national =:national')
                 ->andWhere('t.typefichier in (0,1,2,3,7)')
                 ->setParameter('national', TRUE)
                 ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');
+
         }
 
 

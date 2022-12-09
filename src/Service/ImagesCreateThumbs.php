@@ -109,7 +109,7 @@ class ImagesCreateThumbs
         if ($image instanceof Photos) {
             $path = 'odpf/odpf-archives/' . $image->getEditionspassees()->getEdition() . '/photoseq/';
             $pathThumb = $path . 'thumbs/';
-
+            if (file_exists($path . $image->getPhoto())){
             $fileImage = $image->getPhotoFile();
             $imageOrig = new Imagick($fileImage);
             $imageOrig->readImage($path . $image->getPhoto());
@@ -155,7 +155,7 @@ class ImagesCreateThumbs
             $fond->compositeImage($imageOrig, imagick::COMPOSITE_OVER, $x, $y);
             $fond->setColorspace(imagick::COLORSPACE_RGB);
             $fond->writeImage($pathThumb . $image->getPhoto());
-
+            }
         }
 
 

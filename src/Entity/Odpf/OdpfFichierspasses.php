@@ -9,6 +9,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -41,6 +42,7 @@ class OdpfFichierspasses
     private ?int $typefichier;
 
     /**
+     * @Groups({"elastica"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $nomfichier;

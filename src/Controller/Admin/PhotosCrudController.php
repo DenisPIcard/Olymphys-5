@@ -41,6 +41,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 //use Symfony\Component\HttpFoundation\File\File;
 
@@ -292,19 +293,77 @@ class PhotosCrudController extends AbstractCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $name = $entityInstance->getPhoto();
-        if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name)) {
-            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name);
+        $parseName=explode('-',$name);
+        $endName=$parseName[count($parseName)-1];
+        $ext='';
+        if ($entityInstance->getPhotoFile()!==null) //on dépose une nouvelle photo
+        {
+
+
+
+            $ext=($entityInstance->getPhotoFile()->guessExtension());
+
+
+            if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name)) {
+                unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name);
+            }
+            if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
+                unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+
+            }
+
+            $entityInstance->setPhoto($name);
         }
-        if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
-            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+        if ($entityInstance->getPhotoFile()===null) //on veut modifier l'équipe attribuée à la photo sans modifier la photo
+        {  //Il faut donc modifier le nom de la  photos déposée et de sa vignette
+            $equipe= $entityInstance->getEquipe();
+
+            $slugger = new AsciiSlugger();
+            $ed = $entityInstance->getEditionspassees()->getEdition();
+            $equipepassee = $entityInstance->getEquipepassee();
+            $equipe = $entityInstance->getEquipe();
+            $centre = ' ';
+            $lettre_equipe = '';
+            if ($equipe) {
+                if ($equipe->getCentre()) {
+                    $centre = $equipe->getCentre()->getCentre() . '-eq';
+                } else(
+                $centre = 'CIA-eq'
+                );
+
+            }
+            $numero_equipe = $equipepassee->getNumero();
+            $nom_equipe = $equipepassee->getTitreProjet();
+            $nom_equipe = $slugger->slug($nom_equipe)->toString();
+            if ($entityInstance->getNational() == FALSE) {
+                $newFileName = $slugger->slug($ed . '-' . $centre . $numero_equipe . '-' . $nom_equipe . '.'.$endName);
+            }
+            if ($entityInstance->getNational() == TRUE) {
+                $equipepassee->getLettre() === null ? $idEquipe = $equipepassee->getNumero() : $idEquipe = $equipepassee->getLettre();
+
+                $newFileName = $ed . '-CN-eq-' . $idEquipe . '-' . $nom_equipe . '.'.$endName;
+            }
+            $entityInstance->setPhoto($newFileName);
+            $oldPathName='odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name;
+            $newPathName='odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $newFileName;
+            $oldPathNameThumb='odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name;
+            $newPathNameThumb='odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $newFileName;
+            if (file_exists($oldPathName)) {
+                rename($oldPathName,$newPathName);
+            }
+            if (file_exists($oldPathNameThumb)) {
+               rename($oldPathNameThumb,$newPathNameThumb);
+            }
 
         }
-        $entityInstance->setPhoto($name);
-
-
         $entityManager->persist($entityInstance);
-        $entityManager->flush();
-        $entityInstance->createThumbs($entityInstance);
+        $entityManager->flush();//
+        if ($ext=='HEIC'){//Pour transformer en jpg les HEIC, il suffit de remplacer HEIC en jpg
+            $NamePhoto = explode('.',$entityInstance->getPhoto())[0];
+
+
+        }
+        //$entityInstance->createThumbs($entityInstance);
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
