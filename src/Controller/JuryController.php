@@ -46,7 +46,6 @@ class JuryController extends AbstractController
 
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
-     * @throws NonUniqueResultException
      */
     public function accueil(Request $request): Response
 

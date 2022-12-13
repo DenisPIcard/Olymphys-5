@@ -36,12 +36,14 @@
                         {% block page_actions_wrapper %}
                             <div class="page-actions">
                                 {{ parent() }}
-                                {% if  app.request.query.get('filters')==null %}
+
+                                {#
+                                {% if  app.request.query.get('filters') is not defined %}
                                     <a href="{{ path('eleves_tableau_excel',{ideditionequipe:app.session.get('edition').id~'-'~0}) }}"
                                        type="button" class="btn btn-primary">Extraire un tableau excel des élèves</a>
 
                                 {% endif %}
-                                {% if  app.request.query.get('filters')!=null %}
+                                {% if  app.request.query.get('filters')is defined %}
                                     {% if  app.request.query.get('filters').equipe is defined %}
                                         {% set idequipe= app.request.query.get('filters').equipe.value %}
                                     {% else %}
@@ -64,7 +66,7 @@
 
                                     {% endif %}
                                 {% endif %}
-
+                                #}
                             </div>
 
                         {% endblock page_actions_wrapper %}

@@ -5,6 +5,7 @@
 
 {% block titre3 %}
     <div class="text-center">Concours {{ phase }}<br>
+
         {% if app.user.roles|filter(v => v =='ROLE_JURY') %}
             {{ jure.prenomJure }}   {{ jure.nomJure }}
             <br> membre du jury
@@ -29,6 +30,7 @@
             {% endif %}
         {% endif %}
         {% if phase=='national' %}
+
             {% if (choix=='deposer') or (choix=='presentation') %}
                 <br>Dépôt du fichier  d'une équipe
             {% endif %}
@@ -62,6 +64,7 @@
 
             {% endif %}
             <table>
+
                 {% for equipe in liste_equipes %}
                     <div class="row">
                         <div class="col">
@@ -98,7 +101,7 @@
                     <div class="row">
                         <div class="col">
                             {% if   equipe.lettre!=null %} <b> {{ equipe.lettre }}</b>  {% else %}
-                                <b>{% set phase='academique' %}{{ equipe.numero }}</b>{% endif %}
+                                <b>{{ equipe.numero }}</b>{% endif %}
                             - {{ equipe.titreProjet }}
                             {% if is_granted('ROLE_PROF') %}
                                 <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
@@ -107,6 +110,7 @@
                         </div>
 
                         <div class="col">
+
                             {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
                             {% if (choix=='liste_prof') or (choix=='liste_cn_comite') %}
                                 <a class="btn btn-primary"

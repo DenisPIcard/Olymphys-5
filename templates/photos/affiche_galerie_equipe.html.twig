@@ -29,8 +29,10 @@
 
 
 {% block body %}
-    <a class="btn-primary" href="{{ path('odpf_editionspassees_equipe', {'id':liste_equipes[0].id}) }}">Voir
-        l'équipe</a>
+    {% if liste_equipes[0].numero<100 %}
+        <a class="btn-primary" href="{{ path('odpf_editionspassees_equipe', {'id':liste_equipes[0].id}) }}">Voir
+            l'équipe</a>
+    {% endif %}
     <a class="btn-primary"
        href="{{ path('photos_voir_galerie', {'infos':'edition-'~liste_equipes[0].editionspassees.id}) }}">Galerie de
         l'édition

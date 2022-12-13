@@ -137,17 +137,26 @@
         <br>
     </div>
     {% set i=1 %}
-    <div class="text-center">
-        <div class="smallsize">Cliquer sur le n° de l'équipe pour voir ses photos</div>
+    <div class="text-center col-lg-8 col-md-6">
+        <div class="smallsize">Cliquer sur le n° ou la lettre de l'équipe pour voir ses photos</div>
+
+
         {% for photo in photos %}
 
             <a href="{{ path('photos_voir_galerie',{infos:'equipe-'~photo.equipepassee.id}) }}"
-               title="{{ photo.equipepassee.titreProjet }}" class="btn-outline-info" style="border-color: #0d6efd">
-                {{ photo.equipepassee.numero }}
+               title="{{ photo.equipepassee.titreProjet }}" type="button" class="btn btn-warning" style="width: 60px;">
+
+                {% if  photo.equipepassee.numero != null %}
+                    {{ photo.equipepassee.numero }}
+                {% endif %}
+                {% if  photo.equipepassee.lettre != null %}
+                    ({{ photo.equipepassee.lettre }})
+                {% endif %}
             </a>
 
             {% set i= i+1 %}
         {% endfor %}
+
     </div>
     <!-- The Modals -->
 

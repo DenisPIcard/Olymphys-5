@@ -55,15 +55,11 @@
                            aria-pressed="true">Gérer les newsletters</a>
                         <a class="dropdown-item" href="{{ path('secretariatadmin_charge_user') }}" role="button"
                            aria-pressed="true">Ajouter des utilisateurs</a>
-                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_eleves_inter') }}" role="button"
-                           aria-pressed="true">Ajouter des élèves</a>
-                        <a class="dropdown-item" href="{{ path('secretariatadmin_charge_equipeinter') }}" role="button"
-                           aria-pressed="true">Ajouter des équipes</a>
+
 
                         <a class="dropdown-item" href="{{ path('secretariatadmin_charge_rne') }}" role="button"
                            aria-pressed="true">Charger le RNE</a>
-                        <a class="dropdown-item" href="{{ path('maj_profsequipes') }}" role="button"
-                           aria-pressed="true">Mises à jour nll tables profs</a>
+
                         <a class="dropdown-item" href="{{ path('secretariatadmin_charge_equipe_id_rne') }}"
                            role="button" aria-pressed="true">Mise à jour id_rne</a>
                         <div class="dropdown-divider"></div>
@@ -84,8 +80,6 @@
                         <a class="dropdown-item" href="{{ path('secretariatadmin_charge_jures') }}" role="button"
                            aria-pressed="true">Remplissage de la table Jures</a>
 
-                        <a class="dropdown-item" href="{{ path('setlastvisit') }}" role="button" aria-pressed="true">Fixer
-                            la date de lastVisit</a>
                     </div>
 
                     {% elseif is_granted('ROLE_COMITE') %}

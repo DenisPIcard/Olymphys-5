@@ -101,7 +101,7 @@ class Photos
 
     }
 
-    public function getPhotoFile()
+    public function getPhotoFile():?File
     {
         return $this->photoFile;
     }

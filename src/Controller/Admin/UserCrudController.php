@@ -52,7 +52,7 @@ class UserCrudController extends AbstractCrudController
         $nomPrenom = TextareaField::new('nomPrenom');
         $roles = ArrayField::new('roles');
         $rolesedit = ChoiceField::new('roles')->setChoices(['ROLES_ADMIN' => 'ROLES_ADMIN',
-            'ROLE_SUPERADMIN' => 'ROLE_SUPERADMIN',
+            'ROLE_SUPER_ADMIN' => 'ROLE_SUPER_ADMIN',
             'ROLE_ADMIN' => 'ROLE_ADMIN',
             'ROLE_PROF' => 'ROLE_PROF',
             'ROLE_JURY' => 'ROLE_JURY',

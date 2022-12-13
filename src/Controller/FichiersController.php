@@ -29,6 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -36,9 +37,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\FileinfoMimeTypeGuesser;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -292,15 +295,17 @@ class FichiersController extends AbstractController
 
 
                 if (in_array('ROLE_PROF', $roles)) {
-                    $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
-                        $qb3->getQuery()->getResult();
+                    $liste_equipes = //$qb3
+                        $qb3->andWhere('t.selectionnee = 1')
+                            ->getQuery()->getResult();
                     $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
 
                 }
             }
+
             $content = $this
                 ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role, 'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
+                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix,  'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
                 ));
             return new Response($content);
 
@@ -484,26 +489,29 @@ class FichiersController extends AbstractController
         $id_equipe = $info[0];
         $phase = $info[1];
         $choix = $info[2];
-        if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
+        $roles= $this->getUser()->getRoles();
+        if(in_array('ROLE_PROF',$roles)) {
+            if ($choix == 0 or $choix == 1 or $choix == 2) {
 
-            if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
-                $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
-                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
-                    'infos' => $infos,
-                ]);
+                if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
+                    $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                        'infos' => $infos,
+                    ]);
+
+
+                }
+                if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours') == 'national')) {
+                    $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                        'infos' => $infos,
+                    ]);
+
+
+                }
 
 
             }
-            if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours') == 'national')) {
-                $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
-                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
-                    'infos' => $infos,
-                ]);
-
-
-            }
-
-
         }
         if (count($info) >= 5) {//pour les autorisations photos
             $id_citoyen = $info[3];
@@ -1023,10 +1031,12 @@ class FichiersController extends AbstractController
 
         }
         if ($concours == 'national') {
-            $qbComit->andWhere('t.national =:national')
+            $qbComit= $qbInit
+                ->andWhere('t.national =:national')
                 ->andWhere('t.typefichier in (0,1,2,3,7)')
                 ->setParameter('national', TRUE)
                 ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');
+
         }
 
 
@@ -1394,17 +1404,25 @@ class FichiersController extends AbstractController
         $typefichier = $fichier->getTypefichier();
 
         $typefichier == 1 ? $path = $this->getParameter('type_fichier')[0] : $path = $this->getParameter('type_fichier')[$typefichier];
-        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
+        $file = 'odpf/odpf-archives/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
 
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
-        header('Cache-Control: private', false);
-        header('Pragma: no-cache');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
+
+        //$response = new BinaryFileResponse($file);
+        $response = new Response(file_get_contents($file));
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fichier->getFichier()
+        );
+
+        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'],'Mac OS X'))
+        {   $response = new BinaryFileResponse($file);
+            $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+        }
+        $response->headers->set('Content-Disposition',$disposition);
+        $response->headers->set('Content-Length', filesize($file));
+
+        return $response;
 
 
     }

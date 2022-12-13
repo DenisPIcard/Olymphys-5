@@ -40,9 +40,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\FileinfoMimeTypeGuesser;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -244,6 +246,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
                 return $action->setLabel('Déposer le fichier');
             })
+            ->setPermission(Action::DELETE,'ROLE_SUPER_ADMIN')
             ->add(Crud::PAGE_INDEX, $telechargerFichiers)
             ->add(Crud::PAGE_INDEX, $telechargerUnFichier)
             ->add(Crud::PAGE_INDEX, $newFichier)
@@ -348,16 +351,25 @@ class FichiersequipesCrudController extends AbstractCrudController
         $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEdition();
         $typefichier = $fichier->getTypefichier();
-        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $fichier->getFichier());
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
-        header('Cache-Control: private', false);
-        header('Pragma: no-cache');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
+        $chemintypefichier=  $this->getParameter('type_fichier')[$typefichier];
+        if ($typefichier==1){
+            $chemintypefichier=  $this->getParameter('type_fichier')[0];
+        }
+        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' .$chemintypefichier. '/' . $fichier->getFichier();
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
+        $response = new Response(file_get_contents($file));
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fichier->getFichier()
+        );
+        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'],'Mac OS X'))
+        {   $response = new BinaryFileResponse($file);
+            $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+        }
+        $response->headers->set('Content-Disposition',$disposition);
+        $response->headers->set('Content-Length', filesize($file));
+
+        return $response;
 
 
     }
@@ -656,8 +668,9 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $pos = strpos($_REQUEST['referrer'], 'typefichier');
         $typefichier = substr($_REQUEST['referrer'], $pos + 12, 5);
-
-
+        if ($typefichier==0) {//contrairement aux autres fichiers, le formulaire comporte un champ de choix memoire ou annexe
+             $typefichier=$entityInstance->getTypefichier();
+        }
         $entityInstance->setTypefichier($typefichier);
 
 

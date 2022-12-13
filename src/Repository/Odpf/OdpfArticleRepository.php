@@ -134,7 +134,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             // trouver le début de premier tag
             $debut_tag = strpos($chaine, '<');
             // sinon prendre toute la chaine
-            if ($debut_tag == false) $debut_tag = strlen($chaine);
+            if (!$debut_tag) $debut_tag = strlen($chaine);
             // copier le morceau de texte
             $tmp = substr($chaine, 0, $debut_tag);
             // couper par mots
@@ -151,7 +151,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             // trouver la fin du tag
             $fin_tag = strpos($chaine, '>');
             // sinon erreur de fin de tag, retourner chaîne vide
-            if ($fin_tag == false) return "";
+            if (!$fin_tag) return "";
             // copier tag
             $res .= substr($chaine, 0, $fin_tag + 1);
             // ajouter un mot

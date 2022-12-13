@@ -32,18 +32,10 @@
             margin: 0 auto;
         }
 
-        .bottom {
-            background-color: #efefee;
-        }
-
         .block {
             margin: 0;
             padding: 10px 20px 20px 20px;
         }
-
-        {#  .logo {
-             width: 100%;
-        }#}
         .text-center {
             text-align: center;
         }
@@ -70,14 +62,12 @@
     <div class="container">
         <div class="header text-left">
             <a href="{{ url('core_home') }}">
-                <img src="{{ absolute_url(asset('build/images/email/logo.png')) }}" class="logo" width="50" alt="Logo">
+                <img src="{{ absolute_url(asset('build/images/email/logo.png')) }}" class="logo" width="50" alt="Logo Odpf">
             </a>
         </div>
         <div class="content">
             <h1 class="text-center">Bonjour {{ user.prenom }} {{ user.nom }}</h1>
-            <p class="block">
-                Vous pouvez vérifier ci joinet votre déclaration de frais.
-            </p>
+
 
         </div>
         <div class="footer">

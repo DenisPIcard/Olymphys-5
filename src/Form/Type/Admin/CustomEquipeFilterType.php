@@ -40,7 +40,7 @@ class CustomEquipeFilterType extends AbstractType
             ->setParameter('edition', $edition)
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
-        $edition = $_SESSION['_sf2_attributes']['edition'];
+
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'entity'],
             'value_type' => EntityType::class,
