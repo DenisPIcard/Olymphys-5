@@ -72,7 +72,7 @@ class JuryController extends AbstractController
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
 
         $repositoryNotes = $this->doctrine
             ->getManager()

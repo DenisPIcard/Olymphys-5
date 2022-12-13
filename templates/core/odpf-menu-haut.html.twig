@@ -101,7 +101,7 @@
                 </li>
             {% elseif is_granted('ROLE_JURY') %}
                 <li class="nav-item  menu_haut">
-                    <a class="nav-link" href="#">Page Jury</a>
+                    <a class="nav-link" href="{{ path('cyberjury_accueil') }}">Page Jury</a>
                 </li>
             {% elseif is_granted('ROLE_PROF') %}
                 <li class="nav-item dropdown menu_haut">

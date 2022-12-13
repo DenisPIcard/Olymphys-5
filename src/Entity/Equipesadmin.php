@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use phpDocumentor\Reflection\Types\Null_;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -37,7 +38,7 @@ class Equipesadmin
     private ?string $lettre = null;
 
     /**
-     * @var int
+     * @var int|Null
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
@@ -51,14 +52,14 @@ class Equipesadmin
     private ?bool $selectionnee;
 
     /**
-     * @var string
+     * @var string|Null
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
     private ?string $titreProjet;
 
     /**
-     * @var string
+     * @var string|Null
      *
      * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
      */

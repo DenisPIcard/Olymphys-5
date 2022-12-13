@@ -140,7 +140,6 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/vueglobale", name="secretariatjury_vueglobale")
      *
-     * @throws NonUniqueResultException
      */
     public function vueglobale(): Response
     {
