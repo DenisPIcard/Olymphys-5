@@ -4,23 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves">
-      <change afterPath="$PROJECT_DIR$/templates/adminfichiers/listefichiers_back.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="revision jury 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PhotosCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/PhotosCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Docequipes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Docequipes.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFichierspasses.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFichierspasses.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Photos.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Photos.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/Type/Admin/CustomEquipeFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Type/Admin/CustomEquipeFilterType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/ImagesCreateThumbs.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ImagesCreateThumbs.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/list_eleves.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/list_eleves.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/JuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/JuryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -302,6 +291,7 @@
       <workItem from="1670578993211" duration="7211000" />
       <workItem from="1670602725511" duration="1329000" />
       <workItem from="1670605338056" duration="1003000" />
+      <workItem from="1671010834566" duration="5019000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -345,7 +335,14 @@
       <option name="project" value="LOCAL" />
       <updated>1669111791847</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="revision jury 1">
+      <created>1670952652952</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1670952652952</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -373,7 +370,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="origin/master" />
                       </list>
                     </value>
                   </entry>
@@ -396,7 +393,8 @@
     <MESSAGE value="frais version provisoire" />
     <MESSAGE value="suppression de la ligne Ajax en tete (renderView et non render !)" />
     <MESSAGE value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
-    <option name="LAST_COMMIT_MESSAGE" value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
+    <MESSAGE value="revision jury 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="revision jury 1" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

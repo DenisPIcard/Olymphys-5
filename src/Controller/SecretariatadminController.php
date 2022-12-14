@@ -59,7 +59,7 @@ class SecretariatadminController extends AbstractController
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function charge_rne(Request $request)
+    public function charge_rne(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier des élèves '];
         $form = $this->createFormBuilder($defaultData)
@@ -141,7 +141,7 @@ class SecretariatadminController extends AbstractController
      */
 
 
-    public function charge_user(Request $request)
+    public function charge_user(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier '];
         $form = $this->createFormBuilder($defaultData)
@@ -231,7 +231,7 @@ class SecretariatadminController extends AbstractController
      * @Route("/secretariatadmin/cree_equipes", name="secretariatadmin_cree_equipes")
      *
      */
-    public function cree_equipes(Request $request)
+    public function cree_equipes(Request $request): RedirectResponse|Response
     {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
@@ -293,7 +293,7 @@ class SecretariatadminController extends AbstractController
      * @Route("/secretariatadmin/charge_jures", name="secretariatadmin_charge_jures")
      *
      */
-    public function charge_jures(Request $request)
+    public function charge_jures(Request $request): RedirectResponse|Response
     {
 
         $defaultData = ['message' => 'Charger le fichier Jures'];
@@ -382,7 +382,7 @@ class SecretariatadminController extends AbstractController
      * @Route("/secretariatadmin/charge_equipe_id_rne", name="secretariatadmin_charge_equipe_id_rne")
      *
      */
-    public function charge_equipe_id_rne(Request $request)
+    public function charge_equipe_id_rne(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
@@ -414,7 +414,7 @@ class SecretariatadminController extends AbstractController
      * @Route("/secretariatadmin/set_editon_equipe", name="secretariatadmin_set_editon_equipe")
      *
      */
-    public function set_edition_equipe(Request $request)
+    public function set_edition_equipe(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
@@ -454,7 +454,7 @@ class SecretariatadminController extends AbstractController
      * @Route("/secretariatadmin/modif_equipe,{idequipe}", name="modif_equipe")
      *
      */
-    public function modif_equipe(Request $request, $idequipe)
+    public function modif_equipe(Request $request, $idequipe): RedirectResponse|Response
     {
         $em = $this->doctrine->getManager();
         $repositoryEquipesadmin = $this->doctrine
@@ -547,7 +547,7 @@ class SecretariatadminController extends AbstractController
      * @Route("/secretariatadmin/youtube_remise_des prix", name="secretariatadmin_youtube_remise_des_prix")
      *
      */
-    public function youtube_remise_des_prix(Request $request)
+    public function youtube_remise_des_prix(Request $request): RedirectResponse|Response
 
     {
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
