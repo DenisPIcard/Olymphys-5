@@ -90,7 +90,7 @@ class PhotosController extends AbstractController
             $files = $form->get('photoFiles')->getData();
             $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $edition->getEd()]);
             $equipepassee = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees' => $editionpassee, 'numero' => $equipe->getNumero()]);
-
+            $type=true;
             if ($files) {
                 $nombre = count($files);
                 $fichiers_erreurs = [];
@@ -110,8 +110,13 @@ class PhotosController extends AbstractController
                     $parsedName = explode('.', $originalFilename);
                     $ext = end($parsedName);// détecte les .JPG et .HEIC
 
-                    if (($typeImage!='jpg') or ($ext != 'jpg')){// on transforme  le fichier en .JPG
-                        $nameExtLess=explode('.'.$ext, $originalFilename)[0];
+                    if (($typeImage!='jpg') or ($ext != 'jpg')) {// on transforme  le fichier en .JPG
+                        //dd('OK');
+                        $nameExtLess = $parsedName[0];
+                        $imax=count($parsedName );
+                        for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                           $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
+                            }
                         try {//on dépose le fichier dans le temp
                             $file->move(
                                 'temp/',
@@ -120,7 +125,8 @@ class PhotosController extends AbstractController
                         } catch (FileException $e) {
 
                         }
-                        $this->setImageType( $originalFilename, 'temp/');//appelle de la fonction de transformation de la compression
+                        $this->setImageType( $originalFilename, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
+
                         if (isset($_REQUEST['erreur'])){
 
                             unlink('temp/'. $originalFilename);
@@ -128,8 +134,11 @@ class PhotosController extends AbstractController
                         }
                         if (!isset($_REQUEST['erreur'])) {
                             $type=true;
-
-                            $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg', filesize('temp/'.$nameExtLess.'.jpg'), null, true);
+                            if(file_exists('temp/'.$nameExtLess.'.jpg')){
+                                $size =filesize('temp/'.$nameExtLess.'.jpg');
+                            }
+                            else($size=10000000);
+                            $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg',$size , null, true);
                             unlink('temp/'. $originalFilename);
                           }
                     }
@@ -141,19 +150,19 @@ class PhotosController extends AbstractController
                         if (isset($violations[0])) {
                             $violation = 'fichier de taille supérieure à 7 M';
                         }
-                        if ($ext != 'jpg') {
+                        /*if ($ext != 'jpg') {
                             $violation = $violation . ':  fichier non jpeg ';
-                        }
+                        }*/
                         $fichiers_erreurs[$i] = $file->getClientOriginalName() . ' : ' . $violation;
                         $i++;
                     } else {
                         $photo = new Photos();
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if ($concours == 'inter') {
+                        if ($equipe->getLettre() === null) {
                             $photo->setNational(FALSE);
                         }
-                        if ($concours == 'cn') {
+                        if ($equipe->getLettre() !== null) {
 
                             $photo->setNational(TRUE);
                         }
@@ -209,15 +218,15 @@ class PhotosController extends AbstractController
             'form' => $Form, 'edition' => $edition, 'concours' => $concours,
         ]);
     }
-    public function setImageType($image,$path)
+    public function setImageType($image,$nameExtLess,$path)
     {
         try {
             $imageOrig = new Imagick($path . $image);
             $imageOrig->readImage($path . $image);
             $imageOrig->setImageCompression(Imagick::COMPRESSION_JPEG);
             $imageOrig->setType(Imagick::IMGTYPE_TRUECOLOR);
-            $fileNameParts = explode('.', $image);
-            $imageOrig->writeImage($path . $fileNameParts[0] . '.jpg');
+
+            $imageOrig->writeImage($path . $nameExtLess . '.jpg');
         }
         catch(\Exception $e){
 

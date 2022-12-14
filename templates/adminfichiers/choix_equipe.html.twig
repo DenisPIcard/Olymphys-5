@@ -63,7 +63,7 @@
                 <p> Pas d'équipe inscrite</p>
 
             {% endif %}
-            <table>
+
 
                 {% for equipe in liste_equipes %}
                     <div class="row">
@@ -92,11 +92,11 @@
                     </div>
                     <hr>
                 {% endfor %}
-            </table>
+
         {% endif %}
         {% if   phase =='national' %}
             {% set concours='cn' %}
-            <table>
+
                 {% for equipe in liste_equipes %}
                     <div class="row">
                         <div class="col">
@@ -122,8 +122,9 @@
                         </div>
 
                     </div>
+                    <hr>
                 {% endfor %}
-            </table>
+
         {% endif %}
     </div>
     {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}

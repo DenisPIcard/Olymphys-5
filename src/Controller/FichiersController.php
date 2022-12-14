@@ -188,7 +188,7 @@ class FichiersController extends AbstractController
 
                 $liste_equipes = $qb1->getQuery()->getResult();
                 if ($liste_equipes != null) {
-                    if (($this->isGranted('ROLE_COMITE')) or ($this->isGranted('ROLE_SUPER_ADMIN'))) {
+                    if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
 
                         $content = $this
                             ->renderView('adminfichiers\choix_equipe.html.twig', array(
@@ -196,7 +196,7 @@ class FichiersController extends AbstractController
                                 )
                             );
                     }
-                    if ($this->isGranted('ROLE_JURY')) {
+                    if (in_array('ROLE_JURY', $roles)) {
                         $content = $this
                             ->renderView('adminfichiers\choix_equipe.html.twig', array(
                                 'liste_equipes' => $liste_equipes, 'user' => $user, 'phase' => 'national', 'choix' => $choix, 'jure' => $jure)//Jure necessaire pour le titre
@@ -668,7 +668,7 @@ class FichiersController extends AbstractController
 
                 if ($attrib == 0) {
 
-                    if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
+                    if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos et fiche sécurité
                         if ($num_type_fichier < 6) {
                             try {
                                 $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
@@ -687,6 +687,9 @@ class FichiersController extends AbstractController
                             if (!isset($nouveau)) {
                                 $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
                             }
+                        }
+                        if ($num_type_fichier > 6) {
+                            $message = '';
                         }
 
                     }
@@ -747,7 +750,7 @@ class FichiersController extends AbstractController
 
                 $info_equipe = 'prof ' . $citoyen->getNomPrenom();
             };
-            if (($num_type_fichier != 7) and ($num_type_fichier != 4)) {
+            if (($num_type_fichier != 7) or ($num_type_fichier != 4)or ($num_type_fichier != 87)) {//on enregistre pas dans les éditions passées les questionnaires et fiches sécurités
                 $this->RempliOdpfFichiersPasses($fichier);
             }
             try {
@@ -1033,7 +1036,7 @@ class FichiersController extends AbstractController
         if ($concours == 'national') {
             $qbComit= $qbInit
                 ->andWhere('t.national =:national')
-                ->andWhere('t.typefichier in (0,1,2,3,7)')
+                ->andWhere('t.typefichier in (0,1,2,3,7,8)')
                 ->setParameter('national', TRUE)
                 ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');
 

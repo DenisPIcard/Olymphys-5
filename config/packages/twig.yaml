@@ -8,6 +8,6 @@ twig:
     - 'form/custom_types.html.twig'
 
   globals:
-    type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires' ]
-    type_fichier_lit: [ 'mémoire','annexe','résume','diaporama(cn)','fiche securité','diaporama(cia)', 'autorisations','questionnaire' ]
+    type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur_e','diaporamas','autorisations','questionnaires','fichesecur_p' ]
+    type_fichier_lit: [ 'mémoire','annexe','résume','diaporama(cn)','fiche securité(présentation)','diaporama(cia)', 'autorisations','questionnaire','fiche sécurité(exposition)' ]
   exception_controller: null
