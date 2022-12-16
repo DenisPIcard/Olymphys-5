@@ -49,7 +49,7 @@ class valid_fichiers
                 $max_size = '10000k';
                 $mimeTYpes = ['application/pdf',];
                 break;
-            case 4 :
+            case 4 : //fiche sécurité oral
                 $max_size = '1024k';
                 $mimeTYpes = ['application/pdf', 'application/x-pdf', "application/msword",
                     'application/octet-stream',
@@ -71,7 +71,14 @@ class valid_fichiers
                     'application/vnd.oasis.opendocument.text',
                     'image/jpeg'];
                 break;
-            case 8 :
+            case 8 ://fiche securité expo
+                $max_size = '1024k';
+                $mimeTYpes = ['application/pdf', 'application/x-pdf', "application/msword",
+                    'application/octet-stream',
+                    'application/vnd.oasis.opendocument.text',
+                    'image/jpeg'];
+                break;
+            case 9 :
                 $max_size = '10000k'; // Les photos
                 $mimeTYpes = [
                     'image/jpeg', 'image/jpg'];

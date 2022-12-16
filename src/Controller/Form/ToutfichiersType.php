@@ -23,8 +23,6 @@ class ToutfichiersType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-
         switch ($options['data']['choix']) {
             case '0':
                 $choice = ['Mémoire(pdf, 2,5 M max, 20 pages)' => 0];
@@ -44,7 +42,7 @@ class ToutfichiersType extends AbstractType
 
                 break;
             case '4':
-                $choice = ['Fiche sécurité(1M max, doc, docx, pdf, jpg, odt)' => 4];
+                $choice = ['Fiche sécurité présentation(1M max, doc, docx, pdf, jpg, odt)' => 4];
 
                 break;
             case '5':
@@ -57,6 +55,10 @@ class ToutfichiersType extends AbstractType
                 break;
             case '7':
                 $choice = ['Questionnaire équipe(1M max, doc, docx, pdf, jpg, odt)' => 7];
+
+                break;
+            case '8':
+                $choice = ['Fiche sécurité exposition(1M max, doc, docx, pdf, jpg, odt)' => 8];
 
                 break;
         }

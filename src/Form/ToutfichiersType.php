@@ -59,6 +59,10 @@ class ToutfichiersType extends AbstractType
                 $choice = ['Questionnaire équipe(1M max, doc, docx, pdf, jpg, odt)' => 7];
 
                 break;
+            case '8':
+                $choice = ['Fiche sécurité exposition(1M max, doc, docx, pdf, jpg, odt)' => 8];
+
+                break;
         }
 
 
