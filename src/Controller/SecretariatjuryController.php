@@ -71,9 +71,9 @@ class SecretariatjuryController extends AbstractController
         $repositoryRne = $this->doctrine
             ->getManager()
             ->getRepository(Rne::class);
-        $repositoryUser = $this->doctrine
+       /* $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(User::class);*/
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -140,7 +140,6 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/vueglobale", name="secretariatjury_vueglobale")
      *
-     * @throws NonUniqueResultException
      */
     public function vueglobale(): Response
     {

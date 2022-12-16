@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="En cas d'erreur lors du chargement des autorisations photos : gestion de l'exception et création d'un message d'info à l'ulisateur.&#10;et Slugger le nom du fichier autorisation">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="revision jury 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/JuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/JuryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,10 +21,14 @@
     <execution />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_COMMON_BRANCH" value="main" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -195,13 +199,16 @@
     <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2GD420HLDbEeMOI4w3hpWVuWzKl" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -211,23 +218,26 @@
     &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/alain/PhpstormProjects/Olymphys-5/config/packages/dev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;web-ide.project.structure&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ssh.settings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/config/packages/dev" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle/src/Resources/public" />
       <recent name="$PROJECT_DIR$/public/bundles/easyadmin" />
       <recent name="$PROJECT_DIR$/Olymphys-5" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Repository/Odpf" />
+      <recent name="$PROJECT_DIR$/src/Entity/Odpf" />
     </key>
   </component>
   <component name="RunManager">
@@ -256,47 +266,83 @@
       <workItem from="1666528586791" duration="8287000" />
       <workItem from="1666688326247" duration="1881000" />
       <workItem from="1666702749116" duration="1847000" />
-      <workItem from="1667333944934" duration="817000" />
-      <workItem from="1667334854473" duration="41000" />
-      <workItem from="1667371221010" duration="3502000" />
-      <workItem from="1667425524756" duration="2187000" />
-      <workItem from="1667427735399" duration="1452000" />
-      <workItem from="1667485210368" duration="591000" />
-      <workItem from="1667581946508" duration="1234000" />
-      <workItem from="1667588471620" duration="2729000" />
-      <workItem from="1667630717690" duration="522000" />
-      <workItem from="1667747947788" duration="9153000" />
-      <workItem from="1667767873572" duration="3906000" />
-      <workItem from="1667808381001" duration="8332000" />
-      <workItem from="1667977987622" duration="609000" />
-      <workItem from="1668003500817" duration="13067000" />
-      <workItem from="1668064677213" duration="9247000" />
-      <workItem from="1668244242938" duration="598000" />
-      <workItem from="1668287174497" duration="1054000" />
-      <workItem from="1668344856981" duration="816000" />
-      <workItem from="1668365647729" duration="5584000" />
-      <workItem from="1668431889045" duration="3991000" />
-      <workItem from="1668763801212" duration="6196000" />
-      <workItem from="1668785843461" duration="2744000" />
-      <workItem from="1669049883713" duration="5257000" />
-      <workItem from="1669101102267" duration="643000" />
-      <workItem from="1669389737912" duration="20338000" />
+      <workItem from="1667058915782" duration="2399000" />
+      <workItem from="1667232276030" duration="5165000" />
+      <workItem from="1667292854827" duration="16236000" />
+      <workItem from="1667464177391" duration="9052000" />
+      <workItem from="1667920774810" duration="286000" />
+      <workItem from="1668352303167" duration="4310000" />
+      <workItem from="1668518768137" duration="4661000" />
+      <workItem from="1668608544999" duration="4682000" />
+      <workItem from="1668875272435" duration="5050000" />
+      <workItem from="1668951032211" duration="11406000" />
+      <workItem from="1669021598778" duration="6718000" />
+      <workItem from="1669107244038" duration="4034000" />
+      <workItem from="1669277254151" duration="1955000" />
+      <workItem from="1669300159286" duration="5943000" />
+      <workItem from="1669366326741" duration="380000" />
+      <workItem from="1670451679623" duration="2801000" />
+      <workItem from="1670454511769" duration="302000" />
+      <workItem from="1670507477011" duration="7851000" />
+      <workItem from="1670528392049" duration="1426000" />
+      <workItem from="1670529847671" duration="44000" />
+      <workItem from="1670529917765" duration="2191000" />
+      <workItem from="1670570105854" duration="599000" />
+      <workItem from="1670578993211" duration="7211000" />
+      <workItem from="1670602725511" duration="1329000" />
+      <workItem from="1670605338056" duration="1003000" />
+      <workItem from="1671010834566" duration="5019000" />
     </task>
-    <task id="LOCAL-00001" summary="Message pour desinscription d'une équipe">
-      <created>1667630935209</created>
+    <task id="LOCAL-00001" summary="suite">
+      <created>1667061841437</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1667630935209</updated>
+      <updated>1667061841437</updated>
     </task>
-    <task id="LOCAL-00002" summary="En cas d'erreur lors du chargement des autorisations photos : gestion de l'exception et création d'un message d'info à l'ulisateur.&#10;et Slugger le nom du fichier autorisation">
-      <created>1668374432838</created>
+    <task id="LOCAL-00002" summary="modif gitignore">
+      <created>1667234351746</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1668374432839</updated>
+      <updated>1667234351746</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="envoi frais 1">
+      <created>1668523028545</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1668523028545</updated>
+    </task>
+    <task id="LOCAL-00004" summary="envoi frais 1">
+      <created>1668619997269</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1668619997269</updated>
+    </task>
+    <task id="LOCAL-00005" summary="frais version provisoire">
+      <created>1669110044311</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1669110044311</updated>
+    </task>
+    <task id="LOCAL-00006" summary="suppression de la ligne Ajax en tete (renderView et non render !)">
+      <created>1669111791847</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1669111791847</updated>
+    </task>
+    <task id="LOCAL-00007" summary="revision jury 1">
+      <created>1670952652952</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1670952652952</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -337,9 +383,22 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Message pour desinscription d'une équipe" />
-    <MESSAGE value="En cas d'erreur lors du chargement des autorisations photos : gestion de l'exception et création d'un message d'info à l'ulisateur.&#10;et Slugger le nom du fichier autorisation" />
-    <option name="LAST_COMMIT_MESSAGE" value="En cas d'erreur lors du chargement des autorisations photos : gestion de l'exception et création d'un message d'info à l'ulisateur.&#10;et Slugger le nom du fichier autorisation" />
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/master" />
+    </ignored-roots>
+    <MESSAGE value="suite" />
+    <MESSAGE value="modif gitignore" />
+    <MESSAGE value="envoi frais 1" />
+    <MESSAGE value="frais version provisoire" />
+    <MESSAGE value="suppression de la ligne Ajax en tete (renderView et non render !)" />
+    <MESSAGE value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
+    <MESSAGE value="revision jury 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="revision jury 1" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

@@ -188,7 +188,7 @@ class FichiersController extends AbstractController
 
                 $liste_equipes = $qb1->getQuery()->getResult();
                 if ($liste_equipes != null) {
-                    if (($this->isGranted('ROLE_COMITE')) or ($this->isGranted('ROLE_SUPER_ADMIN'))) {
+                    if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
 
                         $content = $this
                             ->renderView('adminfichiers\choix_equipe.html.twig', array(
@@ -196,7 +196,7 @@ class FichiersController extends AbstractController
                                 )
                             );
                     }
-                    if ($this->isGranted('ROLE_JURY')) {
+                    if (in_array('ROLE_JURY', $roles)) {
                         $content = $this
                             ->renderView('adminfichiers\choix_equipe.html.twig', array(
                                 'liste_equipes' => $liste_equipes, 'user' => $user, 'phase' => 'national', 'choix' => $choix, 'jure' => $jure)//Jure necessaire pour le titre
@@ -295,15 +295,17 @@ class FichiersController extends AbstractController
 
 
                 if (in_array('ROLE_PROF', $roles)) {
-                    $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
-                        $qb3->getQuery()->getResult();
+                    $liste_equipes = //$qb3
+                        $qb3->andWhere('t.selectionnee = 1')
+                            ->getQuery()->getResult();
                     $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
 
                 }
             }
+
             $content = $this
                 ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role, 'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
+                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix,  'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
                 ));
             return new Response($content);
 
@@ -487,26 +489,29 @@ class FichiersController extends AbstractController
         $id_equipe = $info[0];
         $phase = $info[1];
         $choix = $info[2];
-        if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
+        $roles= $this->getUser()->getRoles();
+        if(in_array('ROLE_PROF',$roles)) {
+            if ($choix == 0 or $choix == 1 or $choix == 2) {
 
-            if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
-                $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
-                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
-                    'infos' => $infos,
-                ]);
+                if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
+                    $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                        'infos' => $infos,
+                    ]);
+
+
+                }
+                if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours') == 'national')) {
+                    $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                        'infos' => $infos,
+                    ]);
+
+
+                }
 
 
             }
-            if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours') == 'national')) {
-                $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
-                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
-                    'infos' => $infos,
-                ]);
-
-
-            }
-
-
         }
         if (count($info) >= 5) {//pour les autorisations photos
             $id_citoyen = $info[3];
@@ -663,7 +668,7 @@ class FichiersController extends AbstractController
 
                 if ($attrib == 0) {
 
-                    if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
+                    if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos et fiche sécurité
                         if ($num_type_fichier < 6) {
                             try {
                                 $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
@@ -682,6 +687,9 @@ class FichiersController extends AbstractController
                             if (!isset($nouveau)) {
                                 $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
                             }
+                        }
+                        if ($num_type_fichier > 6) {
+                            $message = '';
                         }
 
                     }
@@ -742,7 +750,7 @@ class FichiersController extends AbstractController
 
                 $info_equipe = 'prof ' . $citoyen->getNomPrenom();
             };
-            if (($num_type_fichier != 7) and ($num_type_fichier != 4)) {
+            if (($num_type_fichier != 7) or ($num_type_fichier != 4)or ($num_type_fichier != 87)) {//on enregistre pas dans les éditions passées les questionnaires et fiches sécurités
                 $this->RempliOdpfFichiersPasses($fichier);
             }
             try {
@@ -1026,10 +1034,12 @@ class FichiersController extends AbstractController
 
         }
         if ($concours == 'national') {
-            $qbComit->andWhere('t.national =:national')
-                ->andWhere('t.typefichier in (0,1,2,3,7)')
+            $qbComit= $qbInit
+                ->andWhere('t.national =:national')
+                ->andWhere('t.typefichier in (0,1,2,3,7,8)')
                 ->setParameter('national', TRUE)
                 ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');
+
         }
 
 
@@ -1408,7 +1418,8 @@ class FichiersController extends AbstractController
             $fichier->getFichier()
         );
 
-        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad')) {
+        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'],'Mac OS X'))
+        {   $response = new BinaryFileResponse($file);
             $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
         }
         $response->headers->set('Content-Disposition',$disposition);

@@ -2,17 +2,11 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Filter\CustomCentreFilter;
-use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 use App\Controller\Admin\Filter\CustomPhotosEquipesFilter;
-use App\Entity\Centrescia;
-use App\Entity\Edition;
 use App\Entity\Equipesadmin;
-use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
-use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,14 +27,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Imagick;
+use PHPUnit\Exception;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 //use Symfony\Component\HttpFoundation\File\File;
 
@@ -50,13 +50,15 @@ class PhotosCrudController extends AbstractCrudController
     private RequestStack $requestStack;
     private AdminContextProvider $adminContextProvider;
     private ManagerRegistry $doctrine;
+    private AdminUrlGenerator $adminUrlGenerator;
 
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, AdminUrlGenerator $adminUrlGenerator)
     {
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
+        $this->adminUrlGenerator = $adminUrlGenerator;
 
     }
 
@@ -129,7 +131,7 @@ class PhotosCrudController extends AbstractCrudController
             $photo->setEditionspassees($editionpassee);
             $photo->setEquipepassee($equipepassee);
             $this->doctrine->getManager()->persist($photo);
-            $this->doctrine->getManager()->flush();;
+            $this->doctrine->getManager()->flush();
 
         }
 
@@ -153,14 +155,16 @@ class PhotosCrudController extends AbstractCrudController
                 $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
                 $concours == 'national' ? $tag = 1 : $tag = 0;
 
-                return $queryBuilder->select()->andWhere('entity.edition =:edition')
-                    ->andWhere('entity.selectionnee =:selectionnee ')
+                $queryBuilder->select()->andWhere('entity.edition =:edition')
                     ->andWhere('entity.edition =:edition')
-                    ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
-                    ->setParameter('selectionnee', $tag)
-                    ->addOrderBy('entity.numero', 'ASC')
+                    ->setParameter('edition', $this->requestStack->getSession()->get('edition'));
+                if ($tag == 1) {
+                    $queryBuilder->andWhere('entity.selectionnee =:selectionnee ')
+                        ->setParameter('selectionnee', $tag);
+                }
+                $queryBuilder->addOrderBy('entity.numero', 'ASC')
                     ->addOrderBy('entity.lettre', 'ASC');
-
+                return $queryBuilder;
             }
             );
         $edition = AssociationField::new('edition');
@@ -188,7 +192,7 @@ class PhotosCrudController extends AbstractCrudController
             ->setLabel('Photo')
             ->onlyOnForms()/*->setFormTypeOption('constraints', [
                             'mimeTypes' => ['image/jpeg','image/jpg'],
-                            'mimeTypesMessage' => 'Please upload a valid PDF document',
+                            'mimeTypesMessage' => 'Déposer un  document jpg',
                             'data_class'=>'photos'
                     ]
                 )*/
@@ -253,10 +257,11 @@ class PhotosCrudController extends AbstractCrudController
         return $qb;
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance):void
     {
 
         $edition = $entityInstance->getEquipe()->getEdition();
+
         $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $edition->getEd()]);
         $equipepassee = $this->doctrine->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('p')
             ->andWhere('p.numero =:numero')
@@ -268,15 +273,59 @@ class PhotosCrudController extends AbstractCrudController
         $entityInstance->setEdition($edition);
         $entityInstance->setEditionspassees($editionpassee);
         $entityInstance->setEquipepassee($equipepassee);
-        $entityManager->persist($entityInstance);
-        $entityManager->flush();
-        $entityInstance->createThumbs();
+
+        $file = $entityInstance->getPhotoFile();
+        $typeImage= $file->guessExtension();//Les .HEIC donnent jpg
+        $originalFilename=$file->getClientOriginalName();
+        $parsedName = explode('.', $originalFilename);
+        $ext = end($parsedName);// détecte les .JPG et .HEIC
+        $nameExtLess=explode('.'.$ext, $originalFilename)[0];
+        if (($typeImage!='jpg') or ($ext != 'jpg')) {// dans ce cas on change la compression du fichier en jpg.
+            // création du fichier temporaire pour la transformation en jpg
+
+            $entityInstance->setPhoto($originalFilename);//Pour que le fonction setImageTYpe ait une valeur dans le champ photo
+            try {//on dépose le fichier dans le temp
+                $file->move(
+                    'temp/',
+                    $originalFilename
+                );
+            } catch (FileException $e) {
+
+            }
+            $nameExtLess = $parsedName[0];
+            $imax=count($parsedName );
+            for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
+            }
+            $this->setImageType($entityInstance, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
+            if (isset($_REQUEST['erreur'])){
+
+                unlink('temp/'. $originalFilename);
+
+            }
+            if (!isset($_REQUEST['erreur'])){
+                $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg', filesize('temp/'.$nameExtLess.'.jpg'), null, true);
+                unlink('temp/'. $originalFilename);
+                $entityInstance->setPhotoFile($file);//pour que vichUploader n'intervienne pas sinon erreur
+            }
+        }
+        if (!isset($_REQUEST['erreur'])) {
+
+            $entityManager->persist($entityInstance);
+            $entityManager->flush();
+        }
 
     }
 
     public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
     {
-        $this->addFlash('info', 'La photo a bien été déposée');
+
+        if (!isset($_REQUEST['erreur'])) {
+           $this->addFlash('success', 'La photo a bien été déposée');
+        }
+        if (isset($_REQUEST['erreur'])){
+            $this->addFlash('warning', 'La photo n\'a pas été déposée, erreur de type !');
+        }
         //concours=interacadémique&crudAction=index&crudControllerFqcn=App\Controller\Admin\PhotosCrudController&entityFqcn=App\Entity\Photos&menuIndex=9&page=1&referrer=%2Fadmin%3Fconcours%3Dinteracad%25C3%25A9mique%26crudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CPhotosCrudController%26entityFqcn%3DApp%255CEntity%255CPhotos%26menuIndex%3D9%26signature%3DD_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA%26submenuIndex%3D7&signature=D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA&sort[updatedAt]=DESC&submenuIndex=7
         if ($_REQUEST['menuIndex'] == 9) {
 
@@ -291,27 +340,176 @@ class PhotosCrudController extends AbstractCrudController
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $name = $entityInstance->getPhoto();
-        if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name)) {
-            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name);
+
+        if ($entityInstance->getPhotoFile() !== null) //on dépose une nouvelle photo
+        {
+            $name = $entityInstance->getPhoto();
+            $pathFile = 'odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/';
+            $file = $entityInstance->getPhotoFile();
+            $typeImage= $file->guessExtension();//Les .HEIC donnent jpg
+            $originalFilename=$file->getClientOriginalName();
+            $parsedName = explode('.', $originalFilename);
+            $ext = end($parsedName);// détecte les .JPG et .HEIC
+            $nameExtLess=explode('.'.$ext, $originalFilename)[0];
+            if (($typeImage!='jpg') or ($ext != 'jpg')) {// dans ce cas on change la compression du fichier en jpg.
+                // création du fichier temporaire pour la transformation en jpg
+
+                $entityInstance->setPhoto($originalFilename);//Pour que le fonction setImageTYpe ait une valeur dans le champ photo
+                try {//on dépose le fichier dans le temp
+                    $file->move(
+                        'temp/',
+                        $originalFilename
+                    );
+                } catch (FileException $e) {
+
+                }
+                $nameExtLess = $parsedName[0];
+                $imax=count($parsedName );
+                for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                    $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
+                }
+                $this->setImageType($entityInstance, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
+                if (isset($_REQUEST['erreur'])){
+
+                    unlink('temp/'. $originalFilename);
+
+                }
+                if (!isset($_REQUEST['erreur'])){
+                    $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg', filesize('temp/'.$nameExtLess.'.jpg'), null, true);
+                    unlink('temp/'. $originalFilename);
+                    $entityInstance->setPhotoFile($file);//pour que vichUploader n'intervienne pas sinon erreur
+                }
+
+                parent::updateEntity($entityManager, $entityInstance);
+
+            }
+            else{
+                if (file_exists($pathFile.'thumbs/' . $name)) {//suppression de l'ancien fichier thumb
+                    unlink($pathFile.'thumbs/' . $name);
+
+                }
+                if (file_exists($pathFile. $name)) {//suppression de l'ancien fichier
+                    unlink($pathFile. $name);
+
+                }
+                parent::updateEntity($entityManager, $entityInstance);
+
+            }
         }
-        if (file_exists('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
-            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+
+
+
+        if ($entityInstance->getPhotoFile() === null) //on veut modifier l'équipe attribuée à la photo sans modifier la photo
+
+       {  //Il faut donc modifier le nom de la  photos déposée et de sa vignette "à la main"
+            $equipe = $entityInstance->getEquipe();
+            $name = $entityInstance->getPhoto();
+            $parseOldName=explode('-',$name);
+            $endName=end($parseOldName);
+            $slugger = new AsciiSlugger();
+            $ed = $entityInstance->getEditionspassees()->getEdition();
+            $equipepassee = $entityInstance->getEquipepassee();
+            $equipe = $entityInstance->getEquipe();
+            $nlleEquipepassee=$this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees'=>$equipepassee->getEditionspassees(),'numero'=>$equipe->getNumero()]);//il faut réattribué la bonne équipepassee à la photo
+            $entityInstance->setEquipepassee($nlleEquipepassee);
+            $centre = ' ';
+            $lettre_equipe = '';
+            if ($equipe) {
+                if ($equipe->getCentre()) {
+                    $centre = $equipe->getCentre()->getCentre() . '-eq';
+                } else(
+                $centre = 'CIA-eq'
+                );
+
+            }
+            $numero_equipe = $equipepassee->getNumero();
+            $nom_equipe = $equipepassee->getTitreProjet();
+            $nom_equipe = $slugger->slug($nom_equipe)->toString();
+            if ($entityInstance->getNational() == FALSE) {
+                $newFileName = $slugger->slug($ed . '-' . $centre .'-'.$numero_equipe . '-' . $nom_equipe . '.' . $endName);
+            }
+            if ($entityInstance->getNational() == TRUE) {
+                $equipepassee->getLettre() === null ? $idEquipe = $equipepassee->getNumero() : $idEquipe = $equipepassee->getLettre();
+
+                $newFileName = $ed . '-CN-eq-' . $idEquipe . '-' . $nom_equipe . '.' . $endName;
+            }
+            $entityInstance->setPhoto($newFileName);
+            $oldPathName = 'odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $name;
+            $newPathName = 'odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/' . $newFileName;
+            $oldPathNameThumb = 'odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name;
+            $newPathNameThumb = 'odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $newFileName;
+            if (file_exists($oldPathName)) {
+                rename($oldPathName, $newPathName);
+            }
+            if (file_exists($oldPathNameThumb)) {
+                rename($oldPathNameThumb, $newPathNameThumb);
+            }
+            $entityManager->persist($entityInstance);
+            $entityManager->flush();//
 
         }
-        $entityInstance->setPhoto($name);
 
-
-        $entityManager->persist($entityInstance);
-        $entityManager->flush();
-        $entityInstance->createThumbs($entityInstance);
+        //$entityInstance->createThumbs($entityInstance);
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $name = $entityInstance->getPhoto();
-        unlink('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+        if(file_exists('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
+            unlink('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+        }
         parent::deleteEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+    }
+    public function setImageType($image,$nameExtLess,$path)
+    {
+        try {
+            $imageOrig = new Imagick($path . $image->getPhoto());
+            $imageOrig->readImage($path . $image->getPhoto());
+            $imageOrig->setImageCompression(Imagick::COMPRESSION_JPEG);
+            $fileNameParts = explode('.', $image->getPhoto());
+            $imageOrig->writeImage($path . $nameExtLess . '.jpg');
+        }
+        catch(\Exception $e){
+
+
+            $_REQUEST['erreur']='yes';
+
+              }
+
+    }
+    public function NamePhotos($photo)  : string  // renomme le fichier dans le cas d'un persist
+    {
+        $slugger = new AsciiSlugger();
+        $ed = $photo->getEditionspassees()->getEdition();
+        $equipepassee = $photo->getEquipepassee();
+        $equipe = $photo->getEquipe();
+        $centre = ' ';
+        $lettre_equipe = '';
+        if ($equipe) {
+            if ($equipe->getCentre()) {
+                $centre = $equipe->getCentre()->getCentre() . '-eq';
+            } else(
+            $centre = 'CIA-eq'
+            );
+
+        }
+        $numero_equipe = $equipepassee->getNumero();
+
+        $nom_equipe = $equipepassee->getTitreProjet();
+
+        $nom_equipe = $slugger->slug($nom_equipe)->toString();
+
+        if ($photo->getNational() == FALSE) {
+            $fileName = $slugger->slug($ed . '-' . $centre . $numero_equipe . '-' . $nom_equipe . '.' . uniqid())->toString();
+        }
+        if ($photo->getNational() == TRUE) {
+            $equipepassee->getLettre() === null ? $idEquipe = $equipepassee->getNumero() : $idEquipe = $equipepassee->getLettre();
+
+            $fileName = $ed . '-CN-eq-' . $idEquipe . '-' . $nom_equipe . '.' . uniqid();
+        }
+
+
+        return $fileName;
     }
 
 

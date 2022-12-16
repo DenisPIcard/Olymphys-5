@@ -121,7 +121,7 @@ class Docequipes
         return $this;
     }
 
-    public function getFichierFile(): File
+    public function getFichierFile(): ?File
     {
 
         return $this->fichierFile;

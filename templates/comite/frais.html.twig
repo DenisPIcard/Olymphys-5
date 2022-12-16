@@ -1,69 +1,46 @@
 {% extends "base1.html.twig" %}
 {% block title %} Frais du Comité {% endblock %}
 
-{% block navigation %}
 
-    {{ include ('comite/navigation.html.twig') }}
-
-{% endblock %}
 
 {% block titre3 %} Frais du comité pour la {{ edition }}ème  édition{% endblock %}
 
 {% block body %}
+
     <div class="well">
         <div class="table-responsive-sm">
             <table class="table">
                 <thead>
-
-                <th scope="col">Date</th>
-
-                <th scope="col">Désignation</th>
-
-                <th scope="col">Déplacement</th>
-
-                <th scope="col">Repas</th>
-
-                <th scope="col">Fournitures</th>
-
-                <th scope="col">Poste et tél</th>
-
-                <th scope="col">Impressions</th>
-
-                <th scope="col">Autres</th>
-                </tr>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Désignation</th>
+                        <th scope="col">Déplacement</th>
+                        <th scope="col">Repas</th>
+                        <th scope="col">Fournitures</th>
+                        <th scope="col">Poste et tél</th>
+                        <th scope="col">Impressions</th>
+                        <th scope="col">Autres</th>
+                    </tr>
                 </thead>
 
 
                 {{ form_start(form) }}
                 {% for i in 1..nblig %}
                     <tr>
-                        <td>
-                            {{ form_widget(attribute(form, 'date'~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'designation'~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'deplacement' ~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'repas' ~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'fournitures' ~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'poste' ~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'impressions' ~i)) }}
-                        </td>
-                        <td>
-                            {{ form_widget(attribute(form, 'autres' ~i)) }}
-                        </td>
+                        <td> {{ form_widget(attribute(form, 'date'~i)) }}  </td>
+                        <td> {{ form_widget(attribute(form, 'designation'~i)) }} </td>
+                        <td> {{ form_widget(attribute(form, 'deplacement' ~i)) }} </td>
+                        <td> {{ form_widget(attribute(form, 'repas' ~i)) }} </td>
+                        <td> {{ form_widget(attribute(form, 'fournitures' ~i)) }} </td>
+                        <td> {{ form_widget(attribute(form, 'poste' ~i)) }} </td>
+                        <td> {{ form_widget(attribute(form, 'impressions' ~i)) }} </td>
+                        <td> {{ form_widget(attribute(form, 'autres' ~i)) }} </td>
                     </tr>
                 {% endfor %}
             </table>
+            {% set nblig = nblig +1 %}
+            <p style=" color :blueviolet" >Si vous avez besoin d'une ligne supplémentaire <a href="{{ path('comite_frais',{nblig:nblig}) }}">cliquez ici</a>,  avant même de remplir le tableau.</p>
+            <br>
             Si vous n'avez pas encore donné votre IBAN, veuillez entrer les données suivant le modèle en grisé :
         </div>
         <table class="table">
@@ -76,10 +53,30 @@
             </tr>
         </table>
     </div>
+
+
+
+
+    Vous pouvez vérifier soigneusement le fichier reçu, pour contrôler sa conformité.<br>
     {{ form_rest(form) }}
-
     {{ form_end(form) }}
+    S'il ne vous convient pas, corrigez le ci-dessus ou recommencez, en partant du choix <a href="{{ path('comite_frais') }}" role="button"> du tableau</a><br>
+    S'il vous convient, après l'avoir enregistré sur votre machine, vous pouvez l'envoyer vous-même à Marine Jadoule (compta@sfpnet.fr) et Christian Usseglio (usseglio.christian@free.fr).<br>
+    Vous pouvez y joindre les justifications (billets de train, facture).
 
-    </div>
+    {#
+    choisir<br>
+    <ul>
+        <li>
+            de l'envoyer vous-même à Marine Jadoule (compta@sfpnet.fr) et Christian Usseglio (usseglio.christian@free.fr). Il vous suffit, alors, de revenir à l'accueil du site.
+        </li>
+        <li>
+            de pouvoir le retrouver et utiliser le service d'envoi que vous obtiendrez en cliquant ci-dessous .<br>
+
+        </li>
+    </ul>
+    <br>
+#}
+
 
 {% endblock %}

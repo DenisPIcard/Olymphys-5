@@ -97,13 +97,20 @@ class EquipesadminCrudController extends AbstractCrudController
     {   // dd($_REQUEST);
         $session = $this->requestStack->getSession();
         $editionId = 'na';
+        $centreId = 'na';
+        $selectionnee='na';
         if (!isset($_REQUEST['filters'])) {
             $editionId = $session->get('edition')->getId();
-            $centreId = 'na';
+
         }
 
         if (isset($_REQUEST['filters']['centre'])) {
             $centreId = $_REQUEST['filters']['centre'];
+
+        }
+        if (isset($_REQUEST['filters']['selectionnee'])) {
+            $editionId = $session->get('edition')->getId();
+            $selectionnee=$_REQUEST['filters']['selectionnee'];
 
         }
 
@@ -111,7 +118,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes', 'fa fa_array',)
                 // if the route needs parameters, you can define them:
                 // 1) using an array
-                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId . '-' . $centreId])
+                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId . '-' . $centreId.'-'.$selectionnee])
                 ->createAsGlobalAction();
             //->displayAsButton()->setCssClass('btn btn-primary');
 
@@ -139,7 +146,8 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         return $filters
 
-            ->add(CustomCentreFilter::new('centre'));
+            ->add(CustomCentreFilter::new('centre'))
+            ->add('selectionnee');
     }
 
     public function configureFields(string $pageName): iterable
@@ -244,6 +252,11 @@ class EquipesadminCrudController extends AbstractCrudController
                 $qb->andWhere('e.centre =:centre')
                     ->setParameter('centre', $centre);
             }
+             if (isset($_REQUEST['filters']['selectionnee'])) {
+
+                 $qb->andWhere('e.selectionnee =:selectionnee')
+                     ->setParameter('selectionnee', TRUE);
+             }
 
         }
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')) {
@@ -272,7 +285,10 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         $idedition = explode('-', $ideditioncentre)[0];
         $idcentre = explode('-', $ideditioncentre)[1];
+        if (isset(explode('-', $ideditioncentre)[2])){
+            $selectionnee=explode('-', $ideditioncentre)[2];
 
+        };
 
         $repositoryEleve = $this->doctrine->getRepository(Elevesinter::class);
         $repositoryCentre = $this->doctrine->getRepository(Centrescia::class);
@@ -295,7 +311,12 @@ class EquipesadminCrudController extends AbstractCrudController
                 ->andWhere('e.centre =:centre')
                 ->setParameter('centre', $centre);
         }
+        if (isset($selectionnee) and ($selectionnee != 'na')) {
 
+            $queryBuilder
+                ->andWhere('e.selectionnee  = 1');
+
+        }
         if ($edition != null) {
             $queryBuilder->andWhere('e.edition =:edition')
                 ->setParameter('edition', $edition);

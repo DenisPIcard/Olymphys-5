@@ -177,7 +177,7 @@ class Fichiersequipes //extends BaseMedia
 
         }
         if ($this->getTypefichier() == 4) {
-            $fileName = $edition . '-eq-' . $libel_equipe . '-Fichesecur-' . $nom_equipe;
+            $fileName = $edition . '-eq-' . $libel_equipe . '-Fichesecur-oral-' . $nom_equipe;
         }
 
         if ($this->getTypefichier() == 3) {
@@ -202,6 +202,9 @@ class Fichiersequipes //extends BaseMedia
 
 
             $fileName = $edition . '-eq-' . $libel_equipe . '-questionnaire equipe-' . $nom_equipe . '-' . uniqid();
+        }
+        if ($this->getTypefichier() == 8) {
+            $fileName = $edition . '-eq-' . $libel_equipe . '-Fichesecur-expo-' . $nom_equipe;
         }
         return $fileName;
     }
@@ -302,7 +305,7 @@ class Fichiersequipes //extends BaseMedia
         if ($this->getTypefichier() == 2) {
             $path = $path . '/resumes/';
         }
-        if ($this->getTypefichier() == 4) {
+        if (($this->getTypefichier() == 4) or ($this->getTypefichier() == 8)) {
             $path = $path . '/fichessecur/';
         }
         if ($this->getTypefichier() == 3) {

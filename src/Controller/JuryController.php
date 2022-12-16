@@ -23,6 +23,7 @@ use Exception;
 use Proxies\__CG__\App\Entity\Fichiersequipes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +47,6 @@ class JuryController extends AbstractController
 
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
-     * @throws NonUniqueResultException
      */
     public function accueil(Request $request): Response
 
@@ -73,7 +73,7 @@ class JuryController extends AbstractController
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
 
         $repositoryNotes = $this->doctrine
             ->getManager()
@@ -126,7 +126,6 @@ class JuryController extends AbstractController
      * @Security("is_granted('ROLE_JURY')")
      *
      * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"})
-     * @throws NonUniqueResultException
      */
     public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
@@ -211,7 +210,7 @@ class JuryController extends AbstractController
      * @Route("/lescadeaux", name="cyberjury_lescadeaux")
      *
      */
-    public function lescadeaux(Request $request)
+    public function lescadeaux(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
             ->getManager()
@@ -242,7 +241,7 @@ class JuryController extends AbstractController
      * @Route("/lesprix", name="cyberjury_lesprix")
      *
      */
-    public function lesprix(Request $request)
+    public function lesprix(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
             ->getManager()
@@ -278,7 +277,7 @@ class JuryController extends AbstractController
      * @Route("palmares", name="cyberjury_palmares")
      *
      */
-    public function palmares(Request $request)
+    public function palmares(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
             ->getManager()
@@ -292,7 +291,7 @@ class JuryController extends AbstractController
         }
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
         $em = $this->doctrine->getManager();
 
         $repositoryRepartprix = $this->doctrine
@@ -337,13 +336,13 @@ class JuryController extends AbstractController
      *
      * @throws NonUniqueResultException
      */
-    public function evaluer_une_equipe(Request $request, Equipes $equipe, $id)
+    public function evaluer_une_equipe(Request $request, Equipes $equipe, $id): RedirectResponse|Response
     {
         $user = $this->getUser();
         $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
 
         $lettre = $equipe->getEquipeinter()->getLettre();
 
@@ -412,7 +411,7 @@ class JuryController extends AbstractController
             $notes->setCoefficients($coefficients);
             $total = $notes->getPoints();
             $notes->setTotal($total);
-            if ($nllNote == true) {
+            if ($nllNote) {
                 $nbNotes = count($equipe->getNotess());
 
                 $equipe->setNbNotes($nbNotes + 1);
@@ -471,7 +470,7 @@ class JuryController extends AbstractController
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
         $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository(Fichiersequipes::class);
@@ -520,14 +519,13 @@ class JuryController extends AbstractController
      *
      *
      * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
-     * @throws NonUniqueResultException
      */
     public function liste_phrases_amusantes(Request $request, $id): Response
     {
         $user = $this->getUser();
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
         $repositoryPhrases = $this->doctrine
             ->getManager()
             ->getRepository(Phrases::class);
@@ -579,7 +577,7 @@ class JuryController extends AbstractController
      * @Route("/edit_phrases/{id}", name = "cyberjury_edit_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
      * @throws NonUniqueResultException
      */
-    public function edit_phrases(Request $request, Equipes $equipe, $id)
+    public function edit_phrases(Request $request, Equipes $equipe, $id): RedirectResponse|Response
     {
 
         $user = $this->getUser();
@@ -601,7 +599,7 @@ class JuryController extends AbstractController
             ->getRepository(Liaison::class);
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository(User::class);
+            ->getRepository(Equipes::class);
         $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository(Fichiersequipes::class);

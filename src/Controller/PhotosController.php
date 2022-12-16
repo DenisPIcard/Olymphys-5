@@ -11,6 +11,7 @@ use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
+use Imagick;
 use ImagickException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -20,6 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,13 +90,12 @@ class PhotosController extends AbstractController
             $files = $form->get('photoFiles')->getData();
             $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $edition->getEd()]);
             $equipepassee = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees' => $editionpassee, 'numero' => $equipe->getNumero()]);
-
+            $type=true;
             if ($files) {
                 $nombre = count($files);
                 $fichiers_erreurs = [];
                 $i = 0;
                 foreach ($files as $file) {
-                    $ext = $file->guessExtension();
                     $violations = $validator->validate(
                         $file,
                         [
@@ -103,27 +105,64 @@ class PhotosController extends AbstractController
                             ])
                         ]
                     );
-                    if (($violations->count() > 0) or ($ext != 'jpg')) {
+                    $typeImage= $file->guessExtension();//Les .HEIC donnent jpg
+                    $originalFilename=$file->getClientOriginalName();
+                    $parsedName = explode('.', $originalFilename);
+                    $ext = end($parsedName);// détecte les .JPG et .HEIC
+
+                    if (($typeImage!='jpg') or ($ext != 'jpg')) {// on transforme  le fichier en .JPG
+                        //dd('OK');
+                        $nameExtLess = $parsedName[0];
+                        $imax=count($parsedName );
+                        for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                           $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
+                            }
+                        try {//on dépose le fichier dans le temp
+                            $file->move(
+                                'temp/',
+                                $originalFilename
+                            );
+                        } catch (FileException $e) {
+
+                        }
+                        $this->setImageType( $originalFilename, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
+
+                        if (isset($_REQUEST['erreur'])){
+
+                            unlink('temp/'. $originalFilename);
+                            $type=false;
+                        }
+                        if (!isset($_REQUEST['erreur'])) {
+                            $type=true;
+                            if(file_exists('temp/'.$nameExtLess.'.jpg')){
+                                $size =filesize('temp/'.$nameExtLess.'.jpg');
+                            }
+                            else($size=10000000);
+                            $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg',$size , null, true);
+                            unlink('temp/'. $originalFilename);
+                          }
+                    }
+
+
+                    if (($violations->count() > 0) or ($type==false)) {
                         $violation = '';
                         /** @var ConstraintViolation $violation */
                         if (isset($violations[0])) {
                             $violation = 'fichier de taille supérieure à 7 M';
                         }
-                        if ($ext != 'jpg') {
+                        /*if ($ext != 'jpg') {
                             $violation = $violation . ':  fichier non jpeg ';
-                        }
+                        }*/
                         $fichiers_erreurs[$i] = $file->getClientOriginalName() . ' : ' . $violation;
                         $i++;
                     } else {
                         $photo = new Photos();
-
-
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if ($concours == 'inter') {
+                        if ($equipe->getLettre() === null) {
                             $photo->setNational(FALSE);
                         }
-                        if ($concours == 'cn') {
+                        if ($equipe->getLettre() !== null) {
 
                             $photo->setNational(TRUE);
                         }
@@ -179,7 +218,24 @@ class PhotosController extends AbstractController
             'form' => $Form, 'edition' => $edition, 'concours' => $concours,
         ]);
     }
+    public function setImageType($image,$nameExtLess,$path)
+    {
+        try {
+            $imageOrig = new Imagick($path . $image);
+            $imageOrig->readImage($path . $image);
+            $imageOrig->setImageCompression(Imagick::COMPRESSION_JPEG);
+            $imageOrig->setType(Imagick::IMGTYPE_TRUECOLOR);
 
+            $imageOrig->writeImage($path . $nameExtLess . '.jpg');
+        }
+        catch(\Exception $e){
+
+
+            $_REQUEST['erreur']='yes';
+
+        }
+
+    }
 
 
     /**

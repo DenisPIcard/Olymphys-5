@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use phpDocumentor\Reflection\Types\Null_;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -30,14 +31,14 @@ class Equipesadmin
     private int $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
     private ?string $lettre = null;
 
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
@@ -51,35 +52,35 @@ class Equipesadmin
     private ?bool $selectionnee;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
     private ?string $titreProjet;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
      */
     private ?string $nomLycee;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="denomination_lycee", type="string", length=255, nullable=true)
      */
     private ?string $denominationLycee;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
      */
     private ?string $lyceeLocalite;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
@@ -93,27 +94,27 @@ class Equipesadmin
     private string $prenomProf1;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
      */
     private ?string $nomProf1;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
     private ?string $prenomProf2;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
      */
     private ?string $nomProf2;
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
