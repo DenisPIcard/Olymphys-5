@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="revision jury 1">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="revision jury 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/JuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/JuryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/odpf-accueil.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/odpf-accueil.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-accueil.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -291,7 +289,8 @@
       <workItem from="1670578993211" duration="7211000" />
       <workItem from="1670602725511" duration="1329000" />
       <workItem from="1670605338056" duration="1003000" />
-      <workItem from="1671010834566" duration="5019000" />
+      <workItem from="1671010834566" duration="8608000" />
+      <workItem from="1671189507806" duration="2041000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -342,7 +341,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670952652952</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="revision jury 2">
+      <created>1671029789029</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1671029789029</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -394,7 +400,8 @@
     <MESSAGE value="suppression de la ligne Ajax en tete (renderView et non render !)" />
     <MESSAGE value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
     <MESSAGE value="revision jury 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="revision jury 1" />
+    <MESSAGE value="revision jury 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="revision jury 2" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

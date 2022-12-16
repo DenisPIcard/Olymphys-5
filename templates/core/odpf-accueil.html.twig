@@ -93,8 +93,8 @@
 
                             {% for actu in affActus %}
                                     <li>
-                                        <a class="actus-home-titre"
-                                           href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a>
+                                        <p class="actus-home-titre">
+                                        <a href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a></p>
                                         <p class="actus-home-introtext">{{ actu.texte|raw }} ...</p>
                                         <p class="actus-home-lireplus">
                                             <a class="lireplus" href="{{ path('core_actus', {tourn:'rien'}) }}"
