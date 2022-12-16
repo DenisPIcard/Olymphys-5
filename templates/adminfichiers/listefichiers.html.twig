@@ -1,12 +1,12 @@
 
 {% if  equipe.selectionnee == true %}
-    {%  set liste=[0,1,2,3,4] %} <!-- pour le concours national le questionnaire et la diaparama cia ne sont pas dans la liste -->
+    {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et la diaparama cia ne sont pas dans la liste -->
     {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
         {%  set liste=[0,1,2,3]%}
     {% endif %}
 {% endif %}
 {% if equipe.selectionnee ==false %}
-    {%  set liste=[0,1,2,4,5,7]%} <!-- pour le  cia  le diaporama nat n'est pas dans la liste -->
+    {%  set liste=[0,1,2,4,5,7,8]%} <!-- pour le  cia  le diaporama nat n'est pas dans la liste -->
     {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
         {%  set liste=[0,1,2,5]%} <!-- le jury n'a accès qu'au mémoires, résumé, et diaporama -->
     {% endif %}
@@ -78,7 +78,7 @@
                                                 <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                              {% endif %}
                                              {% if attrib== 0 %}
-                                               <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib[i]} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                               <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
                                              {% endif %}
                                         {% endif %}
                                         {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) %}
@@ -87,7 +87,7 @@
                                                     <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                                  {% endif %}
                                                  {% if attrib== 0 %}
-                                                    <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib[i]} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                                    <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
                                                  {% endif %}
                                         {% endif %}
                                     {%  endif %}

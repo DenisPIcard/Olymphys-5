@@ -4,12 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="revision jury 1">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/JuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/JuryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Chargement deq deux types de fiches sécurité, correction dépot photos">
+      <change afterPath="$PROJECT_DIR$/src/Form/PhotosType_back.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/fos_elastica.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/fos_elastica.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/28-eq-1-autorisation photos-TINTILLiERS-Nelly-5fc7c62e2a564.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/28-eq-1-autorisation photos-VARLET-Tom-5fc7c6446792c.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_HERBINIERE_photos_2021-2022_adultes_SD_plus.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022_adultes_SD_plus CLB.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022_adultes_SD_plus-signed.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022_adultes_SD_plus.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022buridant.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/temp/Autorisation_BOUZIDANE.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SearchController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/listefichiers.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/listefichiers.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,6 +203,14 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
       <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
       <path value="$PROJECT_DIR$/vendor/symfony/doctrine-messenger" />
+      <path value="$PROJECT_DIR$/vendor/nyholm/dsn" />
+      <path value="$PROJECT_DIR$/vendor/elasticsearch/elasticsearch" />
+      <path value="$PROJECT_DIR$/vendor/friendsofsymfony/elastica-bundle" />
+      <path value="$PROJECT_DIR$/vendor/pagerfanta/pagerfanta" />
+      <path value="$PROJECT_DIR$/vendor/ruflin/elastica" />
+      <path value="$PROJECT_DIR$/vendor/react/promise" />
+      <path value="$PROJECT_DIR$/vendor/ezimuel/guzzlestreams" />
+      <path value="$PROJECT_DIR$/vendor/ezimuel/ringphp" />
     </include_path>
   </component>
   <component name="ProblemsViewState">

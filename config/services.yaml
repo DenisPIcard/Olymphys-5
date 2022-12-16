@@ -109,4 +109,8 @@ services:
 # app/config/services.yaml
 
 
-
+  App\Controller\SearchController:
+    tags: ['controller.service_arguments']
+    public: true
+    arguments:
+      - '@fos_elastica.finder.odpfFichierspasses'
