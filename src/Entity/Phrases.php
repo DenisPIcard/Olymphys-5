@@ -49,13 +49,13 @@ class Phrases
     /**
      * @ORM\ManyToOne(targetEntity=Jures::class, inversedBy="phrases")
      */
-    private $jure;
+    private ?Jures $jure;
 
 
     /**
      * Get id
      *
-     * @return integer
+     * @return int|null
      */
     public function getId(): ?int
     {
@@ -65,7 +65,7 @@ class Phrases
     /**
      * Set equipe
      *
-     * @param Equipes $equipe
+     * @param Equipes|null $equipe
      *
      * @return Phrases
      */
@@ -79,7 +79,7 @@ class Phrases
     /**
      * Get equipe
      *
-     * @return Equipes
+     * @return Equipes|null
      */
     public function getEquipe(): ?Equipes
     {
@@ -90,7 +90,7 @@ class Phrases
     /**
      * Get phrase
      *
-     * @return string
+     * @return string|null
      */
     public function getPhrase(): ?string
     {
@@ -116,7 +116,7 @@ class Phrases
         return $this->liaison;
     }
 
-    public function setLiaison(Liaison $liaison = null)
+    public function setLiaison(Liaison $liaison = null): void
     {
         $this->liaison = $liaison;
     }
@@ -124,7 +124,7 @@ class Phrases
     /**
      * Get prix
      *
-     * @return string
+     * @return string|null
      */
     public function getPrix(): ?string
     {

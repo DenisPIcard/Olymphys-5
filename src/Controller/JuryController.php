@@ -557,6 +557,7 @@ class JuryController extends AbstractController
         }
 
         $progression = (!is_null($notes)) ? 1 : 0;
+        //dd($equipe,$phrases,$progression,$jure);
         $content = $this->renderView('cyberjury\listephrases.html.twig',
             array(
                 'equipe' => $equipe,

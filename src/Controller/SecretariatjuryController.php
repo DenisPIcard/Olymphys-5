@@ -71,9 +71,6 @@ class SecretariatjuryController extends AbstractController
         $repositoryRne = $this->doctrine
             ->getManager()
             ->getRepository(Rne::class);
-       /* $repositoryUser = $this->doctrine
-            ->getManager()
-            ->getRepository(User::class);*/
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -117,6 +114,8 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository(User::class);
+        $prof1=[];
+        $prof2=[];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -462,7 +461,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/attrib_prix/{niveau}", name="secretariatjury_attrib_prix", requirements={"niveau"="\d{1}"}))
      *
      */
-    public function attrib_prix(Request $request, $niveau)
+    public function attrib_prix(Request $request, $niveau): RedirectResponse|Response
     {
         $niveau_court = "";
         $niveau_long = "";
@@ -668,7 +667,7 @@ class SecretariatjuryController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->doctrine->getManager();
             $em->persist($equipe);
-            if ($form->get('cadeau')->getData()->getAttribue() == false) {
+            if (!$form->get('cadeau')->getData()->getAttribue()) {
                 $cadeau->setAttribue(false);
                 $flag = 0;
                 $equipe->setCadeau();
@@ -1213,7 +1212,7 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
      */
-    public function preparation_tableau_excel_palmares_jury(Request $request)
+    public function preparation_tableau_excel_palmares_jury(Request $request): RedirectResponse|Response
     { //À quoi ça sert ? Qui l'appelle ? Semble servir à remplir voix et intervenant, équipe par équipe
 
         $em = $this->doctrine->getManager();
