@@ -592,6 +592,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository(Equipes::class)
             ->getEquipesPrix();
+        //dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_prix.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }

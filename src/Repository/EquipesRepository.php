@@ -57,8 +57,10 @@ class EquipesRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.prix', 'p')
+            ->leftJoin('e.equipeinter', 'eq')
             ->addSelect('p')
             ->orderBy('e.classement')
+            ->addSelect('eq')
             ->getQuery();
 
         return $query->getResult();
@@ -95,16 +97,14 @@ class EquipesRepository extends ServiceEntityRepository
             ->leftJoin('e.cadeau', 'c')
             ->addSelect('c')
             ->leftJoin('e.phrases', 'f')
-            //->leftJoin('e.liaison', 'l')
             ->addSelect('f')
-            //->addSelect('l')
             ->leftJoin('e.prix', 'p')
             ->addSelect('p')
             ->leftJoin('e.visite', 'v')
             ->addSelect('v')
             ->leftJoin('e.equipeinter', 'i')
             ->addSelect('i')
-            ->orderBy('e.classement', 'ASC', 'e.lettre', 'ASC')
+            ->orderBy('e.classement', 'ASC')
             ->getQuery();
 
         return $query->getResult();
