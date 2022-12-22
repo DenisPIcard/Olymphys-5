@@ -47,6 +47,7 @@ class EquipesRepository extends ServiceEntityRepository
             ->leftJoin('e.visite', 'v')
             ->leftJoin('e.equipeinter', 'eq')
             ->addSelect('v')
+            ->addSelect('eq')
             ->orderBy('eq.lettre')
             ->getQuery();
 

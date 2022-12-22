@@ -171,6 +171,8 @@ body {
     text-decoration: none;
     background: white;
     color: black;
+    margin-top: 0;
+    margin-bottom: 0;
     list-style-type: none;
     font-family: 'Oxygen', sans-serif;
     font-size: 22px;

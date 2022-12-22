@@ -23,8 +23,8 @@
 
             {% for equipes in listEquipes %}
                 <tr>
-                    <th><span class="btn btn-primary btn-lg">{{ equipes.lettre }} </span></th>
-                    <td>{{ equipes.titreProjet }}</td>
+                    <th><span class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }} </span></th>
+                    <td>{{ equipes.equipeinter.titreProjet }}</td>
                     <td>{% if equipes.visite != NULL %}
                             {{ equipes.visite.intitule }}
                         {% endif %}

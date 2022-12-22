@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="phrases dans jury 1">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="phrases dans jury 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/odpf-accueil.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/odpf-accueil.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/EquipesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/EquipesType.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Repository/EquipesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EquipesRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjury/listephrases.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjury/listephrases.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_prix.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_prix.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_visites.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_visites.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -299,7 +302,8 @@
       <workItem from="1671010834566" duration="8608000" />
       <workItem from="1671189507806" duration="8555000" />
       <workItem from="1671375241462" duration="6872000" />
-      <workItem from="1671635849732" duration="3316000" />
+      <workItem from="1671635849732" duration="4533000" />
+      <workItem from="1671718415023" duration="9314000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -371,7 +375,14 @@
       <option name="project" value="LOCAL" />
       <updated>1671384204981</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="phrases dans jury 2">
+      <created>1671642560624</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1671642560625</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -426,7 +437,8 @@
     <MESSAGE value="revision jury 2" />
     <MESSAGE value="modif css actus accueil" />
     <MESSAGE value="phrases dans jury 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="phrases dans jury 1" />
+    <MESSAGE value="phrases dans jury 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="phrases dans jury 2" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

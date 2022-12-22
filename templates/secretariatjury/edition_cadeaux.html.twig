@@ -11,12 +11,12 @@
     <div class="container">
         <table class="table table-responsive">
             <thead>
-            <tr>
-                <th>Lettre</th>
-                <th>Prix</th>
-                <th>Titre projet</th>
-                {% if compteur <= nbreEquipes %}
-            </tr>
+                <tr>
+                    <th>Lettre</th>
+                    <th>Prix</th>
+                    <th>Titre projet</th>
+        {% if compteur <= nbreEquipes %}
+                </tr>
             </thead>
             <tbody>
 
@@ -25,17 +25,17 @@
             >
                 <td><span class="btn btn-primary btn-lg">{{ equipe.equipeinter.lettre }} </span></td>
                 <td>{{ equipe.classement }}</td>
-                <td>{{ equipe.titreProjet }}</td>
+                <td>{{ equipe.equipeinter.titreProjet }}</td>
             </tr>
 
 
-            {% if attribue == 0 %}
-                {{ include ("secretariatjury/form-cadeaux.html.twig") }}
-            {% else %}
-                {{ include ("secretariatjury/form-cadeaux2.html.twig") }}
-            {% endif %}
+                {% if attribue == 0 %}
+                    {{ include ("secretariatjury/form-cadeaux.html.twig") }}
+                {% else %}
+                    {{ include ("secretariatjury/form-cadeaux2.html.twig") }}
+                {% endif %}
 
-            {% else %}
+        {% else %}
             <th>Cadeau</th>
             </tr>
             </thead>
@@ -62,7 +62,7 @@
             {% endblock %}
 
 
-            {% endif %}
+       {% endif %}
             </tbody>
         </table>
     </div>

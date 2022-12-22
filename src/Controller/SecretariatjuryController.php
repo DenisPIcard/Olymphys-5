@@ -609,10 +609,77 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository(Equipes::class)
             ->getEquipesVisites();
+        //dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }
-
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatjury/attrib_cadeaux/{id_equipe}", name="secretariatjury_attrib_cadeaux",  requirements={"id_equipe"="\d{1}|\d{2}"}))
+     *
+     */
+        public function attrib_cadeaux(Request $request, $id_equipe): RedirectResponse|Response
+        {
+            // repris de Olymphys4
+            $repositoryEquipes = $this->doctrine
+                ->getManager()
+                ->getRepository('App:Equipes');
+            $equipe = $repositoryEquipes->find($id_equipe);
+            $repositoryCadeaux = $this->doctrine
+                ->getManager()
+                ->getRepository('App:Cadeaux');
+            $cadeau = $equipe->getCadeau();
+            $listeEquipes = $this->doctrine
+                ->getManager()
+                ->getRepository('App:Equipes')
+                ->getEquipesCadeaux();
+            if (is_null($cadeau)) {
+                $flag = 0;
+                $form = $this->createForm(EquipesType::class, $equipe,
+                    array(
+                        'Attrib_Phrases' => false,
+                        'Attrib_Cadeaux' => true,
+                        'Deja_Attrib' => false,
+                    ));
+                if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                    $em = $this->doctrine->getManager();
+                    $em->persist($equipe);
+                    $cadeau = $equipe->getCadeau();
+                    $cadeau->setAttribue(1);
+                    $em->persist($cadeau);
+                    $em->flush();
+                    $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
+                    return $this->redirectToroute('secretariatjury_edition_cadeaux', array('listeEquipes' => $listeEquipes));
+                }
+            } else {
+                $flag = 1;
+                $em = $this->doctrine->getManager();
+                $form = $this->createForm(EquipesType::class, $equipe,
+                    array(
+                        'Attrib_Phrases' => false,
+                        'Attrib_Cadeaux' => true,
+                        'Deja_Attrib' => true,
+                    ));
+                if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                    $em->persist($cadeau);
+                    if (!$cadeau->getAttribue()) {
+                        $equipe->setCadeau(NULL);
+                    }
+                    $em->persist($equipe);
+                    $em->flush();
+                    $request->getSession()->getFlashBag()->add('notice', 'Cadeau attribué');
+                    return $this->redirectToroute('secretariatjury_edition_cadeaux', array('listeEquipes' => $listeEquipes));
+                }
+            }
+            $content = $this->renderView('secretariatjury/attrib_cadeaux.html.twig',
+                array(
+                    'equipe' => $equipe,
+                    'form' => $form->createView(),
+                    'attribue' => $flag,
+                ));
+            return new Response($content);
+        }
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
@@ -635,7 +702,9 @@ class SecretariatjuryController extends AbstractController
         $compteur > $nbreEquipes ? $compteur = 1 : $compteur = $compteur;
         $listEquipesCadeaux = $repositoryEquipes->getEquipesCadeaux();
         $listEquipesPrix = $repositoryEquipes->getEquipesPrix();
+        //dd($listEquipesPrix);
         $equipe = $repositoryEquipes->findOneBy(['rang' => $compteur]);
+        //dd($equipe);
         if (is_null($equipe)) {
             $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
                 array(
