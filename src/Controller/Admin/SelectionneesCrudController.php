@@ -45,7 +45,7 @@ class SelectionneesCrudController extends AbstractCrudController
         $infoequipe = AssociationField::new('infoequipe');
         $eleves = AssociationField::new('eleves');
         $notess = AssociationField::new('notess');
-        $hote = AssociationField::new('hote');
+        //$hote = AssociationField::new('hote');
         $interlocuteur = AssociationField::new('interlocuteur');
         $observateur = AssociationField::new('observateur');
         $infoequipeLyceeAcademie = TextareaField::new('infoequipe.lyceeAcademie');
@@ -58,11 +58,11 @@ class SelectionneesCrudController extends AbstractCrudController
         if (Crud::PAGE_INDEX === $pageName) {
             return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $code, $sallesecours, $hotePrenomNom, $interlocuteurPrenomNom];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+            return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $interlocuteur, $observateur];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+            return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $interlocuteur, $observateur];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $sallesecours, $code, $hote, $interlocuteur];
+            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $sallesecours, $code,  $interlocuteur];
         }
     }
 }

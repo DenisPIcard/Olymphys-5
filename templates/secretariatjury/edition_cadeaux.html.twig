@@ -15,10 +15,10 @@
                     <th>Lettre</th>
                     <th>Prix</th>
                     <th>Titre projet</th>
-        {% if compteur <= nbreEquipes %}
-                </tr>
-            </thead>
-            <tbody>
+                        {% if compteur <= nbreEquipes %}
+                            </tr>
+                         </thead>
+                     <tbody>
 
             <tr
                     {% if equipe.classement == '1er' %} class="danger" {% elseif  equipe.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
