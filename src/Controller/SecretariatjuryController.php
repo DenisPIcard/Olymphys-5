@@ -59,7 +59,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/accueil", name="secretariatjury_accueil")
      *
      */
-    public function accueil(Request $request): Response
+    public function accueil(): Response
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
@@ -100,7 +100,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/accueil_jury", name="secretariatjury_accueil_jury")
      *
      */
-    public function accueilJury(Request $request): Response
+    public function accueilJury(): Response
     {
         $tableau = $this->requestStack->getSession()->get('tableau');
         $listEquipes = $tableau[0];
@@ -229,7 +229,7 @@ class SecretariatjuryController extends AbstractController
         $qb->select('COUNT(e)');
         try {
             $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);

@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Attributions 2">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Visites.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Visites.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -301,7 +300,7 @@
       <workItem from="1671730722289" duration="217000" />
       <workItem from="1671731019197" duration="130000" />
       <workItem from="1671802846802" duration="10639000" />
-      <workItem from="1672070318960" duration="2397000" />
+      <workItem from="1672070318960" duration="2857000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -394,7 +393,14 @@
       <option name="project" value="LOCAL" />
       <updated>1671816194682</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Attributions 2">
+      <created>1672073600263</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1672073600263</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
