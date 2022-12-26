@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Attributions">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Attributions 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/SelectionneesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/SelectionneesCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Visites.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Visites.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,33 +203,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.CSV/TSV/PSV&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "last_opened_file_path": "/home/denis/Documents/varwww/html/Olymphys-5",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "editor.preferences.tabs",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle/src/Resources/public" />
@@ -303,7 +300,8 @@
       <workItem from="1671718415023" duration="9314000" />
       <workItem from="1671730722289" duration="217000" />
       <workItem from="1671731019197" duration="130000" />
-      <workItem from="1671802846802" duration="10094000" />
+      <workItem from="1671802846802" duration="10639000" />
+      <workItem from="1672070318960" duration="2397000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -389,7 +387,14 @@
       <option name="project" value="LOCAL" />
       <updated>1671730874241</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Attributions 2">
+      <created>1671816194682</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1671816194682</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -446,7 +451,8 @@
     <MESSAGE value="phrases dans jury 1" />
     <MESSAGE value="phrases dans jury 2" />
     <MESSAGE value="Attributions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Attributions" />
+    <MESSAGE value="Attributions 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Attributions 2" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

@@ -27,9 +27,9 @@ class Visites
 
 
     /**
-     * @ORM\Column(name="attribue", type="boolean")
+     * @ORM\Column(name="attribue", type="boolean", nullable=true)
      */
-    public bool $attribue = false;
+    public ?bool $attribue = false;
 
     public function __toString()
     {
