@@ -6,15 +6,10 @@ fos_elastica:
         odpfFichierspasses:
             serializer:
                 groups: [ elastica ]
-            properties:
-                nomfichier: ~
-                equipepassee : ~
-                typefichier : ~
-                editionspassees : ~
-                national : true
-
             persistence:
                 driver: orm
                 model: App\Entity\Odpf\OdpfFichierspasses
                 finder: ~
                 provider: ~
+            properties:
+                nomfichier: ~

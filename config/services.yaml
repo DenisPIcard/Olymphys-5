@@ -110,7 +110,8 @@ services:
 
 
   App\Controller\SearchController:
-    tags: ['controller.service_arguments']
-    public: true
-    arguments:
-      - '@fos_elastica.finder.odpfFichierspasses'
+     tags: ['controller.service_arguments']
+
+     public: true
+     arguments:
+       - '@fos_elastica.finder.odpfFichierspasses'
