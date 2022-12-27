@@ -111,7 +111,7 @@ class JuryController extends AbstractController
                 }
             }
         }
-//dd($memoires);
+
         $content = $this->renderView('cyberjury/accueil.html.twig',
             array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
         );
@@ -482,6 +482,7 @@ class JuryController extends AbstractController
         foreach ($MonClassement as $notes) {
             $id = $notes->getEquipe();
             $equipe = $repositoryEquipes->find($id);
+
             $listEquipes[$j]['id'] = $equipe->getId();
             $listEquipes[$j]['infoequipe'] = $equipe->getEquipeinter();
             $listEquipes[$j]['lettre'] = $equipe->getEquipeinter()->getLettre();

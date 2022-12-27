@@ -90,7 +90,7 @@ class Equipes
     private ?Equipesadmin $equipeinter = null;
 
     /**
-     * @ORM\Column(name="nb_notes", type="integer")
+     * @ORM\Column(name="nb_notes", type="integer", nullable=true)
      */
     private ?int $nbNotes = null;
 

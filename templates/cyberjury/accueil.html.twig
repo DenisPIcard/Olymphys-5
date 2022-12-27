@@ -41,7 +41,7 @@
                 {% for key,mem in memoires %}
                     {% if key == lettre %}
                         {% if mem!=null %}
-                            <a href="{{ asset('fichiers/memoires/'~ mem.fichier) }}" class="fas fa-book-reader"
+                            <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/memoires/'~ mem.fichier) }}" class="fas fa-book-reader"
                                title="Accéder au mémoire de l'équipe" target="_blank"> </a>
                         {% endif %}
                     {% endif %}

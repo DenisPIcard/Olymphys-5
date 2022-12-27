@@ -32,7 +32,9 @@ class Centrescia
      * @ORM\Column(type="boolean", nullable=true)
      */
     private ?bool $actif = false;
-
+    /**
+    * @ORM\Column(type="string", length=255, nullable = true)
+    */
     private ?int $edition = null;
 
     public function __toString()
