@@ -48,7 +48,7 @@ class OdpfLogos
     private DateTime $createdAt;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private ?bool $en_service = true;
     /**

@@ -204,7 +204,7 @@ class SecretariatjuryController extends AbstractController
 
         foreach ($listEquipes as $equipe) {
             $listesNotes = $equipe->getNotess();
-            $nbre_notes = $equipe->getNbNotes();
+            $nbre_notes = count($equipe->getNotess());//a la place de $equipe->getNbNotes();
 
             $nbre_notes_ecrit = 0;
             $points_ecrit = 0;
@@ -220,8 +220,15 @@ class SecretariatjuryController extends AbstractController
 
                     $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;
                     $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();
+
                 }
+                $nbNotes = count($equipe->getNotess());//met à jour le nb de notes et le total lors des essais
+                $equipe->setNbNotes($nbNotes);
+                $equipe->setTotal($points/$nbre_notes);
+                $em->persist($equipe);
+                $em->flush();
             }
+
         }
 
         $nbre_equipes = 0;
@@ -236,7 +243,7 @@ class SecretariatjuryController extends AbstractController
 
 
         $em->flush();
-
+        //dd($classement);
         $content = $this->renderView('secretariatjury/classement.html.twig',
             array('classement' => $classement)
         );
@@ -530,18 +537,25 @@ class SecretariatjuryController extends AbstractController
                 foreach (range('A', 'Z') as $lettre_equipe) {
                     if ($form[$i]->get('lettre')->getData() == $lettre_equipe) {
                         $equipe = $repositoryEquipes->findOneBy(['id' => $form[$i]->get('id')->getData()]);
+
                         //$lettre_equipe = $equipe->getEquipeinter()->getLettre();
                         $prix = $equipe->getPrix();
+                        //
+
                         if ($form[$i]->get('Enregistrer')->isClicked()) {
 //dd($i);
-                            $prix->setAttribue(1);
+                            $prix=$form[$i]->get('prix')->getData();
+                            if ($prix !== null) {
+                                $equipe->setPrix($prix);
+                                $prix->setAttribue(1);
 
-                            $em->persist($equipe);
+                                $em->persist($equipe);
 
-                            $em->persist($prix);
-                            $em->flush();
+                                $em->persist($prix);
+                                $em->flush();
+                            }
 
-                            $request->getSession()->getFlashBag()->add('notice', 'Prix bien enregistrés');
+                            $request->getSession()->getFlashBag()->add('info', 'Prix bien enregistré');
                             return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
 
                         }
