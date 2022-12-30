@@ -466,6 +466,8 @@ class SecretariatjuryController extends AbstractController
      */
     public function attrib_prix(Request $request, $niveau): RedirectResponse|Response
     {
+
+
         $em = $this->doctrine->getManager();
         $niveau_court = "";
         $niveau_long = "";
@@ -492,103 +494,51 @@ class SecretariatjuryController extends AbstractController
         $NbrePrix = $repositoryRepartprix->findOneBy(['niveau' => $niveau_court])
             ->getNbreprix();
 
-        $i = 0;
-        $formtab = [];
 
-        foreach ($ListEquipes as $equipe) {
-            $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
-                ->where('p.niveau = :nivo')
-                ->setParameter('nivo', $niveau_court);
-
-            $attribue = 0;
-            $Prix_eq = $equipe->getPrix();
-            //dd($equipe,$Prix_eq);
-            $intitule_prix = '';
-            if ($Prix_eq != null) {
-                $intitule_prix = $Prix_eq->getPrix();
-                $qb2[$i]->andwhere('p.id = :prix_sel')
-                        ->setParameter('prix_sel', $Prix_eq->getId());
-            }
-            if (!$Prix_eq) {
-                $qb2[$i]->andwhere('p.attribue = :attribue')
-                        ->setParameter('attribue', $attribue);
-            }
-
-            $formBuilder[$i] = $this->createFormBuilder($equipe);
-            $lettre = strtoupper($equipe->getEquipeinter()->getLettre());
-            $titre = $equipe->getEquipeinter()->getTitreProjet();
-            $id = $equipe->getId();
-
-            $formBuilder[$i]->add('prix', EntityType::class, [
-                    'class' => Prix::class,
-                    'query_builder' => $qb2[$i],
-                    'choice_label' => 'getPrix',
-                    'multiple' => false,
-                    'label' => $lettre . " : " . $titre . "      " . $intitule_prix]
-            );
-            $formBuilder[$i]->add('lettre', HiddenType::class, ['data' => $equipe->getEquipeinter()->getLettre(), 'mapped' => false]);
-            $formBuilder[$i]->add('id', HiddenType::class, ['data' => $id, 'mapped' => false]);
-            $formBuilder[$i]->add('Enregistrer', SubmitType::class);
-            $formBuilder[$i]->add('Effacer', SubmitType::class);
-            $form[$i] = $formBuilder[$i]->getForm();
-            $formtab[$i] = $form[$i]->createView();
-            if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) {
-
-                foreach (range('A', 'Z') as $lettre_equipe) {
-                    if ($form[$i]->get('lettre')->getData() == $lettre_equipe) {
-                        $equipe = $repositoryEquipes->findOneBy(['id' => $form[$i]->get('id')->getData()]);
-
-                        //$lettre_equipe = $equipe->getEquipeinter()->getLettre();
-                        $prix = $equipe->getPrix();
-                        //
-
-                        if ($form[$i]->get('Enregistrer')->isClicked()) {
-//dd($i);
-                            $prix=$form[$i]->get('prix')->getData();
-                            if ($prix !== null) {
-                                $equipe->setPrix($prix);
-                                $prix->setAttribue(1);
-
-                                $em->persist($equipe);
-
-                                $em->persist($prix);
-                                $em->flush();
-                            }
-
-                            $request->getSession()->getFlashBag()->add('info', 'Prix bien enregistré');
-                            return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
-
+        $qb = $repositoryPrix->createQueryBuilder('p')
+            ->where('p.niveau = :nivo')
+            ->setParameter('nivo', $niveau_court)
+            ->andwhere('p.attribue = false');
+        $prixNonAttrib=$qb->getQuery()->getResult();
+        if ($request->query->get('equipe') !=null ) {
+           $equipe = $repositoryEquipes->findOneBy(['id' =>  $request->query->get('equipe')]);
+           $request->query->get('prix')==null? $action='effacer': $action='attribuer';
+               if ($action=='effacer') {
+                            $prix = $equipe->getPrix();
+                            $prix->setAttribue(false);
+                            $equipe->setPrix(null);
                         }
-                        if ($form[$i]->get('Effacer')->isClicked()) {
-                            if ($prix !== null) {
-                                $equipe->setPrix(null);
-                                $prix->setAttribue(false);
-
-                                $em->persist($equipe);
-                                $em->persist($prix);
-                                $em->flush();
-                            }
-                            $request->getSession()->getFlashBag()->add('notice', 'Prix bien effacé');
-                            return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
-
+               if ($action=='attribuer') {
+                            $prix = $repositoryPrix->findOneBy(['id' =>  $request->query->get('prix')]);
+                            $equipe->setPrix($prix);
+                            $prix->setAttribue(true);
                         }
-                    }
-
-                }
-            }
-            $i = $i + 1;
-        }
-
-        $content = $this->renderView('secretariatjury/attrib_prix.html.twig',
+               $em->persist($equipe);
+               $em->persist($prix);
+               $em->flush();
+               $request->getSession()->getFlashBag()->add('info', 'Prix bien enregistré');
+               return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
+           }
+           $content = $this->renderView('secretariatjury/attrib_prix.html.twig',
             array('ListEquipes' => $ListEquipes,
-                'NbrePrix' => $NbrePrix,
-                'niveau' => $niveau_long,
-                'formtab' => $formtab,
+                  'NbrePrix' => $NbrePrix,
+                  'niveau' => $niveau_long,
+                  'prixNonAttrib'=>$prixNonAttrib
             )
         );
         return new Response($content);
     }
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatjury/modif_prixEquipe", name="modif_prixEquipe")
+     *
+     */
+    public function modifPrixEquipe(Request $request){
 
+           dd($request);
+
+    }
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *

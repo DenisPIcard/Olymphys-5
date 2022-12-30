@@ -8,34 +8,40 @@
 {% endblock %}
 
 {% block body %}
-    <div class="well">
-        <table>
-            {% for form in formtab %}
-                {% form_theme form 'bootstrap_4_layout.html.twig' %}
-                {{ form_start(form) }}
-                <div class="my-custom-class-for-errors">
-                    {{ form_errors(form) }}
-                    <tr>
-                        <td>
-                            <div class="form-row">
-                                <div class='form-col'>
-                                    {{ form_row(form.Enregistrer) }}
-                                </div>
 
-                                <div class='form-col'>
-                                    {{ form_row(form.Effacer) }}
+<div class="well">
+            {% for equipe in ListEquipes %}
+                <div style="font-weight: bold; font-size: large; color: royalblue"><button  class="btn btn-primary">{{equipe.equipeinter.lettre  }}</button> {{ equipe.equipeinter.titreProjet }}</div>
+                <form name="form{{ equipe.id }}" id="form{{ equipe.id }}"  >
+                    <input type="hidden" name="equipe" id="equipe" value="{{ equipe.id }}" >
+                    <div class="row">
+
+                        {% if equipe.prix==null %}
+                            <div class="col-6">
+                                <label for="{{'prix'}}">Choisir le prix :  </label><select id="{{'prix'}}" name="{{'prix'}}">
+                                            {% for prix in prixNonAttrib %}
+                                                <option value="{{ prix.id }}">{{ prix.prix }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="submit" value="Enregistrer" id ="save-{{ equipe.id }}">
+                                    </div>
+                        {% endif %}
+                        {% if equipe.prix!=null %}
+                                <div class="col-6">
+                                    <div style="font-weight: bold; font-size: large;" class="rougeodpf">{{ equipe.prix.prix }}</div>
                                 </div>
-                                <div class='form-col'>
-                                    {{ form(form) }}
+                                <div class="col-6">
+                                    <input type="submit" value="Effacer" id ="effa-{{ equipe.prix.id }}">
                                 </div>
-                            </div>
-                            <hr>
-                        </td>
-                    </tr>
+                        {% endif %}
+
 
                 </div>
+                </form>
+            <hr>
             {% endfor %}
-        </table>
-    </div>
+</div>
 
 {% endblock %}
