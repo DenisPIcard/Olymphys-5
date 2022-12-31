@@ -1,204 +1,140 @@
-{% if  equipe.selectionnee == true %}
 
-    {%  set liste=[0,1,2,3,4,8]%}
+{% if  equipe.selectionnee == true %}
+    {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et la diaparama cia ne sont pas dans la liste -->
     {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
-         {%  set liste=[0,1,2,3]%}
+        {%  set liste=[0,1,2,3]%}
     {% endif %}
 {% endif %}
 {% if equipe.selectionnee ==false %}
-    {%  set liste=[0,1,2,4,5,7]%}
+    {%  set liste=[0,1,2,4,5,7,8]%} <!-- pour le  cia  le diaporama nat n'est pas dans la liste -->
     {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
-         {%  set liste=[0,1,2,5]%}
+        {%  set liste=[0,1,2,5]%} <!-- le jury n'a accès qu'au mémoires, résumé, et diaporama -->
     {% endif %}
 {% endif %}
 
 <div class="container-fluid">
-   <div class="row ">
-       <div class="col text-center ">
-          <h5> Fichiers de cette équipe déposés pour le concours {{ concours }}</h5>
-       </div>
-   </div>
-   <div class="row text-center text-white bg-dark"  >
-
-      <div class="col-3 ">
-          Type(Déposé le)
+      <div class="row ">
+          <div class="col text-center ">
+              <h5> Fichiers de cette équipe déposés pour le concours {{ concours }}</h5>
+          </div>
       </div>
-      <div class="col-8">
-          Fichier
-      </div>
-
-      <div class="col-1">
-          {% if is_granted('ROLE_COMITE') or is_granted('ROLE_ORGACIA') or is_granted('ROLE_PROF')%}
-                Déposer
-          {% endif %}
-      </div>
-
-   </div>
-
-   {% for i in liste %}
-       <div class="row text-center ">
-           {% set  attrib=0 %}
-
-           {%  if liste_fichiers!=null %}
-
-               {% for fichier in liste_fichiers %}
-
-                   {% if (fichier.typefichier==i) %}
-                       {% set attrib=1 %}
-                       {% set infos = equipe.id~'-'~concours~'-'~i~'-'~fichier.id %}
-                       <div class="col-3">
-                           <div class="fichierdepose"> {{ type_fichier_lit[i]}}</div>
-                           <div class="majdate"> ({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
-                       </div>
-
-                       <div class="col-8">
-                           {% if type_fichier[i]!='annexes' %}
-                                                     {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>#}
-                               <a  href="{{ path('telecharger_un_fichier_prof',{ idFichier : fichier.id}) }}">{{ fichier.fichier}}</a>
-
-                           {% endif  %}
-                           {% if type_fichier[i]=='annexes' %}
-                                                       {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>#}
-                               <a  href="{{ path('telecharger_un_fichier_prof',{ idFichier : fichier.id}) }}">{{ fichier.fichier}}</a>
-                           {% endif  %}
-
-                       </div>
-                       {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]%}
-                           {%if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
-                               {%  if is_granted('ROLE_PROF')%}
-                                   {% if i!=4%}
-                                        {% if (app.session.get('concours')=='interacadémique') %}
-                                             {% if i!=5 %}
-                                                  {%if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
-                                                       {% if  (date()<= app.session.get('edition').datelimcia)%}
-                                                            <div class="col-1 " >
-                                                                 <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                            </div>
-
-                                                       {% endif %}
-                                                  {% endif %}
-                                                  {%if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or  app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[]  or is_granted('ROLE_SUPER_ADMIN')%}
-                                                      {% if i!=7 %}
-                                                        <div class="col-1 " >
-                                                            <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                        </div>
-                                                       {% endif %}
-                                                  {% endif %}
-                                             {% endif %}
-                                        {% endif %}
-                                   {% endif %}
-                                   {% if i<3 %}
-                                        {% if (app.session.get('concours')=='national') %}
-                                             {%if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
-                                                  {% if  (date()<= app.session.get('edition').datelimnat)%}
-                                                       <div class="col-1 " >
-                                                            <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                       </div>
-                                                  {% endif %}
-                                             {% endif %}
-                                             {%if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or  app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[]  or app.user.roles|filter(v => v =='ROLE_SUPE_ADMIN')!=[]%}
-                                                    {% if i!=7 %}
-                                                        <div class="col-1 " >
-                                                          <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                                        </div>
-                                                    {% endif %}
-                                             {% endif %}
-                                        {% endif %}
-                                   {% endif %}
-
-                                   {% if( i==4 or i==3 or i == 5 or i==7 or i ==8) %}
-                                          <div class="col-1"><button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
-                                          </div>
-                                   {% endif %}
-                               {% endif %}
-                           {% endif %}
-                       {% endif %}
-                   {% endif %}
-               {% endfor %}
-           {% endif %}
-
-           {% if attrib==0 %}
-
-               <div class="col-3 ">
-                    <div class="fichiernondepose">{{ type_fichier_lit[i]}}</div>
-               </div>
-
-
-               <div class="col-8">  Non encore déposé</div>
-               {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]%}
-                    {%if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
-                         {%  if is_granted('ROLE_PROF')%}
-                             {% if i!=4%}
-
-                                  {%if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
-                                      {% if (app.session.get('concours')=='interacadémique') %}
-                                           {% if i!=5 %}
-                                                {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[]%}
-                                                     {% if  (date()<= app.session.get('edition').datelimcia)%}
-                                                          <div class="col-1 " >
-
-                                                               <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"><button type="button" title="Déposer"> <i class="fas fa-upload"></i></button></a>
-
-                                                          </div>
-
-                                                     {% endif %}
-                                                {% endif %}
-                                                {% if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[]%}
-                                                      <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
-                                                {% endif %}
-
-
-                                           {% endif %}
-                                      {% endif %}
-                                  {% endif %}
-
-
-
-                             {% endif%}
-                             {% if i<3%}
-                                  {% if app.user.roles|filter(v => v =='ROLE_PROF') !=[]%}
-                                       {% if (app.session.get('concours')=='national') %}
-                                            {% if  (date()<= app.session.get('edition').datelimnat)%}
-                                                 <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
-                                            {% endif %}
-                                       {% endif %}
-                                  {% endif %}
-                                  {% if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[]%}
-                                        <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
-                                  {% endif %}
-                             {% endif %}
-
-
-                             {% if( i==4 or i==3 or i == 5 or i==7 or i ==8)%}
-                                  <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
-                             {% endif %}
-                         {% endif %}
-                    {% endif %}
-                                          
-               {% endif %}
-
-
-           {% endif %}
-
-
-       </div>
-   {% endfor %}
-   {%  if liste_fichiers!=null %}
-       <div class="row">
-           <div class="col" >
-                {{ form_start(form) }}
-                    <div class="my-custom-class-for-errors">
-                        {{ form_errors(form) }}
-                    </div>
-                    <div class="row">
-                          {{ form_widget(form.save, { 'label': 'Télécharger tous' }) }}
-                    </div>
-
-                {{ form_end(form) }}
+     <div class="row text-center text-white bg-dark"  >
+           <div class="col-3 ">
+                    Type(Déposé le)
            </div>
+           <div class="col-8">
+                    Fichier
+           </div>
+
+           <div class="col-1"><!-- les membres du jury n'ont pas a déposer des fichiers -->
+                {% if is_granted('ROLE_COMITE') or is_granted('ROLE_ORGACIA') or is_granted('ROLE_PROF')%}
+                   Déposer
+                {% endif %}
+          </div>
+     </div>
+
+     {%  for i in liste %}
+        {% set attrib=0 %}
+        {% set fichieraffiche=null %}
+        {% for fichier in liste_fichiers %}
+                {% if fichier.typefichier==i %}
+                    {% set attrib=1 %}
+                    {% set fichieraffiche=fichier %}
+                {% endif %}
+        {% endfor %}
+        <div class="row text-center ">
+            <div class="col-3">
+                {% if attrib == 1 %}
+                    <div class="fichierdepose"> {{ type_fichier_lit[i]}}</div>
+                    <div class="majdate" style="size: 8px"> ({{ fichieraffiche.updatedAt|date('d-m-Y H:i:s') }})</div>
+                {% endif %}
+                {% if attrib == 0 %}
+                    <div class="fichiernondepose">{{ type_fichier_lit[i]}}</div>
+                {% endif %}
+            </div>
+            <div class="col-8">
+                {% if attrib==1 %}
+                   {% if type_fichier[i]!='annexes' %}
+                   {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>#}
+                        <a  href="{{ path('telecharger_un_fichier_prof',{ idFichier : fichieraffiche.id}) }}">{{ fichieraffiche.fichier}}</a>
+                   {% endif  %}
+                   {% if type_fichier[i]=='annexes' %}
+                   {# <a href="{{ asset('odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>#}
+                        <a  href="{{ path('telecharger_un_fichier_prof',{ idFichier : fichieraffiche.id}) }}">{{ fichieraffiche.fichier}}</a>
+                   {% endif  %}
+                {% endif %}
+                {% if attrib==0 %}
+                     Non encore déposé
+                {% endif %}
+            </div>
+            <div class="col-1 " ><!-- colonne du bouton de dépôt du fichier -->
+                {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[]%} <!--le jury n'a pas à déposer des fichiers -->
+                    {%if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
+                        {%  if is_granted('ROLE_PROF')%}<!-- le prof , le comité, les organisateurs CIA sont habilités à déposer des fichiers -->
+                                {%  if i<3  %}
+                                    {%  if (app.user.roles|filter(v => v =='ROLE_PROF')!=[])%}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
+                                        {% if (app.session.get('concours')=='interacadémique') and (date()<= app.session.get('edition').datelimcia)%}
+                                             {%  if attrib==1 %}
+                                                <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                             {% endif %}
+                                             {% if attrib== 0 %}
+                                               <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                             {% endif %}
+                                        {% endif %}
+                                        {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) %}
+
+                                                 {%  if attrib==1 %}
+                                                    <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                 {% endif %}
+                                                 {% if attrib== 0 %}
+                                                    <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                                 {% endif %}
+                                        {% endif %}
+                                    {%  endif %}
+                                    {%  if (app.user.roles|filter(v => v =='ROLE_PROF')==[])%}<!-- le bouton est toujours présent pour le comité et les organisateurs cia qq soit la date-->
+                                        {%  if attrib==1 %}
+                                                <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                        {% endif %}
+                                        {% if attrib== 0 %}
+                                                <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                        {% endif %}
+                                    {% endif %}
+
+                                {%  endif %}
+                                {% if i>=3 %}<!-- les autres fichiers sont déposables pour toute date -->
+                                    {%  if attrib==1 %}
+                                                <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                    {% endif %}
+                                    {% if attrib== 0 %}
+                                                <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                    {% endif %}
+                                {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+     {% endfor %}
+
+
+</div>
+     {%  if liste_fichiers!=null %}
+      <div class="row">
+          <div class="col" >
+           {{ form_start(form) }}
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
+                <div class="row">
+                     {{ form_widget(form.save, { 'label': 'Télécharger tous' }) }}
+                </div>
+
+           {{ form_end(form) }}
+          </div>
       </div>
-   {%  else %}
-      <div class="alert alert-light" >
-           Cette équipe n'a pas encore déposé ses fichiers pour le concours {{ concours }}.
-      </div>
-   {%  endif %}
+       {%  else %}
+           <div class="alert alert-light" >
+                                                       Cette équipe n'a pas encore déposé ses fichiers pour le concours {{ concours }}.
+           </div>
+      {%  endif %}

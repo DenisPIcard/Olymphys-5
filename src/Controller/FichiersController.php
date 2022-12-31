@@ -1109,11 +1109,20 @@ class FichiersController extends AbstractController
                 $zipFile = new ZipArchive();
                 $FileName = $edition->getEd() . '-Fichiers-eq-' . $equipe_choisie->getNumero() . '-' . date('now');
                 if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE) {
-                    $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
-                        ->where('f.equipe =:equipe')
-                        ->andWhere('f.typefichier !=:value')
-                        ->setParameters(['equipe' => $equipe_choisie, 'value' => 6])
-                        ->getQuery()->getResult();
+                    if($concours=='interacadémique') {
+                        $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
+                            ->where('f.equipe =:equipe')
+                            ->andWhere('f.typefichier !=:value')
+                            ->setParameters(['equipe' => $equipe_choisie, 'value' => 6])
+                            ->getQuery()->getResult();
+                    }
+                    if($concours=='national') {
+                        $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
+                            ->where('f.equipe =:equipe')
+                            ->andWhere('f.typefichier !=:value1 and f.typefichier !=:value2')
+                            ->setParameters(['equipe' => $equipe_choisie, 'value1' => 6,'value2'=>7])
+                            ->getQuery()->getResult();
+                    }
 
                     foreach ($liste_fichiers as $fichier) {
                         if ($fichier) {
