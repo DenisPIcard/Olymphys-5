@@ -237,7 +237,7 @@ class Notes
 
 // Les attributs calculés
 
-    public function getPoints()
+    public function getPoints() //Calcul le total pour un juré sans l'écrit
     {
 
         return $this->getExper() * $this->coefficients->getExper()
@@ -247,7 +247,7 @@ class Notes
             + $this->getWgroupe() * $this->coefficients->getWgroupe();
     }
 
-    public function getSousTotal()
+    public function getTotalPoints() //Calcul le total pour un juré avec l'écrit
     {
         return $this->getExper() * $this->coefficients->getExper()
             + $this->getDemarche() * $this->coefficients->getDemarche()

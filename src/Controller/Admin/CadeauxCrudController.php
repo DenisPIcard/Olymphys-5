@@ -5,10 +5,12 @@ namespace App\Controller\Admin;
 use App\Entity\Cadeaux;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 
 class CadeauxCrudController extends AbstractCrudController
 {
@@ -30,7 +32,7 @@ class CadeauxCrudController extends AbstractCrudController
         $contenu = TextField::new('contenu');
         $fournisseur = TextField::new('fournisseur');
         $montant = NumberField::new('montant');
-        $attribue = Field::new('attribue');
+        $attribue = BooleanField::new('attribue');
         $raccourci = TextField::new('raccourci');
         $id = IntegerField::new('id', 'ID');
 

@@ -240,7 +240,13 @@ class SecretariatjuryController extends AbstractController
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+        $i=1;
+        foreach($classement as $equipe ){
+            $equipe->setRang($i);
+            $em->persist($equipe);
+            $i =$i+1;
 
+        }
 
         $em->flush();
         //dd($classement);
@@ -641,10 +647,10 @@ class SecretariatjuryController extends AbstractController
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
-     * @Route("/secretariatjury/lescadeaux", name="secretariatjury_lescadeaux")
+     * @Route("/secretariatjury/lescadeaux/{compteur}", name="secretariatjury_lescadeaux")
      *
      */
-    public function lescadeaux(Request $request, $compteur = 1): RedirectResponse|Response
+    public function lescadeaux(Request $request, $compteur): RedirectResponse|Response
     {
         $em = $this->doctrine->getManager();
 
@@ -666,7 +672,7 @@ class SecretariatjuryController extends AbstractController
         $listEquipesPrix = $repositoryEquipes->getEquipesPrix();
         //dd($listEquipesPrix);
         $equipe = $repositoryEquipes->findOneBy(['rang' => $compteur]);
-        //dd($equipe);
+
         if (is_null($equipe)) {
             $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
                 array(
@@ -699,6 +705,7 @@ class SecretariatjuryController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->doctrine->getManager();
             $em->persist($equipe);
+            $cadeau=$form->get('cadeau')->getData();
             if (!$form->get('cadeau')->getData()->getAttribue()) {
                 $cadeau->setAttribue(false);
                 $flag = 0;
@@ -836,8 +843,7 @@ class SecretariatjuryController extends AbstractController
         $listEquipes = $em->getRepository(Equipes::class)
                           ->getEquipesPalmares();
 
-        $repositoryEquipes = $em->getManager()
-                                ->getRepository(Equipes::class);
+        $repositoryEquipes = $em->getRepository(Equipes::class);
 
         try {
             $nbreEquipes = $repositoryEquipes

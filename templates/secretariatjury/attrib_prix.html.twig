@@ -11,7 +11,14 @@
 
 <div class="well">
             {% for equipe in ListEquipes %}
-                <div style="font-weight: bold; font-size: large; color: royalblue"><button  class="btn btn-primary">{{equipe.equipeinter.lettre  }}</button> {{ equipe.equipeinter.titreProjet }}</div>
+                {% if equipe.classement =='3ème' %}
+                    {% set class = 'btn btn-primary' %}
+                {% elseif  equipe.classement =='2ème' %}
+                    {% set class='btn btn-warning' %}
+                {% elseif  equipe.classement =='1er' %}
+                    {% set class='btn btn-danger' %}
+                {% endif %}
+                <div style="font-weight: bold; font-size: large; color: royalblue"><button  class="{{ class }}">{{equipe.equipeinter.lettre  }}</button> {{ equipe.equipeinter.titreProjet }}</div>
                 <form name="form{{ equipe.id }}" id="form{{ equipe.id }}"  >
                     <input type="hidden" name="equipe" id="equipe" value="{{ equipe.id }}" >
                     <div class="row">

@@ -415,7 +415,7 @@ class JuryController extends AbstractController
                 $nbNotes = count($equipe->getNotess());
 
                 $equipe->setNbNotes($nbNotes + 1);
-
+                $em->persist($equipe);
             }
             $em->persist($notes);
             $em->flush();
@@ -425,13 +425,11 @@ class JuryController extends AbstractController
             return $this->redirectToroute('cyberjury_tableau_de_bord');
         }
 
-        $type_salle = 'zoom';
+
 
         $content = $this->renderView('cyberjury/evaluer.html.twig',
             array(
                 'equipe' => $equipe,
-                'type_salle' => $type_salle,
-
                 'form' => $form->createView(),
                 'flag' => $flag,
                 'progression' => $progression,

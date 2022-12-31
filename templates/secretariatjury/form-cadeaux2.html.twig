@@ -6,13 +6,14 @@
 
     {# Génération manuelle et éclatée : #}
     <div class="form-group">
+
         {# Génération du label. #}
         {{ form_label(form.cadeau, "Matériel scientifique offert au laboratoire du Lycée ",{'label_attr': {'class': 'col-sm-8 control-label'}} ) }}
         {# Affichage des erreurs pour ce champ précis. #}
         {{ form_errors(form.cadeau) }}
     </div>
 
-    <div class="col-sm-12">
+    <div class="col-1">
         {{ form_label(form.cadeau.attribue, 'Attribué') }}
         {{ form_row(form.cadeau.attribue) }}
     </div>
