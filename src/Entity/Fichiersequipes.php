@@ -81,11 +81,13 @@ class Fichiersequipes //extends BaseMedia
      *
      *
      * @ORM\Column(type="string", length=255,  nullable=true, )
+     *
      */
     private ?string $nomautorisation = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
+     * 
      */
     private ?Edition $edition = null;
 

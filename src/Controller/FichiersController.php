@@ -134,7 +134,9 @@ class FichiersController extends AbstractController
             ->getRepository(Docequipes::class);
         $edition = $session->get('edition');
         $docequipes = $repositoryDocequipes->findAll();
-        $centres = $repositoryCentres->findAll();
+        $centres = $repositoryCentres->createQueryBuilder('ce')
+                    ->andWhere('ce.actif = 1')
+                    ->getQuery()->getResult();
         $datelimcia = $edition->getDatelimcia();
         $datelimnat = $edition->getDatelimnat();
         $datecia = $edition->getConcourscia();
@@ -157,6 +159,7 @@ class FichiersController extends AbstractController
             $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()->getId()]);
             $id_jure = $jure->getId();
         }
+
         $qb1 = $repositoryEquipesadmin->createQueryBuilder('t')
             ->andWhere('t.selectionnee=:selectionnee')
             ->setParameter('selectionnee', TRUE)

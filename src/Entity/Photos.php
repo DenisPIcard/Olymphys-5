@@ -78,19 +78,19 @@ class Photos
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id",nullable=true)
      */
-    private ?Edition $edition;
+    private ?Edition $edition=null;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(name="editionspassees_id",  referencedColumnName="id",nullable=true)
      */
     private ?OdpfEditionsPassees $editionspassees;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(name="equipepassee_id",  referencedColumnName="id",nullable=true)
      */
     private ?OdpfEquipesPassees $equipepassee;
 

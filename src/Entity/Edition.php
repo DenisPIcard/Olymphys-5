@@ -95,9 +95,9 @@ class Edition
      */
     private ?string $dateinscriptions = null;
 
-    public function __toString()
+    public function __toString() : string
     {
-        return $this->ed;
+        return strval($this->ed);
 
 
     }

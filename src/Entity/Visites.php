@@ -77,7 +77,7 @@ class Visites
         return $this->attribue;
     }
 
-    public function setAttribue(bool $attribue): self
+    public function setAttribue(?bool $attribue): self
     {
         $this->attribue = $attribue;
 

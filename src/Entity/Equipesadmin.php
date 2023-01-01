@@ -191,7 +191,9 @@ class Equipesadmin
     private ?Collection $equipesstring;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Edition::class )
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
+     *
+     *
      */
     private ?Edition $edition;
 
@@ -617,7 +619,7 @@ class Equipesadmin
 
     public function getEdition(): ?Edition
     {
-        return $this->edition;
+        return  $this->edition;
     }
 
     public function setEdition(?Edition $edition): self
