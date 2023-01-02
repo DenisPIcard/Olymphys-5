@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Centrescia;
 use App\Entity\Docequipes;
 use App\Entity\Edition;
 use App\Entity\Equipesadmin;
@@ -10,6 +11,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -30,47 +32,45 @@ class EquipesadminRepository extends ServiceEntityRepository
     }
 
 
-    public function getEquipeInter(EquipesadminRepository $er): QueryBuilder
+    public function getEquipeInter(Centrescia $centre): array
     {
-
-        return $er->createQueryBuilder('e')
-            ->addOrderBy('e.edition', 'DESC')
-            ->addOrderBy('e.centre', 'ASC')
-            ->addOrderBy('e.numero', 'ASC');
-
+        $edition=$this->requestStack->getSession()->get('edition');
+        return $this->createQueryBuilder('e')->select('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $edition)
+            ->andwhere('e.centre =:centre')
+            ->setParameter('centre',$centre)   // on n'affiche que les vraies équipes, pas jury, ambiance, remise des prix qui sont là pour l'affichage des photos
+            ->orderBy('e.numero', 'ASC')
+            ->getQuery()->getResult();
 
     }
 
-    public function getEquipeDeposeMemoiresInter(EquipesadminRepository $er): QueryBuilder
+
+
+    public function getEquipeNat() : array
     {
-
-        return $er->createQueryBuilder('e')
+        $edition=$this->requestStack->getSession()->get('edition');
+        return $this->createQueryBuilder('e')->select('e')
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $er->edition)
-            ->addOrderBy('e.centre', 'ASC')
-            ->addOrderBy('e.numero', 'ASC');
-
-
-    }
-
-    public function getEquipeNa(EquipesadminRepository $er): QueryBuilder
-    {
-
-        return $er->createQueryBuilder('e')->select('e')
-            ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $er->edition)
+            ->setParameter('edition', $edition)
             ->andwhere('e.selectionnee= TRUE')
-            ->orderBy('e.lettre', 'ASC');
+            ->andWhere('e.numero <  100')   // on n'affiche que les vraies équipes, pas jury, ambiance, remise des prix qui sont là pour l'affichage des photos
+            ->orderBy('e.lettre', 'ASC')
+            ->getQuery()->getResult();
 
 
     }
 
-    public function getEquipesNatSansMemoire(EquipesadminRepository $er): QueryBuilder
+    public function getEquipesProf(User $user): Array
     {
-        return $er->createQueryBuilder('e')->select('e')
-            ->where('e.selectionnee= TRUE')
-            ->orderBy('e.lettre', 'ASC');
-
+        $edition=$this->requestStack->getSession()->get('edition');
+        return $this->createQueryBuilder('e')->select('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $edition)
+            ->andWhere('e.idProf1 = user or e.idProf2 = user')
+            ->setParameter('user',$user)
+            ->orderBy('e.numero', 'ASC')
+            ->getQuery()->getResult();
 
     }
 

@@ -161,12 +161,12 @@ class FichiersController extends AbstractController
         }
 
         $qb1 = $repositoryEquipesadmin->createQueryBuilder('t')
-            ->andWhere('t.selectionnee=:selectionnee')
-            ->setParameter('selectionnee', TRUE)
-            ->andWhere('t.lettre >:valeur')
+            ->select()
+            ->andWhere('t.selectionnee = 1')
+            ->andWhere('t.numero <:valeur')
             ->andWhere('t.edition =:edition')
             ->setParameter('edition', $edition)
-            ->setParameter('valeur', '')
+            ->setParameter('valeur', 100)
             ->orderBy('t.lettre', 'ASC');
 
 
@@ -189,7 +189,8 @@ class FichiersController extends AbstractController
         if (($choix == 'liste_cn_comite')) {
             if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_JURY', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
 
-                $liste_equipes = $qb1->getQuery()->getResult();
+                $liste_equipes = $repositoryEquipesadmin->getEquipeNat();
+
                 if ($liste_equipes != null) {
                     if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
 
@@ -227,14 +228,7 @@ class FichiersController extends AbstractController
                 if (!isset($centre)) {
                     $centre = $this->getUser()->getCentrecia();
                 }
-
-                $qb2 = $repositoryEquipesadmin->createQueryBuilder('t')
-                    ->where('t.centre =:centre')
-                    ->setParameter('centre', $centre)
-                    ->andWhere('t.edition =:edition')
-                    ->setParameter('edition', $edition)
-                    ->orderBy('t.numero', 'ASC');
-                $liste_equipes = $qb2->getQuery()->getResult();
+                 $liste_equipes =  $repositoryEquipesadmin->getEquipeInter($centre);
 
                 if ($liste_equipes != null) {
 
@@ -264,12 +258,7 @@ class FichiersController extends AbstractController
                 if ($this->isGranted('ROLE_ORGACIA')) {
                     $centre = $this->getUser()->getCentrecia();
 
-                    $liste_equipes = $repositoryEquipesadmin->createQueryBuilder('t')
-                        ->where('t.centre =:centre')
-                        ->setParameter('centre', $centre)
-                        ->andWhere('t.edition =:edition')
-                        ->setParameter('edition', $edition)
-                        ->orderBy('t.numero', 'ASC')->getQuery()->getResult();
+                    $liste_equipes = $repositoryEquipesadmin->getEquipeInter($centre);
                     $rne_objet = null;
                 }
 
@@ -753,7 +742,7 @@ class FichiersController extends AbstractController
 
                 $info_equipe = 'prof ' . $citoyen->getNomPrenom();
             };
-            if (($num_type_fichier != 7) or ($num_type_fichier != 4)or ($num_type_fichier != 87)) {//on enregistre pas dans les éditions passées les questionnaires et fiches sécurités
+            if (($num_type_fichier != 7) or ($num_type_fichier != 4)or ($num_type_fichier != 8)) {//on enregistre pas dans les éditions passées les questionnaires et fiches sécurités
                 $this->RempliOdpfFichiersPasses($fichier);
             }
             try {
@@ -1048,10 +1037,10 @@ class FichiersController extends AbstractController
 
 
 
-        $qb4 = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama
+        $qb4 = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
-            ->andWhere('t.typefichier in (0,1,2,3)');
+            ->andWhere('t.typefichier in (0,1,2,3,4)');
         //->andWhere('t.national =:national')
         //->setParameter('national', TRUE) ;
 
@@ -1078,7 +1067,7 @@ class FichiersController extends AbstractController
         }
 
         if (in_array('ROLE_JURYCIA', $roles)) {
-            $qbInit->andWhere('t.typefichier in (0,1,2,5)');
+            $qbInit->andWhere('t.typefichier in (0,1,2,4,5)');
 
             $liste_fichiers = $qbInit->getQuery()->getResult();
 

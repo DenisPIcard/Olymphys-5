@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Doctrine\ORM\Mapping\JoinColumn;
 use phpDocumentor\Reflection\Types\Null_;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -123,13 +124,14 @@ class Equipesadmin
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     *
+     * @JoinColumn(name="rne_id_id", referencedColumnName="id")
      */
     private ?Rne $rneId;
 
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
+     * @JoinColumn(name="centre_id", referencedColumnName="id")
      */
     private ?centrescia $centre;
 
@@ -162,11 +164,13 @@ class Equipesadmin
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @JoinColumn(name="id_prof1_id", referencedColumnName="id")
      */
     private ?User $idProf1;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
+     * @JoinColumn(name="id_prof2_id", referencedColumnName="id")
      */
     private ?User $idProf2;
 
@@ -192,7 +196,7 @@ class Equipesadmin
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-     *
+     *@JoinColumn(name="edition_id", referencedColumnName="id")
      *
      */
     private ?Edition $edition;

@@ -18,7 +18,7 @@
                 {% elseif  equipe.classement =='1er' %}
                     {% set class='btn btn-danger' %}
                 {% endif %}
-                <div style="font-weight: bold; font-size: large; color: royalblue"><button  class="{{ class }}">{{equipe.equipeinter.lettre  }}</button> {{ equipe.equipeinter.titreProjet }}</div>
+                <div style="font-weight : normal; font-size: large; color: royalblue"><button  class="{{ class }}">{{equipe.equipeinter.lettre  }}</button> {{ equipe.equipeinter.titreProjet }}</div>
                 <form name="form{{ equipe.id }}" id="form{{ equipe.id }}"  >
                     <input type="hidden" name="equipe" id="equipe" value="{{ equipe.id }}" >
                     <div class="row">
@@ -37,7 +37,7 @@
                         {% endif %}
                         {% if equipe.prix!=null %}
                                 <div class="col-6">
-                                    <div style="font-weight: bold; font-size: large;" class="rougeodpf">{{ equipe.prix.prix }}</div>
+                                    <div style="font-weight: normal; font-size: large;" class="rougeodpf">{{ equipe.prix.prix }}</div>
                                 </div>
                                 <div class="col-6">
                                     <input type="submit" value="Effacer" id ="effa-{{ equipe.prix.id }}">

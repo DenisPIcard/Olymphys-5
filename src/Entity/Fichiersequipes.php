@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -87,7 +88,7 @@ class Fichiersequipes //extends BaseMedia
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
-     * 
+     * @JoinColumn(name="edition_id", referencedColumnName="id")
      */
     private ?Edition $edition = null;
 
