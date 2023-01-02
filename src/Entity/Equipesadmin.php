@@ -196,7 +196,7 @@ class Equipesadmin
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-     *@JoinColumn(name="edition_id", referencedColumnName="id")
+     * @JoinColumn(name="edition_id", referencedColumnName="id")
      *
      */
     private ?Edition $edition;
