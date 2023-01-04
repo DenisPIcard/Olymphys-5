@@ -166,7 +166,7 @@ class SecretariatjuryController extends AbstractController
 
                 } elseif ($statut == 1) {
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
-                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getSousTotal();
+                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();
                 } else {
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getPoints();
