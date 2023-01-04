@@ -35,13 +35,20 @@ class PhotosType extends AbstractType
 
         $edition = $session->get('edition');
         $centre = null;
-
+        $options['data']['concours']=='cn'?$valSel= true: $valSel=false;
         $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
-            ->andWhere('e.inscrite = 1')
-            ->addOrderBy('e.numero', 'ASC')
-            ->addOrderBy('e.centre', 'ASC');
+            ->andWhere('e.inscrite = 1');
+        if ($valSel==true){
+            $qb->addOrderBy('e.lettre', 'ASC')
+                ->andWhere('e.selectionnee =:valeur')
+                ->setParameter('valeur',$valSel);
+            }
+            else{
+                $qb->addOrderBy('e.numero', 'ASC')
+                    ->addOrderBy('e.centre', 'ASC');
+            }
         if ($options['data']['centre'] != '') {
             $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $options['data']['centre']]);
             $qb = $qb->andWhere('e.centre =:centre')
