@@ -44,13 +44,14 @@
     <div class="well">
         {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
 
-            <font color='red'> Ces photos ne seront visibles en public que le lendemain du concours
+            <div style="color: #960004"> Ces photos ne seront visibles en public que le lendemain du concours
                 {% if concours =='cia' %}
                     interacadémique
                 {% endif %}
                 {% if concours =='cn' %}
                     national
-                {% endif %}</font>
+                {% endif %}
+            </div>
         {% endif %}
     </div>
     <div class="container">
@@ -71,8 +72,14 @@
                 </div>
                 <div class="form-row">
 
-                    {{ form_widget(form.Valider, {'label':'Charger les photos '}) }}
-                    <a href="{{ path('core_home') }}" class="btn-secondary btn-lg" role="button"> Annuler </a>
+                    {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
+                        {{ form_widget(form.Valider, {'label':'Charger les photos '}) }}
+                        <a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'}) }}" class="btn-secondary btn-lg" role="button"> Annuler </a>
+                    {% endif %}
+                    {% if app.user.roles|filter(v => v =='ROLE_PROF')==[] %}
+                        {{ form_widget(form.Valider, {'label':'Charger les photos '}) }}
+                        <a href="{{ path('core_home') }}" class="btn-secondary btn-lg" role="button"> Annuler </a>
+                    {% endif %}
                 </div>
 
                 {{ form_end(form) }}

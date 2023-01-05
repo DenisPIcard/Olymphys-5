@@ -53,7 +53,8 @@ class PhotosController extends AbstractController
      *
      * @throws ImagickException
      */
-    public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
+    public function
+    deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {
         $em = $this->doctrine->getManager();
 
@@ -159,10 +160,10 @@ class PhotosController extends AbstractController
                         $photo = new Photos();
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if ($equipe->getLettre() === null) {
+                        if (($equipe->getLettre() === null) or ($concours=='inter'))  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
                             $photo->setNational(FALSE);
                         }
-                        if ($equipe->getLettre() !== null) {
+                        if (($equipe->getLettre() !== null) and ($concours=='cn')) {
 
                             $photo->setNational(TRUE);
                         }
