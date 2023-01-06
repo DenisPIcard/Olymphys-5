@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Cadeaux;
 use App\Entity\Coefficients;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
@@ -588,15 +589,15 @@ class SecretariatjuryController extends AbstractController
         // repris de Olymphys4
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
         $equipe = $repositoryEquipes->find($id_equipe);
         $repositoryCadeaux = $this->doctrine
             ->getManager()
-            ->getRepository('App:Cadeaux');
+            ->getRepository(Cadeaux::class);
         $cadeau = $equipe->getCadeau();
         $listeEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesCadeaux();
         if (is_null($cadeau)) {
             $flag = 0;
