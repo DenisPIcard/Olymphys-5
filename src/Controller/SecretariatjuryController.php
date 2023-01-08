@@ -393,6 +393,11 @@ class SecretariatjuryController extends AbstractController
                 $equipe->setClassement($newclassement);
                 $em->persist($equipe);
                 $em->flush();
+                $classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
+                    ->orderBy('e.couleur','ASC')
+                    ->leftJoin('e.equipeinter','eq')
+                    ->addOrderBy('e.total','DESC')
+                    ->getQuery()->getResult();
                 //$couleur>$couleurini?$monte=true:$monte=false;
                 //$repositoryEquipes->echange_rang($equipe,$monte);
             }
