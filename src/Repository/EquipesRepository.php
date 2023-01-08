@@ -87,7 +87,9 @@ class EquipesRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.cadeau', 'c')
             ->addSelect('c')
-            ->orderBy('e.rang')
+            ->addOrderBy('e.couleur','ASC')
+            ->leftJoin('e.equipeinter','eq')
+            ->addOrderBy('eq.lettre','ASC')
             ->getQuery();
 
         return $query->getResult();
@@ -180,7 +182,65 @@ class EquipesRepository extends ServiceEntityRepository
         // on retourne ces résultats
         return $results;
     }
+    public function echange_rang($equipe1,$monte){//equipe1 : équipe dont on a changé le prix,
+        // cas ou l'équipe a amélioré son prix elle prend le dernier rang du prix supérieur donc on décale tous les rangs vers le bas à partir de la première équipe de prix inférieur jusqu'à l'equipe déplacée
+        if ($monte==true) {
+            $equipessup = $this->createQueryBuilder('e')
+                ->andWhere('e.classement =:classement')
+                ->setParameter('classement', $equipe1->getClassement())
+                ->orderBy('e.total', 'DESC')
+                ->getQuery()->getResult();
 
+            $rang1 = $equipe1->getRang();
+            $rang2 = $equipessup[count($equipessup) - 1]->getRang();
+            $equipe1->setRang($rang2 + 1);
+            $equipesinf = $this->createQueryBuilder('e')
+                ->andWhere('e.rang <=:rangsup')
+                ->andWhere('e.rang >:ranginf')
+                ->setParameters(['rangsup' => $rang2 + 1, 'ranginf' => $rang1])
+                ->orderBy('e.total', 'DESC')
+                ->getQuery()->getResult();
+            $i = 2;
+            $em = $this->getEntityManager();
+            foreach ($equipesinf as $equipe2) {
+                $equipe2->setRang($i);
+
+                $em->persist($equipe2);
+                $i = +1;
+            }
+            $em->persist($equipe1);
+            $em->flush();;
+        }
+        // si l'équipe descend d'un prix, elle prend le rang de la première équipe du classement, les équipes inférieures du classement initial  de l'équipe 1 montent
+        if($monte==false){
+            $equipesinf = $this->createQueryBuilder('e')//Les équipes du classement où va l'équipe1
+                ->andWhere('e.classement =:classement')
+                ->setParameter('classement', $equipe1->getClassement())
+                ->orderBy('e.total', 'DESC')
+                ->getQuery()->getResult();
+            $rang1 = $equipe1->getRang();
+            $rang2 = $equipesinf[0]->getRang();// rang de la première équipe du classement inférieur
+            $equipe1->setRang($rang2);
+            $equipessup = $this->createQueryBuilder('e')
+                ->andWhere('e.rang <=:rangsup')
+                ->andWhere('e.rang >:ranginf')
+                ->setParameters(['rangsup' => $rang1 -1, 'ranginf' => $rang2])
+                ->orderBy('e.total', 'DESC')
+                ->getQuery()->getResult();
+            $i = $rang1;
+            $em = $this->getEntityManager();
+            foreach ($equipessup as $equipe2) {
+                $equipe2->setRang($i);
+
+                $em->persist($equipe2);
+                $i = +1;
+            }
+            $em->persist($equipe1);
+            $em->flush();;
+
+        }
+
+    }
     public function palmares($niveau, $offset, $nbreprix)
     {
 

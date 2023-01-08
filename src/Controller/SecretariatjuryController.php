@@ -241,6 +241,8 @@ class SecretariatjuryController extends AbstractController
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+
+
         $i=1;
         foreach($classement as $equipe ){
             $equipe->setRang($i);
@@ -362,7 +364,12 @@ class SecretariatjuryController extends AbstractController
         } catch (NoResultException|NonUniqueResultException $e) {
         }
 
-        $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+        //$classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+        $classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
+                                        ->orderBy('e.couleur','ASC')
+                                        ->leftJoin('e.equipeinter','eq')
+                                        ->addOrderBy('e.total','DESC')
+                                        ->getQuery()->getResult();
 
         foreach (range('A', 'Z') as $lettre) {
 
@@ -372,10 +379,22 @@ class SecretariatjuryController extends AbstractController
                 $idequipe = $request->query->get('idEquipe');
 
                 $equipe = $repositoryEquipes->findOneBy(['id' => $idequipe]);
-                $equipe->setCouleur($couleur);
+                switch ($couleur){
+                    case 1: $newclassement='1er';
+                            break;
+                    case 2: $newclassement='2ème';
+                            break;
+                    case 3: $newclassement='3ème';
+                            break;
 
+
+                }
+                $equipe->setCouleur($couleur);
+                $equipe->setClassement($newclassement);
                 $em->persist($equipe);
                 $em->flush();
+                //$couleur>$couleurini?$monte=true:$monte=false;
+                //$repositoryEquipes->echange_rang($equipe,$monte);
             }
 
         }
@@ -535,17 +554,7 @@ class SecretariatjuryController extends AbstractController
         );
         return new Response($content);
     }
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/modif_prixEquipe", name="modif_prixEquipe")
-     *
-     */
-    public function modifPrixEquipe(Request $request){
 
-           dd($request);
-
-    }
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
@@ -714,7 +723,7 @@ class SecretariatjuryController extends AbstractController
             }
             $em->persist($cadeau);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Cadeaux bien enregistrés');
+            $request->getSession()->getFlashBag()->add('info', 'Cadeaux bien enregistrés');
             if ($compteur <= $nbreEquipes) {
                 return $this->redirectToroute('secretariatjury_lescadeaux', array('compteur' => $compteur + 1));
             } else {

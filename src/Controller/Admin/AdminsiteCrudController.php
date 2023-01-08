@@ -271,7 +271,7 @@ class AdminsiteCrudController extends AbstractCrudController
             $photo->setEditionspassees($editionPassee);
             $photo->setEquipepassee($equipepassee);
             $this->em->persist($photo);
-            $editionPassee->addPhoto($photo);
+            //$editionPassee->addPhoto($photo);
             $this->em->persist($photo);
             //dd($this->getParameter('app.path.photos') . '/'. $photo->getPhoto());
             if (file_exists($this->getParameter('app.path.photos') . '/' . $photo->getPhoto())) {
