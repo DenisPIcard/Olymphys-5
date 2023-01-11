@@ -153,11 +153,11 @@ class FichiersController extends AbstractController
         //$role = $roles[0];
 
         if (in_array('ROLE_JURY', $roles)) {
-            $nom = $user->getUsername();
+
 
             $repositoryJures = $this->doctrine->getRepository(Jures::class);
             $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()->getId()]);
-            $id_jure = $jure->getId();
+
         }
 
         $qb1 = $repositoryEquipesadmin->createQueryBuilder('t')
@@ -654,7 +654,9 @@ class FichiersController extends AbstractController
                 if ($attrib > 0) {
                     $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
                     $message = '';
-
+                    if ($session->get('concours') == 'national') {
+                        $fichier->setNational(true);
+                    }
                 }
                 $fichier->setFichierFile($file);
 
@@ -671,6 +673,7 @@ class FichiersController extends AbstractController
                                     ->andWhere('f.national =:valeur')
                                     ->setParameter('valeur', '0')
                                     ->getQuery()->getSingleResult();
+
                             } catch (Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
                                 $message = '';
                                 $fichier = new Fichiersequipes();
@@ -1040,9 +1043,9 @@ class FichiersController extends AbstractController
         $qb4 = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
-            ->andWhere('t.typefichier in (0,1,2,3,4)');
-        //->andWhere('t.national =:national')
-        //->setParameter('national', TRUE) ;
+            ->andWhere('t.typefichier in (0,1,2,3)')
+            ->andWhere('t.national =:national')
+            ->setParameter('national', TRUE) ;
 
         $listeEleves = $repositoryElevesinter->findByEquipe(['equipe' => $equipe_choisie]);
         $liste_prof[1] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf1()]);

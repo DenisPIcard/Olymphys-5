@@ -2,7 +2,7 @@
 {% if  equipe.selectionnee == true %}
     {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et la diaporama cia ne sont pas dans la liste -->
     {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
-        {%  set liste=[0,1,2,4, 3]%}
+        {%  set liste=[0,1,2,3]%}
     {% endif %}
 {% endif %}
 {% if equipe.selectionnee ==false %}

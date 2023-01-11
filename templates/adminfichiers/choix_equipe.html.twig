@@ -7,7 +7,9 @@
     <div class="text-center">Concours {{ phase }}<br>
 
         {% if app.user.roles|filter(v => v =='ROLE_JURY') %}
-            {{ jure.prenomJure }}   {{ jure.nomJure }}
+            {% if jure != null %}
+                {{ jure.prenomJure }}   {{ jure.nomJure }}
+            {% endif %}
             <br> membre du jury
         {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             {{ user.prenom }} {{ user.nom }}<br>
