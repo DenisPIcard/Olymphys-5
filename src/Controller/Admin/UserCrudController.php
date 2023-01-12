@@ -69,8 +69,8 @@ class UserCrudController extends AbstractCrudController
         $nom = TextField::new('nom');
         $prenom = TextField::new('prenom');
         $rne = TextField::new('rne');
-        $centrecia = AssociationField::new('centrecia');
-        $rneId = AssociationField::new('rneId', 'UAI');
+        $centrecia = AssociationField::new('centrecia')->setFormTypeOptions(['required'=>false]);
+        $rneId = AssociationField::new('rneId', 'UAI')->setFormTypeOptions(['required'=>false]);
 
 
         $isActive = Field::new('isActive');

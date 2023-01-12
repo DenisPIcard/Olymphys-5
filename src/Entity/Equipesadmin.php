@@ -131,7 +131,7 @@ class Equipesadmin
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
-     * @JoinColumn(name="centre_id", referencedColumnName="id")
+     * @JoinColumn(name="centre_id", referencedColumnName="id", nullable=true)
      */
     private ?centrescia $centre;
 
@@ -200,6 +200,11 @@ class Equipesadmin
      *
      */
     private ?Edition $edition;
+   /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $retiree = null;
+
 
     public function __construct()
     {
@@ -738,6 +743,17 @@ class Equipesadmin
     public function setInscrite(bool $inscrite): self
     {
         $this->inscrite = $inscrite;
+
+        return $this;
+    }
+    public function getRetiree(): ?bool
+    {
+        return $this->retiree;
+    }
+
+    public function setRetiree(?bool $retiree): self
+    {
+        $this->retiree = $retiree;
 
         return $this;
     }

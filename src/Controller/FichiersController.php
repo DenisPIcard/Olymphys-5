@@ -749,10 +749,25 @@ class FichiersController extends AbstractController
                 $this->RempliOdpfFichiersPasses($fichier);
             }
             try {
-                $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
-            } catch (Exception $e) {
+                if ($equipe->getRetiree() != true) {
+
+                    $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+                } else {
+                    if ($type_fichier == 'mémoire') {
+
+                        $this->MailAvertissement($mailer, $type_fichier, $equipe);
+                    } else {
+                        $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+
+                    }
+
+                }
+            }
+            catch(Exception $e){
 
             }
+
+
 
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
         }
@@ -914,6 +929,27 @@ class FichiersController extends AbstractController
         }
         $email->subject('Depot du ' . $type_fichier . ' de ' . $info_equipe)
             ->text($info_equipe . ' a déposé un fichier : ' . $type_fichier . '.');
+
+        $mailer->send($email);
+
+    }
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function MailAvertissement(MailerInterface $mailer, string $type_fichier, $equipe)
+    {
+        $texte = 'Bonjour,<br> Vous venez de déposer le mémoire de l\'équipe '.$equipe->getLettre().'- '.$equipe->getTitreProjet().
+                    ' alors que cette équipe  s\'est retirée du concours.<BR>
+                     le comité national reviendra vers vous au sujet de ce mémoire d\'une équipe dont le retrait avait été annoncé<BR>
+                     <BR>Le comité national des Olympiades de Physique France';
+            $email = (new Email())
+            ->from('info@olymphys.fr')
+            ->to($this->getUser()->getEmail())
+            ->addCc('webmestre2@olymphys.fr','webmestre3@olymphys.fr')
+            ->cc('pierre.chavel@institutoptique.fr','fperrot2010@hotmail.fr');
+
+        $email->subject('Depot du mémoire de l\'équipe'.$equipe->getLettre())
+            ->html($texte);
 
         $mailer->send($email);
 
