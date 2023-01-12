@@ -364,13 +364,13 @@ class SecretariatjuryController extends AbstractController
         } catch (NoResultException|NonUniqueResultException $e) {
         }
 
-        //$classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
-        $classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
+        $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+        /*$classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
                                         ->orderBy('e.couleur','ASC')
                                         ->leftJoin('e.equipeinter','eq')
                                         ->addOrderBy('e.total','DESC')
                                         ->getQuery()->getResult();
-
+*/
         foreach (range('A', 'Z') as $lettre) {
 
             if ($request->query->get($lettre) != null) {
@@ -379,7 +379,7 @@ class SecretariatjuryController extends AbstractController
                 $idequipe = $request->query->get('idEquipe');
 
                 $equipe = $repositoryEquipes->findOneBy(['id' => $idequipe]);
-                switch ($couleur){
+              /*  switch ($couleur){
                     case 1: $newclassement='1er';
                             break;
                     case 2: $newclassement='2ème';
@@ -389,15 +389,17 @@ class SecretariatjuryController extends AbstractController
 
 
                 }
+              */
                 $equipe->setCouleur($couleur);
-                $equipe->setClassement($newclassement);
+                //$equipe->setClassement($newclassement);
                 $em->persist($equipe);
                 $em->flush();
-                $classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
+                /*$classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
                     ->orderBy('e.couleur','ASC')
                     ->leftJoin('e.equipeinter','eq')
                     ->addOrderBy('e.total','DESC')
                     ->getQuery()->getResult();
+                */
                 //$couleur>$couleurini?$monte=true:$monte=false;
                 //$repositoryEquipes->echange_rang($equipe,$monte);
             }
