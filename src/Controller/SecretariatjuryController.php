@@ -432,8 +432,9 @@ class SecretariatjuryController extends AbstractController
         $classement = $qb->getQuery()->getResult();
 
         $class = null;
-
+        $i=0;
         foreach ($classement as $equipe) {
+            $i+=1;
             $couleur = $equipe->getCouleur();
             switch ($couleur) {
                 case 1 :
@@ -448,9 +449,11 @@ class SecretariatjuryController extends AbstractController
 
             }
             $equipe->setClassement($class);
+            $equipe->setRang($i);
             $em->persist($equipe);
         }
         $em->flush();
+
 
         $content = $this->renderView('secretariatjury/classement_definitif.html.twig',
             array('classement' => $classement,)
