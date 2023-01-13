@@ -196,6 +196,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $createdAt = DateField::new('createdAt', 'Date d\'inscription');
         $description = TextareaField::new('description', 'Description du projet');
         $inscrite = BooleanField::new('inscrite');
+        $retiree= BooleanField::new('retiree');
         $rneId = AssociationField::new('rneId');
         $edition = AssociationField::new('edition', 'Edition');
         $editionEd = TextareaField::new('edition.ed', 'Edition');
@@ -204,6 +205,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
         $nbeleves = IntegerField::new('nbeleves', 'Nbre elev')->setColumns(1);
+
         //dd($this->adminContextProvider->getContext());
         //dd($this->adminContextProvider->getContext()->getRequest()->attributes->get('_controller')[1]=='detail');
 
@@ -219,7 +221,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
             if ($this->adminContextProvider->getContext()->getRequest()->query->get('menuIndex') == 7) {
 
-                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $rne];
+                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $rne, $retiree];
             } else {
 
                 return [$id,  $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $rne,];
@@ -227,7 +229,7 @@ class EquipesadminCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$edition, $numero, $lettre, $rneId, $lyceeAcademie, $titreProjet, $centre, $IdProf1, $IdProf2];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$edition, $numero, $lettre, $rneId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire];
+            return [$edition, $numero, $lettre, $rneId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire,$retiree];
         }
 
     }
