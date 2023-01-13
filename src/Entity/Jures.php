@@ -231,7 +231,7 @@ class Jures
     /**
      * Get a
      *
-     * @return int
+     * @return int|null
      */
     public function getA(): ?int
     {
@@ -241,7 +241,7 @@ class Jures
     /**
      * Set a
      *
-     * @param integer $a
+     * @param int|null $a
      *
      * @return Jures
      */
@@ -255,7 +255,7 @@ class Jures
     /**
      * Get b
      *
-     * @return int
+     * @return int|null
      */
     public function getB(): ?int
     {
@@ -265,7 +265,7 @@ class Jures
     /**
      * Set b
      *
-     * @param integer $b
+     * @param int|null $b
      *
      * @return Jures
      */
@@ -279,7 +279,7 @@ class Jures
     /**
      * Get c
      *
-     * @return int
+     * @return int|null
      */
     public function getC(): ?int
     {
@@ -289,7 +289,7 @@ class Jures
     /**
      * Set c
      *
-     * @param integer $c
+     * @param int|null $c
      *
      * @return Jures
      */
@@ -303,7 +303,7 @@ class Jures
     /**
      * Get d
      *
-     * @return int
+     * @return int|null
      */
     public function getD(): ?int
     {
@@ -313,7 +313,7 @@ class Jures
     /**
      * Set d
      *
-     * @param integer $d
+     * @param int|null $d
      *
      * @return Jures
      */
@@ -327,7 +327,7 @@ class Jures
     /**
      * Get e
      *
-     * @return int
+     * @return int|null
      */
     public function getE(): ?int
     {
@@ -337,7 +337,7 @@ class Jures
     /**
      * Set e
      *
-     * @param integer $e
+     * @param int|null $e
      *
      * @return Jures
      */
@@ -351,7 +351,7 @@ class Jures
     /**
      * Get f
      *
-     * @return int
+     * @return int|null
      */
     public function getF(): ?int
     {
@@ -361,7 +361,7 @@ class Jures
     /**
      * Set f
      *
-     * @param integer $f
+     * @param int|null $f
      *
      * @return Jures
      */
@@ -385,7 +385,7 @@ class Jures
     /**
      * Set g
      *
-     * @param integer $g
+     * @param int|null $g
      *
      * @return Jures
      */
@@ -399,7 +399,7 @@ class Jures
     /**
      * Get h
      *
-     * @return int
+     * @return int|null
      */
     public function getH(): ?int
     {
@@ -409,7 +409,7 @@ class Jures
     /**
      * Set h
      *
-     * @param integer $h
+     * @param int|null $h
      *
      * @return Jures
      */
@@ -423,7 +423,7 @@ class Jures
     /**
      * Get i
      *
-     * @return int
+     * @return int|null
      */
     public function getI(): ?int
     {
@@ -433,7 +433,7 @@ class Jures
     /**
      * Set i
      *
-     * @param integer $i
+     * @param int|null $i
      *
      * @return Jures
      */
@@ -447,7 +447,7 @@ class Jures
     /**
      * Get j
      *
-     * @return int
+     * @return int|null
      */
     public function getJ(): ?int
     {
@@ -457,7 +457,7 @@ class Jures
     /**
      * Set j
      *
-     * @param integer $j
+     * @param int|null $j
      *
      * @return Jures
      */
@@ -471,7 +471,7 @@ class Jures
     /**
      * Get k
      *
-     * @return int
+     * @return int|null
      */
     public function getK(): ?int
     {
@@ -481,7 +481,7 @@ class Jures
     /**
      * Set k
      *
-     * @param integer $k
+     * @param int|null $k
      *
      * @return Jures
      */
@@ -495,7 +495,7 @@ class Jures
     /**
      * Get l
      *
-     * @return int
+     * @return int|null
      */
     public function getL(): ?int
     {
@@ -505,7 +505,7 @@ class Jures
     /**
      * Set l
      *
-     * @param integer $l
+     * @param int|null $l
      *
      * @return Jures
      */
@@ -519,7 +519,7 @@ class Jures
     /**
      * Get m
      *
-     * @return int
+     * @return int|null
      */
     public function getM(): ?int
     {
@@ -529,7 +529,7 @@ class Jures
     /**
      * Set m
      *
-     * @param integer $m
+     * @param int|null $m
      *
      * @return Jures
      */
@@ -543,7 +543,7 @@ class Jures
     /**
      * Get n
      *
-     * @return int
+     * @return int|null
      */
     public function getN(): ?int
     {
@@ -553,7 +553,7 @@ class Jures
     /**
      * Set n
      *
-     * @param integer $n
+     * @param int|null $n
      *
      * @return Jures
      */
@@ -567,7 +567,7 @@ class Jures
     /**
      * Get o
      *
-     * @return int
+     * @return int|null
      */
     public function getO(): ?int
     {
@@ -577,7 +577,7 @@ class Jures
     /**
      * Set o
      *
-     * @param integer $o
+     * @param int|null $o
      *
      * @return Jures
      */
@@ -591,7 +591,7 @@ class Jures
     /**
      * Get p
      *
-     * @return int
+     * @return int|null
      */
     public function getP(): ?int
     {
@@ -601,7 +601,7 @@ class Jures
     /**
      * Set p
      *
-     * @param integer $p
+     * @param int|null $p
      *
      * @return Jures
      */
@@ -615,7 +615,7 @@ class Jures
     /**
      * Get q
      *
-     * @return int
+     * @return int|null
      */
     public function getQ(): ?int
     {
@@ -625,7 +625,7 @@ class Jures
     /**
      * Set q
      *
-     * @param integer $q
+     * @param int|null $q
      *
      * @return Jures
      */
@@ -639,7 +639,7 @@ class Jures
     /**
      * Get r
      *
-     * @return int
+     * @return int|null
      */
     public function getR(): ?int
     {
@@ -649,7 +649,7 @@ class Jures
     /**
      * Set r
      *
-     * @param integer $r
+     * @param int|null $r
      *
      * @return Jures
      */
@@ -663,7 +663,7 @@ class Jures
     /**
      * Get s
      *
-     * @return int
+     * @return int|null
      */
     public function getS(): ?int
     {
@@ -673,7 +673,7 @@ class Jures
     /**
      * Set s
      *
-     * @param integer $s
+     * @param int|null $s
      *
      * @return Jures
      */
@@ -687,7 +687,7 @@ class Jures
     /**
      * Get t
      *
-     * @return int
+     * @return int|null
      */
     public function getT(): ?int
     {
@@ -697,7 +697,7 @@ class Jures
     /**
      * Set t
      *
-     * @param integer $t
+     * @param int|null $t
      *
      * @return Jures
      */
@@ -711,7 +711,7 @@ class Jures
     /**
      * Get u
      *
-     * @return int
+     * @return int|null
      */
     public function getU(): ?int
     {
@@ -721,7 +721,7 @@ class Jures
     /**
      * Set u
      *
-     * @param integer $u
+     * @param int|null $u
      *
      * @return Jures
      */
@@ -735,7 +735,7 @@ class Jures
     /**
      * Get v
      *
-     * @return int
+     * @return int|null
      */
     public function getV(): ?int
     {
@@ -745,7 +745,7 @@ class Jures
     /**
      * Set v
      *
-     * @param integer $v
+     * @param int|null $v
      *
      * @return Jures
      */
@@ -759,7 +759,7 @@ class Jures
     /**
      * Get w
      *
-     * @return int
+     * @return int|null
      */
     public function getW(): ?int
     {
@@ -769,7 +769,7 @@ class Jures
     /**
      * Set w
      *
-     * @param integer $w
+     * @param int|null $w
      *
      * @return Jures
      */
