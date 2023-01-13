@@ -28,6 +28,7 @@ class OdpfImagescarousels
     private ?int $id = null;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=255)
      */
     private ?string $name = null;
@@ -43,6 +44,7 @@ class OdpfImagescarousels
     private DateTime $createdAt;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $coment;
@@ -63,7 +65,7 @@ class OdpfImagescarousels
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private ?string $numero = null;
+    private ?int $numero = null;
 
 
     public function __construct()

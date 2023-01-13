@@ -88,11 +88,11 @@ class Equipesadmin
     private ?string $lyceeAcademie;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
-    private string $prenomProf1;
+    private ?string $prenomProf1;
 
     /**
      * @var string|null

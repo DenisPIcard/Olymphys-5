@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Node\Scalar\String_;
 
 /**
  * Jures
@@ -28,17 +29,20 @@ class Jures
     private ?user $iduser;
 
     /**
-     * @ORM\Column(name="prenomJure", type="string", length=255)
+     * @var String|null
+     * @ORM\Column(name="prenomJure", type="string", length=255, nullable=true)
      */
     private ?string $prenomJure = null;
 
     /**
-     * @ORM\Column(name="nomJure", type="string", length=255)
+     * @var String|null
+     * @ORM\Column(name="nomJure", type="string", length=255, nullable=true)
      */
     private ?string $nomJure = null;
 
     /**
-     * @ORM\Column(name="initialesJure", type="string", length=255)
+     * @var String|null
+     * @ORM\Column(name="initialesJure", type="string", length=255, nullable=true)
      */
     private ?string $initialesJure = null;
 
@@ -205,7 +209,7 @@ class Jures
      *
      * @return string
      */
-    public function getInitialesJure(): string
+    public function getInitialesJure(): ?string
     {
         return $this->initialesJure;
     }
@@ -241,7 +245,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setA(int $a): Jures
+    public function setA(?int $a): Jures
     {
         $this->a = $a;
 
@@ -265,7 +269,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setB(int $b): Jures
+    public function setB(?int $b): Jures
     {
         $this->b = $b;
 
@@ -289,7 +293,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setC(int $c): Jures
+    public function setC(?int $c): Jures
     {
         $this->c = $c;
 
@@ -313,7 +317,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setD(int $d): Jures
+    public function setD(?int $d): Jures
     {
         $this->d = $d;
 
@@ -337,7 +341,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setE(int $e): Jures
+    public function setE(?int $e): Jures
     {
         $this->e = $e;
 
@@ -361,7 +365,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setF(int $f): Jures
+    public function setF(?int $f): Jures
     {
         $this->f = $f;
 
@@ -385,7 +389,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setG(int $g): Jures
+    public function setG(?int $g): Jures
     {
         $this->g = $g;
 
@@ -409,7 +413,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setH(int $h): Jures
+    public function setH(?int $h): Jures
     {
         $this->h = $h;
 
@@ -433,7 +437,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setI(int $i): Jures
+    public function setI(?int $i): Jures
     {
         $this->i = $i;
 
@@ -457,7 +461,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setJ(int $j): Jures
+    public function setJ(?int $j): Jures
     {
         $this->j = $j;
 
@@ -481,7 +485,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setK(int $k): Jures
+    public function setK(?int $k): Jures
     {
         $this->k = $k;
 
@@ -505,7 +509,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setL(int $l): Jures
+    public function setL(?int $l): Jures
     {
         $this->l = $l;
 
@@ -529,7 +533,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setM(int $m): Jures
+    public function setM(?int $m): Jures
     {
         $this->m = $m;
 
@@ -553,7 +557,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setN(int $n): Jures
+    public function setN(?int $n): Jures
     {
         $this->n = $n;
 
@@ -577,7 +581,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setO(int $o): Jures
+    public function setO(?int $o): Jures
     {
         $this->o = $o;
 
@@ -601,7 +605,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setP(int $p): Jures
+    public function setP(?int $p): Jures
     {
         $this->p = $p;
 
@@ -625,7 +629,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setQ(int $q): Jures
+    public function setQ(?int $q): Jures
     {
         $this->q = $q;
 
@@ -649,7 +653,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setR(int $r): Jures
+    public function setR(?int $r): Jures
     {
         $this->r = $r;
 
@@ -673,7 +677,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setS(int $s): Jures
+    public function setS(?int $s): Jures
     {
         $this->s = $s;
 
@@ -697,7 +701,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setT(int $t): Jures
+    public function setT(?int $t): Jures
     {
         $this->t = $t;
 
@@ -721,7 +725,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setU(int $u): Jures
+    public function setU(?int $u): Jures
     {
         $this->u = $u;
 
@@ -745,7 +749,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setV(int $v): Jures
+    public function setV(?int $v): Jures
     {
         $this->v = $v;
 
@@ -769,7 +773,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setW(int $w): Jures
+    public function setW(?int $w): Jures
     {
         $this->w = $w;
 
@@ -886,7 +890,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setNomJure(string $nomJure): Jures
+    public function setNomJure(?string $nomJure): Jures
     {
         $this->nomJure = $nomJure;
 
@@ -910,7 +914,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setPrenomJure(string $prenomJure): Jures
+    public function setPrenomJure(?string $prenomJure): Jures
     {
         $this->prenomJure = $prenomJure;
 
@@ -937,7 +941,7 @@ class Jures
         return $this->phrases;
     }
 
-    public function addPhrase(phrases $phrase): self
+    public function addPhrase(?phrases $phrase): self
     {
         if (!$this->phrases->contains($phrase)) {
             $this->phrases[] = $phrase;

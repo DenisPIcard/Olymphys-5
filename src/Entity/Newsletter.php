@@ -21,11 +21,13 @@ class Newsletter
     private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $name = null;
 
     /**
+     * @var string|null
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $texte = null;
@@ -69,7 +71,7 @@ class Newsletter
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 

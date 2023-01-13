@@ -28,17 +28,17 @@ class Orgacia
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column(name="name", type = "string")
+     * @var string|null
+     * @ORM\Column(name="name", type = "string", nullable=true)
      */
     private $name;
 
     /**
-     * @var string
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      * @ORM\JoinColumn(name ="centre_id", referencedColumnName = "id", nullable=true)
      */
-    private $centre;
+    private ?Centrescia $centre;
 
     /**
      * Get id
@@ -55,7 +55,7 @@ class Orgacia
      *
      * @return string
      */
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -65,7 +65,7 @@ class Orgacia
      *
      * @return string
      */
-    public function getCentre()
+    public function getCentre() : ?Centrescia
     {
         return $this->centre;
     }
@@ -75,7 +75,7 @@ class Orgacia
      * @param String $name
      *
      */
-    public function setName($name)
+    public function setName(?string $name) : self
     {
         $this->name = $name;
         return $this;
@@ -83,10 +83,10 @@ class Orgacia
 
     /**
      * Set centre
-     * @param String $centre
+     * @param Centrescia $centre
      *
      */
-    public function setCentre($centre)
+    public function setCentre(?Centrescia $centre) :self
     {
         $this->centre = $centre;
         return $this;

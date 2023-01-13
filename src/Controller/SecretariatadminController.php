@@ -325,7 +325,7 @@ class SecretariatadminController extends AbstractController
 
             $repositoryUser = $this->doctrine->getManager()
                 ->getRepository(User::class);
-
+            $message ='';
 
             for ($row = 2; $row <= $highestRow; ++$row) {
                 $jure = new jures();
@@ -344,32 +344,39 @@ class SecretariatadminController extends AbstractController
                     ->getQuery()->getResult();
 
                 if (count($user) > 1) {
+
                     foreach ($user as $jury) {//certains jurés sont parfois aussi organisateur des cia avec un autre compte.on ne sélectionne que le compte de role jury
 
                         if (in_array('ROLE_JURY', $jury->getRoles())) {
                             $jure->setIduser($jury);
                         }
                     }
-                } else {
+                }
+                if(count($user)!=0)  {
+
                     $jure->setIduser($user[0]);
+                    $colonne = 4;
+
+
+                    foreach ($equipes as $equipe) {
+                        $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();
+
+                        $method = 'set' . $equipe->getEquipeinter()->getLettre();
+                        $jure->$method($value);
+
+                        $colonne += 1;
+                    }
+                    $em->persist($jure);
+                    $em->flush();
+                }
+                if(count($user)==0)  {
+                    $message=$message.$user->getPrenomNom().'ne correspond pas à un user existant et n\'a pu être enregistré';
                 }
 
-
-                $colonne = 4;
-
-
-                foreach ($equipes as $equipe) {
-                    $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();
-
-                    $method = 'set' . $equipe->getEquipeinter()->getLettre();
-                    $jure->$method($value);
-
-                    $colonne += 1;
-                }
-                $em->persist($jure);
-                $em->flush();
             }
-
+            $request->getSession()
+                ->getFlashBag()
+                ->add('alert', $message);
             return $this->redirectToRoute('core_home');
         }
         $content = $this
