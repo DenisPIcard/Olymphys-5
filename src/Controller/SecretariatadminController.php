@@ -370,7 +370,7 @@ class SecretariatadminController extends AbstractController
                     $em->flush();
                 }
                 if(count($user)==0)  {
-                    $message=$message.$user->getPrenomNom().'ne correspond pas à un user existant et n\'a pu être enregistré';
+                    $message=$message.$nom.' ne correspond pas à un user existant et n\'a pu être enregistré';
                 }
 
             }
