@@ -2,7 +2,7 @@
 {% if  equipe.selectionnee == true %}
     {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et la diaporama cia ne sont pas dans la liste -->
     {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
-        {%  set liste=[0,1,2,3]%}
+        {%  set liste=[0,1,2,3,4]%}
     {% endif %}
 {% endif %}
 {% if equipe.selectionnee ==false %}
@@ -65,6 +65,9 @@
                 {% endif %}
                 {% if attrib==0 %}
                      Non encore déposé
+                        {% if  app.user.roles|filter(v => v =='ROLE_JURY')!=[] and app.session.get('concours')=='national' and i<3%}
+                            <a  href="{{ path('voir_fichier_inter',{ 'typefichier' : type_fichier[i] , 'idequipe': equipe.id}) }}">Voir le fichier  des interacadémique</a>
+                        {% endif %}
                 {% endif %}
             </div>
             <div class="col-1 " ><!-- colonne du bouton de dépôt du fichier -->

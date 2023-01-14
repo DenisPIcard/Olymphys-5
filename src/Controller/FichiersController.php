@@ -1374,6 +1374,43 @@ class FichiersController extends AbstractController
             }
         }
     }
+    /**
+     * @IsGranted("ROLE_JURY")
+     *
+     * @Route("/fichiers/voir_fichier_inter,{typefichier}, {idequipe}", name="voir_fichier_inter")
+     *
+     */
+    public function voir_fichier_interacademique(Request $request, $typefichier, $idequipe){//pour le jurynational avant que les équipes n'aient déposé leur fichiers cn
+
+        switch($typefichier){
+               case 'memoires' : $numTypefichier= 0;
+                    break;
+               case 'annexes'  : $numTypefichier =1;
+                    break;
+               case 'resumes'  : $numTypefichier = 2;
+                    break;
+           }
+            $equipe=$this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id'=>$idequipe]);
+            $fichier=$this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+                ->andWhere('f.typefichier =:type')
+                ->andWhere('f.equipe = :equipe')
+                ->andWhere('f.national = 0')
+                ->setParameters(['type'=>$numTypefichier,'equipe'=>$equipe])
+                ->getQuery()->getOneOrNullResult();
+            if($fichier !== null) {
+                return $this->redirectToRoute('telecharger_un_fichier_prof', array('idFichier' => $fichier->getId()));
+            }
+            else{
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('info', 'L\'équipe n\'a pas déposé ce fichier aux interacadémiques');
+
+              return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof',array('infos'=>$equipe->getId().'-national-liste_cn_comite'));
+
+            }
+        }
+
+
 
     /**
      * @IsGranted("ROLE_COMITE")
