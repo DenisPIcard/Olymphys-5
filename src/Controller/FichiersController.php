@@ -12,23 +12,20 @@ use App\Entity\Jures;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
+use App\Entity\Orgacia;
 use App\Entity\Rne;
 use App\Entity\User;
 use App\Entity\Videosequipes;
-use App\Form\ListefichiersType;
 use App\Form\ToutfichiersType;
 use App\Service\valid_fichiers;
 use datetime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -37,7 +34,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -45,9 +41,7 @@ use Symfony\Component\Mime\FileinfoMimeTypeGuesser;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Vich\UploaderBundle\Entity\File;
 use ZipArchive;
-use function Symfony\Component\String\u;
 
 class FichiersController extends AbstractController
 {
@@ -124,326 +118,54 @@ class FichiersController extends AbstractController
         $session = $this->requestStack->getSession();
         $repositoryEquipesadmin = $this->doctrine
             ->getRepository(Equipesadmin::class);
-        $repositoryEdition = $this->doctrine
-            ->getRepository(Edition::class);
         $repositoryCentres = $this->doctrine
             ->getRepository(Centrescia::class);
-        $repositoryEleves = $this->doctrine
-            ->getRepository(Elevesinter::class);
         $repositoryDocequipes = $this->doctrine
             ->getRepository(Docequipes::class);
         $edition = $session->get('edition');
         $docequipes = $repositoryDocequipes->findAll();
-        $centres = $repositoryCentres->createQueryBuilder('ce')
-                    ->andWhere('ce.actif = 1')
-                    ->getQuery()->getResult();
-        $datelimcia = $edition->getDatelimcia();
-        $datelimnat = $edition->getDatelimnat();
-        $datecia = $edition->getConcourscia();
-        $datecn = $edition->getConcourscn();
-        $dateouverturesite = $edition->getDateouverturesite();
+
         $dateconnect = new datetime('now');
-
+        $datecia = $edition->getConcourscia();
+        $dateconnect > $datecia ? $phase = 'national' : $phase = 'interacadémique';
         $user = $this->getUser();
-
-
-        $id_user = $user->getId();
         $roles = $user->getRoles();
-        //dd($roles);
-        //$role = $roles[0];
-
+        $jure = null;
+        $rne_objet = null;
+        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $choix]);
+        $centre === null ?: $phase = 'interacadémique';
+        if (in_array('ROLE_ORGACIA', $user->getRoles())) {
+            $centre = $this->doctrine->getRepository(Orgacia::class)->findOneBy(['user' => $user])->getCentre();
+            $phase = 'interacadémique';
+        }
+        if (in_array('ROLE_PROF', $user->getRoles())) {
+            $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+        }
         if (in_array('ROLE_JURY', $roles)) {
-
-
             $repositoryJures = $this->doctrine->getRepository(Jures::class);
             $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()->getId()]);
-
         }
 
-        $qb1 = $repositoryEquipesadmin->createQueryBuilder('t')
-            ->select()
-            ->andWhere('t.selectionnee = 1')
-            ->andWhere('t.numero <:valeur')
-            ->andWhere('t.edition =:edition')
-            ->setParameter('edition', $edition)
-            ->setParameter('valeur', 100)
-            ->orderBy('t.lettre', 'ASC');
-
-
-        $qb3 = $repositoryEquipesadmin->createQueryBuilder('t')
-            ->where('t.rneId =:rne')
-            ->andWhere('t.edition =:edition')
-            ->setParameter('edition', $edition)
-            ->setParameter('rne', $user->getRneId());
-
-        if ($dateconnect > $datecia) {
-            $phase = 'national';
-            $qb3->orderBy('t.lettre', 'ASC');
-        }
-        if (($dateconnect <= $datecia)) {
-            $phase = 'interacadémique';
-            $qb3->orderBy('t.numero', 'ASC');
-        }
-
-
-        if (($choix == 'liste_cn_comite')) {
-            if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_JURY', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
-
-                $liste_equipes = $repositoryEquipesadmin->getEquipeNat();
-
-                if ($liste_equipes != null) {
-                    if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
-
-                        $content = $this
-                            ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                    'liste_equipes' => $liste_equipes, 'user' => $user, 'phase' => 'national', 'choix' => $choix
-                                )
-                            );
-                    }
-                    if (in_array('ROLE_JURY', $roles)) {
-                        $content = $this
-                            ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                'liste_equipes' => $liste_equipes, 'user' => $user, 'phase' => 'national', 'choix' => $choix, 'jure' => $jure)//Jure necessaire pour le titre
-                            );
-                    }
-                    return new Response($content);
-                } else {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Pas encore d\'équipe sélectionnée pour le concours national de la ' . $edition->getEd() . 'e edition');
-                    return $this->redirectToRoute('core_home');
-                }
-            }
-        }
-
-        foreach ($centres as $Centre) {
-            if ($Centre->getCentre() == $choix) {
-                $centre = $Centre;
-            }
-        }
-
-
-        if (isset($centre) or ($choix == 'centre')) { //pour le jurycia, comité, superadmin liste des équipes d'un centre
-            if (($this->isGranted('ROLE_COMITE')) or ($this->isGranted('ROLE_JURY')) or ($this->isGranted('ROLE_SUPER_ADMIN')) or ($this->isGranted('ROLE_ORGACIA')) or ($this->isGranted('ROLE_JURYCIA'))) {
-                if (!isset($centre)) {
-                    $centre = $this->getUser()->getCentrecia();
-                }
-                 $liste_equipes =  $repositoryEquipesadmin->getEquipeInter($centre);
-
-                if ($liste_equipes != null) {
-
-                    $content = $this
-                        ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                'liste_equipes' => $liste_equipes, 'user' => $user, 'phase' => 'interacadémique', 'choix' => 'liste_prof', 'centre' => $centre->getCentre()
-                            )
-                        );
-                    return new Response($content);
-
-                }
-                if ($liste_equipes == null) {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Pas encore d\'équipe pour le concours interacadémique de la ' . $edition->getEd() . 'e edition');
-                    return $this->redirectToRoute('core_home');
-                }
-            }
-        }
-
-
-        if (($choix == 'liste_prof')) {
-
-            if (($phase == 'interacadémique') or ($this->isGranted('ROLE_ORGACIA'))) {
-
-
-                if ($this->isGranted('ROLE_ORGACIA')) {
-                    $centre = $this->getUser()->getCentrecia();
-
-                    $liste_equipes = $repositoryEquipesadmin->getEquipeInter($centre);
-                    $rne_objet = null;
-                }
-
-
-                if (($this->isGranted('ROLE_ORGACIA') == false) and ($this->isGranted('ROLE_PROF') == false)) {
-                    $liste_equipes = null;
-                    if ($dateconnect > $datecia) {
-                        /*$qb3->andWhere('t.selectionnee=:selectionnee')
-                                ->setParameter('selectionnee', TRUE)
-                                ->orderBy('t.lettre', 'ASC');    */
-                        $liste_equipes = $qb3->getQuery()->getResult();
-                        $rne_objet = null;
-                    }
-                }
-                if (in_array('ROLE_PROF', $user->getRoles()) == true) {
-                    $liste_equipes = $qb3->getQuery()->getResult();
-                    $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
-                    $role = 'ROLE_PROF';
-                }
-
-
-            }
-
-            //if($liste_equipes!=null) {
-            if ($phase == 'national') {
-
-
-                if (in_array('ROLE_PROF', $roles)) {
-                    $liste_equipes = //$qb3
-                        $qb3->andWhere('t.selectionnee = 1')
-                            ->getQuery()->getResult();
-                    $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
-
-                }
-            }
-
-            $content = $this
-                ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                    'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix,  'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
-                ));
+        $liste_equipes = $repositoryEquipesadmin->getListeEquipe($user, $phase, $choix, $centre);
+        if ($liste_equipes != null) {
+            $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
+                'liste_equipes' => $liste_equipes,
+                'user' => $user,
+                'phase' => $phase,
+                'choix' => $choix,
+                'jure' => $jure,
+                'doc_equipes' => $docequipes,
+                'rneObj' => $rne_objet,
+                'centre' => $centre));
             return new Response($content);
-
-            /*         }
-           /*  else{
+        } else {
+            $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
             $request->getSession()
-                 ->getFlashBag()
-                    ->add('info', 'Le site n\'est pas encore prêt pour une saisie des mémoires ou vous n\'avez pas d\'équipe inscrite pour le concours '. $phase.' de la '.$edition->getEd().'e edition') ;
+                ->getFlashBag()
+                ->add('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $edition->getEd() . 'e edition');
             return $this->redirectToRoute('core_home');
-                }*/
-
-
         }
-
-
-        if (($choix == 'deposer')) {//pour le dépôt des fichiers autres que les présentations
-
-            if (in_array('ROLE_PROF', $roles)) {
-
-                if ($choix == 'diaporama_jury') {
-                    if ($dateconnect <= $datecia) {
-                        $phase = 'interacadémique';
-
-                        $liste_equipes = $qb3->getQuery()->getResult();
-                    }
-
-                    if (($dateconnect <= $datecn) and ($dateconnect > $datecia)) {
-                        $phase = 'national';
-
-                        $qb3->andWhere('t.selectionnee=:selectionnee')
-                            ->setParameter('selectionnee', TRUE);
-                        $liste_equipes = $qb3->getQuery()->getResult();
-
-                    }
-                } else {
-
-                    if (($dateconnect > $datelimcia) and ($dateconnect <= $datelimnat)) {
-                        $phase = 'national';
-                        $qb3->andWhere('t.selectionnee=:selectionnee')
-                            ->setParameter('selectionnee', TRUE);
-                        $liste_equipes = $qb3->getQuery()->getResult();
-                    }
-                    if (($dateconnect > $dateouverturesite) and ($dateconnect <= $datelimcia)) {
-                        $phase = 'interacadémique';
-
-                        $liste_equipes = $qb3->getQuery()->getResult();
-                    }
-                }
-
-                if ($liste_equipes != null) {
-
-                    $content = $this
-                        ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role
-                            )
-                        );
-                    return new Response($content);
-                } else {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Le site n\'est pas encore prêt pour une saisie des mémoires ou vous n\'avez pas d\'équipe inscrite pour le concours ' . $phase . ' de la ' . $edition->getEd() . 'e edition');
-                    return $this->redirectToRoute('core_home');
-                }
-            }
-
-            if (in_array('ROLE_COMITE', $roles)) {
-
-
-                if (($dateconnect > $datelimcia)) {
-                    $phase = 'national';
-                    $qb4 = $repositoryEquipesadmin->createQueryBuilder('t')
-                        ->where('t.selectionnee=:selectionnee')
-                        ->setParameter('selectionnee', TRUE)
-                        ->andWhere('t.edition =:edition')
-                        ->setParameter('edition', $edition)
-                        ->andWhere('t.lettre>:valeur')
-                        ->setParameter('valeur', '')
-                        ->orderBy('t.lettre', 'ASC');
-                    $liste_equipes = $qb4->getQuery()->getResult();
-
-
-                }
-                if (($dateconnect > $dateouverturesite) and ($dateconnect <= $session->get('concourscn'))) {
-                    $phase = 'interacadémique';
-                    $qb4 = $repositoryEquipesadmin->createQueryBuilder('t')
-                        ->where('t.nomLycee>:vide')
-                        ->setParameter('vide', '')
-                        ->andWhere('t.edition =:edition')
-                        ->setParameter('edition', $edition)
-                        ->orderBy('t.numero', 'ASC');
-                    $liste_equipes = $qb4->getQuery()->getResult();
-                }
-                if ($liste_equipes) {
-
-                    $content = $this
-                        ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role
-                            )
-                        );
-                    return new Response($content);
-                } else {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Le site n\'est pas encore prêt pour une saisie des mémoires ou vous n\'avez pas d\'équipes inscrite pour le concours ' . $phase . ' de la ' . $edition->getEd() . 'e edition');
-                    return $this->redirectToRoute('core_home');
-                }
-
-
-            }
-            if ((in_array('ROLE_ORGACIA', $roles)) or (in_array('ROLE_JURYCIA', $roles))) {
-
-                $centre = $user->getCentrecia()->getCentre();
-                $qb5 = $repositoryEquipesadmin->createQueryBuilder('t')
-                    ->where('t.nomLycee>:vide')
-                    ->setParameter('vide', '')
-                    ->andWhere('t.edition =:edition')
-                    ->setParameter('edition', $edition)
-                    ->orderBy('t.numero', 'ASC')
-                    ->andWhere('t.centre =:centre')
-                    ->setParameter('centre', $user->getCentrecia());
-                $liste_equipes = $qb5->getQuery()->getResult();
-                // if ($dateconnect>$datecia){
-                //     return $this->redirectToRoute('core_home');
-
-                // }
-
-
-                if ($liste_equipes) {
-
-                    $content = $this
-                        ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role, 'centre' => $centre
-                            )
-                        );
-                    return new Response($content);
-                } else {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Le site n\'est pas encore prêt pour une saisie des mémoires ou vous n\'avez pas d\'équipes inscrite pour le concours ' . $phase . ' de la ' . $edition->getEd() . 'e edition');
-                    return $this->redirectToRoute('core_home');
-                }
-            }
-        }
-
     }
-
 
     /**
      * @Security("is_granted('ROLE_PROF')")
@@ -481,8 +203,8 @@ class FichiersController extends AbstractController
         $id_equipe = $info[0];
         $phase = $info[1];
         $choix = $info[2];
-        $roles= $this->getUser()->getRoles();
-        if(in_array('ROLE_PROF',$roles)) {
+        $roles = $this->getUser()->getRoles();
+        if (in_array('ROLE_PROF', $roles)) {
             if ($choix == 0 or $choix == 1 or $choix == 2) {
 
                 if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
@@ -585,7 +307,7 @@ class FichiersController extends AbstractController
             $donnees_equipe = $citoyen->getPrenom() . ' ' . $citoyen->getNom();
 
 
-        };
+        }
         $form1->handleRequest($request);
 
         if ($form1->isSubmitted() && $form1->isValid()) {
@@ -634,8 +356,8 @@ class FichiersController extends AbstractController
                     // ... handle exception if something happens during file upload
                 }
 
-                $fichier = $this->deposeAutorisations($newFilename, $citoyen, $attrib, $prof,$equipe);
-                if ($fichier===null){
+                $fichier = $this->deposeAutorisations($newFilename, $citoyen, $attrib, $prof, $equipe);
+                if ($fichier === null) {
                     $message = 'Une erreur est survenue, le fichier n\'a pas été déposé, veuillez prévenir l\'administrateur du site';
                     $this->requestStack->getCurrentRequest()->getSession()
                         ->getFlashBag()
@@ -643,7 +365,7 @@ class FichiersController extends AbstractController
                     return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $this->requestStack->getSession()->get('concours') . '-liste_prof'));
 
                 }
-                $message='';
+                $message = '';
                 $nom_fichier = $fichier->getFichier();
             } else {
                 if ($attrib == 0) {
@@ -744,8 +466,8 @@ class FichiersController extends AbstractController
             } else {
 
                 $info_equipe = 'prof ' . $citoyen->getNomPrenom();
-            };
-            if (($num_type_fichier != 7) or ($num_type_fichier != 4)or ($num_type_fichier != 8)) {//on enregistre pas dans les éditions passées les questionnaires et fiches sécurités
+            }
+            if (($num_type_fichier != 7) or ($num_type_fichier != 4) or ($num_type_fichier != 8)) {//on enregistre pas dans les éditions passées les questionnaires et fiches sécurités
                 $this->RempliOdpfFichiersPasses($fichier);
             }
             try {
@@ -762,11 +484,9 @@ class FichiersController extends AbstractController
                     }
 
                 }
-            }
-            catch(Exception $e){
+            } catch (Exception $e) {
 
             }
-
 
 
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
@@ -783,7 +503,7 @@ class FichiersController extends AbstractController
         return new Response($content);
     }
 
-    public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof,$equipe)
+    public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof, $equipe)
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
@@ -809,7 +529,7 @@ class FichiersController extends AbstractController
                 $fichier = new Fichiersequipes();
                 $fichier->setProf($citoyen);
                 $fichier->setFichierFile($fileFichier);
-                $fichier->setEdition($edition);;
+                $fichier->setEdition($edition);
                 $fichier->setTypefichier(6);
                 $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
                 $fichier->setNational(0);
@@ -828,7 +548,7 @@ class FichiersController extends AbstractController
                     $fichier->setEleve($citoyen);
                     $fichier->setEquipe($citoyen->getEquipe());
                     $fichier->setFichierFile($fileFichier);
-                    $fichier->setEdition($edition);;
+                    $fichier->setEdition($edition);
                     $fichier->setTypefichier(6);
                     $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
                     $em->persist($fichier);
@@ -855,7 +575,7 @@ class FichiersController extends AbstractController
             }
 
         } catch (Exception $e) {
-               $fichier=null;
+            $fichier = null;
         }
 
         return $fichier;
@@ -933,22 +653,23 @@ class FichiersController extends AbstractController
         $mailer->send($email);
 
     }
+
     /**
      * @throws TransportExceptionInterface
      */
     public function MailAvertissement(MailerInterface $mailer, string $type_fichier, $equipe)
     {
-        $texte = 'Bonjour,<br> Vous venez de déposer le mémoire de l\'équipe '.$equipe->getLettre().'- '.$equipe->getTitreProjet().
-                    ' alors que cette équipe  s\'est retirée du concours.<BR>
+        $texte = 'Bonjour,<br> Vous venez de déposer le mémoire de l\'équipe ' . $equipe->getLettre() . '- ' . $equipe->getTitreProjet() .
+            ' alors que cette équipe  s\'est retirée du concours.<BR>
                      le comité national reviendra vers vous au sujet de ce mémoire d\'une équipe dont le retrait avait été annoncé<BR>
                      <BR>Le comité national des Olympiades de Physique France';
-            $email = (new Email())
+        $email = (new Email())
             ->from('info@olymphys.fr')
             ->to($this->getUser()->getEmail())
-            ->addCc('webmestre2@olymphys.fr','webmestre3@olymphys.fr')
-            ->cc('pierre.chavel@institutoptique.fr','fperrot2010@hotmail.fr');
+            ->addCc('webmestre2@olymphys.fr', 'webmestre3@olymphys.fr')
+            ->cc('pierre.chavel@institutoptique.fr', 'fperrot2010@hotmail.fr');
 
-        $email->subject('Depot du mémoire de l\'équipe'.$equipe->getLettre())
+        $email->subject('Depot du mémoire de l\'équipe' . $equipe->getLettre())
             ->html($texte);
 
         $mailer->send($email);
@@ -1026,8 +747,6 @@ class FichiersController extends AbstractController
             ->getRepository(Equipesadmin::class);
         $repositoryUser = $this->doctrine
             ->getRepository(User::class);
-        $repositoryEdition = $this->doctrine
-            ->getRepository(Edition::class);
         $repositoryElevesinter = $this->doctrine
             ->getRepository(Elevesinter::class);
 
@@ -1035,16 +754,12 @@ class FichiersController extends AbstractController
 
         $id_equipe = $Infos[0];
         if ($id_equipe == 'prof') {
-
             $id_equipe = $Infos[4];
         }
         $concours = $Infos[1];
         $choix = $Infos[2];
-
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
-
-
         $equipe_choisie = $repositoryEquipesadmin->find(['id' => $id_equipe]);
         $centre = $equipe_choisie->getCentre();
 
@@ -1065,7 +780,7 @@ class FichiersController extends AbstractController
 
         }
         if ($concours == 'national') {
-            $qbComit= $qbInit
+            $qbComit = $qbInit
                 ->andWhere('t.national =:national')
                 ->andWhere('t.typefichier in (0,1,2,3,7,8)')
                 ->setParameter('national', TRUE)
@@ -1074,14 +789,12 @@ class FichiersController extends AbstractController
         }
 
 
-
-
-        $qb4 = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
+        $qbJuryNat = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
             ->andWhere('t.typefichier in (0,1,2,3)')
             ->andWhere('t.national =:national')
-            ->setParameter('national', TRUE) ;
+            ->setParameter('national', TRUE);
 
         $listeEleves = $repositoryElevesinter->findByEquipe(['equipe' => $equipe_choisie]);
         $liste_prof[1] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf1()]);
@@ -1114,19 +827,9 @@ class FichiersController extends AbstractController
             $autorisations = [];
         }
         if (in_array('ROLE_JURY', $roles)) {
-            $liste_fichiers = $qb4->getQuery()->getResult();
+            $liste_fichiers = $qbJuryNat->getQuery()->getResult();
 
         }
-
-        $infoequipe = $equipe_choisie->getInfoequipe();
-        if ($equipe_choisie->getSelectionnee() == true) {
-            $infoequipe = $equipe_choisie->getInfoequipenat();//pour les comités et jury,inutile pour les prof , ;
-        }
-        if ($centre) {
-            $centre = $equipe_choisie->getCentre()->getCentre();
-        }
-
-
         $qb = $repositoryVideosequipes->createQueryBuilder('v')
             ->LeftJoin('v.equipe', 'e')
             ->Where('e.id=:id_equipe')
@@ -1135,65 +838,6 @@ class FichiersController extends AbstractController
             ->setParameter('edition', $edition);
         $listevideos = $qb->getQuery()->getResult();
 
-        if ($request->isMethod('POST')) {
-            if ($request->request->has('listefichiers')) {
-                $zipFile = new ZipArchive();
-                $FileName = $edition->getEd() . '-Fichiers-eq-' . $equipe_choisie->getNumero() . '-' . date('now');
-                if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE) {
-                    if($concours=='interacadémique') {
-                        $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
-                            ->where('f.equipe =:equipe')
-                            ->andWhere('f.typefichier !=:value')
-                            ->setParameters(['equipe' => $equipe_choisie, 'value' => 6])
-                            ->getQuery()->getResult();
-                    }
-                    if($concours=='national') {
-                        $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
-                            ->where('f.equipe =:equipe')
-                            ->andWhere('f.typefichier !=:value1 and f.typefichier !=:value2')
-                            ->setParameters(['equipe' => $equipe_choisie, 'value1' => 6,'value2'=>7])
-                            ->getQuery()->getResult();
-                    }
-
-                    foreach ($liste_fichiers as $fichier) {
-                        if ($fichier) {
-                            if ($fichier->getTypefichier() == 1) {
-
-                                $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[0] . '/' . $fichier->getFichier();
-                            } else {
-                                $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier()] . '/' . $fichier->getFichier();
-                            }
-
-                            $zipFile->addFromString(basename($fichierName), file_get_contents($fichierName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
-                        }
-                    }
-                    $zipFile->close();
-                    $response = new Response(file_get_contents($FileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
-                    $disposition = HeaderUtils::makeDisposition(
-                        HeaderUtils::DISPOSITION_ATTACHMENT,
-                        $FileName
-                    );
-                    $response->headers->set('Content-Type', 'application/zip');
-                    $response->headers->set('Content-Disposition', $disposition);
-                    @unlink($FileName);
-                    return $response;
-                }
-            }
-        }
-
-        if ($liste_fichiers) {
-            $fichier = new Fichiersequipes();
-
-            $form = $this->createForm(ListefichiersType::class, $fichier);
-            $form->add('save', SubmitType::class);
-            $Form = $form->createView();
-
-        }
-        if (!isset($Form)) {
-
-            $Form = $this->createForm(ListefichiersType::class)->createView();
-
-        }
         if (!isset($listevideos)) {
             $listevideos = [];
         }
@@ -1206,7 +850,7 @@ class FichiersController extends AbstractController
 
 
         $content = $this
-            ->renderView('adminfichiers\espace_prof.html.twig', array('form' => $Form, 'listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
+            ->renderView('adminfichiers\espace_prof.html.twig', array('listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
                     'equipe' => $equipe_choisie, 'centre' => $equipe_choisie->getCentre(), 'concours' => $concours, 'edition' => $edition, 'choix' => $choix,
                     'liste_prof' => $liste_prof, 'listeEleves' => $listeEleves, 'liste_fichiers' => $liste_fichiers)
             );
@@ -1234,182 +878,46 @@ class FichiersController extends AbstractController
             'editions' => $Editions, 'num_type_fichier' => $num_type_fichier]);
     }
 
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     *
-     * @Route("/fichiers/voirfichiers,{editionId_concours}", name="fichiers_voirfichiers")
-     *
-     */
-    public function voirfichiers(Request $request, $editionId_concours)
-    {
-        $session = $this->requestStack->getSession();
-        $editionconcours = explode('-', $editionId_concours);
-
-        $IdEdition = $editionconcours[0];
-        $concours = $editionconcours[1];
-        $num_type_fichier = $editionconcours[2];
-        $repositoryEdition = $this->doctrine
-            ->getRepository(Edition::class);
-        $repositoryFichiersequipes = $this->doctrine
-            ->getRepository(Fichiersequipes::class);
-        $repositoryEquipesadmin = $this->doctrine
-            ->getRepository(Equipesadmin::class);
-
-        $edition = $repositoryEdition->find(['id' => $IdEdition]);
-        $edition_en_cours = $session->get('edition');
-        $date = new datetime('now');
 
 
-        if ($concours == 'cia') {
-            if ($edition_en_cours == $edition) {
-
-                if ($edition_en_cours->getConcourscia() > $date) {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Les fichiers de l\'édition ' . $edition_en_cours->getEd() . ' ne sont pas encore publiés, patience ...');
-                    return $this->redirectToRoute('fichiers_choixedition', array('num_type_fichier' => $num_type_fichier));
-
-
-                }
-            }
-
-
-            $qb1 = $repositoryFichiersequipes->createQueryBuilder('m')
-                ->leftJoin('m.equipe', 'e')
-                ->where('e.selectionnee=:selectionnee')
-                ->orderBy('e.lyceeAcademie', 'ASC')
-                ->setParameter('selectionnee', FALSE)
-                ->andWhere('m.edition=:edition')
-                ->setParameter('edition', $edition)
-                ->andWhere('m.typefichier <:type')
-                ->setParameter('type', 3);
-
-            $fichierstab = $qb1->getQuery()->getResult();
-            $qb2 = $repositoryEquipesadmin->createQueryBuilder('e')
-                ->where('e.selectionnee=:selectionnee')
-                ->setParameter('selectionnee', FALSE)
-                ->orderBy('e.lyceeAcademie', 'ASC');
-
-            $listeequipe = $qb2->getQuery()->getResult();
-        }
-        if ($concours == 'cn') {
-            if ($edition_en_cours == $edition) {
-                if ($edition_en_cours->getConcourscn() > $date) {
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Les fichiers de l\'édition ' . $edition_en_cours->getEd() . ' ne sont pas encore publiés, patience ...');
-                    return $this->redirectToRoute('fichiers_choixedition', array('num_type_fichier' => $num_type_fichier));
-
-
-                }
-            }
-            $qb1 = $repositoryFichiersequipes->createQueryBuilder('m')
-                ->leftJoin('m.equipe', 'e')
-                ->orderBy('e.lettre', 'ASC')
-                ->andWhere('m.edition=:edition')
-                ->setParameter('edition', $edition);
-            if ($num_type_fichier == 0) {
-                $qb1->andWhere('m.typefichier <:type')
-                    ->setParameter('type', 3);
-            }
-
-            if ($num_type_fichier == 3) {
-                $qb1->andWhere('m.typefichier =:type')
-                    ->setParameter('type', $num_type_fichier)->andWhere('m.edition=:edition')
-                    ->setParameter('edition', $edition);
-            }
-            $fichierstab = $qb1->getQuery()->getResult();
-
-
-            $qb2 = $repositoryEquipesadmin->createQueryBuilder('e')
-                ->where('e.selectionnee=:selectionnee')
-                ->setParameter('selectionnee', TRUE)
-                ->orderBy('e.lettre', 'ASC');
-
-            $listeequipe = $qb2->getQuery()->getResult();
-        }
-
-        if ($listeequipe) {
-
-            $i = 0;
-            foreach ($listeequipe as $equipe) {
-                if ($fichierstab) {
-                    $j = 0;
-                    foreach ($fichierstab as $fichier) {
-
-
-                        if ($fichier->getEquipe() == $equipe) {
-                            $fichiersEquipe[$i][$j] = $fichier;
-                            $j++;
-                        }
-                    }
-                }
-                $i++;
-            }
-
-            if (isset($fichiersEquipe)) {
-                if ($num_type_fichier < 3) {
-                    $content = $this
-                        ->renderView('adminfichiers\affiche_memoires.html.twig',
-                            array('fichiersequipes' => $fichiersEquipe,
-                                'edition' => $edition,
-                                'concours' => $concours
-                            ));
-                }
-                if ($num_type_fichier == 3) {
-
-                    $content = $this
-                        ->renderView('adminfichiers\affiche_presentations.html.twig',
-                            array('fichiersequipes' => $fichiersEquipe,
-                                'edition' => $edition,
-                                'concours' => $concours
-                            ));
-                }
-                return new Response($content);
-            } else {
-                $request->getSession()
-                    ->getFlashBag()
-                    ->add('info', 'Pas de fichier déposé à ce jour pour cette édition  ');
-                return $this->redirectToRoute('fichiers_choixedition', array('num_type_fichier' => $num_type_fichier));
-            }
-        }
-    }
     /**
      * @IsGranted("ROLE_JURY")
      *
      * @Route("/fichiers/voir_fichier_inter,{typefichier}, {idequipe}", name="voir_fichier_inter")
      *
      */
-    public function voir_fichier_interacademique(Request $request, $typefichier, $idequipe){//pour le jurynational avant que les équipes n'aient déposé leur fichiers cn
+    public function voir_fichier_interacademique(Request $request, $typefichier, $idequipe)
+    {//pour le jurynational avant que les équipes n'aient déposé leur fichiers cn
 
-        switch($typefichier){
-               case 'memoires' : $numTypefichier= 0;
-                    break;
-               case 'annexes'  : $numTypefichier =1;
-                    break;
-               case 'resumes'  : $numTypefichier = 2;
-                    break;
-           }
-            $equipe=$this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id'=>$idequipe]);
-            $fichier=$this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
-                ->andWhere('f.typefichier =:type')
-                ->andWhere('f.equipe = :equipe')
-                ->andWhere('f.national = 0')
-                ->setParameters(['type'=>$numTypefichier,'equipe'=>$equipe])
-                ->getQuery()->getOneOrNullResult();
-            if($fichier !== null) {
-                return $this->redirectToRoute('telecharger_un_fichier_prof', array('idFichier' => $fichier->getId()));
-            }
-            else{
-                $request->getSession()
-                    ->getFlashBag()
-                    ->add('info', 'L\'équipe n\'a pas déposé ce fichier aux interacadémiques');
-
-              return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof',array('infos'=>$equipe->getId().'-national-liste_cn_comite'));
-
-            }
+        switch ($typefichier) {
+            case 'memoires' :
+                $numTypefichier = 0;
+                break;
+            case 'annexes'  :
+                $numTypefichier = 1;
+                break;
+            case 'resumes'  :
+                $numTypefichier = 2;
+                break;
         }
+        $equipe = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $idequipe]);
+        $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+            ->andWhere('f.typefichier =:type')
+            ->andWhere('f.equipe = :equipe')
+            ->andWhere('f.national = 0')
+            ->setParameters(['type' => $numTypefichier, 'equipe' => $equipe])
+            ->getQuery()->getOneOrNullResult();
+        if ($fichier !== null) {
+            return $this->redirectToRoute('telecharger_un_fichier_prof', array('idFichier' => $fichier->getId()));
+        } else {
+            $request->getSession()
+                ->getFlashBag()
+                ->add('info', 'L\'équipe n\'a pas déposé ce fichier aux interacadémiques');
 
+            return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-national-liste_cn_comite'));
+
+        }
+    }
 
 
     /**
@@ -1495,15 +1003,71 @@ class FichiersController extends AbstractController
             $fichier->getFichier()
         );
 
-        if (str_contains($_SERVER['HTTP_USER_AGENT'],'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'],'Mac OS X'))
-        {   $response = new BinaryFileResponse($file);
+        if (str_contains($_SERVER['HTTP_USER_AGENT'], 'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Mac OS X')) {
+            $response = new BinaryFileResponse($file);
             $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
         }
-        $response->headers->set('Content-Disposition',$disposition);
+        $response->headers->set('Content-Disposition', $disposition);
         $response->headers->set('Content-Length', filesize($file));
 
         return $response;
 
+
+    }
+
+    /**
+     * @IsGranted("ROLE_PROF")
+     *
+     * @Route("/fichiers/telechargerZip,{equipeId},{concours}", name="telecharger_un_fichier_zip")
+     *
+     */
+    public function telechargerZip($equipeId, $concours)
+    {
+        $equipe_choisie = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
+        $repositoryFichiersequipes = $this->doctrine->getRepository(Fichiersequipes::class);
+        $edition = $this->requestStack->getSession()->get('edition');
+        $zipFile = new ZipArchive();
+        $fileName = $edition->getEd() . '-Fichiers-eq-' . $equipe_choisie->getNumero() . '-' . date('now');
+        if ($zipFile->open($fileName, ZipArchive::CREATE) === TRUE) {
+            if ($concours == 'interacadémique') {
+                $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
+                    ->where('f.equipe =:equipe')
+                    ->andWhere('f.typefichier !=:value')
+                    ->setParameters(['equipe' => $equipe_choisie, 'value' => 6])
+                    ->getQuery()->getResult();
+            }
+            if ($concours == 'national') {
+                $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
+                    ->where('f.equipe =:equipe')
+                    ->andWhere('f.typefichier !=:value1 and f.typefichier !=:value2')
+                    ->setParameters(['equipe' => $equipe_choisie, 'value1' => 6, 'value2' => 7])
+                    ->getQuery()->getResult();
+            }
+
+            foreach ($liste_fichiers as $fichier) {
+                if ($fichier) {
+                    if ($fichier->getTypefichier() == 1) {
+
+                        $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[0] . '/' . $fichier->getFichier();
+                    } else {
+                        $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier()] . '/' . $fichier->getFichier();
+                    }
+
+                    $zipFile->addFromString(basename($fichierName), file_get_contents($fichierName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
+                }
+            }
+            $zipFile->close();
+            $response = new Response(file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
+            $disposition = HeaderUtils::makeDisposition(
+                HeaderUtils::DISPOSITION_ATTACHMENT,
+                $fileName
+            );
+            $response->headers->set('Content-Type', 'application/zip');
+            $response->headers->set('Content-Disposition', $disposition);
+            @unlink($fileName);
+            return $response;
+
+        }
 
     }
 }

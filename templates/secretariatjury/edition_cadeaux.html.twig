@@ -6,12 +6,15 @@
 {% endblock %}
 
 {% block titre3 %} Attribution des cadeaux {% endblock %}
+
 {% if equipe.classement =='3ème' %}
     {% set class = 'btn btn-primary' %}
 {% elseif  equipe.classement =='2ème' %}
     {% set class='btn btn-warning' %}
 {% elseif  equipe.classement =='1er' %}
-{% set class='btn btn-danger' %}
+    {% set class='btn btn-danger' %}
+{% elseif equipe.classement ==0%}
+    {% set class='btn btn-link' %}
 {% endif %}
 
 {% block body %}

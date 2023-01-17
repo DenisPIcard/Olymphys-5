@@ -3,12 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Equipes;
-use App\Entity\Jures;
-use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -16,9 +15,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,7 +29,7 @@ class SelectionneesCrudController extends AbstractCrudController
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine)
     {
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
     }
@@ -46,6 +45,7 @@ class SelectionneesCrudController extends AbstractCrudController
             ->setSearchFields(['id', 'lettre', 'titreProjet', 'ordre', 'heure', 'salle', 'total', 'classement', 'rang', 'nbNotes', 'sallesecours', 'code'])
             ->setPaginatorPageSize(25);
     }
+
     public function configureActions(Actions $actions): Actions
     {
         $attribHeuresSalles = Action::new('attrib_heures_salles', 'Attribuer les salles et heures', 'fa fa_array',)
@@ -58,6 +58,7 @@ class SelectionneesCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_INDEX, $attribHeuresSalles)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_INDEX, Action::DETAIL)
             ->setPermission('attrib_heures_salles', 'ROLE_SUPER_ADMIN')
             ->setPermission(Action::EDIT, 'ROLE_SUPER_ADMIN');
 
@@ -66,8 +67,8 @@ class SelectionneesCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $lettre =TextField::new('equipeinter.lettre','lettre');
-        $titreProjet = TextField::new('equipeinter.titreProjet','projet');
+        $lettre = TextField::new('equipeinter.lettre', 'lettre');
+        $titreProjet = TextField::new('equipeinter.titreProjet', 'projet');
         $ordre = IntegerField::new('ordre');
         $heure = TextField::new('heure');
         $salle = TextField::new('salle');
@@ -75,42 +76,75 @@ class SelectionneesCrudController extends AbstractCrudController
         $classement = TextField::new('classement');
         $rang = IntegerField::new('rang');
         $nbNotes = IntegerField::new('nbNotes');
-        //$sallesecours = TextField::new('sallesecours');
-        //$code = TextField::new('code', 'code');
+
         $visite = AssociationField::new('visite');
         $cadeau = AssociationField::new('cadeau');
         $phrases = AssociationField::new('phrases');
-        $liaison = AssociationField::new('liaison');
+
         $prix = AssociationField::new('prix');
         $infoequipe = TextField::new('equipeinter.infoequipe');
-        $eleves = AssociationField::new('eleves');
+
         $notess = AssociationField::new('notess');
         //$hote = AssociationField::new('hote');
         //$interlocuteur = TextField::new('interlocuteur');
         $observateur = TextField::new('observateur');
-        $infoequipeLyceeAcademie = TextareaField::new('equipeinter.lyceeAcademie','académie');
-        $infoequipeLycee = TextareaField::new('equipeinter.Lycee','lycée');
+        $infoequipeLyceeAcademie = TextareaField::new('equipeinter.lyceeAcademie', 'académie');
+        $infoequipeLycee = TextareaField::new('equipeinter.Lycee', 'lycée');
         $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
         //$hotePrenomNom = TextareaField::new('hote.PrenomNom', 'hote');
-       // $interlocuteurPrenomNom = TextareaField::new('interlocuteur.PrenomNom', 'interlocuteur');
+        // $interlocuteurPrenomNom = TextareaField::new('interlocuteur.PrenomNom', 'interlocuteur');
 
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$lettre, $titreProjet,$infoequipeLyceeAcademie, $infoequipeLycee,  $heure, $salle,$ordre,$observateur];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess,  $observateur];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess,  $observateur];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle,$observateur];
-        }
+
+            if ($_REQUEST['palmares'] == 1) {
+                if (Crud::PAGE_INDEX === $pageName) {
+                    return [$lettre, $titreProjet, $infoequipeLyceeAcademie, $infoequipeLycee, $classement, $rang, $prix, $phrases, $cadeau, $visite];
+                }
+                elseif (Crud::PAGE_DETAIL === $pageName) {
+                    return [$id, $lettre, $titreProjet, $ordre, $classement,  $visite, $cadeau, $phrases, $prix ];
+                } elseif (Crud::PAGE_NEW === $pageName) {
+                    return [$lettre, $titreProjet,  $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $prix];
+                } elseif (Crud::PAGE_EDIT === $pageName) {
+                    return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $visite, $cadeau, $phrases, $prix ];
+                }
+            }
+            if ($_REQUEST['palmares'] == 0) {
+                if (Crud::PAGE_INDEX === $pageName) {
+                    return [$lettre, $titreProjet, $infoequipeLyceeAcademie, $infoequipeLycee, $heure, $salle, $ordre];
+                }
+                elseif (Crud::PAGE_DETAIL === $pageName) {
+                    return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes,  $infoequipe, $notess];
+                } elseif (Crud::PAGE_NEW === $pageName) {
+                    return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes,  $infoequipe, $notess];
+                } elseif (Crud::PAGE_EDIT === $pageName) {
+                    return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle,$ordre];
+                }
+            }
+
+
     }
 
+    public function edit(AdminContext $context)
+    {
+        $param= explode('=',explode('&',$context->getReferrer())[2])[1];
+        $_REQUEST['palmares']=$param;
+        return parent::edit($context); // TODO: Change the autogenerated stub
+    }
+    public function index(AdminContext $context)
+    {
+        $referrer= $context->getReferrer();
+        if ($referrer!==null) {
+            $param = explode('=', explode('&', $context->getReferrer())[2])[1];
+            $_REQUEST['palmares'] = $param;
+        }
+        return parent::index($context); // TODO: Change the autogenerated stub
+    }
 
     /**
      * @Route("/Admin/SelectionneesCrud/attrib_heures_salles", name="attrib_heures_salles")
      */
-    public function attrib_heure_salle(Request $request){
+    public function attrib_heure_salle(Request $request)
+    {
         $form = $this->createFormBuilder()
             ->add('fichier', FileType::class)
             ->add('save', SubmitType::class)
@@ -134,25 +168,25 @@ class SelectionneesCrudController extends AbstractCrudController
 
             for ($row = 2; $row <= $highestRow; ++$row) {
 
-                $lettre = $worksheet->getCellByColumnAndRow(1,$row)->getValue();
-                $equipe=$repositoryEquipes->createQueryBuilder('e')
-                    ->leftJoin('e.equipeinter','eq')
+                $lettre = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                $equipe = $repositoryEquipes->createQueryBuilder('e')
+                    ->leftJoin('e.equipeinter', 'eq')
                     ->andWhere('eq.lettre =:lettre')
-                    ->setParameter('lettre',$lettre)
-                ->getQuery()->getSingleResult();
-                $ordre = $worksheet->getCellByColumnAndRow(2,$row)->getValue();
+                    ->setParameter('lettre', $lettre)
+                    ->getQuery()->getSingleResult();
+                $ordre = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
                 $equipe->setOrdre($ordre);
                 $heure = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
                 $equipe->setHeure($heure);
-                $salle= $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                $salle = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
                 $equipe->setSalle($salle);
 
-                    $em->persist($equipe);
-                    $em->flush();
-                }
-
-                return $this->redirectToRoute('admin');
+                $em->persist($equipe);
+                $em->flush();
             }
-            return $this->render('/secretariatjury/charge_donnees_excel_equipes.html.twig', array('form'=>$form->createView()));
+
+            return $this->redirectToRoute('admin');
         }
+        return $this->render('/secretariatjury/charge_donnees_excel_equipes.html.twig', array('form' => $form->createView()));
+    }
 }

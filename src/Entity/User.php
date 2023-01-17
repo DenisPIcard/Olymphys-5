@@ -134,13 +134,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean", nullable=true)
      */
     private ?bool $newsletter;
-    private ArrayCollection $interlocuteur;
+
 
     #[Pure] public function __construct()
     {
         $this->isActive = true;
         $this->roles = ['ROLE_USER'];
-        $this->interlocuteur = new ArrayCollection();
+
 
     }
 
@@ -575,13 +575,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     }
 
-    /**
-     * @return Collection
-     */
-    public function getInterlocuteur(): Collection
-    {
-        return $this->interlocuteur;
-    }
+
 
 
     public function getRneId(): ?rne

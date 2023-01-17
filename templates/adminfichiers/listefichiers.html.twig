@@ -129,15 +129,7 @@
      {%  if liste_fichiers!=null %}
       <div class="row">
           <div class="col" >
-           {{ form_start(form) }}
-                <div class="my-custom-class-for-errors">
-                    {{ form_errors(form) }}
-                </div>
-                <div class="row">
-                     {{ form_widget(form.save, { 'label': 'Télécharger tous' }) }}
-                </div>
-
-           {{ form_end(form) }}
+              <a href="{{ path('telecharger_un_fichier_zip',{'equipeId': equipe.id, 'concours':concours}) }}" class="btn-primary">Télécharger tous les fichiers</a>
           </div>
       </div>
        {%  else %}

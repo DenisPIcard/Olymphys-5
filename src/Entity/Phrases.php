@@ -50,8 +50,20 @@ class Phrases
      * @ORM\ManyToOne(targetEntity=Jures::class, inversedBy="phrases")
      */
     private ?Jures $jure;
+    /**
+     * @return string|null
+     */
+    public function __toString() : string
+    {
 
 
+        if (($this->phrase!==null)and ($this->liaison!== null)and ($this->prix !==null)){
+            return $this->phrase . $this->liaison->getLiaison() . $this->prix;
+        }
+        else{
+            return '';
+        }
+    }
     /**
      * Get id
      *

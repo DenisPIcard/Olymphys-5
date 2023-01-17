@@ -7,6 +7,7 @@ use App\Entity\Centrescia;
 use App\Entity\Docequipes;
 use App\Entity\Edition;
 use App\Entity\Equipesadmin;
+use App\Entity\Orgacia;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -23,12 +24,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class EquipesadminRepository extends ServiceEntityRepository
 {
     private RequestStack $requestStack;
+    private ManagerRegistry $doctrine;
 
     public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
         parent::__construct($registry, Equipesadmin::class);
         $this->requestStack = $requestStack;
-
+        $this->doctrine=$registry;
     }
 
 
@@ -76,7 +78,7 @@ class EquipesadminRepository extends ServiceEntityRepository
 
     public function getEleves(Equipesadmin $equipe): array
     {
-        $entityManager = $this->getEntityManager();
+        $entityManager = $this->doctrine->getManager();
 
         $query = $entityManager->createQuery(
             'SELECT e
@@ -94,7 +96,7 @@ class EquipesadminRepository extends ServiceEntityRepository
     public function getEquipes_prof_cn(User $prof, Edition $edition): array
     {
         $entityManager = $this->getEntityManager();
-
+        $edition=$this->requestStack->getSession()->get('edition');
 
         $query = $entityManager->createQuery(
             'SELECT e
@@ -127,5 +129,33 @@ class EquipesadminRepository extends ServiceEntityRepository
         }
         return $numeros;
     }
+    public function getListeEquipe($user,$concours,$choix,$centre)
+    {
+        $em = $this->getEntityManager();
+        $edition=$this->requestStack->getSession()->get('edition');
+        $concours == 'interacadémique'?$selectionnee=false:$selectionnee=true;
+        $qb = $em->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+                       ->andWhere('e.edition =:edition');
+        $concours == 'interacadémique'?$qb->orderBy('e.numero', 'ASC'):$qb->orderBy('e.lettre', 'ASC');
 
+        if (in_array('ROLE_PROF',$user->getRoles())) {
+            $qb ->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
+                ->andWhere('e.selectionnee = :selectionnee')
+                ->setParameters(['edition' => $edition, 'prof' => $user, 'selectionnee' => $selectionnee]);
+            $listeEquipes= $qb->getQuery()->getResult();
+        }
+        if (!in_array('ROLE_PROF',$user->getRoles())){
+            if ($centre!=null) {
+                $listeEquipes=$this->getEquipeInter($centre);
+            }
+            if ($choix=='liste_cn_comite') {
+                $qb ->andWhere('e.numero <:valeur')
+                    ->andWhere('e.selectionnee = 1')
+                    ->setParameters(['edition' => $edition,  'valeur' => 100]);
+                $listeEquipes= $qb->getQuery()->getResult();
+            }
+
+        }
+       return $listeEquipes;
+    }
 }
