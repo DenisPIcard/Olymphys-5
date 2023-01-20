@@ -40,7 +40,7 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les logos pour le site</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Edite le logo')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouveau logo')
-            ->setSearchFields(['id', 'type', 'logo', 'lien', 'alt', 'nom', 'en_service'])
+            ->setSearchFields(['id', 'type',  'lien', 'alt', 'nom', 'en_service'])
             ->setPaginatorPageSize(10);
     }
 
