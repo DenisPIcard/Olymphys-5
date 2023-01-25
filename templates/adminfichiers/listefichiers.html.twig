@@ -1,15 +1,11 @@
 
 {% if  equipe.selectionnee == true %}
-    {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et la diaporama cia ne sont pas dans la liste -->
-    {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
-        {%  set liste=[0,1,2,3,4]%}
-    {% endif %}
+    {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et le diaporama cia ne sont pas dans la liste -->
+
 {% endif %}
 {% if equipe.selectionnee ==false %}
-    {%  set liste=[0,1,2,4,5,7,8]%} <!-- pour le  cia  le diaporama nat n'est pas dans la liste -->
-    {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
-        {%  set liste=[0,1,2,4,5]%} <!-- le jury n'a accès qu'aux mémoires, résumés, fiche sécurité et diaporamas -->
-    {% endif %}
+    {%  set liste=[0,1,2,4,5,7,8]%} <!-- pour le  cia  le diaporama nat (3) n'est pas dans la liste -->
+
 {% endif %}
 
 <div class="container-fluid">
@@ -85,7 +81,6 @@
                                              {% endif %}
                                         {% endif %}
                                         {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) %}
-
                                                  {%  if attrib==1 %}
                                                     <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                                  {% endif %}

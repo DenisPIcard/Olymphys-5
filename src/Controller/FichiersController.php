@@ -1037,11 +1037,14 @@ class FichiersController extends AbstractController
                     ->getQuery()->getResult();
             }
             if ($concours == 'national') {
+
                 $liste_fichiers = $repositoryFichiersequipes->createQueryBuilder('f')
                     ->where('f.equipe =:equipe')
                     ->andWhere('f.typefichier !=:value1 and f.typefichier !=:value2')
                     ->setParameters(['equipe' => $equipe_choisie, 'value1' => 6, 'value2' => 7])
                     ->getQuery()->getResult();
+
+
             }
 
             foreach ($liste_fichiers as $fichier) {

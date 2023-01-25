@@ -18,11 +18,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Equipes
 {
     /**
+     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id = null;
+    private ?int $id ;
 
 
     /**
@@ -30,69 +31,79 @@ class Equipes
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private ?int $ordre = null;
+    private ?int $ordre ;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private ?string $heure = null;
+    private ?string $heure ;
 
     /**
+     * @var string|null
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private ?string $salle = null;
+    private ?string $salle ;
 
     /**
+     * @var smallint|null
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private ?int $total = null;
+    private ?int $total;
 
     /**
+     * @var string|null
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private ?string $classement = null;
+    private ?string $classement;
 
     /**
+     * @var smallint|null
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private ?int $rang = null;
+    private ?int $rang;
 
     /**
+     * @var smallint|null
      * @ORM\Column(name="couleur", type="smallint", nullable=true)
      */
     private ?int $couleur = 0;
 
     /**
+     * @var Visites|null
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
-    private ?Visites $visite = null;
+    private ?Visites $visite ;
 
     /**
+     * @var Cadeaux|null
      * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux")
      * @ORM\JoinColumn(name="cadeau_id", nullable=true)
      */
-    private ?Cadeaux $cadeau = null;
+    private ?Cadeaux $cadeau ;
 
 
     /**
+     * @var Prix|null
      * @ORM\ManyToOne(targetEntity="App\Entity\Prix")
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
-    private ?Prix $prix = null;
+    private ?Prix $prix;
 
     /**
+     * @var Equipesadmin|null
      * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipeinter_id", nullable=true)
      */
-    private ?Equipesadmin $equipeinter = null;
+    private ?Equipesadmin $equipeinter;
 
     /**
+     * @var integer|null
      * @ORM\Column(name="nb_notes", type="integer", nullable=true)
      */
-    private ?int $nbNotes = null;
+    private ?int $nbNotes ;
 
 
     /**
@@ -103,11 +114,14 @@ class Equipes
     // notez le "s" : une equipe est liée à plusieurs eleves.
     // Notez le "s" : une equipe est liée à plusieurs lignes de "notes".
     /**
+     * @var Notes|null
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
+     *
      */
     private ?Collection $notess;
 
     /**
+     * @var Phrases|null
      * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="equipe")
      */
     private ?Collection $phrases;
@@ -139,7 +153,7 @@ class Equipes
         return $this->salle;
     }
 
-    public function setSalle($salle): Equipes
+    public function setSalle(?string $salle): Equipes
     {
         $this->salle = $salle;
 
@@ -151,7 +165,7 @@ class Equipes
         return $this->visite;
     }
 
-    public function setVisite(Visites $visite = null): Equipes
+    public function setVisite(?Visites $visite): Equipes
     {
         $visiteini = $this->visite;
         if ($visite != null) {
@@ -168,7 +182,7 @@ class Equipes
         return $this;
     }
 
-    public function addNotess(Notes $notess): Equipes
+    public function addNotess(?Notes $notess): Equipes
     {
         $this->notess[] = $notess;
 
@@ -192,7 +206,7 @@ class Equipes
         return $this->nbNotes;
     }
 
-    public function setNbNotes(int $nbNotes): Equipes
+    public function setNbNotes(?int $nbNotes): Equipes
     {
         $this->nbNotes = $nbNotes;
 
@@ -204,7 +218,7 @@ class Equipes
         return $this->cadeau;
     }
 
-    public function setCadeau(Cadeaux $cadeau = null): Equipes
+    public function setCadeau(?Cadeaux $cadeau): Equipes
     {
         $cadeauini = $this->cadeau;
         if ($cadeau != null) {
@@ -227,7 +241,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function addPhrase(Phrases $phrase): Equipes
+    public function addPhrase(?Phrases $phrase): Equipes
     {
         $this->phrases[] = $phrase;
 
@@ -244,7 +258,7 @@ class Equipes
      *
      * @return Collection
      */
-    public function getPhrases(): Collection
+    public function getPhrases(): ?Collection
     {
         return $this->phrases;
     }
@@ -254,7 +268,7 @@ class Equipes
         return $this->total;
     }
 
-    public function setTotal(int $total): Equipes
+    public function setTotal(?int $total): Equipes
     {
         $this->total = $total;
 
@@ -266,7 +280,7 @@ class Equipes
         return $this->classement;
     }
 
-    public function setClassement(string $classement): Equipes
+    public function setClassement(?string $classement): Equipes
     {
         $this->classement = $classement;
 
@@ -278,7 +292,7 @@ class Equipes
         return $this->rang;
     }
 
-    public function setRang(int $rang): Equipes
+    public function setRang(?int $rang): Equipes
     {
         $this->rang = $rang;
 
@@ -290,7 +304,7 @@ class Equipes
         return $this->couleur;
     }
 
-    public function setCouleur(int $couleur): Equipes
+    public function setCouleur(?int $couleur): Equipes
     {
         $this->couleur = $couleur;
 
@@ -302,7 +316,7 @@ class Equipes
         return $this->prix;
     }
 
-    public function setPrix($prix): Equipes
+    public function setPrix(?Prix $prix): Equipes
     {
         $this->prix = $prix;
 
@@ -314,7 +328,7 @@ class Equipes
         return $this->equipeinter;
     }
 
-    public function setEquipeinter($equipeinter): Equipes
+    public function setEquipeinter(?Equipesadmin $equipeinter): Equipes
     {
         $this->equipeinter = $equipeinter;
 

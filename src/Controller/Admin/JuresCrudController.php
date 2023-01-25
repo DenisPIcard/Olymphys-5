@@ -30,8 +30,8 @@ class JuresCrudController extends AbstractCrudController
         $nomJure = TextField::new('nomJure');
         $prenomJure = TextField::new('prenomJure');
 
-        $x = IntegerField::new('X');
-        $y = IntegerField::new('Y');
+        $x = IntegerField::new('x');
+        $y = IntegerField::new('y');
         $id = IntegerField::new('id', 'ID');
         $initialesJure = TextField::new('initialesJure');
         $a = IntegerField::new('a');
