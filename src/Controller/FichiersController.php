@@ -139,11 +139,14 @@ class FichiersController extends AbstractController
             $phase = 'interacadémique';
         }
         if (in_array('ROLE_PROF', $user->getRoles())) {
-            $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+            if ( $user->getRneId()) {
+                $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+            }
         }
         if (in_array('ROLE_JURY', $roles)) {
             $repositoryJures = $this->doctrine->getRepository(Jures::class);
             $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()->getId()]);
+
         }
 
         $liste_equipes = $repositoryEquipesadmin->getListeEquipe($user, $phase, $choix, $centre);

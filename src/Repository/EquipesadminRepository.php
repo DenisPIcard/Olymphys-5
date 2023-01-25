@@ -138,13 +138,13 @@ class EquipesadminRepository extends ServiceEntityRepository
                        ->andWhere('e.edition =:edition');
         $concours == 'interacadémique'?$qb->orderBy('e.numero', 'ASC'):$qb->orderBy('e.lettre', 'ASC');
 
-        if (in_array('ROLE_PROF',$user->getRoles())) {
+        if (in_array('ROLE_PROF',$user->getRoles()) and (!in_array('ROLE_JURY',$user->getRoles()))) {// à cause du juré qui est prof et juré selon les années
             $qb ->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
                 ->andWhere('e.selectionnee = :selectionnee')
                 ->setParameters(['edition' => $edition, 'prof' => $user, 'selectionnee' => $selectionnee]);
             $listeEquipes= $qb->getQuery()->getResult();
         }
-        if (!in_array('ROLE_PROF',$user->getRoles())){
+        if ( (in_array('ROLE_JURY',$user->getRoles())) or (in_array('ROLE_JURYCIA',$user->getRoles())) or (in_array('ROLE_COMITE',$user->getRoles())) or (in_array('ROLE_ORGACIA',$user->getRoles()))){
             if ($centre!=null) {
                 $listeEquipes=$this->getEquipeInter($centre);
             }
