@@ -77,11 +77,11 @@ class SelectionneesCrudController extends AbstractCrudController
         $rang = IntegerField::new('rang');
         $nbNotes = IntegerField::new('nbNotes');
 
-        $visite = AssociationField::new('visite');
-        $cadeau = AssociationField::new('cadeau');
+        $visite = AssociationField::new('visite')->setFormTypeOptions(['required'=>false]);
+        $cadeau = AssociationField::new('cadeau')->setFormTypeOptions(['required'=>false]);
         $phrases = AssociationField::new('phrases');
 
-        $prix = AssociationField::new('prix');
+        $prix = AssociationField::new('prix')->setFormTypeOptions(['required'=>false]);
         $infoequipe = TextField::new('equipeinter.infoequipe');
 
         $notess = AssociationField::new('notess');

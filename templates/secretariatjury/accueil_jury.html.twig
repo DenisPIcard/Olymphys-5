@@ -52,12 +52,10 @@
                     <td>
                         {% for prof in prof1[lettre] %}
 
-                            {{ prof.prenom|title }} {{ prof.nom|upper }} , mail  :  <a
-                                href="mailto:{{ prof.email }}">{{ prof.email }}</a>,  tel :  {{ prof.phone }}
+                            {{ prof.prenom|title }} {{ prof.nom|upper }} ,
                         {% endfor %}
                         {% for prof in prof2[lettre] %}
-                            - {{ prof.prenom|title }} {{ prof.nom|upper }} , mail : <a
-                                href="mailto:{{ prof.email }}">{{ prof.email }}</a>, tel   :  {{ prof.phone }}
+                            - {{ prof.prenom|title }} {{ prof.nom|upper }} ,
 
                         {% endfor %}
 
