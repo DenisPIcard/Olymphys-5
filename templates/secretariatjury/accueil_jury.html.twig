@@ -52,10 +52,10 @@
                     <td>
                         {% for prof in prof1[lettre] %}
 
-                            {{ prof.prenom|title }} {{ prof.nom|upper }} ,
+                            {{ prof.prenom|title }} {{ prof.nom|upper }}
                         {% endfor %}
                         {% for prof in prof2[lettre] %}
-                            - {{ prof.prenom|title }} {{ prof.nom|upper }} ,
+                            , {{ prof.prenom|title }} {{ prof.nom|upper }}
 
                         {% endfor %}
 

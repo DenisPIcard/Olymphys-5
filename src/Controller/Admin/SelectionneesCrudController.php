@@ -2,7 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Cadeaux;
 use App\Entity\Equipes;
+use App\Entity\Phrases;
+use App\Entity\Prix;
+use App\Entity\Visites;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -10,10 +14,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use phpDocumentor\Reflection\Types\Collection;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -77,11 +83,37 @@ class SelectionneesCrudController extends AbstractCrudController
         $rang = IntegerField::new('rang');
         $nbNotes = IntegerField::new('nbNotes');
 
-        $visite = AssociationField::new('visite')->setFormTypeOptions(['required'=>false]);
-        $cadeau = AssociationField::new('cadeau')->setFormTypeOptions(['required'=>false]);
-        $phrases = AssociationField::new('phrases');
+        $visite = AssociationField::new('visite')->setFormTypeOptions(['required'=>false,
+                                            'class'=>Visites::class,
+                                            'query_builder'=>function() {
+                                                return $this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
+                                                    ->andWhere('v.attribue =:value')
+                                                    ->setParameter('value', '0')
+                                                    ->orderBy('v.intitule', 'ASC');
+                                            },
+                                            'choice_label'=>'getIntitule'
+                                          ]);
+        $cadeau = AssociationField::new('cadeau')->setFormTypeOptions(['required'=>false,
+                                            'class'=>Cadeaux::class,
+                                            'query_builder'=>function() {
+                                                return $this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
+                                                    ->andWhere('c.attribue =:value')
+                                                    ->setParameter('value', '0')
+                                                    ->orderBy('c.raccourci', 'ASC');
+                                            },
+                                              'choice_label'=>'getContenu']);
 
-        $prix = AssociationField::new('prix')->setFormTypeOptions(['required'=>false]);
+        $phrases = CollectionField::new('phrases');
+
+        $prix = AssociationField::new('prix')->setFormTypeOptions(['required'=>false,
+                                            'class'=>Prix::class,
+                                            'query_builder'=>function() {
+                                                return $this->doctrine->getRepository(Prix::class)->createQueryBuilder('c')
+                                                    ->andWhere('c.attribue =:value')
+                                                    ->setParameter('value', '0')
+                                                    ->orderBy('c.niveau', 'ASC');
+                                            },
+                                            'choice_label'=>'getPrix']);
         $infoequipe = TextField::new('equipeinter.infoequipe');
 
         $notess = AssociationField::new('notess');
@@ -89,7 +121,7 @@ class SelectionneesCrudController extends AbstractCrudController
         //$interlocuteur = TextField::new('interlocuteur');
         $observateur = TextField::new('observateur');
         $infoequipeLyceeAcademie = TextareaField::new('equipeinter.lyceeAcademie', 'académie');
-        $infoequipeLycee = TextareaField::new('equipeinter.Lycee', 'lycée');
+        $infoequipeLycee = TextareaField::new('equipeinter.nomLycee', 'lycée');
         $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
         //$hotePrenomNom = TextareaField::new('hote.PrenomNom', 'hote');

@@ -9,6 +9,7 @@ use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
 use App\Entity\Jures;
 use App\Entity\Notes;
+use App\Entity\Phrases;
 use App\Entity\Prix;
 use App\Entity\Repartprix;
 use App\Entity\Rne;
@@ -782,11 +783,31 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/edition_phrases", name="secretariatjury_edition_phrases")
      *
      */
-    public function edition_phrases(): Response
+    public function edition_phrases(Request $request): Response
     {
         $em = $this->doctrine->getManager();
         $listEquipes = $em->getRepository(Equipes::class)
-                          ->getEquipesPhrases();
+            ->getEquipesPhrases();
+
+        if ($request->query->get('phrase')!==null){
+         $idPhrase=$request->query->get('phrase');
+         $phraseAGarder= $this->doctrine->getRepository(Phrases::class)->findOneBy(['id'=>$idPhrase]);
+         $listPhrases=$phraseAGarder->getEquipe()->getPhrases();
+         foreach($listPhrases as $phrase){
+             if ($phrase!=$phraseAGarder){
+                 $phraseAGarder->getEquipe()->removePhrases($phrase);
+                 $em->persist($phraseAGarder->getEquipe());
+
+                 $phrase->setJure(null);
+                 $phrase->setEquipe(null);
+                 $this->em->remove($phrase);
+                 $this->em->flush();
+                 $em->flush();
+             }
+
+         }
+        }
+
 
         $content = $this->renderView('secretariatjury/edition_phrases.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
