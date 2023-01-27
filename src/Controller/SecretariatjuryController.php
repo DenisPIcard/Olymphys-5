@@ -800,8 +800,8 @@ class SecretariatjuryController extends AbstractController
 
                  $phrase->setJure(null);
                  $phrase->setEquipe(null);
-                 $this->em->remove($phrase);
-                 $this->em->flush();
+                 $em->remove($phrase);
+                 $em->flush();
                  $em->flush();
              }
 
