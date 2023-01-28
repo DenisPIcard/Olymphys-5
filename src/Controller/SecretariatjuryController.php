@@ -1210,7 +1210,7 @@ class SecretariatjuryController extends AbstractController
             $ligne = $this->getLigne($sheet, $ligne, $styleText, $borderArray);
             $remispar = 'Philippe';
             $lignep = $ligne + 1;
-            $sheet->getRowDimension($ligne)->setRowHeight(20);
+            $sheet->getRowDimension($ligne)->setRowHeight(40);
             $sheet->setCellValue('A' . $ligne, $remispar);
 
             $sheet->mergeCells('B' . $ligne . ':B' . $lignep);
@@ -1222,7 +1222,7 @@ class SecretariatjuryController extends AbstractController
                 ->setVertical(Alignment::VERTICAL_CENTER);
             $aligne = $ligne;
             $ligne += 1;
-            $sheet->getRowDimension($ligne)->setRowHeight(30);
+            $sheet->getRowDimension($ligne)->setRowHeight(40);
 
             $sheet->setCellValue('C' . $ligne, 'AC. ' . $lycee[$lettre][0]->getAcademie())
                 ->setCellValue('D' . $ligne, 'Lycee ' . $lycee[$lettre][0]->getNom() . "\n" . $lycee[$lettre][0]->getCommune());
