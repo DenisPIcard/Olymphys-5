@@ -1205,7 +1205,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->setCellValue('B' . $ligne, 'Votre lycée recevra');
             $sheet->mergeCells('C' . $ligne . ':D' . $ligne);
             if ($equipe->getCadeau() !== null) {
-                $sheet->setCellValue('C' . $ligne, $equipe->getCadeau()->getRaccourci() . ' offert par ' . $equipe->getCadeau()->getFournisseur());
+                $sheet->setCellValue('C' . $ligne, $equipe->getCadeau()->getRaccourci());//. ' offert par ' . $equipe->getCadeau()->getFournisseur());
             }
             $ligne = $this->getLigne($sheet, $ligne, $styleText, $borderArray);
             $remispar = 'Philippe';
