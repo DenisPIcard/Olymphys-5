@@ -123,8 +123,9 @@ class Equipesadmin
     private ?string $rne;
 
     /**
+     * @var Rne|null
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     * @JoinColumn(name="rne_id_id", referencedColumnName="id")
+     * @JoinColumn(name="rne_id_id", referencedColumnName="id", nullable=true)
      */
     private ?Rne $rneId;
 

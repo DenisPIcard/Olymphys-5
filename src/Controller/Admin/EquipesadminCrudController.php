@@ -136,7 +136,7 @@ class EquipesadminCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_INDEX, $tableauexcel)
-            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->setPermission(Action::NEW,'ROLE_SUPER_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
             ->setPermission(Action::EDIT, 'ROLE_SUPER_ADMIN');
 
@@ -169,16 +169,16 @@ class EquipesadminCrudController extends AbstractCrudController
         $lettre = ChoiceField::new('lettre')
             ->setChoices(['A' => 'A', 'B' => 'B', 'C' => 'C', 'D' => 'D', 'E' => 'E', 'F' => 'F', 'G' => 'G', 'H' => 'H', 'I' => 'I', 'J' => 'J', 'K' => 'K', 'L' => 'L', 'M' => 'M', 'N' => 'N', 'O' => 'O', 'P' => 'P', 'Q' => 'Q', 'R' => 'R', 'S' => 'S', 'T' => 'T', 'U' => 'U', 'V' => 'V', 'W' => 'W', 'X' => 'X', 'Y' => 'Y', 'Z' => 'Z']);
         $titreProjet = TextField::new('titreProjet', 'Projet');
-        $centre = AssociationField::new('centre')->setFormTypeOption('choices', $listeCentres);
-        $IdProf1 = AssociationField::new('idProf1', 'Prof1')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs]);
-        $IdProf2 = AssociationField::new('idProf2', 'Prof2')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs]);
+        $centre = AssociationField::new('centre')->setFormTypeOption('choices', $listeCentres)->setFormTypeOption('required',false);
+        $IdProf1 = AssociationField::new('idProf1', 'Prof1')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs])->setFormTypeOption('required',false);
+        $IdProf2 = AssociationField::new('idProf2', 'Prof2')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs])->setFormTypeOption('required',false);
         $selectionnee = BooleanField::new('selectionnee');
         $id = IntegerField::new('id', 'ID');
         $nomLycee = TextField::new('nomLycee', 'Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
         $lyceeLocalite = TextField::new('lyceeLocalite', 'Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie', 'Académie');
-        $rne = TextField::new('rneId.rne', 'Code UAI');
+        $rne = TextField::new('rneId.rne', 'Code UAI')->setFormTypeOption('required',false);
         $lyceeAdresse = TextField::new('rneId.adresse', 'Adresse');
         $lyceeCP = TextField::new('rneId.codePostal', 'Code Postal');
         $lyceePays = TextField::new('rneId.pays', 'Pays');
@@ -197,7 +197,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $description = TextareaField::new('description', 'Description du projet');
         $inscrite = BooleanField::new('inscrite');
         $retiree= BooleanField::new('retiree');
-        $rneId = AssociationField::new('rneId');
+        $rneId = AssociationField::new('rneId')->setFormTypeOption('required',false);
         $edition = AssociationField::new('edition', 'Edition');
         $editionEd = TextareaField::new('edition.ed', 'Edition');
         $centreCentre = AssociationField::new('centre', 'Centre CIA');
@@ -576,12 +576,14 @@ class EquipesadminCrudController extends AbstractCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $uai = $entityInstance->getRneId();
-        $entityInstance->setRne($uai->getRne());
-        $entityInstance->setNomLycee($uai->getNom());
-        $entityInstance->setLyceeLocalite($uai->getCommune());
-        $entityInstance->setLyceeAcademie($uai->getAcademie());
-        $maj_profsequipes = new Maj_profsequipes($this->doctrine);
-        $maj_profsequipes->maj_profsequipes($entityInstance);
+        if ($uai !==null) {
+            $entityInstance->setRne($uai->getRne());
+            $entityInstance->setNomLycee($uai->getNom());
+            $entityInstance->setLyceeLocalite($uai->getCommune());
+            $entityInstance->setLyceeAcademie($uai->getAcademie());
+            $maj_profsequipes = new Maj_profsequipes($this->doctrine);
+            $maj_profsequipes->maj_profsequipes($entityInstance);
+        }
         $rempliOdpfEquipesPassees = new OdpfRempliEquipesPassees($this->doctrine);
         $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($entityInstance);
 
