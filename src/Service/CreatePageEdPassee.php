@@ -45,8 +45,7 @@ class CreatePageEdPassee
             $textes = explode('<p>Liste des équipes</p>', $texte);//&eacute;
             $texte = $textes[0] . 'Liste des équipes';//Permets la mise à jour de la liste des  équipes sans effacer les autres données
 
-
-
+        }
         $listeEquipesSel = $this->em->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.editionspassees =:edition')
@@ -68,17 +67,17 @@ class CreatePageEdPassee
         $dateCia = $editionsPassees->getDateCia();
         foreach ($listeEquipesSel as $equipe) {
             // sur le site
-            $texte = $texte . '<li><a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getLettre() . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+            //$texte = $texte . '<li><a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getLettre() . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
             // en local
-            // $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' .$equipe->getNumero().' '. $equipe->getLettre() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+           $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getLettre() . ' '. $equipe->getTitreProjet() .'</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
         }
         foreach ($listeEquipesNonsel as $equipe) {
             //sur le site
-            $texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getNumero() . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+            //$texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getNumero() . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
             //en local
-            // $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' .$equipe->getNumero().' '. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+          $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' .$equipe->getNumero().' '. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
         }
-        }
+
         $texte = $texte . '</ul>';
 
         $article->setTexte($texte);
