@@ -53,8 +53,7 @@ class PhotosController extends AbstractController
      *
      * @throws ImagickException
      */
-    public function
-    deposephotos(Request $request, ValidatorInterface $validator, $concours)
+    public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {
         $em = $this->doctrine->getManager();
 
@@ -76,7 +75,7 @@ class PhotosController extends AbstractController
         in_array('ROLE_PROF', $roles) ? $role = 'ROLE_PROF' : $role = 'ROLE_COMITE';
         in_array('ROLE_ORGACIA', $roles) ? $centre = $user->getCentrecia()->getCentre() : $centre = '';
         $photos = new Photos();
-        $photos->setEdition($edition);
+        //$photos->setEdition($edition);
 //$Photos->setSession($session);
         $form = $this->createForm(PhotosType::class, ['concours' => $concours, 'role' => $role, 'prof' => $user, 'centre' => $centre]);
 
@@ -86,7 +85,7 @@ class PhotosController extends AbstractController
             $equipe = $form->get('equipe')->getData();
 //$equipe=$repositoryEquipesadmin->findOneBy(['id'=>$id_equipe]);
             $nom_equipe = $equipe->getTitreProjet();
-
+            $edition=$equipe->getEdition();
             $numero_equipe = $equipe->getNumero();
             $files = $form->get('photoFiles')->getData();
             $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $edition->getEd()]);
@@ -271,12 +270,13 @@ class PhotosController extends AbstractController
         $concourseditioncentre = explode('-', $infos);
         $concours = $concourseditioncentre[0];
         $idedition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
-        $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
+        $editionN = $repositoryEdition->findOneBy(['id' => $idedition]);
+        $editionN1 = $editionN->getEd()-1;
 
         if ($concours == 'inter') {
             $qb = $repositoryEquipesadmin->createQueryBuilder('e')
-                ->andWhere('e.edition =:edition')
-                ->setParameter('edition', $edition)
+                ->andWhere('e.edition =:editionN')
+                ->setParameter('editionN', $editionN)
                 ->addOrderBy('e.numero', 'ASC');
 
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
@@ -325,33 +325,27 @@ class PhotosController extends AbstractController
 
         }
 
-        if ($concours == 'national') {
+        if ($concours == 'cn') {
 
             $equipe = $repositoryEquipesadmin->findOneBy(['id' => $concourseditioncentre[2]]);
+            $editionN = $this->requestStack->getSession()->get('edition');
+            $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
+            $equipes = $repositoryEquipesadmin->createQueryBuilder('eq')
+                ->andWhere('eq.selectionnee = TRUE')
+                ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')
+                ->setParameter('prof', $id_user)
+                ->andWhere('eq.edition =:editionN or eq.edition =:editionN1')
+                ->setParameter('editionN1',$editionN1)
+                ->setParameter('editionN', $editionN)
+                ->getQuery()->getResult();
 
             $qb2 = $repositoryPhotos->createQueryBuilder('p')
-                ->where('p.equipe =:equipe')
-                ->andWhere('p.edition =:edition')
-                ->setParameter('edition', $edition)
+
                 ->andWhere('p.national = 1')
-                ->setParameter('equipe', $equipe);
-            if (in_array('ROLE_PROF', $roles)) {
-                $equipes = $repositoryEquipesadmin->createQueryBuilder('eq')
-                    ->andWhere('eq.selectionnee = TRUE')
-                    ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')
-                    ->setParameter('prof', $id_user)
-                    ->getQuery()->getResult();
-
-
-                $qb2 = $repositoryPhotos->createQueryBuilder('p')
-                    ->andWhere('p.national =:valeur')
-                    ->setParameter('valeur', '1')
-                    ->andWhere('p.edition =:edition')
-                    ->setParameter('edition', $edition)
-                    ->andWhere('p.equipe in(:equipes)')
-                    ->setParameter('equipes', $equipes)
-                    ->leftJoin('p.equipe', 'e')
-                    ->addOrderBy('e.lettre', 'ASC');
+                ->andWhere('p.equipe in(:equipes)')
+                ->setParameter('equipes', $equipes)
+                ->leftJoin('p.equipe', 'e')
+                ->addOrderBy('e.lettre', 'ASC');
 
 
             }
@@ -360,9 +354,9 @@ class PhotosController extends AbstractController
                 $request->getSession()
                     ->getFlashBag()
                     ->add('info', 'Pas de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
-                $this->redirectToRoute('core_home');
+                return $this->redirectToRoute('core_home');
             }
-        }
+
         $i = 0;
         foreach ($liste_photos as $photo) {
             $id = $photo->getId();
@@ -438,7 +432,8 @@ class PhotosController extends AbstractController
             return new Response($content);
         }
 
-        if ($concours == 'national') {
+        if ($concours == 'cn') {
+            $edition=$editionN1;
             $content = $this
                 ->renderView('photos/gestion_photos_cn.html.twig', array('formtab' => $formtab, 'liste_photos' => $liste_photos,
                     'edition' => $edition, 'equipe' => $equipe, 'concours' => 'national', 'choix' => $choix));

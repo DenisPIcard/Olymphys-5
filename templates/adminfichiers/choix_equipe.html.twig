@@ -131,7 +131,7 @@
 
             <tr>
                 <td>
-                    {% if  date()<= app.session.get('datelimphotoscia') %}
+                     {% if  date()<= app.session.get('datelimphotoscia') and date()>app.session.get('dateouverturesite')%}
                         <a type="button" class="btn btn-warning"
                            href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
                            aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
@@ -140,12 +140,12 @@
                            href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
                            title="Modifier ou supprimer certaines photos">Gerer les photos</a>
                     {% endif %}
-                    {% if (date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn')) %}
+                    {% if ((date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn'))) or (date()<app.session.get('dateouverturesite')) %}
                         <a type="button" class="btn btn-warning"
                            href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
                            title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
                         <a type="button" class="btn btn-info"
-                           href="{{ path('photos_gestion_photos',{infos:'national-'~app.session.get('edition').id~'-prof'}) }}"
+                           href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
                            role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
                             photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
 

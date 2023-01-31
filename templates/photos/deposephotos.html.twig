@@ -23,8 +23,12 @@
         nationales
     {% endif %}
 
-
-    de la {{ edition.ed }}<sup>e </sup>édition {% endblock %}
+    {% if date()<app.session.get('dateouverturesite') %}
+        {% set numEd=edition.ed-1 %}
+    {% else %}
+        {% set numEd=edition.ed %}
+    {% endif %}
+    de la {{ numEd }}<sup>e </sup>édition {% endblock %}
 
 
 {% block body %}

@@ -122,12 +122,14 @@ class FichiersController extends AbstractController
             ->getRepository(Centrescia::class);
         $repositoryDocequipes = $this->doctrine
             ->getRepository(Docequipes::class);
-        $edition = $session->get('edition');
+        $editionN = $session->get('edition');
+        $editionN1=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
         $docequipes = $repositoryDocequipes->findAll();
 
         $dateconnect = new datetime('now');
-        $datecia = $edition->getConcourscia();
-        $dateconnect > $datecia ? $phase = 'national' : $phase = 'interacadémique';
+        $dateciaN1 = $editionN1->getConcourscia();
+        $dateOuvertureSite=$editionN->getDateouverturesite();
+        $dateconnect > $dateciaN1 and $dateconnect<$dateOuvertureSite? $phase = 'national' : $phase = 'interacadémique';
         $user = $this->getUser();
         $roles = $user->getRoles();
         $jure = null;

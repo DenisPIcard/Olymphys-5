@@ -4,7 +4,9 @@
 namespace App\Form;
 
 use App\Entity\Centrescia;
+use App\Entity\Edition;
 use App\Entity\Equipesadmin;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Repository\EquipesadminRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -33,22 +35,26 @@ class PhotosType extends AbstractType
     {
         $session = $this->requestStack->getSession();
 
-        $edition = $session->get('edition');
+        $editionN = $this->requestStack->getSession()->get('edition');
+        $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
         $centre = null;
         $options['data']['concours']=='cn'?$valSel= true: $valSel=false;
         $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-            ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
-            ->andWhere('e.inscrite = 1');
+                ->andWhere('e.edition =:edition or e.edition=:edition1')
+                ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
+                ->setParameter('edition1',$editionN1)
+                ->andWhere('e.inscrite = 1')
+                ->leftJoin('e.edition','ed')
+                ->addOrderBy('ed.ed','DESC');
         if ($valSel==true){
-            $qb->addOrderBy('e.lettre', 'ASC')
+            $qb ->addOrderBy('e.lettre', 'ASC')
                 ->andWhere('e.selectionnee =:valeur')
                 ->setParameter('valeur',$valSel);
             }
-            else{
+        else{
                 $qb->addOrderBy('e.numero', 'ASC')
                     ->addOrderBy('e.centre', 'ASC');
-            }
+        }
         if ($options['data']['centre'] != '') {
             $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $options['data']['centre']]);
             $qb = $qb->andWhere('e.centre =:centre')
@@ -71,21 +77,14 @@ class PhotosType extends AbstractType
         if ($options['data']['role'] == 'ROLE_PROF') {
             $prof = $options['data']['prof'];
 
-            $session->set('prof', $prof);
+            $qb->andWhere('e.idProf1 =:id or e.idProf2 =:id')
+                ->setParameter('id', $prof)
+                ->andWhere('e.inscrite = 1');
 
 
                 $builder->add('equipe', EntityType::class, [
                     'class' => Equipesadmin::class,
-                    'query_builder' => function (EntityRepository $ea) {
-                        return $ea->createQueryBuilder('e')
-                            ->andWhere('e.idProf1 =:id or e.idProf2 =:id')
-                            ->setParameter('id', $this->requestStack->getSession()->get('prof'))
-                            ->andWhere('e.edition =:edition')
-                            ->andWhere('e.inscrite =:value')
-                            ->setParameter('value', true)
-                            ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
-                            ->addOrderBy('e.numero', 'ASC');
-                    },
+                    'query_builder' => $qb,
                     'choice_label' => 'getInfoequipe',
                     'label' => 'Choisir une équipe',
                     'mapped' => false

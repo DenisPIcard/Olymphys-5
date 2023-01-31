@@ -155,6 +155,7 @@ class Photos
             );
 
         }
+
         $numero_equipe = $equipepassee->getNumero();
 
         $nom_equipe = $equipepassee->getTitreProjet();
