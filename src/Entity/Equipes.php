@@ -248,7 +248,7 @@ class Equipes
         return $this;
     }
 
-    public function removePhrases(Phrases $phrase)
+    public function removePhrase(Phrases $phrase)
     {
         $this->phrases->removeElement($phrase);
     }

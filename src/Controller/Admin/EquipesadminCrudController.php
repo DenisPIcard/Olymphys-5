@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomCentreFilter;
+use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Entity\Centrescia;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
@@ -70,8 +71,10 @@ class EquipesadminCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
         if (isset($_REQUEST['filters']['edition'])) {
-            $editionId = $_REQUEST['filters']['edition']['value'];
+            $editionId = $_REQUEST['filters']['edition'];
+
             $editioned = $repositoryEdition->findOneBy(['id' => $editionId]);
+            $crud->setPageTitle('index', 'Liste des équipes de la ' . $editioned . $exp . ' édition');
         }
         if (isset($_REQUEST['lycees'])) {
             $crud->setPageTitle('index', 'Liste des établissements de la ' . $editioned . $exp . ' édition');
@@ -108,8 +111,13 @@ class EquipesadminCrudController extends AbstractCrudController
             $centreId = $_REQUEST['filters']['centre'];
 
         }
+        if (isset($_REQUEST['filters']['edition'])) {
+            $editionId = $_REQUEST['filters']['edition'];
+            $editon=$this->doctrine->getRepository(Edition::class)->findOneBy(['id'=>$editionId]);
+
+        }
         if (isset($_REQUEST['filters']['selectionnee'])) {
-            $editionId = $session->get('edition')->getId();
+
             $selectionnee=$_REQUEST['filters']['selectionnee'];
 
         }
@@ -145,7 +153,7 @@ class EquipesadminCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-
+            ->add(CustomEditionFilter::new('edition'))
             ->add(CustomCentreFilter::new('centre'))
             ->add('selectionnee');
     }
@@ -245,7 +253,13 @@ class EquipesadminCrudController extends AbstractCrudController
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $session->get('edition'));
          if (isset($_REQUEST['filters'])){
+             if (isset($_REQUEST['filters']['edition'])) {
+                 $editionId = $_REQUEST['filters']['edition'];
 
+                 $editioned = $repositoryEdition->findOneBy(['id' => $editionId]);
+                 $qb->andWhere('e.edition =:edition')
+                     ->setParameter('edition', $editioned);
+             }
 
             if (isset($_REQUEST['filters']['centre'])) {
                 $idCentre = $_REQUEST['filters']['centre'];
@@ -303,9 +317,15 @@ class EquipesadminCrudController extends AbstractCrudController
         $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
             //->andWhere('e.inscrite = TRUE')
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition',$this->requestStack->getSession()->get('edition'))
-            ->andWhere('e.numero < 100')
-            ->orderBy('e.numero', 'ASC');
+            ->setParameter('edition',$edition)
+            ->andWhere('e.numero < 100');
+
+        if ($selectionnee == 1){
+            $queryBuilder->addOrderBy('e.lettre','ASC');
+        }
+        else{
+            $queryBuilder->addOrderBy('e.numero','ASC');
+        }
         if (($idcentre != 0) and ($idcentre != 'na')) {
             $centre = $repositoryCentre->findOneBy(['id' => $idcentre]);
 
@@ -343,7 +363,7 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setCategory("Test result file");
 
         $sheet = $spreadsheet->getActiveSheet();
-        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T'] as $letter) {
+        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V'] as $letter) {
             $sheet->getColumnDimension($letter)->setAutoSize(true);
         }
 

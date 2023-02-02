@@ -4,6 +4,7 @@
 namespace App\Controller\Admin;
 
 
+use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 
@@ -80,7 +81,8 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(CustomEquipeFilter::new('equipe', 'Equipe'));
+            ->add(CustomEquipeFilter::new('equipe', 'equipe'))
+            ->add(CustomEditionFilter::new('edition', 'edition'));
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -125,7 +127,11 @@ class FichiersequipesCrudController extends AbstractCrudController
             $equipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
 
         }
-
+        if(isset($_REQUEST['filters']['edition'])) {
+            $idEdition = $_REQUEST['filters']['edition'];
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
+            $session->set('titreedition', $edition);
+        }
 
         $concours == 1 ? $concourslit = 'national' : $concourslit = 'interacadémique';
         if ($pageName == 'index') {
@@ -584,14 +590,22 @@ class FichiersequipesCrudController extends AbstractCrudController
 
 
         } else {
+            if(isset($_REQUEST['filters']['edition'])) {
+                $idEdition = $_REQUEST['filters']['edition'];
+                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+                $session->set('titreedition', $edition);
 
+                $qb->andWhere('f.edition =:edition')
+                    ->setParameter('edition', $edition);
+            }
+            if(isset($_REQUEST['filters']['equipe'])) {
+                $idEquipe = $_REQUEST['filters']['equipe'];
+                $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
+                $session->set('titreedition', $edition);
 
-            $idEquipe = $_REQUEST['filters']['equipe'];
-            $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
-            $session->set('titreedition', $edition);
-
-            $qb->andWhere('f.equipe =:equipe')
-                ->setParameter('equipe', $equipe);
+                $qb->andWhere('f.equipe =:equipe')
+                    ->setParameter('equipe', $equipe);
+            }
 
 
         }

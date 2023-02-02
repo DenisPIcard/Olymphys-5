@@ -763,8 +763,12 @@ class FichiersController extends AbstractController
         }
         $concours = $Infos[1];
         $choix = $Infos[2];
+
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
+        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
         $equipe_choisie = $repositoryEquipesadmin->find(['id' => $id_equipe]);
         $centre = $equipe_choisie->getCentre();
 
@@ -810,7 +814,7 @@ class FichiersController extends AbstractController
 
         $roles = $this->getUser()->getRoles();
         //$role = $roles[0];
-        if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_PROF', $roles)) or (in_array('ROLE_ORGACIA', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles))) {
+        if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_PROF', $roles)) or (in_array('ROLE_ORGACIA', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles)) or (in_array('ROLE_JURY', $roles))) {
 
             $liste_fichiers = $qbComit->getQuery()->getResult();
 
@@ -854,12 +858,11 @@ class FichiersController extends AbstractController
         }
 
 
-        $content = $this
-            ->renderView('adminfichiers\espace_prof.html.twig', array('listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
+        return  $this->render('adminfichiers\espace_prof.html.twig', array('listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
                     'equipe' => $equipe_choisie, 'centre' => $equipe_choisie->getCentre(), 'concours' => $concours, 'edition' => $edition, 'choix' => $choix,
                     'liste_prof' => $liste_prof, 'listeEleves' => $listeEleves, 'liste_fichiers' => $liste_fichiers)
             );
-        return new Response($content);
+
 
 
     }

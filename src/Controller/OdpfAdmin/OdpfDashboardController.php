@@ -84,8 +84,7 @@ class OdpfDashboardController extends AbstractDashboardController
 
             MenuItem::linkToCrud('Les  photos', 'fas fa-images', Photos::class)
                 ->setController(OdpfPhotosCrudController::class)
-                ->setQueryParameter('typefichier', 6),
-        ];
+                 ];
 
         yield MenuItem::linktoDashboard('Tableau de bord', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);

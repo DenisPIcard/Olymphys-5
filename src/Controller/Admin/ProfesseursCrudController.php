@@ -140,13 +140,13 @@ class ProfesseursCrudController extends AbstractCrudController
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
 
-        if ($context->getRequest()->query->get('filters') == null) {
+        if (!isset($_REQUEST['filters'])) {
             $edition = $session->get('edition');
 
         } else {
-            if (isset($context->getRequest()->query->get('filters')['edition'])) {
+            if (isset($_REQUEST['filters']['edition'])) {
 
-                $idEdition = $context->getRequest()->query->get('filters')['edition'];
+                $idEdition = $_REQUEST['filters']['edition'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
             }

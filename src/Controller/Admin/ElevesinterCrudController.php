@@ -87,7 +87,8 @@ class ElevesinterCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(CustomEquipeFilter::new('equipe'));
+            ->add(CustomEquipeFilter::new('equipe'))
+            ->add(CustomEditionFilter::new('edition'));
 
 
     }
@@ -105,15 +106,19 @@ class ElevesinterCrudController extends AbstractCrudController
             $equipeId = $_REQUEST['filters']['equipe'];
             $editionId = $repositoryEquipe->findOneBy(['id' => $equipeId])->getEdition()->getId();
 
-            $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel de cesélèves', 'fas fa_array',)
+            $tableauexcelelevesequipe = Action::new('eleves_tableau_excel_equipe', 'Créer un tableau excel de ces élèves', 'fas fa_array',)
                 ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId . '-' . $equipeId])
                 ->createAsGlobalAction();
-            $actions ->add(Crud::PAGE_INDEX, $tableauexcel);
+            $actions ->add(Crud::PAGE_INDEX, $tableauexcelelevesequipe);
         }
-            if (!isset($_REQUEST['filters'])){
-//->displayAsButton();
-//->setHtmlAttributes(['data-ideditionequipe' =>  $editionId.'-'.$equipeId, 'target' => '_blank'])
-//->setCssClass('btn btn-alert action-eleves_tableau_excel');
+
+        if (((!isset($_REQUEST['filters'])) or (isset($_REQUEST['filters']['edition']))) and (!isset($_REQUEST['filters']['equipe']))){
+
+              if (isset($_REQUEST['filters']['edition'])){
+                  $editionId = $_REQUEST['filters']['edition'];
+                  //$editionEd = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
+
+              }
                $tableauexcelnonsel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves non sélectionnés', 'fas fa_array',)
                     ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId . '-' . $equipeId . '-ns'])
                     ->createAsGlobalAction();
@@ -182,12 +187,10 @@ class ElevesinterCrudController extends AbstractCrudController
 
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $repositoryEquipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
+        $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e');
         if (!isset($_REQUEST['filters'])) {
-
-            $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e')
-                ->leftJoin('e.equipe', 'eq')
+            $qb ->leftJoin('e.equipe', 'eq')
                 ->andWhere('eq.edition =:edition')
-                ->andWhere('eq.inscrite = TRUE')
                 ->setParameter('edition', $session->get('edition'))
                 ->orderBy('eq.numero', 'ASC');
 
@@ -198,13 +201,16 @@ class ElevesinterCrudController extends AbstractCrudController
                 $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
 
                 $session->set('titrepage', ' Edition ' . $equipe);
-
-
-                $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e')
-                              ->andWhere('e.equipe =:equipe')
-                              ->setParameter('equipe',$equipe);
-
-
+                $qb ->andWhere('e.equipe =:equipe')
+                    ->setParameter('equipe',$equipe);
+                }
+            if (isset($_REQUEST['filters']['edition'])) {
+                $editionId = $_REQUEST['filters']['edition'];
+                $editioned = $repositoryEdition->findOneBy(['id' => $editionId]);
+                $qb->leftJoin('e.equipe', 'eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->setParameter('edition', $editioned)
+                    ->orderBy('eq.numero', 'ASC');;
             }
         }
        return $qb;

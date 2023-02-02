@@ -36,8 +36,9 @@ class CustomEquipeFilterType extends AbstractType
     {
         $edition = $this->requestStack->getSession()->get('edition');
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-            ->andWhere('e.edition=:edition')
-            ->setParameter('edition', $edition)
+            ->select('e')
+            ->leftJoin('e.edition','ed')
+            ->addOrderBy('ed.ed','DESC')
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
 

@@ -27,7 +27,7 @@ class CustomCentreFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
 
     {
-        $listeCentres=$this->doctrine->getRepository(Centrescia::class)->findBy(['actif'=>true]);
+        $listeCentres=$this->doctrine->getRepository(Centrescia::class)->findAll();
 
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'entity'],
