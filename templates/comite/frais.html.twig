@@ -3,7 +3,14 @@
 
 
 
-{% block titre3 %} Frais du comité pour la {{ edition }}ème  édition{% endblock %}
+{% block titre3 %}
+    {%  if  app.user.roles|filter(v => v =='ROLE_JURY')!=[]  %}
+        {%  set citoyen='jury'  %}
+    {% else %}
+        {%  set citoyen='comité'  %}
+    {% endif %}
+    Frais du {{citoyen}} pour la {{ edition }}ème  édition
+{% endblock %}
 
 {% block body %}
 

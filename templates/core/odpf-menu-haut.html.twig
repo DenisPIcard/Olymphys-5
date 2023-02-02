@@ -108,6 +108,9 @@
                            href="{{ path('fichiers_choix_equipe',{choix : 'liste_cn_comite'}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>
                         <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les équipes</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration des frais</a>
+
                     </div>
                 </li>
             {% elseif is_granted('ROLE_PROF') %}
