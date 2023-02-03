@@ -152,8 +152,19 @@ class FichiersController extends AbstractController
         }
 
         $liste_equipes = $repositoryEquipesadmin->getListeEquipe($user, $phase, $choix, $centre);
-        if ($liste_equipes != null) {
-            $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
+        if ($liste_equipes == null) {
+            if(date('now')>= $this->requestStack->getSession()->get('dateouverturesite')) {
+                $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+            }
+            else{
+                $message='';
+            }
+            $request->getSession()
+                ->getFlashBag()
+                ->add('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
+
+        }
+        $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
                 'liste_equipes' => $liste_equipes,
                 'user' => $user,
                 'phase' => $phase,
@@ -163,13 +174,7 @@ class FichiersController extends AbstractController
                 'rneObj' => $rne_objet,
                 'centre' => $centre));
             return new Response($content);
-        } else {
-            $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $edition->getEd() . 'e edition');
-            return $this->redirectToRoute('core_home');
-        }
+
     }
 
     /**
