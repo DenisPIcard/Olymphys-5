@@ -87,7 +87,7 @@ class Equipes
 
     /**
      * @var Prix|null
-     * @ORM\ManyToOne(targetEntity="App\Entity\Prix")
+     * @ORM\OneToOne(targetEntity=Prix::class, mappedBy="equipe")
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
     private ?Prix $prix;
@@ -121,16 +121,9 @@ class Equipes
     private ?Collection $notess;
 
     /**
-     * @var Phrases|null
-     * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="equipe")
+     *@ORM\OneToMany( mappedBy="equipe", targetEntity=Phrases::class, orphanRemoval= true)
      */
     private ?Collection $phrases;
-
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $salleZoom = null;
 
     /**
      * Constructor
@@ -234,31 +227,31 @@ class Equipes
         return $this;
     }
 
-    /**
-     * add phrase
-     *
-     * @param Phrases $phrase
-     *
-     * @return Equipes
-     */
-    public function addPhrase(?Phrases $phrase): Equipes
-    {
-        $this->phrases[] = $phrase;
 
+    public function addPhrase(?Phrases $phrase): self
+    {
+        if (!$this->phrases->contains($phrase)) {
+        $this->phrases->add($phrase);
+        $phrase->setEquipe($this);
+        }
+    }
+
+    public function removePhrase(Phrases $phrase) :self
+    {
+        if ($this->phrases->removeElement($phrase)) {
+            // set the owning side to null (unless already changed)
+            if ($phrase->getEquipe() === $this) {
+                $phrase->setEquipe(null);
+            }
+        }
         return $this;
     }
 
-    public function removePhrase(Phrases $phrase)
-    {
-        $this->phrases->removeElement($phrase);
-    }
-
     /**
-     * Get phrases
+     * @var Phrases|null
      *
-     * @return Collection
      */
-    public function getPhrases(): ?Collection
+    public function getPhrases(): Collection
     {
         return $this->phrases;
     }

@@ -42,7 +42,7 @@ class Phrases
     private ?string $prix = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Equipes::class, inversedBy="phrases",cascade={"persist", "remove"})
+     *@ORM\ManyToOne(targetEntity=Equipes::class, inversedBy="phrases")
      */
     private ?Equipes $equipe = null;
 
@@ -50,13 +50,13 @@ class Phrases
      * @ORM\ManyToOne(targetEntity=Jures::class, inversedBy="phrases")
      */
     private ?Jures $jure;
+
+
     /**
      * @return string|null
      */
     public function __toString() : string
     {
-
-
         if (($this->phrase!==null)and ($this->liaison!== null)and ($this->prix !==null)){
             return $this->phrase . $this->liaison->getLiaison() . $this->prix;
         }
@@ -116,7 +116,7 @@ class Phrases
      *
      * @return Phrases
      */
-    public function setPhrase(string $phrase): Phrases
+    public function setPhrase(?string $phrase): Phrases
     {
         $this->phrase = $phrase;
 
@@ -165,6 +165,18 @@ class Phrases
     public function setJure(?Jures $jure): self
     {
         $this->jure = $jure;
+
+        return $this;
+    }
+
+    public function getEssais(): ?Essais
+    {
+        return $this->essais;
+    }
+
+    public function setEssais(?Essais $essais): self
+    {
+        $this->essais = $essais;
 
         return $this;
     }

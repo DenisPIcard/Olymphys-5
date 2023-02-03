@@ -29,7 +29,11 @@ class Prix
      * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
      */
     private ?string $niveau = null;
-
+    /**
+     * @var Equipes|null
+     * @ORM\OneToOne(targetEntity=Equipes::class, inversedBy="prix")
+     */
+    private ?Equipes $equipe;
 
     /**
      * @var boolean
@@ -88,6 +92,18 @@ class Prix
     public function getPrix(): ?string
     {
         return $this->prix;
+    }
+    public function setEquipe(?Equipes $equipe): Prix
+    {
+        $this->equipe = $equipe;
+
+        return $this;
+    }
+
+
+    public function getEquipe(): ?Equipes
+    {
+        return $this->equipe;
     }
 
     /**
