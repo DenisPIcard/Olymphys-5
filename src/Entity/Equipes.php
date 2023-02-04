@@ -417,17 +417,7 @@ class Equipes
         return $this;
     }
 
-    public function getSalleZoom(): ?string
-    {
-        return $this->salleZoom;
-    }
 
-    public function setSalleZoom(?string $salleZoom): self
-    {
-        $this->salleZoom = $salleZoom;
-
-        return $this;
-    }
 
     public function getPhrase(): ?Phrases
     {

@@ -169,17 +169,6 @@ class Phrases
         return $this;
     }
 
-    public function getEssais(): ?Essais
-    {
-        return $this->essais;
-    }
-
-    public function setEssais(?Essais $essais): self
-    {
-        $this->essais = $essais;
-
-        return $this;
-    }
 
 
 }
