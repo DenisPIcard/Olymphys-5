@@ -87,7 +87,7 @@ class Equipes
 
     /**
      * @var Prix|null
-     * @ORM\OneToOne(targetEntity=Prix::class, mappedBy="equipe")
+     * @ORM\OneToOne(targetEntity="App\Entity\Prix")
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
     private ?Prix $prix;

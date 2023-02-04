@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -30,7 +31,7 @@ class PrixCrudController extends AbstractCrudController
     {
         $prix = TextField::new('prix');
         $niveau = TextField::new('niveau');
-        $attribue = Field::new('attribue');
+        $attribue = BooleanField::new('attribue');
         $voix = TextField::new('voix');
         $intervenant = TextField::new('intervenant');
         $remisPar = TextField::new('remisPar');

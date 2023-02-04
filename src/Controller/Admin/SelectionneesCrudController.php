@@ -77,7 +77,56 @@ class SelectionneesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
+        if ($_REQUEST['crudAction']=='edit'){
+            $listeVisites=$this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
+                ->andWhere('v.attribue =:value')
+                ->setParameter('value', '0')
+                ->orderBy('v.intitule', 'ASC')->getQuery()->getResult();
+            $visite = $this->doctrine->getRepository(Equipes::class)->findOneBy(['id'=>$_REQUEST['entityId']])->getVisite();
+            if ($visite!=null){
+                $listeVisites != null ? $listeVisites[count($listeVisites)] = $visite : $listeVisites[0] = $visite;
+            }
+            $visiteform = AssociationField::new('visite')->setFormType(EntityType::class)->setFormTypeOptions(['required'=>false,
+                'mapped'=>true,
+                'class'=>Visites::class,
+                'choices'=>$listeVisites,
+                'choice_label'=>'getIntitule',
+                'placeholder'=>$visite==null?'choisir la visite':$visite->getIntitule()
+            ]);
+            $listeCadeaux=$this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
+                ->andWhere('c.attribue =:value')
+                ->setParameter('value', '0')
+                ->orderBy('c.raccourci', 'ASC')->getQuery()->getResult();
+            $cadeau = $this->doctrine->getRepository(Equipes::class)->findOneBy(['id'=>$_REQUEST['entityId']])->getCadeau();
+            if($cadeau!=null) {
+                $listeCadeaux !== null ? $listeCadeaux[count($listeCadeaux)] = $cadeau : $listeCadeaux[0] = $cadeau;
+            }
+            $cadeauform = AssociationField::new('cadeau')->setFormType(EntityType::class)->setFormTypeOptions(['required'=>false,
+                'mapped'=>true,
+                'class'=>Cadeaux::class,
+                'choices'=>$listeCadeaux,
+                'choice_label'=>'getRaccourci',
+                'placeholder'=>$cadeau==null?'Choisir le cadeau':$cadeau->getRaccourci()
+            ]);
+            $listePrix=$this->doctrine->getRepository(Prix::class)->createQueryBuilder('p')
+                ->andWhere('p.attribue =:value')
+                ->setParameter('value', '0')
+                ->orderBy('p.niveau', 'DESC')->getQuery()->getResult();
+            $prix = $this->doctrine->getRepository(Equipes::class)->findOneBy(['id'=>$_REQUEST['entityId']])->getPrix();
+            if($prix!=null) {
+                $listePrix !== null ? $listePrix[count($listePrix)] = $prix : $listePrix[0] = $prix;
+            }
+            $prixform = AssociationField::new('prix')->setFormType(EntityType::class)->setFormTypeOptions(['required'=>false,
+                'mapped'=>true,
+                'class'=>Prix::class,
+                'choices'=>$listePrix,
+                'choice_label'=>'getPrix',
+                'placeholder'=>$prix==null?'Choisir le prix':$prix->getPrix()
+            ]);
+            $phrasesform = AssociationField::new('phrases')->setFormType(EntityType::class);
 
+        }
+        ;
         $lettre = TextField::new('equipeinter.lettre', 'lettre');
         $titreProjet = TextField::new('equipeinter.titreProjet', 'projet');
         $ordre = IntegerField::new('ordre');
@@ -88,39 +137,12 @@ class SelectionneesCrudController extends AbstractCrudController
         $rang = IntegerField::new('rang');
         $nbNotes = IntegerField::new('nbNotes');
 
-        $visite = AssociationField::new('visite')->setFormType(EntityType::class)->setFormTypeOptions(['required'=>false,
-                                            'mapped'=>true,
-                                            'class'=>Visites::class,
-                                            'query_builder'=>function() {
-                                                return $this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
-                                                    ->andWhere('v.attribue =:value')
-                                                    ->setParameter('value', '0')
-                                                    ->orderBy('v.intitule', 'ASC');
-                                            },
-                                            'choice_label'=>'getIntitule'
-                                          ]);
-        $cadeau = AssociationField::new('cadeau')->setFormType(EntityType::class)->setFormTypeOptions(['required'=>false,
-                                            'class'=>Cadeaux::class,
-                                            'query_builder'=>function() {
-                                                return $this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
-                                                    ->andWhere('c.attribue =:value')
-                                                    ->setParameter('value', '0')
-                                                    ->orderBy('c.raccourci', 'ASC');
-                                            },
-                                              'choice_label'=>'getContenu']);
+        $visite = AssociationField::new('visite');
+        $cadeau = AssociationField::new('cadeau');
 
         $phrases = CollectionField::new('phrases');
 
-        $prix = AssociationField::new('prix')->setFormType(EntityType::class)->setFormTypeOptions(['required'=>false,
-                                            'mapped'=>true,
-                                            'class'=>Prix::class,
-                                            'query_builder'=>function() {
-                                                return $this->doctrine->getRepository(Prix::class)->createQueryBuilder('c')
-                                                    ->andWhere('c.attribue =:value')
-                                                    ->setParameter('value', '0')
-                                                    ->orderBy('c.niveau', 'ASC');
-                                            },
-                                            'choice_label'=>'getPrix']);
+        $prix = AssociationField::new('prix');
         $infoequipe = TextField::new('equipeinter.infoequipe');
 
         $notess = AssociationField::new('notess');
@@ -129,8 +151,13 @@ class SelectionneesCrudController extends AbstractCrudController
         $infoequipeLycee = TextareaField::new('equipeinter.nomLycee', 'lycée');
         $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
-
-            if (isset($_REQUEST['palmares'])) {
+        if($this->adminContextProvider->getContext()->getRequest()->query->get('palmares')!=null) {
+            $param =$this->adminContextProvider->getContext()->getRequest()->query->get('palmares');
+            $this->requestStack->getSession()->set('param', $param);
+        }
+            if (!isset($_REQUEST['palmares'])) {
+                $_REQUEST['palmares']=$this->requestStack->getSession()->get('param');
+            }
                 if ($_REQUEST['palmares'] == 1) {
                     if (Crud::PAGE_INDEX === $pageName) {
                         return [$lettre, $titreProjet, $infoequipeLyceeAcademie, $infoequipeLycee, $classement, $rang, $prix, $phrases, $cadeau, $visite];
@@ -139,10 +166,9 @@ class SelectionneesCrudController extends AbstractCrudController
                     } elseif (Crud::PAGE_NEW === $pageName) {
                         return [$lettre, $titreProjet, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $prix];
                     } elseif (Crud::PAGE_EDIT === $pageName) {
-                        return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $visite, $cadeau, $phrases, $prix];
+                        return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $visiteform, $cadeauform, $phrasesform, $prixform];
                     }
-                }
-                if ($_REQUEST['palmares'] == 0) {
+                } elseif ($_REQUEST['palmares'] == 0) {
                     if (Crud::PAGE_INDEX === $pageName) {
                         return [$lettre, $titreProjet, $infoequipeLyceeAcademie, $infoequipeLycee, $heure, $salle, $ordre];
                     } elseif (Crud::PAGE_DETAIL === $pageName) {
@@ -153,42 +179,17 @@ class SelectionneesCrudController extends AbstractCrudController
                         return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $ordre];
                     }
                 }
-            }
-            else{
-                dd($_REQUEST);
-            }
-
-
     }
 
-    public function edit(AdminContext $context)
-    {
-        if($context->getRequest()->query->get('palmares')!=null){
 
-            $_REQUEST['palmares'] = $context->getRequest()->query->get('palmares');
-        };
-        if($context->getReferrer()!=null) {
-            $pos = stripos($context->getReferrer(), 'palmares');
-            $param = substr($context->getReferrer(), $pos + 9, 1);//Deux valeurs possibles pour $param : 0 : on édite l'administration d'un équipe, 1 : on édite le palmarès
-            //le paramètre est défini dans le dashboard mais disparait lorsque l'index est affiché, on peut le trouver dans le referrer du $context
-            $_REQUEST['palmares'] = $param;
-        }
-
-        return parent::edit($context); // TODO: Change the autogenerated stub
-    }
 
     public function index(AdminContext $context)
-    {
-        $referrer= $context->getReferrer();
-
-        if ($referrer!==null) {
-            //Deux valeurs possibles pour $param : 0 : on édite l'administration d'un équipe, 1 : on édite le palmarès
-            //le paramètre est défini dans le dashboard mais disparait  lorsque l'index est affiché, on peut le trouver dans le referrer du $context
-            $pos= stripos($context->getReferrer(),'palmares');
-
-            $param=substr($context->getReferrer(),$pos+9,1);
-
-            $_REQUEST['palmares'] = $param;
+    {   if($context->getRequest()->query->get('palmares')!=null) {
+            $param = $context->getRequest()->query->get('palmares');
+            $this->requestStack->getSession()->set('param', $param);
+        }
+        else {
+            $_REQUEST['palmares']=$this->requestStack->getSession()->get('param');
         }
         return parent::index($context); // TODO: Change the autogenerated stub
     }
@@ -243,7 +244,37 @@ class SelectionneesCrudController extends AbstractCrudController
         return $this->render('/secretariatjury/charge_donnees_excel_equipes.html.twig', array('form' => $form->createView()));
     }
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {   dd($entityInstance);
+    {
+        // le champ attribué des prix, visites et cadeaux n'est pas modifié par le persist de l'équipe, il faut le modifier à la main
+        // solution créer un champ équipe dans prix, visites et cadeaux
+        $equipe=$this->doctrine->getRepository(Equipes::class)->findOneBy(['id'=>$entityInstance->getId()]);
+        $prixInit=$equipe->getPrix();
+        $prix = $entityInstance->getPrix();
+        if($prix!=$prixInit ){
+            $prixInit->setAttribue(false);
+            $prix!=null?$prix->setAttribue(true):$prix->setAttribue(false);
+            $this->doctrine->getManager()->persist($prix);
+            $this->doctrine->getManager()->persist($prixInit);
+            $this->doctrine->getManager()->flush();
+        }
+        $visiteInit=$equipe->getVisite();
+        $visite = $entityInstance->getVisite();
+        if($visite!=$visiteInit ){
+            $visiteInit->setAttribue(false);
+            $visite!=null?$visite->setAttribue(true):$visite->setAttribue(false);
+            $this->doctrine->getManager()->persist($visite);
+            $this->doctrine->getManager()->persist($visiteInit);
+            $this->doctrine->getManager()->flush();
+        }
+        $visiteInit=$equipe->getvisite();
+        $visite = $entityInstance->getvisite();
+        if($visite!=$visiteInit ){
+            $visiteInit->setAttribue(false);
+            $visite!=null?$visite->setAttribue(true):$visite->setAttribue(false);
+            $this->doctrine->getManager()->persist($visite);
+            $this->doctrine->getManager()->persist($visiteInit);
+            $this->doctrine->getManager()->flush();
+        }
         parent::updateEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
 }
