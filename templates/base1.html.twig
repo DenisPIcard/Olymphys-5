@@ -1,5 +1,5 @@
 {# templates/base1.html.twig
-Layout de départ du site #}
+Layout de départ des utils du site #}
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -20,7 +20,7 @@ Layout de départ du site #}
         <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
         <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
         <link rel="stylesheet" href="{{ asset('css/galeries.css') }}">
-        {#  <link rel="stylesheet" href="{{ asset('css/imagesgalery.css') }}"> #}
+        <link rel="stylesheet" href="{{ asset('css/base1.css') }}">
         <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
         <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
@@ -37,10 +37,55 @@ Layout de départ du site #}
     </div>
 {% endif %}
 <div class="container-fluid">
-    <div class="page-header">
-        <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicomplet.png') }}" alt="logo des OdpF" width="300"/></a>
-
+    <div id="barre_haut">
     </div>
+    <div id="wrapper">
+        <div class="container bg-white">
+
+
+            <div class="row  justify-content-end">
+                <nav>
+                    <ul class="nav flex-column flex-md-row">
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <li class="nav-item dropdown menu_haut">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">Utilisateur : {{ app.user.prenomNom }}</a>
+                            <div class="dropdown-menu login py-0">
+
+                                <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
+                            </div>
+                            {% endif %}
+
+                        </li>
+                        <li class="nav-item dropdown menurouge">
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
+                                   aria-expanded="false">Déconnexion</a>
+
+                            {% else %}
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">Connexion</a>
+                                <div class="dropdown-menu login" aria-labelledby="dropdownMenu3">
+                                    <a class="dropdown-item login py-0" href="{{ path('login') }}">Connectez
+                                        vous si vous avez un compte</a>
+                                    <a class="dropdown-item login py-0" href="{{ path('register') }}">Créez un
+                                        compte si vous en souhaitez un</a>
+                                </div>
+                            {% endif %}
+
+                        </li>
+
+
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="page-header">
+                <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicompletblanc.png') }}" alt="logo des OdpF" width="300"/></a>
+
+            </div>
+        </div>
+        </div>
     <div class="row">
         <div class="col-md-8 col-lg-3 col-md-first">
         </div>
@@ -51,7 +96,9 @@ Layout de départ du site #}
         </div>
 
     </div>
-    <div class="row">
+    {% block body %}
+    {% endblock %}
+    {# <div class="row">
 
         <div id="menu" class="col-md-8 col-lg-3 col-md-first">
             <ul class="nav flex-column nav-pills ml-1">
@@ -92,7 +139,7 @@ Layout de départ du site #}
     </div>
 
     <hr>
-
+    #}
 
 </div>
 
