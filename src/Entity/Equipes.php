@@ -234,6 +234,7 @@ class Equipes
         $this->phrases->add($phrase);
         $phrase->setEquipe($this);
         }
+        return $this;
     }
 
     public function removePhrase(Phrases $phrase) :self

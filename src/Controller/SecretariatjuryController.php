@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cadeaux;
 use App\Entity\Coefficients;
+use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
@@ -65,6 +66,11 @@ class SecretariatjuryController extends AbstractController
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
+        if ($edition->getDateouverturesite()>date('now')){
+            $edition= $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+
+        }
+
         $repositoryEquipesadmin = $em->getRepository(Equipesadmin::class);
         $repositoryEleves = $em->getRepository(Elevesinter::class);
         $repositoryRne = $em->getRepository(Rne::class);
