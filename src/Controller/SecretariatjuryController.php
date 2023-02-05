@@ -970,8 +970,8 @@ class SecretariatjuryController extends AbstractController
                 ->setCellValue('B' . $ligne, 'Lycée ' . $lycee[$lettre][0]->getNom() . " - " . $lycee[$lettre][0]->getCommune())
                 ->setCellValue('C' . $ligne, $prof1[$lettre][0]->getPrenom() . " " . strtoupper($prof1[$lettre][0]->getNom()))
                 ->setCellValue('D' . $ligne, $equipe->getClassement() . ' ' . 'prix');
-            if ($equipe->getPhrase() !== null) {
-                $sheet->setCellValue('E' . $ligne, $equipe->getPhrase()->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
+            if ($equipe->getPhrases() !== null) {
+                $sheet->setCellValue('E' . $ligne, $equipe->getPhrases()[0]->getPhrase() . ' ' . $equipe->getPhrases()[0]->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()[0]->getPrix());
             } else {
                 $sheet->setCellValue('E' . $ligne, 'Phrase');
             }
@@ -1185,9 +1185,9 @@ class SecretariatjuryController extends AbstractController
             $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
             $remispar = 'Philippe'; //remplacer $remispar par $voix1 et $voix2
 
-            if ($equipe->getPhrase() != null) {
+            if ($equipe->getPhrases() != null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
-                $sheet->setCellValue('B' . $ligne, $equipe->getPhrase()->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
+                $sheet->setCellValue('B' . $ligne, $equipe->getPhrases()[0]->getPhrase() . ' ' . $equipe->getPhrases()[0]->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()[0]->getPrix());
             }
             $sheet->getStyle('B' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)
