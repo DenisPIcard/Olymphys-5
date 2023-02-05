@@ -70,6 +70,10 @@ class EquipesadminCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
+        if (date('now')<$session->get('dateouverturesite')){
+            $editioned=$editioned-1;
+
+        }
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition'];
 
@@ -246,12 +250,15 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-
-        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
+        $edition= $session->get('edition');
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        if(date('now')<$session->get('dateouverturesite')){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
         $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
         $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $session->get('edition'));
+            ->setParameter('edition', $edition);
          if (isset($_REQUEST['filters'])){
              if (isset($_REQUEST['filters']['edition'])) {
                  $editionId = $_REQUEST['filters']['edition'];

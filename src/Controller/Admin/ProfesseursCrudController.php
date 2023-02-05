@@ -52,7 +52,9 @@ class ProfesseursCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editionEd = $session->get('edition')->getEd();
-
+        if (date('now')<$session->get('dateouverturesite')){
+            $editionEd=$editionEd-1;
+        }
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition'];
@@ -72,7 +74,10 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $editionId = $session->get('edition')->getId();
-
+        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
+        if(date('now')<$session->get('dateouverturesite')){
+            $editionId=$repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1])->getId();
+        }
         if (isset($_REQUEST['filters']['edition'])) {
 
             $editionId = $_REQUEST['filters']['edition'];
@@ -142,7 +147,9 @@ class ProfesseursCrudController extends AbstractCrudController
 
         if (!isset($_REQUEST['filters'])) {
             $edition = $session->get('edition');
-
+            if(date('now')<$session->get('dateouverturesite')){
+                $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            }
         } else {
             if (isset($_REQUEST['filters']['edition'])) {
 

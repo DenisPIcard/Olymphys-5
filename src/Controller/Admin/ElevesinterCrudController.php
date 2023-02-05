@@ -56,6 +56,9 @@ class ElevesinterCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $repositoryEquipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
         $editionEd = $session->get('edition')->getEd();
+        if (date('now')<$session->get('dateouverturesite')){
+            $editionEd=$editionEd-1;
+        }
         $equipeTitre = '';
         $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp . ' édition ');
         if (isset($_REQUEST['filters']['edition'])) {
@@ -97,7 +100,8 @@ class ElevesinterCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $equipeId = 'na';
-        $repositoryEquipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
+        $repositoryEquipe = $this->doctrine->getRepository(Equipesadmin::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $editionId = $session->get('edition')->getId();
         $equipeId = 'na';
 
@@ -113,7 +117,9 @@ class ElevesinterCrudController extends AbstractCrudController
         }
 
         if (((!isset($_REQUEST['filters'])) or (isset($_REQUEST['filters']['edition']))) and (!isset($_REQUEST['filters']['equipe']))){
-
+            if(date('now')<$session->get('dateouverturesite')){
+                $editionId=$repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1])->getId();
+            }
               if (isset($_REQUEST['filters']['edition'])){
                   $editionId = $_REQUEST['filters']['edition'];
                   //$editionEd = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
@@ -184,14 +190,17 @@ class ElevesinterCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-
+        $edition=$session->get('edition');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $repositoryEquipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
+        if(date('now')<$session->get('dateouverturesite')){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
         $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e');
         if (!isset($_REQUEST['filters'])) {
             $qb ->leftJoin('e.equipe', 'eq')
                 ->andWhere('eq.edition =:edition')
-                ->setParameter('edition', $session->get('edition'))
+                ->setParameter('edition', $edition)
                 ->orderBy('eq.numero', 'ASC');
 
         } else {
