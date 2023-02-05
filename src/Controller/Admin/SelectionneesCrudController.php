@@ -93,6 +93,7 @@ class SelectionneesCrudController extends AbstractCrudController
                 'choice_label'=>'getIntitule',
                 'placeholder'=>$visite==null?'choisir la visite':$visite->getIntitule()
             ]);
+
             $listeCadeaux=$this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
                 ->andWhere('c.attribue =:value')
                 ->setParameter('value', '0')

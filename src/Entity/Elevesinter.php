@@ -2,70 +2,42 @@
 
 namespace App\Entity;
 
+use App\Repository\ElevesinterRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Integer;
 
-/**
- * Eleves
- *
- * @ORM\Table(name="elevesinter")
- * @ORM\Entity(repositoryClass="App\Repository\ElevesinterRepository")
- */
+#[ORM\Entity(repositoryClass: ElevesinterRepository::class)]
 class Elevesinter
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="numsite", type="integer", nullable=true)
-     *
-     */
+    #[ORM\Column(type : Types::INTEGER, nullable: true)]
     private ?int $numsite = 0;
 
-    /**
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
-    /**
-     *
-     * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $prenom = null;
-    /**
-     * @ORM\Column(name="genre", type="string", length=1, nullable=true)
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $genre = null;
 
-    /**
-     *
-     * @ORM\Column(name="classe", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $classe = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
-     */
-    private ?Equipesadmin $equipe;
+    #[ORM\ManyToOne]
+    private ?Equipesadmin $equipe=null;
 
-    /**
-     *
-     * @ORM\Column(name="courriel", type="string",length=60, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $courriel = null;
 
-
-    /**
-     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="eleve", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="autorisationphotos_id",  referencedColumnName="id" , nullable=true)
-     */
+    #[ORM\OneToOne(targetEntity: Fichiersequipes::class, mappedBy: 'eleve', cascade : ['persist', 'remove'] )]
     private ?Fichiersequipes $autorisationphotos;
-
 
     public function __toString()
     {

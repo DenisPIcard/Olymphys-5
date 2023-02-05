@@ -2,78 +2,49 @@
 
 namespace App\Entity;
 
+use App\Repository\NotesRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Notes
- *
- * @ORM\Table(name="notes")
- * @ORM\Entity(repositoryClass="App\Repository\NotesRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: NotesRepository::class)]
 class Notes
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="exper", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $exper = 0;
 
-    /**
-     * @ORM\Column(name="demarche", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $demarche = 0;
 
-    /**
-     * @ORM\Column(name="oral", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $oral = 0;
 
-    /**
-     * @ORM\Column(name="origin", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $origin = 0;
 
-    /**
-     * @ORM\Column(name="Wgroupe", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT, name:'Wgroupe')]
     private ?int $wgroupe = 0;
 
-    /**
-     * @ORM\Column(name="ecrit", type="smallint", nullable=true)
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $ecrit = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
-     * @ORM\JoinColumn(name="equipe_id",nullable=false)
-     */
+   #[ORM\ManyToOne(targetEntity : Equipes::class, inversedBy:"notess")]
     private Equipes $equipe;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity : Jures::class, inversedBy:"notesj")]
     private Jures $jure;
 
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $total = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Coefficients::class)
-     * @ORM\JoinColumn(name="coefficients_id",  referencedColumnName="id",onDelete="CASCADE" )
-     */
-    private ?coefficients $coefficients;
-
+    #[ORM\ManyToOne(targetEntity: Coefficients::class) ]
+    #[ORM\JoinColumn(name:"coefficients_id",  referencedColumnName:"id",onDelete:"CASCADE" )]
+    private ?Coefficients $coefficients;
 
     const NE_PAS_NOTER = 0; // pour les écrits....
     const INSUFFISANT = 1;
@@ -326,6 +297,18 @@ class Notes
     public function setCoefficients(?coefficients $coefficients): self
     {
         $this->coefficients = $coefficients;
+
+        return $this;
+    }
+
+    public function getEquipenat(): ?Equipes
+    {
+        return $this->equipenat;
+    }
+
+    public function setEquipenat(?Equipes $equipenat): self
+    {
+        $this->equipenat = $equipenat;
 
         return $this;
     }

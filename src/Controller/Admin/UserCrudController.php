@@ -69,7 +69,6 @@ class UserCrudController extends AbstractCrudController
         $nom = TextField::new('nom');
         $prenom = TextField::new('prenom');
         $rne = TextField::new('rne');
-        $centrecia = AssociationField::new('centrecia')->setFormTypeOptions(['required'=>false]);
         $rneId = AssociationField::new('rneId', 'UAI')->setFormTypeOptions(['required'=>false]);
 
 
@@ -91,11 +90,11 @@ class UserCrudController extends AbstractCrudController
         if (Crud::PAGE_INDEX === $pageName) {
             return [$id, $email, $username, $nomPrenom, $roles, $isActive,];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rneId, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $centrecia, $autorisationphotos];
+            return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rneId, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $autorisationphotos];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$username, $email, $rolesedit, $password, $isActive, $nom, $prenom, $rneId, $centrecia, $adresse, $ville, $code, $phone];
+            return [$username, $email, $rolesedit, $password, $isActive, $nom, $prenom, $rneId,  $adresse, $ville, $code, $phone];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$username, $email, $password, $rolesedit, $isActive, $centrecia, $nom, $prenom, $rneId, $centrecia, $adresse, $ville, $code, $phone];
+            return [$username, $email, $password, $rolesedit, $isActive, $nom, $prenom, $rneId,  $adresse, $ville, $code, $phone];
         }
     }
 

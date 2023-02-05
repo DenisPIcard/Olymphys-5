@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cadeaux;
 use App\Entity\Coefficients;
+use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
@@ -65,9 +66,13 @@ class SecretariatjuryController extends AbstractController
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
-        $repositoryEquipesadmin = $em->getRepository(Equipesadmin::class);
-        $repositoryEleves = $em->getRepository(Elevesinter::class);
-        $repositoryRne = $em->getRepository(Rne::class);
+
+        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+                $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
+        $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);
+        $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
+        $repositoryRne = $this->doctrine->getRepository(Rne::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -140,12 +145,12 @@ class SecretariatjuryController extends AbstractController
     public function vueglobale(): Response
     {
         $em = $this->doctrine->getManager();
-        $repositoryNotes = $em->getRepository(Notes::class);
+        $repositoryNotes = $this->doctrine->getRepository(Notes::class);
 
-        $repositoryJures = $em->getRepository(Jures::class);
+        $repositoryJures =$this->doctrine->getRepository(Jures::class);
         $listJures = $repositoryJures->findAll();
 
-        $repositoryEquipes = $em->getRepository(Equipes::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipes::class);
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
@@ -198,9 +203,9 @@ class SecretariatjuryController extends AbstractController
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
 
-        $repositoryEquipes = $em->getRepository(Equipes::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipes::class);
 
-        $coefficients = $em->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+        $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
         $listEquipes = $repositoryEquipes->findAll();
 

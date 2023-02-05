@@ -2,36 +2,23 @@
 
 namespace App\Entity;
 
+use App\Repository\RepartprixRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Repartprix
- *
- * @ORM\Table(name="repartprix")
- * @ORM\Entity(repositoryClass="App\Repository\RepartprixRepository")
- */
+#[ORM\Entity(repositoryClass: RepartprixRepository::class)]
 class Repartprix
 {
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
-     */
-    private ?string $niveau = null;
+   #[ORM\Column(length: 255, nullable: true)]
+   private ?string $niveau = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nbreprix", type="smallint", nullable=false)
-     */
+    #[ORM\Column(type: Types::SMALLINT, nullable:false)]
     private int $nbreprix = 0;
 
     /**

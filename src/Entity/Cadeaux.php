@@ -2,53 +2,34 @@
 
 namespace App\Entity;
 
+use App\Repository\CadeauxRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Cadeaux
- *
- * @ORM\Table(name="cadeaux")
- * @ORM\Entity(repositoryClass="App\Repository\CadeauxRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: CadeauxRepository::class)]
 class Cadeaux
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     *
-     * @ORM\Column(name="contenu", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $contenu = null;
 
-    /**
-     * @ORM\Column(name="fournisseur", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $fournisseur = null;
-    /**
-     *
-     * @ORM\Column(name="montant", type="float", nullable=true)
-     */
-    private ?float $montant;
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="attribue", type="boolean")
-     */
-    private bool $attribue;
+    #[ORM\Column(type:Types::FLOAT, nullable:true)]
+    private ?float $montant=null;
 
-    /**
-     *
-     * @ORM\Column(name="raccourci", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(nullable:true)]
+    private ?bool $attribue=null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $raccourci = null;
+
+    #[ORM\OneToOne(mappedBy: 'cadeau', cascade: ['persist', 'remove'])]
+    private ?Equipes $equipe = null;
 
 
     public function __toString()
@@ -183,6 +164,28 @@ class Cadeaux
     public function setAttribue(bool $attribue): Cadeaux
     {
         $this->attribue = $attribue;
+
+        return $this;
+    }
+
+    public function getEquipe(): ?Equipes
+    {
+        return $this->equipe;
+    }
+
+    public function setEquipe(?Equipes $equipe): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($equipe === null && $this->equipenat !== null) {
+            $this->equipe->setCadeau(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($equipe !== null && $equipe->getCadeau() !== $this) {
+            $equipe->setCadeau($this);
+        }
+
+        $this->equipe = $equipenat;
 
         return $this;
     }

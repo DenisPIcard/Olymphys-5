@@ -7,32 +7,22 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ProfesseursRepository::class)
- */
+#[ORM\Entity(repositoryClass: ProfesseursRepository::class)]
+
 class Professeurs
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=user::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private user $user;
+    #[ORM\OneToOne(targetEntity: User::class, cascade :['persist', 'remove'])]
+    private User $user;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=equipesadmin::class, inversedBy="equipesstring")
-     */
+    #[ORM\ManyToMany(targetEntity: Equipesadmin::class, inversedBy : 'equipesstring')]
     private Collection $equipes;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable: true)]
     private ?string $equipesstring = null;
 
     public function __construct()

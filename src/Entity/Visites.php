@@ -3,37 +3,29 @@
 
 namespace App\Entity;
 
+use App\Repository\VisitesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Visites
- *
- * @ORM\Table(name="visites")
- * @ORM\Entity(repositoryClass="App\Repository\VisitesRepository")
- */
+#[ORM\Entity(repositoryClass: VisitesRepository::class)]
 class Visites
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="intitule", type="string", length=255, nullable=true)
-     */
+   #[ORM\Column(length: 255, nullable: true)]
     private ?string $intitule = null;
 
 
-    /**
-     * @ORM\Column(name="attribue", type="boolean", nullable=true)
-     */
+   #[ORM\Column(nullable: true)]
     public ?bool $attribue = false;
 
-    public function __toString()
-    {
+    #[ORM\OneToOne(mappedBy: 'visite', cascade: ['persist', 'remove'])]
+    private ?Equipes $equipe = null;
 
+    public function __toString() : string
+    {
         return $this->intitule;
     }
 
@@ -80,6 +72,28 @@ class Visites
     public function setAttribue(?bool $attribue): self
     {
         $this->attribue = $attribue;
+
+        return $this;
+    }
+
+    public function getEquipe(): ?Equipes
+    {
+        return $this->equipenat;
+    }
+
+    public function setEquipe(?Equipes $equipe): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($equipe === null && $this->equipe !== null) {
+            $this->equipe->setVisite(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($equipe !== null && $equipe->getVisite() !== $this) {
+            $equipe->setVisite($this);
+        }
+
+        $this->equipenat = $equipe;
 
         return $this;
     }

@@ -2,57 +2,39 @@
 
 namespace App\Entity;
 
+use App\Repository\PhrasesRepository;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Phrases
- *
- * @ORM\Table(name="phrases")
- * @ORM\Entity(repositoryClass="App\Repository\PhrasesRepository")
- */
+#[ORM\Entity(repositoryClass: PhrasesRepository::class)]
 class Phrases
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-
-    /**
-     * @ORM\Column(name="phrase", type="text", nullable=true)
-     * @Assert\Length(min=1, minMessage="La phrase amusante doit contenir au moins {{ limit }} caractère. ")
-     */
+    #[ORM\Column(type: Types::TEXT, nullable:true)]
+    #[Assert\Length(min: 1, minMessage: 'La phrase amusante doit contenir au moins {{ limit }} caractère.') ]
     private ?string $phrase = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
-     * @ORM\JoinColumn(name="liaison_id", nullable=true)
-     */
+    #[ORM\ManyToOne]
     private ?Liaison $liaison = null;
 
 
-    /**
-     * @ORM\Column(name="prix", type="text", nullable=true)
-     * @Assert\Length(min=1, minMessage="L'intitulé du prix amusant doit contenir au moins {{ limit }} caractère. ")
-     */
+    #[ORM\Column(type: Types::TEXT, nullable:true)]
+    #[Assert\Length(min: 1, minMessage: 'L \'intitullé amusant doit contenir au moins {{ limit }} caractère.') ]
     private ?string $prix = null;
 
-    /**
-     *@ORM\ManyToOne(targetEntity=Equipes::class, inversedBy="phrases")
-     */
+    #[ORM\ManyToOne(inversedBy: 'phrases')]
     private ?Equipes $equipe = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Jures::class, inversedBy="phrases")
-     */
+    #[ORM\ManyToOne(targetEntity: Jures::class, inversedBy: 'phrases')]
     private ?Jures $jure;
 
-
-    /**
+     /**
      * @return string|null
      */
     public function __toString() : string
@@ -168,7 +150,5 @@ class Phrases
 
         return $this;
     }
-
-
 
 }

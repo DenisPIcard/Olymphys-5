@@ -3,7 +3,6 @@
 namespace App\Entity\Odpf;
 
 use App\Repository\Odpf\OdpfImagescarouselsRepository;
-use App\Service\FichierNamer;
 use App\Service\ImagesCreateThumbs;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,42 +10,24 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- *OdpfImagescarousels
- * @ORM\Table(name="odpf_imagescarousels")
- * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
- *
- */
+#[ORM\Entity(repositoryClass: OdpfImagescarouselsRepository::class)]
 class OdpfImagescarousels
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(nullable: true)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?DateTime $updatedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(nullable: true)]
     private DateTime $createdAt;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?string $coment;
 
     /**
@@ -57,14 +38,11 @@ class OdpfImagescarousels
      */
     private ?File $imageFile = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfCarousels::class, inversedBy="images")
-     */
+
+    #[ORM\ManyToOne(targetEntity:OdpfCarousels::class,inversedBy: 'images')]
     private ?Odpfcarousels $carousel;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?int $numero = null;
 
 

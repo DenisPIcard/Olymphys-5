@@ -3,45 +3,31 @@
 namespace App\Entity;
 
 
+use App\Repository\OrgaciaRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 
-/**
- * Orgacia
- *
- * @ORM\Table(name="orgacia")
- * @ORM\Entity(repositoryClass="App\Repository\OrgaciaRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: OrgaciaRepository::class)]
+
 class Orgacia
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id=null;
 
 
 
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
-     * @ORM\JoinColumn(name ="centre_id", referencedColumnName = "id", nullable=true)
-     */
-    private ?Centrescia $centre;
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name ="user_id", referencedColumnName = "id", nullable=true)
-     */
-    private ?User $user;
+    #[ORM\ManyToOne(targetEntity: Centrescia::class)]
+    private ?Centrescia $centre=null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $user = null;
+    public function __toString():string
+    {
+        return $this->user->getNomPrenom().'('.$this->getCentre()->getCentre().') ';
+
+    }
 
     /**
      * Get id
@@ -75,7 +61,7 @@ class Orgacia
         return $this->centre;
     }
     /**
-     * Set centre
+     * Set user
      * @param User $user
      *
      */
@@ -85,7 +71,7 @@ class Orgacia
         return $this;
     }
     /**
-     * Get centre
+     * Get user
      *
      * @return User
      */

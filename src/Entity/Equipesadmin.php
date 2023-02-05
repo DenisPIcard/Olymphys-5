@@ -2,209 +2,114 @@
 
 namespace App\Entity;
 
+use App\Repository\EquipesadminRepository;
 use DateTime;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-
 use Doctrine\ORM\Mapping\JoinColumn;
-use phpDocumentor\Reflection\Types\Null_;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use phpDocumentor\Reflection\Types\Nullable;
 
-/**
- * equipesadmin
- * @Vich\Uploadable
- * @ORM\Table(name="equipesadmin")
- * @ORM\Entity(repositoryClass="App\Repository\EquipesadminRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+
+#[ORM\Entity(repositoryClass: EquipesadminRepository::class)]
+
 class Equipesadmin
 {
 
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id=null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
-     */
+    #[ORM\Column(length: 1, nullable: true)]
     private ?string $lettre = null;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="numero", type="smallint", nullable=true)
-     */
+
+    #[ORM\Column(type : Types::SMALLINT, nullable: true)]
     private ?int $numero;
 
 
-    /**
-     * @var boolean
-     * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?bool $selectionnee;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
-     */
-    private ?string $titreProjet;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $titreProjet=null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
-     */
-    private ?string $nomLycee;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomLycee=null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="denomination_lycee", type="string", length=255, nullable=true)
-     */
-    private ?string $denominationLycee;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $denominationLycee=null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
-     */
-    private ?string $lyceeLocalite;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lyceeLocalite=null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
-     */
-    private ?string $lyceeAcademie;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lyceeAcademie=null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
-     */
-    private ?string $prenomProf1;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prenomProf1 = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
-     */
-    private ?string $nomProf1;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomProf1 = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
-     */
-    private ?string $prenomProf2;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prenomProf2 = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
-     */
-    private ?string $nomProf2;
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="rne", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomProf2 = null;
 
-    private ?string $rne;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $rne=null;
 
-    /**
-     * @var Rne|null
-     * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     * @JoinColumn(name="rne_id_id", referencedColumnName="id", nullable=true)
-     */
-    private ?Rne $rneId;
+    #[ORM\ManyToOne]
+    private ?Rne $rneId =null;
+
+    #[ORM\ManyToOne]
+    private ?Centrescia $centre;
 
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
-     * @JoinColumn(name="centre_id", referencedColumnName="id", nullable=true)
-     */
-    private ?centrescia $centre;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $contribfinance = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $origineprojet = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $recompense = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $partenaire = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?DateTime $createdAt = null;
 
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $contribfinance;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $origineprojet;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $recompense;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $partenaire;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private ?DateTime $createdAt;
-
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @JoinColumn(name="id_prof1_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class )]
     private ?User $idProf1;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     * @JoinColumn(name="id_prof2_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne]
     private ?User $idProf2;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private ?string $description;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(nullable: true)]
     protected ?bool $inscrite = true;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER,nullable: true)]
     private ?int $nbeleves = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")
-     */
+    #[ORM\ManyToMany(targetEntity : Professeurs::class, mappedBy: 'equipes' )]
     private ?Collection $equipesstring;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-     * @JoinColumn(name="edition_id", referencedColumnName="id")
-     *
-     */
+    #[ORM\ManyToOne]
     private ?Edition $edition;
-   /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+
+    #[ORM\Column(nullable: true)]
     private ?bool $retiree = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
 
     public function __construct()
@@ -724,17 +629,7 @@ class Equipesadmin
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
 
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
 
     public function getInscrite(): ?bool
     {
@@ -744,6 +639,8 @@ class Equipesadmin
     public function setInscrite(bool $inscrite): self
     {
         $this->inscrite = $inscrite;
+
+
 
         return $this;
     }
@@ -794,6 +691,18 @@ class Equipesadmin
         if ($this->equipesstring->removeElement($equipesstring)) {
             $equipesstring->removeEquipe($this);
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

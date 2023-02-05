@@ -2,55 +2,38 @@
 
 namespace App\Entity;
 
+use App\Repository\PrixRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Prix
- *
- * @ORM\Table(name="prix")
- * @ORM\Entity(repositoryClass="App\Repository\PrixRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: PrixRepository::class)]
 class Prix
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="prix", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $prix = null;
 
-    /**
-     * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $niveau = null;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="attribue", type="boolean")
-     */
+    #[ORM\Column(nullable: true)]
     private ?bool $attribue = false;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $voix = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $intervenant = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $remisPar = null;
+
+    #[ORM\OneToOne(mappedBy: 'prix', cascade: ['persist', 'remove'])]
+    private ?Equipes $equipe = null;
 
     /**
      * Get id
@@ -169,6 +152,28 @@ class Prix
     public function setRemisPar(?string $remisPar): self
     {
         $this->remisPar = $remisPar;
+
+        return $this;
+    }
+
+    public function getEquipe(): ?Equipes
+    {
+        return $this->equipe;
+    }
+
+    public function setEquipe(?Equipes $equipe): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($equipe === null && $this->equipe !== null) {
+            $this->equipe->setPrix(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($equipe !== null && $equipe->getPrix() !== $this) {
+            $equipe->setPrix($this);
+        }
+
+        $this->equipe = $equipe;
 
         return $this;
     }
