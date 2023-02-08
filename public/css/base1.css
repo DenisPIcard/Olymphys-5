@@ -51,7 +51,7 @@
     background-color: #ffffff;
     color: black;
     font-family: 'Oxygen', sans-serif;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 400;
     text-transform: none;
 }
@@ -71,4 +71,17 @@
     position :relative;
     left :-285px;
     top :-34px;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/*https://stackoverflow.com/questions/5533636/add-a-horizontal-scrollbar-to-an-html-table */
+
+table tbody {
+    display: table;
+    width: 100%;
 }

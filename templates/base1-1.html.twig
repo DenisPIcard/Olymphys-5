@@ -10,26 +10,35 @@ Layout de départ des utils du site #}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Olymphys{% endblock %}</title>
 
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+              crossorigin="anonymous">
 
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+        <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+        <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/galeries.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/base1.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+              integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+              crossorigin="anonymous">
+    {% endblock %}
 </head>
 
 <body>
-{% block stylesheets %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
-    <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/odpf.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/base1.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/odpf-pages.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-          crossorigin="anonymous">
-{% endblock %}
+
+
+
+{% if is_granted('IS_IMPERSONATOR') %}
+    <div class="alert alert-warning" style="margin-bottom: 0;">
+        Vous êtes switché à un compte User
+        <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>
+    </div>
+{% endif %}
 <div class="container-fluid">
     <div id="barre_haut">
     </div>
@@ -40,42 +49,42 @@ Layout de départ des utils du site #}
             <div class="row  justify-content-end">
                 <nav>
                     <ul class="nav flex-column flex-md-row">
-                        <li class="nav-item dropdown">
+                        {# {% block navigation %} #}
+                        <li class="nav-item dropdown menu_haut">
 
-                            <a class="nav-link dropdown-toggle" href="#"
-                               data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">Equipes</a>
-
-                            <div class="dropdown-menu" >
-
-                                <a class="dropdown-item" href="Lien1">Accueil du jury</a>
-                                <a class="dropdown-item" href="Lien2" >Vue globale </a>
-                            </div>
-
-                        </li>
-
-
-                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">Utilisateur : moi</a>
-                            <div class="dropdown-menu ">
+                               aria-expanded="false">Accueil secrétariat</a>
 
-                                <a class="dropdown-item" href="Lien3">Voir mon profil</a>
+                            <div class="dropdown-menu login py-0" aria-labelledby="dropdownMenu1">>
+
+                                <a class="dropdown-item login py-0" href="{{ path('secretariatjury_accueil_jury') }}">Accueil du jury</a>
+                                <a class="dropdown-item login py-0" href="{{ path('secretariatjury_vueglobale') }}" >Vue globale </a>
                             </div>
+
                         </li>
 
+                        {# {% endblock %}#}
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <li class="nav-item dropdown menu_haut">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">Utilisateur : {{ app.user.prenomNom }}</a>
+                            <div class="dropdown-menu login py-0">
 
+                                <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
+                            </div>
+                            {% endif %}
 
-                        <li class="nav-item dropdown">
+                        </li>
+                        <li class="nav-item dropdown menurouge">
                             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                <a class="nav-link" href="Lien4" aria-haspopup="true"
+                                <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
                                    aria-expanded="false">Déconnexion</a>
 
                             {% else %}
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false">Connexion</a>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
-                                    <a class="dropdown-item " href="Lien5">Connectez
+                                <div class="dropdown-menu login" aria-labelledby="dropdownMenu3">
+                                    <a class="dropdown-item login py-0" href="{{ path('login') }}">Connectez
                                         vous si vous avez un compte</a>
                                 </div>
                             {% endif %}
@@ -92,7 +101,7 @@ Layout de départ des utils du site #}
 
             </div>
         </div>
-        </div>
+    </div>
     <br>
     <br>
 
@@ -108,7 +117,7 @@ Layout de départ des utils du site #}
     </div>
     {% block body %}
     {% endblock %}
-     <div class="row">
+    <div class="row">
 
         <div id="menu" class="col-md-8 col-lg-3 col-md-first">
             <ul class="nav flex-column nav-pills ml-1">
@@ -147,14 +156,14 @@ Layout de départ des utils du site #}
     <p>
 
     <div class="ml-3">Site créé avec <a href="https://www.symfony.com" target="_blank" rel="noopener"><img
-                style="margin-bottom: 0; vertical-align: middle;"
-                src="{{ asset('odpf/odpf-images/logo-symfony.png') }}" alt="symfony logo"
-                width="30">
-    </a> et le support de <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"
-                             rel="noopener"><img style="margin-bottom: 0; vertical-align: middle;"
-                                                 src="{{ asset('odpf/odpf-images/logo-PhpStorm.png') }}"
-                                                 alt="PhpStorm logo" width="30">
-    </a>
+                    style="margin-bottom: 0; vertical-align: middle;"
+                    src="{{ asset('odpf/odpf-images/logo-symfony.png') }}" alt="symfony logo"
+                    width="30">
+        </a> et le support de <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"
+                                 rel="noopener"><img style="margin-bottom: 0; vertical-align: middle;"
+                                                     src="{{ asset('odpf/odpf-images/logo-PhpStorm.png') }}"
+                                                     alt="PhpStorm logo" width="30">
+        </a>
     </div>
 
     <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a></div>

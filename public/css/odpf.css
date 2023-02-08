@@ -117,7 +117,7 @@
     font-family: 'Oxygen', sans-serif;
     font-size: 8px;
     font-weight: 400;
-    text-transform: none;
+    text-transform: uppercase;
 }
 
 .login a {

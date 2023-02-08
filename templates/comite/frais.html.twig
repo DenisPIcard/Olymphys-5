@@ -13,8 +13,36 @@
 {% endblock %}
 
 {% block body %}
-
-    <div class="well">
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Désignation</th>
+            <th scope="col">Déplacement</th>
+            <th scope="col">Repas</th>
+            <th scope="col">Fournitures</th>
+            <th scope="col">Poste et tél</th>
+            <th scope="col">Impressions</th>
+            <th scope="col">Autres</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{ form_start(form) }}
+        {% for i in 1..nblig %}
+            <tr>
+                <td> {{ form_widget(attribute(form, 'date'~i)) }}  </td>
+                <td> {{ form_widget(attribute(form, 'designation'~i)) }} </td>
+                <td> {{ form_widget(attribute(form, 'deplacement' ~i)) }} </td>
+                <td> {{ form_widget(attribute(form, 'repas' ~i)) }} </td>
+                <td> {{ form_widget(attribute(form, 'fournitures' ~i)) }} </td>
+                <td> {{ form_widget(attribute(form, 'poste' ~i)) }} </td>
+                <td> {{ form_widget(attribute(form, 'impressions' ~i)) }} </td>
+                <td> {{ form_widget(attribute(form, 'autres' ~i)) }} </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+   {#  <div class="well">
         <div class="table-responsive-sm">
             <table class="table">
                 <thead>
@@ -44,7 +72,7 @@
                         <td> {{ form_widget(attribute(form, 'autres' ~i)) }} </td>
                     </tr>
                 {% endfor %}
-            </table>
+            </table>#}
             {% set nblig = nblig +1 %}
             <p style=" color :blueviolet" >Si vous avez besoin d'une ligne supplémentaire <a href="{{ path('comite_frais',{nblig:nblig}) }}">cliquez ici</a>,  avant même de remplir le tableau.</p>
             <br>
