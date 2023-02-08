@@ -40,7 +40,7 @@ class Equipes
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $couleur = null;
 
-    #[ORM\OneToOne(inversedBy: 'equipe', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'equipe', cascade: ['persist', 'remove'])]
     private ?Visites $visite = null;
 
     #[ORM\OneToOne(inversedBy: 'equipe', cascade: ['persist', 'remove'])]
@@ -60,7 +60,11 @@ class Equipes
 
     #[ORM\OneToMany(mappedBy: 'equipe', targetEntity: Phrases::class)]
     private ?Collection $phrases;
+    public function __toString() :string
+    {
+        return $this->getEquipeinter()->getLettre().' - '.$this->getEquipeinter()->getTitreProjet();
 
+    }
     public function __construct()
     {
         $this->notess = new ArrayCollection();
@@ -175,6 +179,15 @@ class Equipes
 
     public function setVisite(?Visites $visite): self
     {
+        if ($visite === null && $this->visite !== null) {
+            $this->visite->setEquipe(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($visite !== null && $visite->getEquipe() !== $this) {
+            $visite->setEquipe($this);
+        }
+
         $this->visite = $visite;
 
         return $this;
@@ -270,7 +283,7 @@ class Equipes
     {
         if (!$this->phrases->contains($phrase)) {
             $this->phrases->add($phrase);
-            $phrase->setEquipenat($this);
+            $phrase->setEquipe($this);
         }
 
         return $this;
@@ -280,8 +293,8 @@ class Equipes
     {
         if ($this->phrases->removeElement($phrase)) {
             // set the owning side to null (unless already changed)
-            if ($phrase->getEquipenat() === $this) {
-                $phrase->setEquipenat(null);
+            if ($phrase->getEquipe() === $this) {
+                $phrase->setEquipe(null);
             }
         }
 

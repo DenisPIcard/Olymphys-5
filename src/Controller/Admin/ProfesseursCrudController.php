@@ -303,6 +303,8 @@ class ProfesseursCrudController extends AbstractCrudController
         foreach ($listProfs as $prof) {
 
 
+
+
             $sheet->setCellValue('A' . $ligne, $prof->getUser()->getNom())
                 ->setCellValue('B' . $ligne, $prof->getUser()->getPrenom())
                 ->setCellValue('C' . $ligne, $prof->getUser()->getAdresse())
@@ -310,11 +312,12 @@ class ProfesseursCrudController extends AbstractCrudController
                 ->setCellValue('E' . $ligne, $prof->getUser()->getCode())
                 ->setCellValue('F' . $ligne, $prof->getUser()->getEmail())
                 ->getCell('G' . $ligne)->setValueExplicit($prof->getUser()->getPhone(), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('H' . $ligne, $prof->getUser()->getRneId()->getRne())
-                ->setCellValue('I' . $ligne, $prof->getUser()->getRneId()->getNom())
-                ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune());
-            $sheet->setCellValue('K' . $ligne, $prof->getUser()->getRneId()->getAcademie());
-
+            if ($prof->getUser()->getRneId()!==null) {
+                $sheet->setCellValue('H' . $ligne, $prof->getUser()->getRneId()->getRne())
+                    ->setCellValue('I' . $ligne, $prof->getUser()->getRneId()->getNom())
+                    ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune())
+                    ->setCellValue('K' . $ligne, $prof->getUser()->getRneId()->getAcademie());
+            }
             $equipesstring = explode('-', $prof->getEquipesstring());
             $sheet->getRowDimension($ligne)->setRowHeight(12.5 * intval($equipesstring[0]));
             $sheet->getCell('L' . $ligne)->setValueExplicit($equipesstring[1], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);//'abc \n cde'

@@ -14,6 +14,7 @@ use App\Entity\Phrases;
 use App\Entity\Prix;
 use App\Entity\Repartprix;
 use App\Entity\Rne;
+use App\Entity\Visites;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
@@ -594,13 +595,71 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/edition_visites", name="secretariatjury_edition_visites")
      *
      */
-    public function edition_visites(): Response
+    public function edition_visites(Request $request): Response
     {
         $em = $this->doctrine->getManager();
-        $listEquipes = $em->getRepository(Equipes::class)
-                          ->getEquipesVisites();
-        //dd($listEquipes);
-        $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
+        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->findAll();
+
+        if ($request->get('form')){
+               $idEquipe=$request->get('form')['id'];
+               $idVisite=$request->get('form')['visite'];
+
+               $visite=$this->doctrine->getRepository(Visites::class)->findOneBy(['id'=>$idVisite]);
+               $equipe=$this->doctrine->getRepository(Equipes::class)->findOneBy(['id'=>$idEquipe]);
+               isset($request->get('form')['enregistrer'])?$action='enregistrer':$action='effacer';
+               if ($action=='enregistrer'){
+                    //$visite->setEquipe($equipe);
+                    $equipe->setVisite($visite);
+                    //$this->doctrine->getManager()->persist($visite);
+                    $this->doctrine->getManager()->persist($equipe);
+                    $this->doctrine->getManager()->flush();
+               }
+               if($action =='effacer'){
+                   $equipe->setVisite(null);
+                   //$visite->setEquipe(null);
+                   $this->doctrine->getManager()->persist($equipe);
+                   $this->doctrine->getManager()->flush();
+
+               }
+               $request->initialize();
+        }
+        $visitesNonAttr= $this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
+            ->where('v.equipe is NULL')
+
+            ->getQuery()->getResult();
+
+        $i=0;
+
+        foreach($listEquipes as $equipe) {
+                $placeholder='Choisir une visite';
+                if ($equipe->getVisite()!=null) {
+
+                    $visitesNonAttr[count($visitesNonAttr)] = $equipe->getVisite();
+                    $placeholder = $equipe->getVisite();
+                }
+                $form[$i] =$this->createFormBuilder($equipe)
+                    ->add('enregistrer', SubmitType::class)
+                    ->add('effacer',SubmitType::class)
+                    ->add('visite', EntityType::class,[
+                        'class'=>Visites::class,
+                        'choices'=>$visitesNonAttr,
+                        'choice_label'=>'getIntitule',
+                        'data'=>$equipe->getVisite(),
+                        'placeholder'=>$placeholder,
+                        'label'=>null
+
+                        ])
+                    ->add('id',HiddenType::class,['data'=>$equipe->getId()])
+                    ->getForm();
+                $Form[$i]=$form[$i]->createView();
+                if ($equipe->getVisite()!=null) {
+                    unset($visitesNonAttr[array_key_last($visitesNonAttr)]);
+                }
+
+            $i=$i+1;
+        }
+
+        $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes,'form'=>$Form));
         return new Response($content);
     }
     /**
