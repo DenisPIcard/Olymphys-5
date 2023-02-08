@@ -31,6 +31,10 @@
     color: black;
 }
 
+.menu_haut a:hover {
+    background: #111a21;
+    color: #ffffff;
+}
 .menurouge {
     background-color: #b1191d;
     font-family: 'Oxygen', sans-serif;

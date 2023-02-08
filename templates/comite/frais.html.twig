@@ -14,7 +14,7 @@
 
 {% block body %}
     <table>
-        <thead>
+
         <tr>
             <th scope="col">Date</th>
             <th scope="col">Désignation</th>
@@ -25,8 +25,8 @@
             <th scope="col">Impressions</th>
             <th scope="col">Autres</th>
         </tr>
-        </thead>
-        <tbody>
+
+
         {{ form_start(form) }}
         {% for i in 1..nblig %}
             <tr>
@@ -40,7 +40,7 @@
                 <td> {{ form_widget(attribute(form, 'autres' ~i)) }} </td>
             </tr>
         {% endfor %}
-        </tbody>
+
     </table>
    {#  <div class="well">
         <div class="table-responsive-sm">
