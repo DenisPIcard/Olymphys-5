@@ -151,10 +151,14 @@ class ElevesinterCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $edition= $this->requestStack->getSession()->get('edition');
+        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
+        }
         $listEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
+            ->setParameter('edition', $edition)
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
         $nom = TextField::new('nom');
@@ -201,6 +205,8 @@ class ElevesinterCrudController extends AbstractCrudController
             $qb ->leftJoin('e.equipe', 'eq')
                 ->andWhere('eq.edition =:edition')
                 ->setParameter('edition', $edition)
+                ->andWhere('eq.inscrite =:value')
+                ->setParameter('value','1')
                 ->orderBy('eq.numero', 'ASC');
 
         } else {
