@@ -27,6 +27,12 @@ Layout de départ des utils du site #}
           integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
           crossorigin="anonymous">
 {% endblock %}
+{% if is_granted('IS_IMPERSONATOR') %}
+    <div class="alert alert-warning" style="margin-bottom: 0;">
+        Vous êtes switché à un compte User
+        <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>
+    </div>
+{% endif %}
 <div class="container-fluid">
     <div id="barre_haut">
     </div>
@@ -34,11 +40,20 @@ Layout de départ des utils du site #}
         <div class="container bg-white">
 
 
-            <div class="row  justify-content-end">
+            <div class="row justify-content-end">
                 <nav>
                     <ul class="nav flex-column flex-md-row">
-                       {% block navigation %}
+
+                        <li class="nav-item dropdown menurouge">
+                            <a class="nav-link" href="{{ path('core_home') }}"  role="button" aria-haspopup="true"
+                               aria-expanded="false">Accueil site</a>
+
+                        </li>
+
+                        {% block navigation %}
                         {% endblock %}
+
+
                         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                         <li class="nav-item dropdown menu_haut">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
@@ -73,7 +88,7 @@ Layout de départ des utils du site #}
                 </nav>
             </div>
 
-            <div class="page-header">
+          {# #}  <div class="logo">
                 <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicompletblanc.png') }}" alt="logo des OdpF" width="300"/></a>
 
             </div>
@@ -81,19 +96,29 @@ Layout de départ des utils du site #}
         </div>
     <br>
     <br>
-
+    <br>
+    <br>
     <div class="row">
-        <div class="col-md-8 col-lg-3 col-md-first">
+        <div class="col-md-8 col-lg-5 col-md-first">
         </div>
-        <div class="col-md-9 order-md-last">
+        <div class="col-md-7 order-md-last">
             <h3> {% block titre3 %}
                 {% endblock %}
             </h3>
         </div>
 
     </div>
-    {% block body %}
-    {% endblock %}
+    <div class="row">
+        <div class="col-md-6 col-lg-2 col-md-first">
+        </div>
+        <div class="col-md-10 order-md-last">
+            {% block body %}
+            {% endblock %}
+
+        </div>
+
+    </div>
+
      <div class="row">
 
 

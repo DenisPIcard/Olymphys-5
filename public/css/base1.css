@@ -71,11 +71,11 @@
     text-decoration: none
 }
 
-.page-header {
-    position :relative;
-    left :-285px;
-    top :-34px;
+.logo {
+    position: absolute;
+
 }
+
 
 table {
     display: block;

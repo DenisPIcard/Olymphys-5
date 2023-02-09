@@ -3,9 +3,7 @@
 
 {% block titre3 %} Classement provisoire de mes équipes {% endblock %}
 {% block navigation %}
-    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span>
-        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
-    </button>
+
 
     {{ include ('cyberjury/navigation.html.twig') }}
 
@@ -16,7 +14,7 @@
     <div class="table-responsive-lg">
 
         <table class="table table-striped">
-            <thead>
+            <tbody>
             <tr>
                 <th>Rang</th>
                 <th>Éq.</th>
@@ -30,8 +28,8 @@
                 <th title="Le mémoire">MEM</th>
                 <th>Liens</th>
             </tr>
-            </thead>
-            <tbody>
+
+
             {% for equipes in listEquipes | sortByField('total') %}
                 <tr>
                     <th>{{ loop.index }}  </th>
