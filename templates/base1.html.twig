@@ -42,49 +42,46 @@ Layout de départ des utils du site #}
 
             <div class="row justify-content-end">
                 <nav>
-                    <ul class="nav flex-column flex-md-row">
 
-                        <li class="nav-item dropdown menurouge">
-                            <a class="nav-link" href="{{ path('core_home') }}"  role="button" aria-haspopup="true"
-                               aria-expanded="false">Accueil site</a>
+                        <ul class="nav flex-column flex-md-row">
 
-                        </li>
+                            <li class="nav-item dropdown menurouge">
+                                <a class="nav-link" href="{{ path('core_home') }}"  role="button" aria-haspopup="true"
+                                   aria-expanded="false">Accueil site</a>
 
-                        {% block navigation %}
-                        {% endblock %}
+                            </li>
 
-
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        <li class="nav-item dropdown menu_haut">
-                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false"> {{ app.user.prenomNom }}</a>
-                            <div class="dropdown-menu ">
-
-                                <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
-                            </div>
-                        </li>
-                        {% endif %}
-
-
-
-                        <li class="nav-item dropdown menurouge">
+                            {% block navigation %}
+                            {% endblock %}
                             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
-                                   aria-expanded="false">Déconnexion</a>
-
-                            {% else %}
+                            <li class="nav-item dropdown menu_haut">
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">Connexion</a>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
-                                    <a class="dropdown-item " href="{{ path('login') }}">Connectez
-                                        vous si vous avez un compte</a>
+                                   aria-expanded="false"> {{ app.user.prenomNom }}</a>
+                                <div class="dropdown-menu ">
+
+                                    <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
                                 </div>
+                            </li>
                             {% endif %}
 
-                        </li>
+                            <li class="nav-item dropdown menurouge">
+                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                    <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
+                                       aria-expanded="false">Déconnexion</a>
+
+                                {% else %}
+                                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Connexion</a>
+                                    <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
+                                        <a class="dropdown-item " href="{{ path('login') }}">Connectez
+                                            vous si vous avez un compte</a>
+                                    </div>
+                                {% endif %}
+                            </li>
 
 
-                    </ul>
+                        </ul>
+
                 </nav>
             </div>
 
@@ -98,25 +95,32 @@ Layout de départ des utils du site #}
     <br>
     <br>
     <br>
+    <br>
+    <br>
+    <br>
     <div class="row">
-        <div class="col-md-8 col-lg-5 col-md-first">
+        <div class="col-md-8 col-lg-4 col-md-first">
         </div>
-        <div class="col-md-7 order-md-last">
+        <div class="col-md-8 order-md-last">
             <h3> {% block titre3 %}
                 {% endblock %}
             </h3>
         </div>
 
+
     </div>
+    <br>
+    <br>
     <div class="row">
-        <div class="col-md-6 col-lg-2 col-md-first">
+        <div class="col-md-6 col-lg-1 col-md-first">
         </div>
-        <div class="col-md-10 order-md-last">
+        <div class="col-md-10 ">
             {% block body %}
             {% endblock %}
 
         </div>
-
+        <div class="col-md-1 order-md-last">
+        </div>
     </div>
 
      <div class="row">

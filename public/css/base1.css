@@ -76,6 +76,11 @@
 
 }
 
+.anyClass {
+    /*width: 700px;*/
+    overflow-x: scroll;
+}
+
 
 table {
     display: block;
