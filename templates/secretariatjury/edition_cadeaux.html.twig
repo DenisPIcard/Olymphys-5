@@ -20,21 +20,21 @@
 {% block body %}
     <div class="container">
         <table class="table table-responsive">
-            <thead>
+
                 <tr>
                     <th>Lettre</th>
                     <th>Prix</th>
                     <th style="width: 400px">Titre projet</th>
                     <th>{{ include ("secretariatjury/nav_equipe.html.twig") }}</th>
                 </tr>
-            </thead>
-            <tbody>
+
+
                 <tr>
                     <td><span  class="{{ class }}">{{ equipe.equipeinter.lettre }} </span></td>
                     <td>{{ equipe.classement }}</td>
                     <td>{{ equipe.equipeinter.titreProjet }}</td>
                 </tr>
-            </tbody>
+
         </table>
 
 

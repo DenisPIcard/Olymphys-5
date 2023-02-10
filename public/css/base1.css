@@ -82,11 +82,7 @@
 }
 
 
-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-}
+
 
 /*https://stackoverflow.com/questions/5533636/add-a-horizontal-scrollbar-to-an-html-table */
 
