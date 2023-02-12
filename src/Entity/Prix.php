@@ -35,11 +35,6 @@ class Prix
     #[ORM\OneToOne(mappedBy: 'prix', cascade: ['persist', 'remove'])]
     private ?Equipes $equipe = null;
 
-    /**
-     * Get id
-     *
-     * @return string
-     */
     public function __toString(): string
     {
 
@@ -52,13 +47,7 @@ class Prix
         return $this->id;
     }
 
-    /**
-     * Set prix
-     *
-     * @param string $prix
-     *
-     * @return Prix
-     */
+
     public function setPrix(string $prix): Prix
     {
         $this->prix = $prix;
@@ -73,25 +62,13 @@ class Prix
     }
 
 
-    /**
-     * Set niveau
-     *
-     * @param string $niveau
-     *
-     * @return Prix
-     */
-    public function setNiveau(string $niveau): Prix
+     public function setNiveau(string $niveau): Prix
     {
         $this->niveau = $niveau;
 
         return $this;
     }
 
-    /**
-     * Get niveau
-     *
-     * @return string|null
-     */
     public function getNiveau(): ?string
     {
         return $this->niveau;
@@ -105,11 +82,6 @@ class Prix
         return $this;
     }
 
-    /**
-     * Get attribue
-     *
-     * @return bool|null
-     */
     public function getAttribue(): ?bool
     {
         return $this->attribue;
@@ -127,11 +99,6 @@ class Prix
         return $this;
     }
 
-    /**
-     * Get intervenant
-     *
-     *
-     */
     public function getIntervenant(): ?string
     {
         return $this->intervenant;
@@ -163,15 +130,6 @@ class Prix
 
     public function setEquipe(?Equipes $equipe): self
     {
-        // unset the owning side of the relation if necessary
-        if ($equipe === null && $this->equipe !== null) {
-            $this->equipe->setPrix(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($equipe !== null && $equipe->getPrix() !== $this) {
-            $equipe->setPrix($this);
-        }
 
         $this->equipe = $equipe;
 

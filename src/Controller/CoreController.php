@@ -35,11 +35,9 @@ class CoreController extends AbstractController
     }
 
 
-    /**
-     * @Route("/", name="core_home")
-     * @throws Exception
-     */
-    public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
+    #[Route("/", name:"core_home")]
+    // * @throws Exception
+     public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
     {
 
         $user = $this->getUser();
@@ -101,9 +99,7 @@ class CoreController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/core/pages,{choix}", name="core_pages")
-     */
+    #[Route("/core/pages,{choix}", name:"core_pages")]
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
     {     /*  if($this->requestStack->getSession()->get('edition') == false){
                 $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
@@ -163,9 +159,7 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    /**
-     * @Route("/core/actus,{tourn}", name="core_actus")
-     */
+    #[Route("/core/actus,{tourn}", name:"core_actus")]
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
         try {
@@ -223,9 +217,7 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    /**
-     * @Route("/core/faq,{tourn}", name="core_faq")
-     */
+    #[Route("/core/faq,{tourn}", name:"core_faq")]
     public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
         try {
@@ -279,9 +271,8 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    /**
-     * @Route("/core/mentions,{mention}", name="core_mentions")
-     */
+    #[Route("/core/mentions,{mention}", name:"core_mentions")]
+
     public function mentions(Request $request, ManagerRegistry $doctrine, $mention): Response
     {
         try {

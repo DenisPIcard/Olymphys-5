@@ -56,102 +56,58 @@ class Elevesinter
         return $NomPrenom;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Get numsite
-     *
-     * @return integer
-     */
     public function getNumsite(): ?int
     {
         return $this->numsite;
     }
 
-    /**
-     * Set numsite
-     *
-     * @var integer
-     */
+
     public function setNumsite($numsite)
     {
         $this->numsite = $numsite;
     }
 
-    /**
-     * Get nom
-     *
-     * @return string
-     */
+
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return Elevesinter
-     */
-    public function setNom(string $nom): Elevesinter
+
+    public function setNom(?string $nom): Elevesinter
     {
         $this->nom = $nom;
 
         return $this;
     }
 
-    /**
-     * Get prenom
-     *
-     * @return string
-     */
+
     public function getPrenom(): ?string
     {
         return $this->prenom;
     }
 
-    /**
-     * Set prenom
-     *
-     * @param string $prenom
-     *
-     * @return Elevesinter
-     */
-    public function setPrenom(string $prenom): Elevesinter
+
+    public function setPrenom(?string $prenom): Elevesinter
     {
         $this->prenom = $prenom;
 
         return $this;
     }
 
-    /**
-     * Get classe
-     *
-     * @return string
-     */
+
     public function getClasse(): ?string
     {
         return $this->classe;
     }
 
-    /**
-     * Set classe
-     *
-     * @param string $classe
-     *
-     * @return Elevesinter
-     */
-    public function setClasse(string $classe): Elevesinter
+
+    public function setClasse(?string $classe): Elevesinter
     {
         $this->classe = $classe;
 
@@ -163,7 +119,7 @@ class Elevesinter
         return $this->equipe;
     }
 
-    public function setEquipe($Equipe): Elevesinter
+    public function setEquipe(?Equipesadmin $Equipe): Elevesinter
     {
         $this->equipe = $Equipe;
 
@@ -175,7 +131,7 @@ class Elevesinter
         return $this->courriel;
     }
 
-    public function setCourriel($courriel): Elevesinter
+    public function setCourriel(?string $courriel): Elevesinter
     {
         $this->courriel = $courriel;
 
@@ -187,7 +143,7 @@ class Elevesinter
         return $this->genre;
     }
 
-    public function setGenre($genre): Elevesinter
+    public function setGenre(?string $genre): Elevesinter
     {
         $this->genre = $genre;
 
@@ -199,7 +155,7 @@ class Elevesinter
         return $this->autorisationphotos;
     }
 
-    public function setAutorisationphotos($autorisation): Elevesinter
+    public function setAutorisationphotos(?Fichiersequipes $autorisation): Elevesinter
     {
         $this->autorisationphotos = $autorisation;
 

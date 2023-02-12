@@ -12,84 +12,56 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfEditionsPasseesRepository::class)
- */
+#[ORM\Entity(repositoryClass:OdpfEditionsPasseesRepository::class)]
 class OdpfEditionsPassees
 {
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?int $edition = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $annee = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $pseudo = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $lieu = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $ville = null;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $dateCia = null;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $dateCn = null;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $dateinscription = null;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $nomParrain = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $titreParrain = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="odpfEditionsPassees")
-     */
+    #[ORM\OneToMany(targetEntity:OdpfEquipesPassees::class, mappedBy:"odpfEditionsPassees")]
     private Collection $odpfEquipesPassees;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $photoParrain = null;
 
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private $lienparrain; //c'est l'université ou la structure où travaille le parrain
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private $affiche;
 
 
@@ -201,10 +173,7 @@ class OdpfEditionsPassees
         return $this;
     }
 
-    /**
-     * @return Collection|OdpfEquipesPassees[]
-     */
-    public function getOdpfEquipesPassees(): Collection
+    public function getOdpfEquipesPassees(): ?Collection
     {
         return $this->odpfEquipesPassees;
     }

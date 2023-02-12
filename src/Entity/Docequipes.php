@@ -9,50 +9,32 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=DocequipesRepository::class)
- */
+#[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: DocequipesRepository::class)]
+
 class Docequipes
 {
-    /**
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $fichier = null;
 
-    /**
-     *
-     * @var File
-     * @Vich\UploadableField(mapping="docequipes", fileNameProperty="fichier")
-     */
+    #[Vich\UploadableField(mapping: 'docequipes', fileNameProperty: 'fichier')]
     private ?File $fichierFile = null;
 
-    /**
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     */
-    private ?DateTime $updatedAt;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt=null;
 
-    /**
-     * @ORM\Column(type="string", length=255,nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
 

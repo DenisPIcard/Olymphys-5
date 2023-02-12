@@ -175,17 +175,7 @@ class Cadeaux
 
     public function setEquipe(?Equipes $equipe): self
     {
-        // unset the owning side of the relation if necessary
-        if ($equipe === null && $this->equipenat !== null) {
-            $this->equipe->setCadeau(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($equipe !== null && $equipe->getCadeau() !== $this) {
-            $equipe->setCadeau($this);
-        }
-
-        $this->equipe = $equipenat;
+       $this->equipe = $equipe;
 
         return $this;
     }

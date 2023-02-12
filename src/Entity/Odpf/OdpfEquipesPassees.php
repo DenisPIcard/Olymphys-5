@@ -5,66 +5,43 @@ namespace App\Entity\Odpf;
 use App\Repository\Odpf\OdpfEquipesPasseesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfEquipesPasseesRepository::class)
- */
+#[ORM\Entity(repositoryClass: OdpfEquipesPasseesRepository::class)]
+
 class OdpfEquipesPassees
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = 0;
 
-    /**
-     * @ORM\Column(type="integer", length=255, nullable=true)
-     */
-    private ?int $numero;
+    #[ORM\Column( length:255, nullable:true)]
+    private ?int $numero = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $lettre = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $lycee = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $ville = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $academie = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $titreProjet = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $profs = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?string $eleves = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column( length:255, nullable:true)]
     private ?bool $selectionnee = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class, inversedBy="odpfEquipesPassees")
-     */
+    #[ORM\ManyToOne(targetEntity:OdpfEditionsPassees::class, inversedBy:"odpfEquipesPassees")]
     private ?OdpfEditionsPassees $editionspassees = null;
 
     public function __toString()

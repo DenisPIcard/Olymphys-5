@@ -13,55 +13,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=OdpfFichierspassesRepository::class)
- */
+#[Vich\Uploadable]
+#[ORM\Entity(repositoryClass:OdpfFichierspassesRepository::class)]
+
 class OdpfFichierspasses
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id=null;
 
-    /**
-     * @var OdpfEditionsPassees|null
-     * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class)
-     */
-    private ?\App\Entity\Odpf\OdpfEditionsPassees $editionspassees=null;
+    #[ORM\ManyToOne(targetEntity:OdpfEditionsPassees::class)]
+    private ?OdpfEditionsPassees $editionspassees=null;
 
-    /**
-     * @var OdpfEquipesPassees|null
-     * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
-     */
+    #[ORM\ManyToOne(targetEntity:OdpfEquipesPassees::class)]
     private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee=null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(nullable:true)]
     private ?int $typefichier;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable:true)]
     private ?string $nomfichier=null;
 
-    /**
-     *
-     * @var File
-     * @Vich\UploadableField(mapping="odpfFichierspasses", fileNameProperty="nomfichier")
-     *
-     *
-     */
-    private ?File $fichierFile = null;
+    #[Vich\UploadableField(mapping:"odpfFichierspasses", fileNameProperty:"nomfichier")]
+     private ?File $fichierFile = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $updatedAt;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt=null;
 
     public function __construct()
     {
@@ -70,14 +48,10 @@ class OdpfFichierspasses
 
     }
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(length:255, nullable:true)]
     private ?string $nomautorisation;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(nullable :true)]
     private ?bool $national;
 
     public function getId(): ?int
@@ -157,12 +131,12 @@ class OdpfFichierspasses
     }
 
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

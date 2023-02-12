@@ -36,9 +36,7 @@ class OdpfDashboardController extends AbstractDashboardController
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    /**
-     * @Route("/odpfadmin", name="odpfadmin")
-     */
+    #[Route("/odpfadmin", name:"odpfadmin")]
     public function index(): Response
     {
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null) {

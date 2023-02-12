@@ -14,12 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ArchivesController extends AbstractController
 {
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     *
-     * @Route("/archives/liste_fichiers_photos,{choix}", name="archives_fichiers_photos")
-     *
-     */
+    #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
+    #[Route("/archives/liste_fichiers_photos,{choix}", name:"archives_fichiers_photos")]
     public function liste_fichiers_photos(Request $request, $choix)
     {
         $idedition = $request->query->get('sel');

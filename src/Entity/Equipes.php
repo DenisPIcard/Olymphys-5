@@ -60,6 +60,7 @@ class Equipes
 
     #[ORM\OneToMany(mappedBy: 'equipe', targetEntity: Phrases::class)]
     private ?Collection $phrases;
+
     public function __toString() :string
     {
         return $this->getEquipeinter()->getLettre().' - '.$this->getEquipeinter()->getTitreProjet();
@@ -199,10 +200,18 @@ class Equipes
     }
 
     public function setCadeau(?Cadeaux $cadeau): self
-    {
-        $this->cadeau = $cadeau;
+        {
+            if ($cadeau === null && $this->cadeau !== null) {
+            $this->cadeau->setEquipe(null);
+            }
 
-        return $this;
+        // set the owning side of the relation if necessary
+            if ($cadeau !== null && $cadeau->getEquipe() !== $this) {
+                $cadeau->setEquipe($this);
+            }
+            $this->cadeau = $cadeau;
+
+            return $this;
     }
 
     public function getPrix(): ?Prix
@@ -211,7 +220,15 @@ class Equipes
     }
 
     public function setPrix(?Prix $prix): self
-    {
+    {   
+        if ($prix === null && $this->prix !== null) {
+        $this->prix->setEquipe(null);
+    }
+
+        // set the owning side of the relation if necessary
+        if ($prix !== null && $prix->getEquipe() !== $this) {
+            $prix->setEquipe($this);
+        }
         $this->prix = $prix;
 
         return $this;
@@ -300,4 +317,6 @@ class Equipes
 
         return $this;
     }
+
+
 }

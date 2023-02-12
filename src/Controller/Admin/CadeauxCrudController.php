@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Cadeaux;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -35,15 +36,15 @@ class CadeauxCrudController extends AbstractCrudController
         $attribue = BooleanField::new('attribue');
         $raccourci = TextField::new('raccourci');
         $id = IntegerField::new('id', 'ID');
-
+        $equipe=AssociationField::new('equipe');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $contenu, $fournisseur, $montant, $attribue, $raccourci];
+            return [$id, $contenu, $fournisseur, $montant, $attribue, $equipe, $raccourci];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $contenu, $fournisseur, $montant, $attribue, $raccourci];
+            return [$id, $contenu, $fournisseur, $montant, $attribue, $equipe, $raccourci];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$contenu, $fournisseur, $montant, $attribue, $raccourci];
+            return [$contenu, $fournisseur, $montant, $attribue, $equipe, $raccourci];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$contenu, $fournisseur, $montant, $attribue, $raccourci];
+            return [$contenu, $fournisseur, $montant, $attribue,$equipe, $raccourci];
         }
     }
 }

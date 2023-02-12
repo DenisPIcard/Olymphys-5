@@ -358,7 +358,7 @@ class LivredorController extends AbstractController
 
         $idedition = explode('-', $choix)[0];
         $type = explode('-', $choix)[1];
-        $edition = $repositoryEdition = $this->doctrine
+        $edition =$this->doctrine
             ->getRepository(OdpfEditionsPassees::class)->findOneById(['id' => $idedition]);
 
         $phpWord = new  PhpWord();

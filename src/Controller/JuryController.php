@@ -21,6 +21,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use App\Entity\Fichiersequipes;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -44,10 +45,8 @@ class JuryController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-
-    /**
-     * @Route("cyberjury/accueil", name="cyberjury_accueil")
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("cyberjury/accueil", name:"cyberjury_accueil")]
     public function accueil(Request $request): Response
 
     {
@@ -122,11 +121,8 @@ class JuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"})
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route( "/infos_equipe/{id}", name :"cyberjury_infos_equipe",requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
         $repositoryJures = $this->doctrine
@@ -204,12 +200,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/lescadeaux", name="cyberjury_lescadeaux")
-     *
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/lescadeaux", name:"cyberjury_lescadeaux")]
     public function lescadeaux(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
@@ -235,12 +227,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/lesprix", name="cyberjury_lesprix")
-     *
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/lesprix", name:"cyberjury_lesprix")]
     public function lesprix(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
@@ -271,12 +259,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("palmares", name="cyberjury_palmares")
-     *
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("palmares", name:"cyberjury_palmares")]
     public function palmares(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
@@ -328,14 +312,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/evaluer_une_equipe/{id}", name="cyberjury_evaluer_une_equipe", requirements={"id_equipe"="\d{1}|\d{2}"})
-     *
-     * @throws NonUniqueResultException
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/evaluer_une_equipe/{id}", name:"cyberjury_evaluer_une_equipe", requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function evaluer_une_equipe(Request $request, Equipes $equipe, $id): RedirectResponse|Response
     {
         $user = $this->getUser();
@@ -441,13 +419,8 @@ class JuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/tableau_de_bord", name ="cyberjury_tableau_de_bord")
-     *
-     * @throws NonUniqueResultException
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/tableau_de_bord", name:"cyberjury_tableau_de_bord")]
     public function tableau(): Response
     {
         $user = $this->getUser();
@@ -512,13 +485,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     *
-     * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/liste_phrases_amusantes/{id}", name : "cyberjury_phrases_amusantes",requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function liste_phrases_amusantes(Request $request, $id): Response
     {
         $user = $this->getUser();
@@ -569,14 +537,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     *
-     * @Route("/edit_phrases/{id}", name = "cyberjury_edit_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
-     * @throws NonUniqueResultException
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/edit_phrases/{id}", name : "cyberjury_edit_phrases_amusantes",requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function edit_phrases(Request $request, Equipes $equipe, $id): RedirectResponse|Response
     {
 
@@ -641,13 +603,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     *
-     * @Route("/supr_phrase/{idphrase}", name = "cyberjury_suprim_phrase_amusante")
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/supr_phrase/{idphrase}", name : "cyberjury_suprim_phrase_amusante")]
     public function supr_phrase(Request $request, $idphrase): Response
     {
         $user = $this->getUser();
@@ -660,7 +617,7 @@ class JuryController extends AbstractController
         $phrase = $this->doctrine->getRepository(Phrases::class)->findOneBy(['id' => $idphrase]);
         $equipe = $phrase->getEquipe();
         $idEquipe = $equipe->getId();
-        $equipe->removePhrases($phrase);
+        $equipe->removePhrase($phrase);
         $phrase->setJure(null);
         $phrase->setEquipe(null);
         $this->em->remove($phrase);
