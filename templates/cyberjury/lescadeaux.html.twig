@@ -11,14 +11,13 @@
 
     <div>
         <table class="table table-striped">
-            <thead>
+
             <tr class="danger">
                 <th>Cadeau</th>
                 <th>Offert par</th>
-                <th>Valeur</th>
+
             </tr>
-            </thead>
-            <tbody>
+
             {% for cadeaux in ListCadeaux %}
                 <tr class="danger">
                     <td> {{ cadeaux.contenu }} </td>
@@ -26,7 +25,7 @@
 
                 </tr>
             {% endfor %}
-            </tbody>
+
         </table>
     </div>
 
