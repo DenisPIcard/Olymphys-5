@@ -11,14 +11,14 @@
     <div class="container">
 
         <table class="table table-striped">
-
+            <thead>
             <tr>
                 <th>Lettre</th>
                 <th>Titre projet</th>
                 <th>Visite de laboratoire</th>
             </tr>
-
-
+            </thead>
+            <tbody>
             {% for equipes in listEquipes %}
                 <tr>
                     <th><span class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }} </span></th>
@@ -29,7 +29,7 @@
                     </td>
                 </tr>
             {% endfor %}
-
+            </tbody>
 
         </table>
     </div>

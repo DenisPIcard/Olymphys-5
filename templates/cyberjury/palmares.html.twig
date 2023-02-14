@@ -14,53 +14,55 @@
         Les {{ NbrePremierPrix }} premiers prix
     </h2>
     <table class="table table-striped">
-
+        <thead>
         <tr class="danger">
             <th>Équipe</th>
             <th>Titre du projet</th>
         </tr>
-
+        <tbody
         {% for premier in ListPremPrix %}
             <tr class="danger">
                 <td><span class="btn btn-primary btn-lg"> {{ premier.equipeinter.lettre }}</span></td>
                 <td>{{ premier.equipeinter.TitreProjet }}</td>
             </tr>
         {% endfor %}
-
+        </tbody>
     </table>
     <h2>
         Les {{ NbreDeuxPrix }} deuxièmes prix
     </h2>
     <table class="table table-striped">
-
+        <thead>
         <tr class="warning">
             <th>Équipe</th>
             <th>Titre du projet</th>
         </tr>
-
+        </thead>
+        <tbody>
         {% for deux in ListDeuxPrix %}
             <tr class="warning">
                 <td><span class="btn btn-primary btn-lg"> {{ deux.equipeinter.lettre }} </span></td>
                 <td>{{ deux.equipeinter.TitreProjet }}</td>
             </tr>
         {% endfor %}
-
+        </tbody>
     </table>
 
     <h2> Les {{ NbreTroisPrix }} troisièmes prix </h2>
     <table class="table table-striped">
-
+        <thead>
         <tr class="active">
             <th>Équipe</th>
             <th>Titre du projet</th>
         </tr>
-
+        </thead>
+        <tbody>
         {% for trois in ListTroisPrix %}
             <tr class="active">
                 <td><span class="btn btn-primary btn-lg">{{ trois.equipeinter.lettre }}</span></td>
                 <td>{{ trois.equipeinter.TitreProjet }}</td>
             </tr>
         {% endfor %}
-
+        </tbody>
     </table>
 {% endblock %}

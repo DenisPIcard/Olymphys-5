@@ -9,25 +9,26 @@
 
 {% block body %}
 
-    <div>
-        <table class="table table-striped">
 
-            <tr class="danger">
+        <table class="table table-striped">
+            <thead>
+            <tr>
                 <th>Cadeau</th>
                 <th>Offert par</th>
 
             </tr>
-
+            </thead>
+            <tbody>
             {% for cadeaux in ListCadeaux %}
-                <tr class="danger">
+                <tr>
                     <td> {{ cadeaux.contenu }} </td>
                     <td> {{ cadeaux.fournisseur }} </td>
 
                 </tr>
             {% endfor %}
-
+            </tbody>
         </table>
-    </div>
+
 
 
 

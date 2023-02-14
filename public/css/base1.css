@@ -76,17 +76,21 @@
 
 }
 
-.anyClass {
+.frais {
     /*width: 700px;*/
     overflow-x: scroll;
 }
 
 
-
+/*
+.table-striped thead,
+.table-striped tbody,
+.table-striped tr,
+.table-striped td,
+.table-striped th {
+    display: block;
+}
+*/
 
 /*https://stackoverflow.com/questions/5533636/add-a-horizontal-scrollbar-to-an-html-table */
 
-table tbody {
-    display: table;
-    width: 100%;
-}

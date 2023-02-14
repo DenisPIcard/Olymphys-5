@@ -53,19 +53,20 @@
     {# <div class="well"> #}
     <h2> Les {{ NbreTroisPrix }} troisièmes prix </h2>
     <table class="table table-striped">
-
+        <thead>
         <tr class="active">
             <th>Équipe</th>
             <th>Titre du projet</th>
         </tr>
-
+        </thead>
+        <tbody>
         {% for trois in ListTroisPrix %}
             <tr class="active">
                 <td><span class="btn btn-primary btn-lg">{{ trois.lettre }}</span></td>
                 <td>{{ trois.TitreProjet }}</td>
             </tr>
         {% endfor %}
-
+        </tbody>
     </table>
     {# </div> #}
 {% endblock %}

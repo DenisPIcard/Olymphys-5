@@ -15,12 +15,13 @@
 
     <div>
         <table class="table table-striped">
-
+            <thead>
             <tr class="danger">
                 <th>Numéro</th>
                 <th>Intitulé du prix</th>
             </tr>
-
+            </thead>
+            <tbody>
             {% for prix in ListPremPrix %}
                 <tr class="danger">
                     <td>
@@ -31,7 +32,7 @@
                     </td>
                 </tr>
             {% endfor %}
-
+            </tbody>
         </table>
     </div>
 

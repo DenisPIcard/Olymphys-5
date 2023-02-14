@@ -67,12 +67,13 @@
     </h2>
     <div>
         <table class="table table-striped">
-
+            <thead>
             <tr class="active">
                 <th>Numéro</th>
                 <th>Intitulé du prix</th>
             </tr>
-
+            </thead>
+            <tbody>
             {% for prix in ListTroisPrix %}
                 <tr class="active">
                     <td>
@@ -84,7 +85,7 @@
                     </td>
                 </tr>
             {% endfor %}
-
+            </tbody>
         </table>
     </div>
 {% endblock %}

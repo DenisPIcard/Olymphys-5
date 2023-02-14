@@ -843,6 +843,7 @@ class SecretariatjuryController extends AbstractController
 
         $listEquipes = $em->getRepository(Equipes::class)
                           ->getEquipesPalmares();
+       dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_palmares_complet.html.twig',
             array('listEquipes' => $listEquipes,
                 'lesEleves' => $lesEleves,

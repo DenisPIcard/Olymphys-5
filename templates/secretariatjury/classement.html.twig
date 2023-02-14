@@ -12,14 +12,15 @@
     <div class="table-responsive">
 
         <table class="table table-striped">
-
+            <thead>
             <tr>
                 <th>Rang</th>
                 <th>Éq.</th>
                 <th>Projet</th>
                 <th title="points">Points</th>
             </tr>
-
+            </thead>
+            <tbody>
             {% for equipes in classement %}
                 <tr>
                     <th>{{ loop.index }}  </th>
@@ -31,7 +32,7 @@
                 </tr>
             {% endfor %}
 
-
+            </tbody>
         </table>
     </div>
 

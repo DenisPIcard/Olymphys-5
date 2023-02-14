@@ -13,10 +13,10 @@
 {% endblock %}
 
 {% block body %}
-<div class="table-responsive-sm anyClass">
+<div class="table-responsive-sm frais">
     <table class="table">
 
-
+        <thead>
         <tr>
             <th scope="col">Date</th>
             <th scope="col">Désignation</th>
@@ -27,8 +27,8 @@
             <th scope="col">Impressions</th>
             <th scope="col">Autres</th>
         </tr>
-
-
+        </thead>
+        <tbody>
         {{ form_start(form) }}
         {% for i in 1..nblig %}
             <tr>
@@ -42,7 +42,7 @@
                 <td> {{ form_widget(attribute(form, 'autres' ~i)) }} </td>
             </tr>
         {% endfor %}
-
+        </tbody>
     </table>
 </div>
 
@@ -50,7 +50,7 @@
             <p style=" color :blueviolet" >Si vous avez besoin d'une ligne supplémentaire <a href="{{ path('comite_frais',{nblig:nblig}) }}">cliquez ici</a>,  avant même de remplir le tableau.</p>
             <br>
             Si vous n'avez pas encore donné votre IBAN, veuillez entrer les données suivant le modèle en grisé :
-<div class="table-responsive-sm anyClass">
+<div class="table-responsive-sm frais">
     <table class="table">
         <tr>
             <td>  {{ form_widget(form.iban1,{'attr': {'placeholder': 'FR76'}}) }}</td>

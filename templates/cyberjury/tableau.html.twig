@@ -14,7 +14,7 @@
     <div class="table-responsive-lg">
 
         <table class="table table-striped">
-            <tbody>
+            <thead>
             <tr>
                 <th>Rang</th>
                 <th>Éq.</th>
@@ -28,8 +28,8 @@
                 <th title="Le mémoire">MEM</th>
                 <th>Liens</th>
             </tr>
-
-
+            </thead>
+            <tbody>
             {% for equipes in listEquipes | sortByField('total') %}
                 <tr>
                     <th>{{ loop.index }}  </th>
@@ -65,8 +65,8 @@
                     </td>
                 </tr>
             {% endfor %}
-
             </tbody>
+
         </table>
     </div>
 
