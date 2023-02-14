@@ -22,20 +22,15 @@ class OdpfImagescarousels
     private ?string $name = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTime $updatedAt;
+    private ?DateTime $updatedAt= null;
 
     #[ORM\Column(nullable: true)]
-    private DateTime $createdAt;
+    private ?DateTime $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?string $coment;
+    private ?string $coment= null;
 
-    /**
-     *
-     *
-     * @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
-     * @var File
-     */
+   #[Vich\UploadableField(mapping:"odpfImagescarousels", fileNameProperty:"name")]
     private ?File $imageFile = null;
 
 

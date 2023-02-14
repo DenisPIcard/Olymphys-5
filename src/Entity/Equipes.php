@@ -40,7 +40,7 @@ class Equipes
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $couleur = null;
 
-    #[ORM\OneToOne(mappedBy: 'equipe', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'equipe', cascade: ['persist', 'remove'])]
     private ?Visites $visite = null;
 
     #[ORM\OneToOne(inversedBy: 'equipe', cascade: ['persist', 'remove'])]
@@ -180,14 +180,7 @@ class Equipes
 
     public function setVisite(?Visites $visite): self
     {
-        if ($visite === null && $this->visite !== null) {
-            $this->visite->setEquipe(null);
-        }
 
-        // set the owning side of the relation if necessary
-        if ($visite !== null && $visite->getEquipe() !== $this) {
-            $visite->setEquipe($this);
-        }
 
         $this->visite = $visite;
 

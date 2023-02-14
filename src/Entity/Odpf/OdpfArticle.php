@@ -14,7 +14,7 @@ class OdpfArticle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(length : 255, nullable: true)]
     private ?string $choix=null;
 
     #[ORM\Column(length: 255, nullable: true)]

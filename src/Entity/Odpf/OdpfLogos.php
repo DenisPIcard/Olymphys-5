@@ -12,75 +12,47 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * Odpf_logos
- * @ORM\Table(name="odpf_logos")
- * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=OdpfLogosRepository::class)
- */
+#[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: OdpfLogosRepository::class)]
+
 class OdpfLogos
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $lien;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lien=null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private ?DateTime $updatedAt;
+    #[ORM\Column(nullable:true)]
+    private ?DateTime $updatedAt=null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private DateTime $createdAt;
+    #[ORM\Column(nullable:true)]
+    private ?DateTime $createdAt=null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(nullable:true)]
     private ?bool $en_service = true;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $alt;
 
-    /**
-     * @ORM\Column(name="image", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    /**
-     * @var File
-     * @Vich\UploadableField(mapping="odpfLogos", fileNameProperty="image")
-     *
-     */
+    #[Vich\UploadableField(mapping:"odpfLogos", fileNameProperty:"image")]
     private ?File $imageFile = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $type;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $type= null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $choix;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $choix = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $part = null;
 
 
@@ -208,9 +180,6 @@ class OdpfLogos
         return $this->imageFile;
     }
 
-    /**
-     * @param File|null $imageFile
-     */
     public function setImageFile(?File $imageFile = null): void
 
     {
@@ -234,7 +203,6 @@ class OdpfLogos
      */
     public function createThumbs(): OdpfLogos
     {
-
         $imagesCreateThumbs = new ImagesCreateThumbs();
         $imagesCreateThumbs->createThumbs($this);
         return $this;

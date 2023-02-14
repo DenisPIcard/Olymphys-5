@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class NotesRepository extends EntityRepository
 {
-    public function MonClassement($jure_id)
+    public function get_rangs($jure_id)
     {
         $queryBuilder = $this->createQueryBuilder('n');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
 
@@ -31,9 +31,13 @@ class NotesRepository extends EntityRepository
         // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
         // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
         $results = $query->getResult();
-
-        // on retourne ces résultats
-        return $results;
+        $i=1;
+        foreach($results as $result) {
+            $id = $result->getEquipe()->getId();
+            $rangs[$id] = $i;
+            $i=$i+1;
+        }
+        return $rangs;
     }
 
     public function EquipeDejaNotee($jure_id, $equipe_id)

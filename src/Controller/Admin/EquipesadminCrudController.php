@@ -300,9 +300,7 @@ class EquipesadminCrudController extends AbstractCrudController
         return $qb;
     }
 
-    /**
-     * @Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name="equipes_tableau_excel")
-     */
+    #[Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name:"equipes_tableau_excel")]
     public function equipestableauexcel($ideditioncentre)
     {
         $idedition = explode('-', $ideditioncentre)[0];

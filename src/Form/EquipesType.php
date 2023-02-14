@@ -75,7 +75,8 @@ class EquipesType extends AbstractType
             if ($options['Deja_Attrib']) {
                 $builder
                     ->add('cadeau', CadeauxType::class)
-                    ->add('Enregistrer', SubmitType::class);
+                    ->add('Enregistrer', SubmitType::class)
+                    ->add('Effacer', SubmitType::class);
             } else {
                 $builder
                     ->add('cadeau', EntityType::class, [

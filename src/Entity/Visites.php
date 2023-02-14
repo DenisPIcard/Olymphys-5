@@ -21,7 +21,7 @@ class Visites
    #[ORM\Column(nullable: true)]
     public ?bool $attribue = false;
 
-    #[ORM\OneToOne( inversedBy: 'visite', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne( mappedBy: 'visite', cascade: ['persist', 'remove'])]
     private ?Equipes $equipe = null;
 
     public function __toString() : string
@@ -83,8 +83,17 @@ class Visites
 
     public function setEquipe(?Equipes $equipe): self
     {
-        // unset the owning side of the relation if necessary
-         $this->equipe = $equipe;
+        if ($equipe === null && $this->equipe !== null) {
+            $this->equipe->setVisite(null);
+            $this->attribue=false;
+        }
+
+        // set the owning side of the relation if necessary
+        if ($equipe !== null && $equipe->getVisite() !== $this) {
+            $equipe->setVisite($this);
+            $this->attribue=true;
+        }
+        $this->equipe = $equipe;
 
         return $this;
     }

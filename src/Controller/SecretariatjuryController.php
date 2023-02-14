@@ -578,7 +578,8 @@ class SecretariatjuryController extends AbstractController
                $request->initialize();
         }
         $visitesNonAttr= $this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
-            ->where('v.equipe is NULL')
+            ->join('v.equipe','eq')
+            ->where('eq.visite is NULL')
 
             ->getQuery()->getResult();
 
@@ -736,22 +737,27 @@ class SecretariatjuryController extends AbstractController
                 'Attrib_Couleur' => false,
             );
         }
-        $form = $this->createForm(EquipesType::class, $equipe, $array);
 
+        $form = $this->createForm(EquipesType::class, $equipe, $array);
+        $equipeini=$this->doctrine->getRepository(Equipes::class)->find($equipe->getId());
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $em = $this->doctrine->getManager();
-
             $cadeau=$form->get('cadeau')->getData();
-            if (!$form->get('cadeau')->getData()->getAttribue()) {
+              //  dd($_REQUEST);
+            if ($cadeau==null) {
                 $cadeau->setAttribue(false);
                 $flag = 0;
                 $equipe->setCadeau(null);
             }
-            else{
-                if ($form->get('cadeau')->getData()->getAttribue()==false) {
-                    $equipe->setCadeau(null);
-                }
+            if(isset($_REQUEST['cyberjury_equipes']['Effacer'])){
+
+                $equipe->setCadeau(null);
+                $cadeau->setAttribue(false);
+            }
+           if (isset($_REQUEST['cyberjury_equipes']['Enregistrer'])) {
+                $equipe->setCadeau($cadeau);
+                $cadeau->setAttribue(true);
             }
             $em->persist($equipe);
             $em->persist($cadeau);

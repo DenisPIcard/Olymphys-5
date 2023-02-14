@@ -13,6 +13,12 @@
 
 {% block body %}
 
+    {%  if ordre[critere] == 'DESC' %}
+        {% set ordre=ordre|merge({(critere) : 'ASC'})  %}
+    {% elseif ordre[critere] == 'ASC' %}
+        {% set ordre=ordre|merge({(critere) : 'DESC'})  %}
+    {% endif %}
+
     <div class="table-responsive-lg">
 
         <table class="table table-striped">
@@ -21,20 +27,20 @@
                 <th>Rang</th>
                 <th>Éq.</th>
                 <th>Projet</th>
-                <th title="Qualité de l'expérience">EXP</th>
-                <th title="Démarche scientifique">DEM</th>
-                <th title="Présentation orale">ORA</th>
-                <th title="Originalité">ORI</th>
-                <th title="Travail d'équipe">TRE</th>
-                <th title="Total des points">TOT</th>
+                <th title="Qualité de l'expérience"><a href="{{ path('cyberjury_tableau_de_bord',{'critere':'EXP','sens':ordre['EXP']}) }}">EXP<i class="fa-solid fa-arrows-up-down"></i></a></th>
+                <th title="Démarche scientifique"><a href="{{ path('cyberjury_tableau_de_bord',{'critere':'DEM','sens':ordre['DEM']}) }}">DEM<i class="fa-solid fa-arrows-up-down"></i></a></th>
+                <th title="Présentation orale"><a href="{{ path('cyberjury_tableau_de_bord',{'critere':'ORA','sens':ordre['ORA']}) }}">ORA<i class="fa-solid fa-arrows-up-down"></i></a></th>
+                <th title="Originalité"><a href="{{ path('cyberjury_tableau_de_bord',{'critere':'ORI','sens':ordre['ORI']}) }}">ORI<i class="fa-solid fa-arrows-up-down"></i></a></th>
+                <th title="Travail d'équipe"><a href="{{ path('cyberjury_tableau_de_bord',{'critere':'TRE','sens':ordre['TRE']}) }}">TRE<i class="fa-solid fa-arrows-up-down"></i></a></th>
+                <th title="Total des points"><a href="{{ path('cyberjury_tableau_de_bord',{'critere':'TOT','sens':ordre['TOT']}) }}">TOT<i class="fa-solid fa-arrows-up-down"></i></a></th>
                 <th title="Le mémoire">MEM</th>
                 <th>Liens</th>
             </tr>
             </thead>
             <tbody>
-            {% for equipes in listEquipes | sortByField('total') %}
+            {% for equipes in listEquipes %}
                 <tr>
-                    <th>{{ loop.index }}  </th>
+                    <th>{{ rangs[equipes.id] }} </th>
                     <td><a href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}"
                            class="btn btn-primary btn-lg">
                             {{ equipes.lettre }} </a></td>

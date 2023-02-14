@@ -18,6 +18,7 @@ use App\Form\NotesType;
 use App\Form\PhrasesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use App\Entity\Fichiersequipes;
@@ -420,24 +421,21 @@ class JuryController extends AbstractController
     }
 
     #[IsGranted('ROLE_JURY')]
-    #[Route("/tableau_de_bord", name:"cyberjury_tableau_de_bord")]
-    public function tableau(): Response
+    #[Route("/tableau_de_bord,{critere},{sens}", name:"cyberjury_tableau_de_bord")]
+    public function tableau($critere, $sens): Response
     {
         $user = $this->getUser();
         $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-
-        $repositoryNotes = $this->doctrine
-            ->getManager()
-            ->getRepository(Notes::class);
-
-        $queryBuilder = $repositoryNotes->createQueryBuilder('n');
-        $queryBuilder
-            ->where('n.jure=:id_jure')
-            ->setParameter('id_jure', $id_jure)
-            ->orderBy('n.total', 'DESC');
-
-        $MonClassement = $queryBuilder->getQuery()->getResult();
+        $ordre=array(
+            'EXP'=>'DESC',
+            'DEM'=>'DESC',
+            'ORI'=>'DESC',
+            'TRE'=>'DESC',
+            'ORA'=>'DESC',
+            'TOT'=>'DESC');
+        $ordre[$critere]=$sens;
+        $MonClassement = $this->classement($critere,$sens,$id_jure)->getQuery()->getResult();
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
@@ -445,7 +443,11 @@ class JuryController extends AbstractController
         $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository(Fichiersequipes::class);
+        $repositoryNotes = $this->doctrine
+            ->getManager()
+            ->getRepository(Notes::class);
 
+        $rangs=$repositoryNotes->get_rangs($id_jure);
 
         $memoires = array();
         $listEquipes = array();
@@ -480,7 +482,7 @@ class JuryController extends AbstractController
         }
 
         $content = $this->renderView('cyberjury/tableau.html.twig',
-            array('listEquipes' => $listEquipes, 'jure' => $jure, 'memoires' => $memoires)
+            array('listEquipes' => $listEquipes, 'jure' => $jure, 'memoires' => $memoires, 'ordre'=>$ordre,'critere'=>$critere,'rangs'=>$rangs)
         );
         return new Response($content);
     }
@@ -639,5 +641,39 @@ class JuryController extends AbstractController
 
 
     }
+    public function classement($critere,$sens,$id_jure) : QueryBuilder
+        {
+            $repositoryNotes = $this->doctrine
+                ->getManager()
+                ->getRepository(Notes::class);
+
+            $queryBuilder = $repositoryNotes->createQueryBuilder('n');
+            $queryBuilder
+                ->where('n.jure=:id_jure')
+                ->setParameter('id_jure', $id_jure);
+            switch ($critere) {
+                case 'EXP':
+                    $queryBuilder->orderBy('n.exper', $sens);
+                    break;
+                case('ORI') :
+                    $queryBuilder->orderBy('n.origin', $sens);
+                    break;
+                case('ORA') :
+                    $queryBuilder->orderBy('n.oral', $sens);
+                    break;
+                case('DEM') :
+                    $queryBuilder->orderBy('n.demarche', $sens);
+                    break;
+                case('TRE') :
+                    $queryBuilder->orderBy('n.wgroupe', $sens);
+                    break;
+                case('TOT') :
+                    $queryBuilder->orderBy('n.total', $sens);
+                    break;
+
+            }
+
+            return $queryBuilder;
+        }
 
 }

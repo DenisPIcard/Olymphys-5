@@ -4,7 +4,7 @@
         <div class="ul"> #}
     <a href="{{ path('cyberjury_accueil') }}" type="button"
        class="fas fa-home list-group-item list-group-item-action" style="padding-left: 0"> Accueil du Jury</a>
-    <a href="{{ path('cyberjury_tableau_de_bord') }}" type="button"
+    <a href="{{ path('cyberjury_tableau_de_bord',{'critere' : 'TOT', 'sens' : 'DESC'}) }}" type="button"
        class="fas fa-list list-group-item list-group-item-action" style="padding-left: 0"> Tableau de bord</a>
 
     <button class="far fa-bookmark btn btn-outline btn dropdown-toggle" type="button" id="dropdownMenuButton"
