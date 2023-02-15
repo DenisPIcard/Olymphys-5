@@ -4,7 +4,8 @@
 
 
 {% block titre3 %}
-    <div class="text-center">Concours {{ phase }}<br>
+    {# <div class="text-center"> #}
+        Concours {{ phase }}<br>
 
         {% if app.user.roles|filter(v => v =='ROLE_JURY') %}
             {% if jure != null %}
@@ -37,7 +38,7 @@
             {% endif %}
         {% endif %}
 
-    </div>
+    {#</div>  #}
 
 {% endblock %}
 

@@ -11,9 +11,7 @@ Layout de départ des utils du site #}
     <title>{% block title %}Olymphys{% endblock %}</title>
 
 
-</head>
 
-<body>
 {% block stylesheets %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
@@ -26,124 +24,129 @@ Layout de départ des utils du site #}
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
           integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
           crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
 {% endblock %}
+</head>
+
+<body>
 {% if is_granted('IS_IMPERSONATOR') %}
     <div class="alert alert-warning" style="margin-bottom: 0;">
         Vous êtes switché à un compte User
         <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>
     </div>
 {% endif %}
-<div class="container-fluid">
+{# <div class="container-fluid"> #}
     <div id="barre_haut">
     </div>
     <div id="wrapper">
-        <div class="container bg-white">
+        <div class="container-fluid bg-white">
 
 
-            <div class="row justify-content-end">
+            <div class="row justify-content-center">
                 <nav>
 
-                        <ul class="nav flex-column flex-md-row">
+                    <ul class="nav flex-column flex-md-row">
 
-                            <li class="nav-item dropdown menurouge">
-                                <a class="nav-link" href="{{ path('core_home') }}"  role="button" aria-haspopup="true"
-                                   aria-expanded="false">Accueil site</a>
+                        <li class="nav-item dropdown menurouge">
+                            <a class="nav-link" href="{{ path('core_home') }}"  role="button" aria-haspopup="true"
+                                   aria-expanded="false">Accueil du site</a>
 
-                            </li>
+                        </li>
 
-                            {% block navigation %}
-                            {% endblock %}
-                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <li class="nav-item dropdown menu_haut">
-                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                        {% block navigation %}
+                        {% endblock %}
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                         <li class="nav-item dropdown menu_haut">
+                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false"> {{ app.user.prenomNom }}</a>
-                                <div class="dropdown-menu ">
+                             <div class="dropdown-menu ">
 
                                     <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
-                                </div>
-                            </li>
-                            {% endif %}
+                             </div>
+                         </li>
+                    {% endif %}
 
-                            <li class="nav-item dropdown menurouge">
-                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                    <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
+                        <li class="nav-item dropdown menurouge">
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
                                        aria-expanded="false">Déconnexion</a>
 
-                                {% else %}
-                                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                            {% else %}
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="false">Connexion</a>
-                                    <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
-                                        <a class="dropdown-item " href="{{ path('login') }}">Connectez
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
+                                    <a class="dropdown-item " href="{{ path('login') }}">Connectez
                                             vous si vous avez un compte</a>
-                                    </div>
-                                {% endif %}
-                            </li>
+                                </div>
+                            {% endif %}
+                        </li>
 
 
-                        </ul>
+                    </ul>
 
                 </nav>
             </div>
 
-          {# #}  <div class="logo">
+          <div class="logo">
                 <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicompletblanc.png') }}" alt="logo des OdpF" width="300"/></a>
 
+          </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-6 col-lg-1 col-md-first">
+            </div>
+            <div class="col-md-10">
+                <h3 class="text-center"> {% block titre3 %}
+                    {% endblock %}
+                </h3>
+            </div>
+            <div class="col-md-1 order-md-last">
+            </div>
+
+
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-6 col-lg-1 col-md-first">
+            </div>
+            <div class="col-md-10 ">
+                {% block body %}
+                {% endblock %}
+
+            </div>
+            <div class="col-md-1 order-md-last">
             </div>
         </div>
-        </div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <div class="row">
-        <div class="col-md-8 col-lg-4 col-md-first">
-        </div>
-        <div class="col-md-8 order-md-last">
-            <h3> {% block titre3 %}
+
+        <div class="row">
+
+
+
+            <div id="content" class="col-md-9 order-md-last">
+
+                <hr>
+
+                {% block nav_eq %}
                 {% endblock %}
-            </h3>
+            </div>
         </div>
-
-
-    </div>
-    <br>
-    <br>
-    <div class="row">
-        <div class="col-md-6 col-lg-1 col-md-first">
-        </div>
-        <div class="col-md-10 ">
-            {% block body %}
-            {% endblock %}
-
-        </div>
-        <div class="col-md-1 order-md-last">
-        </div>
-    </div>
-
-     <div class="row">
-
-
-
-        <div id="content" class="col-md-9 order-md-last">
-
-            <hr>
-
-            {% block nav_eq %}
-            {% endblock %}
-        </div>
-    </div>
 
     <hr>
 
 
-</div>
+    </div>
 
 
-<hr>
-
+    <hr>
+    </div>
 <footer>
     {% block flash %}
         {{ include('flash.html.twig') }}
