@@ -54,7 +54,7 @@
                     {% endif %}
                 </tr>
                 <tr>
-                    <td rowspan="2"><p style="color:red">{{ equipe.equipeinter.titreProjet }} </p></td>
+                    <td rowspan="2"><p style="color:red">{{ lettre }} - {{ equipe.equipeinter.titreProjet }} </p></td>
                     <td>
                         {% for prof in prof2[lettre] %}
                             {{ prof.prenom|title }} {{ prof.nom|upper }}
