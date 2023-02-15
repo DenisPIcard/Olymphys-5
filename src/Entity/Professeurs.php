@@ -47,9 +47,7 @@ class Professeurs
         return $this;
     }
 
-    /**
-     * @return Collection|equipesadmin[]
-     */
+
     public function getEquipes(): Collection
     {
         return $this->equipes;

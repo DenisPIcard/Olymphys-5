@@ -745,19 +745,15 @@ class SecretariatjuryController extends AbstractController
             $em = $this->doctrine->getManager();
             $cadeau=$form->get('cadeau')->getData();
               //  dd($_REQUEST);
-            if ($cadeau==null) {
-                $cadeau->setAttribue(false);
-                $flag = 0;
-                $equipe->setCadeau(null);
-            }
+
             if(isset($_REQUEST['cyberjury_equipes']['Effacer'])){
 
                 $equipe->setCadeau(null);
-                $cadeau->setAttribue(false);
+                //$cadeau->setAttribue(false);
             }
            if (isset($_REQUEST['cyberjury_equipes']['Enregistrer'])) {
                 $equipe->setCadeau($cadeau);
-                $cadeau->setAttribue(true);
+                //$cadeau->setAttribue(true);
             }
             $em->persist($equipe);
             $em->persist($cadeau);

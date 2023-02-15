@@ -39,22 +39,11 @@ class Cadeaux
 
     }
 
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Get raccourci
-     *
-     * @return string
-     */
     public function getRaccourci(): ?string
     {
         return $this->raccourci;
@@ -74,23 +63,13 @@ class Cadeaux
         return $var1 . " offert par " . strtoupper($var2);
     }
 
-    /**
-     * Get contenu
-     *
-     * @return string
-     */
+
     public function getContenu(): ?string
     {
         return $this->contenu;
     }
 
-    /**
-     * Set contenu
-     *
-     * @param string $contenu
-     *
-     * @return Cadeaux
-     */
+
     public function setContenu(string $contenu): Cadeaux
     {
         $this->contenu = $contenu;
@@ -98,23 +77,12 @@ class Cadeaux
         return $this;
     }
 
-    /**
-     * Get fournisseur
-     *
-     * @return string
-     */
+
     public function getFournisseur(): ?string
     {
         return $this->fournisseur;
     }
 
-    /**
-     * Set fournisseur
-     *
-     * @param string $fournisseur
-     *
-     * @return Cadeaux
-     */
     public function setFournisseur(string $fournisseur): Cadeaux
     {
         $this->fournisseur = $fournisseur;
@@ -122,21 +90,12 @@ class Cadeaux
         return $this;
     }
 
-    /**
-     * Get montant
-     *
-     */
-    public function getMontant(): ?float
+     public function getMontant(): ?float
     {
         return $this->montant;
     }
 
-    /**
-     * Set montant
-     *
-     * @param float $montant
-     * @return Cadeaux
-     */
+
     public function setMontant(float $montant): Cadeaux
     {
         $this->montant = $montant;
@@ -144,23 +103,13 @@ class Cadeaux
         return $this;
     }
 
-    /**
-     * Get attribue
-     *
-     * @return boolean
-     */
+
     public function getAttribue(): ?bool
     {
         return $this->attribue;
     }
 
-    /**
-     * Set attribue
-     *
-     * @param boolean $attribue
-     *
-     * @return Cadeaux
-     */
+
     public function setAttribue(bool $attribue): Cadeaux
     {
         $this->attribue = $attribue;

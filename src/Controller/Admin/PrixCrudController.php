@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -49,7 +50,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
     public function configureFields(string $pageName): iterable
     {
-
+       // dd($_REQUEST);
         if (isset($_REQUEST['entityId'])){
             $id=$_REQUEST['entityId'];
             $prixEquipe=$this->doctrine->getRepository(Prix::class)->findOneBy(['id'=>$id]);
@@ -62,7 +63,7 @@ use Symfony\Component\Routing\Annotation\Route;
                     ->getQuery()->getResult();
 
         if (isset($equipe)){
-            $equipesSansPrix[count($equipesSansPrix)]=$equipe;
+            $equipesSansPrix[count($equipesSansPrix)]=$equipe;//pour afficher la valeur de l'équipe dans le formulaire
         }
         $prix = TextField::new('prix');;
         $niveau = TextField::new('niveau');
@@ -73,7 +74,7 @@ use Symfony\Component\Routing\Annotation\Route;
         $id = IntegerField::new('id', 'ID');
         $equipe=AssociationField::new('equipe')->setFormType(EntityType::class)->setFormTypeOptions(
             ['class'=>Equipes::class,
-              'choices' =>$equipesSansPrix,
+             'choices' =>$equipesSansPrix,
 
             ]
         );
@@ -156,7 +157,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 
     }
-
 
 
 }

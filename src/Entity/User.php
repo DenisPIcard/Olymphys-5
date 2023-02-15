@@ -109,23 +109,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->prenom . ' ' . $this->getNom();
     }
 
-    /**
-     * Get nom
-     *
-     * @return string|null
-     */
+
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return User
-     */
     public function setNom(string $nom): User
     {
         $this->nom = $nom;
@@ -138,11 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
+
     public function getUsername(): ?string
     {
         return $this->username;
@@ -156,16 +141,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * The public representation of the user (e.g. a username, an email address, etc.)
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return $this->username;
     }
-
 
 
     public function getEmail(): ?string
@@ -179,25 +158,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
+
     public function getToken(): ?string
     {
         return $this->token;
     }
 
-    /**
-     * @param string|null $token
-     */
+
     public function setToken(?string $token): void
     {
         $this->token = $token;
     }
 
-    /**
-     * @see UserInterface
-     */
+
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -222,9 +195,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -248,9 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
+
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -269,11 +238,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    /**
-     * @Assert\NotBlank(groups={"registration"})
-     * @Assert\Length(max=4096)
-     */
-
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
@@ -285,23 +249,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get Adresse
-     *
-     * @return string|null
-     */
     public function getAdresse(): ?string
     {
         return $this->adresse;
     }
 
-    /**
-     * Set adresse
-     *
-     * @param string|null $adresse
-     *
-     * @return User
-     */
+
     public function setAdresse(?string $adresse): User
     {
         $this->adresse = $adresse;
@@ -309,23 +262,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get ville
-     *
-     * @return string|null
-     */
+
     public function getVille(): ?string
     {
         return $this->ville;
     }
 
-    /**
-     * Set ville
-     *
-     * @param string|null $ville
-     *
-     * @return User
-     */
     public function setVille(?string $ville): User
     {
         $this->ville = $ville;
@@ -333,23 +275,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get code
-     *
-     * @return string|null
-     */
+
     public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * Set Code
-     *
-     * @param string|null $code
-     *
-     * @return User
-     */
+
     public function setCode(?string $code): User
     {
         $this->code = $code;
@@ -357,23 +289,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get
-     *
-     * @return string|null
-     */
     public function getCivilite(): ?string
     {
         return $this->civilite;
     }
 
-    /**
-     * Set civilite
-     *
-     * @param string|null $civilite
-     *
-     * @return User
-     */
+
     public function setCivilite(?string $civilite): User
     {
         $this->civilite = $civilite;
@@ -381,22 +302,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get phone
-     *
-     * @return string|null
-     */
+
     public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    /**
-     * Set phone
-     *
-     * @param string|null $phone
-     * @return User
-     */
+
     public function setPhone(?string $phone): User
     {
         $this->phone = $phone;
@@ -404,22 +316,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get rne
-     *
-     * @return string|null
-     */
+
     public function getRne(): ?string
     {
         return $this->rne;
     }
 
-    /**
-     * Set rne
-     *
-     * @param string|null $rne
-     * @return User
-     */
+
     public function setRne(?string $rne): User
     {
         $this->rne = $rne;
@@ -427,23 +330,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get prenom
-     *
-     * @return string|null
-     */
     public function getPrenom(): ?string
     {
         return $this->prenom;
     }
 
-    /**
-     * Set prenom
-     *
-     * @param string|null $prenom
-     *
-     * @return User
-     */
+
     public function setPrenom(?string $prenom): User
     {
         $this->prenom = $prenom;
@@ -451,50 +343,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /*
-    * Get createdAt
-    */
     public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    /*
-     * Set updatedAt
-     */
     public function setCreatedAt(?Datetime $createdAt): User
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    /*
-     * Get updatedAt
-     */
+
     public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    /*
-     * Set updatedAt
-     */
+
     public function setUpdatedAt(?Datetime $updatedAt): User
     {
         $this->updatedAt = $updatedAt;
         return $this;
     }
 
-    /* Get lastVisit
-    */
+
     public function getLastVisit(): ?DateTime
     {
         return $this->lastVisit;
     }
 
-    /*
-     * Set lastVisit
-     */
+
     public function setLastVisit(?DateTime $lastVisit): User
     {
         $this->lastVisit = $lastVisit;

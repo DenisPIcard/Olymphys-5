@@ -52,23 +52,12 @@ class Notes
     const BIEN = 3;
     const EXCELLENT = 4;
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId(): int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set exper
-     *
-     * @param integer $exper
-     *
-     * @return Notes
-     */
     public function setExper(int $exper): Notes
     {
         $this->exper = $exper;
@@ -76,23 +65,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get exper
-     *
-     * @return int
-     */
     public function getExper(): ?int
     {
         return $this->exper;
     }
 
-    /**
-     * Set demarche
-     *
-     * @param integer $demarche
-     *
-     * @return Notes
-     */
     public function setDemarche(int $demarche): Notes
     {
         $this->demarche = $demarche;
@@ -100,23 +77,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get demarche
-     *
-     * @return int
-     */
     public function getDemarche(): ?int
     {
         return $this->demarche;
     }
 
-    /**
-     * Set oral
-     *
-     * @param integer $oral
-     *
-     * @return Notes
-     */
     public function setOral(int $oral): Notes
     {
         $this->oral = $oral;
@@ -124,23 +89,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get oral
-     *
-     * @return int
-     */
     public function getOral(): ?int
     {
         return $this->oral;
     }
 
-    /**
-     * Set origin
-     *
-     * @param integer $origin
-     *
-     * @return Notes
-     */
     public function setOrigin(int $origin): Notes
     {
         $this->origin = $origin;
@@ -148,23 +101,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get origin
-     *
-     * @return int
-     */
     public function getOrigin(): ?int
     {
         return $this->origin;
     }
 
-    /**
-     * Set wgroupe
-     *
-     * @param integer $wgroupe
-     *
-     * @return Notes
-     */
     public function setWgroupe(int $wgroupe): Notes
     {
         $this->wgroupe = $wgroupe;
@@ -172,23 +113,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get wgroupe
-     *
-     * @return int
-     */
     public function getWgroupe(): ?int
     {
         return $this->wgroupe;
     }
 
-    /**
-     * Set ecrit
-     *
-     * @param integer $ecrit
-     *
-     * @return Notes
-     */
     public function setEcrit(int $ecrit): Notes
     {
         $this->ecrit = $ecrit;
@@ -196,11 +125,6 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get ecrit
-     *
-     * @return int
-     */
     public function getEcrit(): ?int
     {
         return $this->ecrit;
@@ -228,13 +152,6 @@ class Notes
 
     }
 
-    /**
-     * Set equipe
-     *
-     * @param Equipes $equipe
-     *
-     * @return Notes
-     */
     public function setEquipe(Equipes $equipe): Notes
     {
         $this->equipe = $equipe;
@@ -242,23 +159,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get equipe
-     *
-     * @return Equipes|null
-     */
     public function getEquipe(): ?Equipes
     {
         return $this->equipe;
     }
 
-    /**
-     * Set jure
-     *
-     * @param Jures $jure
-     *
-     * @return Notes
-     */
     public function setJure(Jures $jure): Notes
     {
         $this->jure = $jure;
@@ -266,11 +171,6 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get jure
-     *
-     * @return Jures|null
-     */
     public function getJure(): ?Jures
     {
         return $this->jure;
@@ -297,18 +197,6 @@ class Notes
     public function setCoefficients(?coefficients $coefficients): self
     {
         $this->coefficients = $coefficients;
-
-        return $this;
-    }
-
-    public function getEquipenat(): ?Equipes
-    {
-        return $this->equipenat;
-    }
-
-    public function setEquipenat(?Equipes $equipenat): self
-    {
-        $this->equipenat = $equipenat;
 
         return $this;
     }

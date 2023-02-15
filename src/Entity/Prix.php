@@ -75,7 +75,7 @@ class Prix
     }
 
 
-    public function setAttribue(bool $attribue): Prix
+    public function setAttribue(?bool $attribue): Prix
     {
         $this->attribue = $attribue;
 
@@ -104,7 +104,7 @@ class Prix
         return $this->intervenant;
     }
 
-    public function setIntervenant($intervenant): Prix
+    public function setIntervenant(?string $intervenant): Prix
     {
         $this->intervenant = $intervenant;
 
