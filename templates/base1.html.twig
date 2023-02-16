@@ -146,28 +146,28 @@ Layout de départ des utils du site #}
 
 
     <hr>
+
+    <footer>
+        {% block flash %}
+            {{ include('flash.html.twig') }}
+        {% endblock %}
+        <p>
+
+        <div class="ml-3">Site créé avec <a href="https://www.symfony.com" target="_blank" rel="noopener"><img
+                    style="margin-bottom: 0; vertical-align: middle;"
+                    src="{{ asset('odpf/odpf-images/logo-symfony.png') }}" alt="symfony logo"
+                    width="30">
+        </a> et le support de <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"
+                                 rel="noopener"><img style="margin-bottom: 0; vertical-align: middle;"
+                                                     src="{{ asset('odpf/odpf-images/logo-PhpStorm.png') }}"
+                                                     alt="PhpStorm logo" width="30">
+        </a>
+        </div>
+
+        <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a></div>
+
+    </footer>
     </div>
-<footer>
-    {% block flash %}
-        {{ include('flash.html.twig') }}
-    {% endblock %}
-    <p>
-
-    <div class="ml-3">Site créé avec <a href="https://www.symfony.com" target="_blank" rel="noopener"><img
-                style="margin-bottom: 0; vertical-align: middle;"
-                src="{{ asset('odpf/odpf-images/logo-symfony.png') }}" alt="symfony logo"
-                width="30">
-    </a> et le support de <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"
-                             rel="noopener"><img style="margin-bottom: 0; vertical-align: middle;"
-                                                 src="{{ asset('odpf/odpf-images/logo-PhpStorm.png') }}"
-                                                 alt="PhpStorm logo" width="30">
-    </a>
-    </div>
-
-    <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a></div>
-
-</footer>
-
 
 {% block javascripts %}
     <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>

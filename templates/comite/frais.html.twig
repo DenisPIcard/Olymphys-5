@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block body %}
-<div class="table-responsive-sm frais">
-    <table class="table">
+<div class="table-responsive-sm">
+    <table class="table frais">
 
         <thead>
         <tr>
@@ -50,8 +50,10 @@
             <p style=" color :blueviolet" >Si vous avez besoin d'une ligne supplémentaire <a href="{{ path('comite_frais',{nblig:nblig}) }}">cliquez ici</a>,  avant même de remplir le tableau.</p>
             <br>
             Si vous n'avez pas encore donné votre IBAN, veuillez entrer les données suivant le modèle en grisé :
-<div class="table-responsive-sm frais">
-    <table class="table">
+
+<div class="table-responsive-sm">
+    <table class="table frais">
+        <tbody>
         <tr>
             <td>  {{ form_widget(form.iban1,{'attr': {'placeholder': 'FR76'}}) }}</td>
                 {% for j in 2..6 %}
@@ -59,6 +61,7 @@
                 {% endfor %}
             <td>  {{ form_widget(form.iban7,{'attr': {'placeholder': '123'}}) }}</td>
         </tr>
+        </tbody>
     </table>
 </div>
 
