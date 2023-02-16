@@ -5,14 +5,20 @@ namespace App\Controller\Admin;
 use AllowDynamicProperties;
 use App\Entity\Equipes;
 use App\Entity\Prix;
+use App\Entity\Visites;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -67,7 +73,6 @@ use Symfony\Component\Routing\Annotation\Route;
         }
         $prix = TextField::new('prix');;
         $niveau = TextField::new('niveau');
-        $attribue = BooleanField::new('attribue');
         $voix = TextField::new('voix');
         $intervenant = TextField::new('intervenant');
         $remisPar = TextField::new('remisPar');
@@ -80,14 +85,40 @@ use Symfony\Component\Routing\Annotation\Route;
         );
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $prix, $niveau, $attribue,$equipe, $voix, $intervenant, $remisPar];
+            return [$id, $prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $prix, $niveau, $attribue, $equipe, $voix, $intervenant, $remisPar];
+            return [$id, $prix, $niveau,  $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$prix, $niveau, $attribue, $equipe, $voix, $intervenant, $remisPar];
+            return [$prix, $niveau,  $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$prix, $niveau, $attribue,$equipe, $voix, $intervenant, $remisPar];
+            return [$prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         }
+    }
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+
+        $qb = $this->doctrine->getRepository(Prix::class)->createQueryBuilder('p')
+            ->select('p')
+            ->leftJoin('p.equipe', 'eq')
+            ->join('eq.equipeinter','ei');
+
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='equipe'){
+                $qb->addOrderBy('ei.lettre', $sort['equipe']);
+            }
+            if (key($sort)=='niveau'){
+                $qb->addOrderBy('p.niveau', $sort['niveau']);
+                $qb->addOrderBy('ei.lettre', 'ASC');
+            }
+        }
+        else {
+            $qb->addOrderBy('ei.lettre', 'ASC');
+        }
+
+
+        ;
+        return $qb;
     }
 
     public function configureActions(Actions $actions): Actions

@@ -4,13 +4,19 @@ namespace App\Controller\Admin;
 
 use App\Entity\Cadeaux;
 use App\Entity\Equipes;
+use App\Entity\Prix;
 use App\Entity\Visites;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -57,7 +63,23 @@ class CadeauxCrudController extends AbstractCrudController
     }
     public function configureFields(string $pageName): iterable
     {
-        $listeEquipes = $this->doctrine->getRepository(Equipes::class)->findBy(['cadeau'=>null]);
+
+        if (isset($_REQUEST['entityId'])){
+            $id=$_REQUEST['entityId'];
+            $cadeauEquipe=$this->doctrine->getRepository(Cadeaux::class)->findOneBy(['id'=>$id]);
+            $equipe= $cadeauEquipe->getEquipe();
+        }
+
+        $equipesSansCadeau=$this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->where('e.cadeau=:value')
+            ->setParameter('value', 'null')
+            ->getQuery()->getResult();
+
+        if (isset($equipe)){
+            $equipesSansCadeau[count($equipesSansCadeau)]=$equipe;//pour afficher la valeur de l'équipe dans le formulaire
+        }
+
+
         $contenu = TextField::new('contenu');
         $fournisseur = TextField::new('fournisseur');
         $montant = NumberField::new('montant');
@@ -67,7 +89,7 @@ class CadeauxCrudController extends AbstractCrudController
                             ->setFormTypeOptions(
                                 [
                                     'class'=>Equipes::class,
-                                    'choices'=>$listeEquipes,
+                                    'choices'=>$equipesSansCadeau,
                                 ]
                             );
         if (Crud::PAGE_INDEX === $pageName) {
@@ -79,6 +101,32 @@ class CadeauxCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$contenu, $fournisseur, $montant,$equipe, $raccourci];
         }
+    }
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+
+        $qb = $this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
+            ->select('c')
+            ->leftJoin('c.equipe', 'eq')
+            ->join('eq.equipeinter','ei');
+
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='equipe'){
+                $qb->addOrderBy('ei.lettre', $sort['equipe']);
+            }
+            if (key($sort)=='montant'){
+                $qb->addOrderBy('c.montant', $sort['montant']);
+            }
+
+        }
+        else{
+            $qb->addOrderBy('ei.lettre', 'ASC');
+        }
+
+
+        ;
+        return $qb;
     }
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {

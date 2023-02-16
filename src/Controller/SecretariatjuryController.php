@@ -502,24 +502,30 @@ class SecretariatjuryController extends AbstractController
 
         $qb = $repositoryPrix->createQueryBuilder('p')
             ->where('p.niveau = :nivo')
-            ->setParameter('nivo', $niveau_court)
-            ->andwhere('p.attribue = false');
-        $prixNonAttrib=$qb->getQuery()->getResult();
+            ->setParameter('nivo', $niveau_court);
+        $prixNiveau=$qb->getQuery()->getResult();
+        $prixNonAttrib=[];
+        $i=0;
+        foreach($prixNiveau as $prix){
+            if ($prix->getEquipe()===null){
+                $prixNonAttrib[$i]=$prix;
+                $i=+1;
+            }
+
+        }
         if ($request->query->get('equipe') !=null ) {
            $equipe = $repositoryEquipes->findOneBy(['id' =>  $request->query->get('equipe')]);
            $request->query->get('prix')==null? $action='effacer': $action='attribuer';
                if ($action=='effacer') {
                             $prix = $equipe->getPrix();
-                            $prix->setAttribue(false);
                             $equipe->setPrix(null);
                         }
                if ($action=='attribuer') {
                             $prix = $repositoryPrix->findOneBy(['id' =>  $request->query->get('prix')]);
                             $equipe->setPrix($prix);
-                            $prix->setAttribue(true);
+
                         }
                $em->persist($equipe);
-               $em->persist($prix);
                $em->flush();
                $request->getSession()->getFlashBag()->add('info', 'Prix bien enregistré');
                return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
@@ -573,18 +579,19 @@ class SecretariatjuryController extends AbstractController
                    //$visite->setEquipe(null);
                    $this->doctrine->getManager()->persist($equipe);
                    $this->doctrine->getManager()->flush();
-
                }
                $request->initialize();
         }
-        $visitesNonAttr= $this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
-            ->join('v.equipe','eq')
-            ->where('eq.visite is NULL')
-
-            ->getQuery()->getResult();
-
+        $listeVisite=$this->doctrine->getRepository(Visites::class)->findAll();
+        $visitesNonAttr=[];
         $i=0;
-
+        foreach($listeVisite as $visite) {
+            if ($visite->getEquipe()===null){
+                $visitesNonAttr[$i]=$visite;
+                $i=+1;
+             }
+        }
+        $i=0;
         foreach($listEquipes as $equipe) {
                 $placeholder='Choisir une visite';
                 if ($equipe->getVisite()!=null) {

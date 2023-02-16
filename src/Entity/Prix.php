@@ -20,9 +20,6 @@ class Prix
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $niveau = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $attribue = false;
-
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $voix = null;
 
@@ -74,18 +71,6 @@ class Prix
         return $this->niveau;
     }
 
-
-    public function setAttribue(?bool $attribue): Prix
-    {
-        $this->attribue = $attribue;
-
-        return $this;
-    }
-
-    public function getAttribue(): ?bool
-    {
-        return $this->attribue;
-    }
 
     public function getVoix(): ?string
     {

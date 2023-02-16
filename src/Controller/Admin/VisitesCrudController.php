@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Edition;
 use App\Entity\Equipes;
 use App\Entity\Prix;
 use App\Entity\Visites;
@@ -71,7 +72,6 @@ class VisitesCrudController extends AbstractCrudController
         }
 
         $intitule = TextField::new('intitule');
-        $attribue = BooleanField::new('attribue');
         $id = IntegerField::new('id', 'ID');
         $equipe= AssociationField::new('equipe')
             ->setFormType(EntityType::class)
@@ -82,9 +82,9 @@ class VisitesCrudController extends AbstractCrudController
             ]);
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$intitule, $attribue, $equipe];
+            return [$intitule,  $equipe];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $intitule, $attribue,$equipe];
+            return [$id, $intitule, $equipe];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$intitule,$equipe];
         } elseif (Crud::PAGE_EDIT === $pageName) {
@@ -98,21 +98,49 @@ class VisitesCrudController extends AbstractCrudController
         $qb = $this->doctrine->getRepository(Visites::class)->createQueryBuilder('v')
             ->select('v')
             ->leftJoin('v.equipe', 'eq')
-            ->addOrderBy('eq.equipeinter', 'DESC')
+            ->join('eq.equipeinter', 'ei')
             //->addOrderBy('ei.lettre', 'ASC')
             ;
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='equipe'){
+                $qb->addOrderBy('ei.lettre', $sort['equipe']);
+            }
+            if (key($sort)=='intitule'){
+                $qb->addOrderBy('v.intitule', $sort['intitule']);
+                $qb->addOrderBy('ei.lettre', 'ASC');
+            }
+        }
+        else {
+            $qb->addOrderBy('ei.lettre', 'ASC');
+        }
+
+
+
+
+
         return $qb;
         }
 
     #[Route("/Admin/VisitesCrud/visites_tableau_excel", name:"visites_tableau_excel")]
     public function visitestableauexcel()
     {
-        $repositoryVisites = $this->doctrine->getRepository(Visites::class);
+        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+                                        ->join('e.equipeinter','eq')
+                                        ->addOrderBy('eq.lettre', 'ASC')
+                                        ->getQuery()->getResult();
+
         $edition = $this->requeststack->getSession()->get('edition');
-        $liste_visites = $repositoryVisites->createQueryBuilder('v')
-                    ->join('v.equipe','eq')
-                    ->where('eq.visite is not null')
-                    ->getQuery()->getResult();
+        if(date('now')<$this->requeststack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+            }
+        $liste_visites = [];
+        $i=0;
+        foreach($listEquipes as $equipe){
+
+            $liste_visites[$i]=$equipe->getVisite();
+            $i=$i+1;
+        }
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
