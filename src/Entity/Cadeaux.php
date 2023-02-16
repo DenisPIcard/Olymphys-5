@@ -22,9 +22,6 @@ class Cadeaux
     #[ORM\Column(type:Types::FLOAT, nullable:true)]
     private ?float $montant=null;
 
-    #[ORM\Column(nullable:true)]
-    private ?bool $attribue=null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $raccourci = null;
 
@@ -99,20 +96,6 @@ class Cadeaux
     public function setMontant(float $montant): Cadeaux
     {
         $this->montant = $montant;
-
-        return $this;
-    }
-
-
-    public function getAttribue(): ?bool
-    {
-        return $this->attribue;
-    }
-
-
-    public function setAttribue(bool $attribue): Cadeaux
-    {
-        $this->attribue = $attribue;
 
         return $this;
     }
