@@ -100,7 +100,10 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
     }
-
+    public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $this->creer_edition_passee($context);
+    }
 
     /**
      * @throws NonUniqueResultException
@@ -271,7 +274,7 @@ class AdminsiteCrudController extends AbstractCrudController
             $photo->setEditionspassees($editionPassee);
             $photo->setEquipepassee($equipepassee);
             $this->em->persist($photo);
-            $editionPassee->addPhoto($photo);
+            //$editionPassee->addPhoto($photo);
             $this->em->persist($photo);
             //dd($this->getParameter('app.path.photos') . '/'. $photo->getPhoto());
             if (file_exists($this->getParameter('app.path.photos') . '/' . $photo->getPhoto())) {
@@ -293,14 +296,16 @@ class AdminsiteCrudController extends AbstractCrudController
         }
         $article = $this->doctrine->getRepository(OdpfArticle::class)->findOneBy(['choix' => 'edition' . $editionPassee->getEdition()]);
 
-        if (($article === null) or ($article->getTexte() == '')) {
+
             $createArticle = new CreatePageEdPassee($this->em);
             $article = $createArticle->create($editionPassee);
 
 
             $this->em->persist($article);
             $this->em->flush();
-        }
+
+
+
         return $this->redirectToRoute('odpfadmin');
 
 

@@ -30,7 +30,6 @@ class Prix
      */
     private ?string $niveau = null;
 
-
     /**
      * @var boolean
      *
@@ -90,6 +89,7 @@ class Prix
         return $this->prix;
     }
 
+
     /**
      * Set niveau
      *
@@ -107,7 +107,7 @@ class Prix
     /**
      * Get niveau
      *
-     * @return string
+     * @return string|null
      */
     public function getNiveau(): ?string
     {
@@ -125,7 +125,7 @@ class Prix
     /**
      * Get attribue
      *
-     * @return boolean
+     * @return bool|null
      */
     public function getAttribue(): ?bool
     {

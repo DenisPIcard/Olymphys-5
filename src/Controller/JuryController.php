@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Proxies\__CG__\App\Entity\Fichiersequipes;
+use App\Entity\Fichiersequipes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -111,7 +111,7 @@ class JuryController extends AbstractController
                 }
             }
         }
-//dd($memoires);
+
         $content = $this->renderView('cyberjury/accueil.html.twig',
             array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
         );
@@ -415,7 +415,7 @@ class JuryController extends AbstractController
                 $nbNotes = count($equipe->getNotess());
 
                 $equipe->setNbNotes($nbNotes + 1);
-
+                $em->persist($equipe);
             }
             $em->persist($notes);
             $em->flush();
@@ -425,13 +425,11 @@ class JuryController extends AbstractController
             return $this->redirectToroute('cyberjury_tableau_de_bord');
         }
 
-        $type_salle = 'zoom';
+
 
         $content = $this->renderView('cyberjury/evaluer.html.twig',
             array(
                 'equipe' => $equipe,
-                'type_salle' => $type_salle,
-
                 'form' => $form->createView(),
                 'flag' => $flag,
                 'progression' => $progression,
@@ -482,6 +480,7 @@ class JuryController extends AbstractController
         foreach ($MonClassement as $notes) {
             $id = $notes->getEquipe();
             $equipe = $repositoryEquipes->find($id);
+
             $listEquipes[$j]['id'] = $equipe->getId();
             $listEquipes[$j]['infoequipe'] = $equipe->getEquipeinter();
             $listEquipes[$j]['lettre'] = $equipe->getEquipeinter()->getLettre();
@@ -557,6 +556,7 @@ class JuryController extends AbstractController
         }
 
         $progression = (!is_null($notes)) ? 1 : 0;
+        //dd($equipe,$phrases,$progression,$jure);
         $content = $this->renderView('cyberjury\listephrases.html.twig',
             array(
                 'equipe' => $equipe,

@@ -29,9 +29,19 @@
                     <td>{{ equipes.classement }} prix</td>
                     <td>{% if equipes.phrases != null %}
                             {% for phrase in equipes.phrases %}
+                                <form>
+                                    <table>
+                                        <tr>
+                                          <td>{{ phrase.jure.iduser.prenomNom }}</td>
+                                          <td style="width: 300px"> {{ phrase.phrase }} {{ phrase.liaison.liaison }} {{ phrase.prix }}</td>
+                                          <td style="width: 100px"> <input type="submit" value="Garder">
+                                                        <input type="hidden"  name="phrase" value="{{ phrase.id }}" id="phrase.id">
+                                          </td>
+                                        </tr>
 
-                                {{ phrase.phrase }} {{ phrase.liaison.liaison }} {{ phrase.prix }}
-                                <hr>
+                                    </table>
+                                 <hr>
+                                </form>
                             {% endfor %}
                         {% endif %}
                     </td>

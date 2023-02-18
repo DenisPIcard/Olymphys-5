@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

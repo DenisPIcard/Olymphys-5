@@ -15,6 +15,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+                #type: attribute #pour les nouvelles syntaxes des infos en accord avec make:entity
+
+
 
 when@test:
     doctrine:

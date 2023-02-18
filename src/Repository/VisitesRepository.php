@@ -2,12 +2,18 @@
 
 namespace App\Repository;
 
+
 use App\Entity\Visites;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
-
+/**
+ * @method Visites|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Visites|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Visites[]    findAll()
+ * @method Visites[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class VisitesRepository extends ServiceEntityRepository
 {
     private RequestStack $requestStack;

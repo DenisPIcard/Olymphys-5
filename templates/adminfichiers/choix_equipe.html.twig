@@ -7,7 +7,9 @@
     <div class="text-center">Concours {{ phase }}<br>
 
         {% if app.user.roles|filter(v => v =='ROLE_JURY') %}
-            {{ jure.prenomJure }}   {{ jure.nomJure }}
+            {% if jure != null %}
+                {{ jure.prenomJure }}   {{ jure.nomJure }}
+            {% endif %}
             <br> membre du jury
         {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             {{ user.prenom }} {{ user.nom }}<br>
@@ -18,25 +20,15 @@
                 <br>Membre du comité national
             {% endif %}
             {% if phase=='interacadémique' %}
-                {% if (choix=='deposer') or (choix=='presentation') %}
-                    <br>Dépot du fichier  d'une équipe
-                    {% if role!= 'ROLE_COMITE' %}
-                        du centre {{ centre }}
-                    {% endif %}
-                {% endif %}
-                {% if choix=='liste_prof' %}
-                    <br>Voir les fichiers d'une équipe du centre {{ centre }}
-                {% endif %}
+
+                    <br>Liste des équipes du centre de {{ centre }}
+
             {% endif %}
         {% endif %}
         {% if phase=='national' %}
 
-            {% if (choix=='deposer') or (choix=='presentation') %}
-                <br>Dépôt du fichier  d'une équipe
-            {% endif %}
-            {% if choix=='liste_prof' %}
                 <br>Voir les fichiers d'une équipe
-            {% endif %}
+
         {% endif %}
 
         {% if app.user.roles|filter(v => v =='ROLE_PROF') %}
@@ -55,7 +47,7 @@
             <div class="alert alert-info"> {{ message }}</div>
         {% endfor %}
 
-        Pour modifier l'équipe ou déposer des documents choisir l'équipe correspondante.
+
         <hr>
         {% if   phase =='interacadémique' %}
             {% set concours='inter' %}
@@ -81,11 +73,11 @@
 
                         <div class="col">
 
-                            {% if choix=='liste_prof' %}
+
                                 <a class="btn btn-primary"
                                    href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
                                     cette équipe</a>
-                            {% endif %}
+
 
                         </div>
 
@@ -130,7 +122,7 @@
     {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
         <div class="table">
             <tr>
-                <td> {% if date()< app.session.get('edition').dateclotureinscription %}
+                <td> {% if date()< app.session.get('edition').dateclotureinscription and date()>=app.session.get('dateouverturesite')%}
                         <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
                            title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
                     {% endif %}
@@ -139,24 +131,26 @@
 
             <tr>
                 <td>
-                    {% if  date()<= app.session.get('datelimphotoscia') %}
-                        <a type="button" class="btn btn-warning"
-                           href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
-                           aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
-                            photos </a>
-                        <a type="button" class="btn btn-info"
-                           href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
-                           title="Modifier ou supprimer certaines photos">Gerer les photos</a>
-                    {% endif %}
-                    {% if (date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn')) %}
-                        <a type="button" class="btn btn-warning"
-                           href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
-                           title="Déposer des photos du concours national">Déposer des photos </a>
-                        <a type="button" class="btn btn-info"
-                           href="{{ path('photos_gestion_photos',{infos:'national-'~app.session.get('edition').id~'-prof'}) }}"
-                           role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
-                            photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
+                    {% if liste_equipes!=null %}
+                         {% if  date()<= app.session.get('datelimphotoscia') and date()>app.session.get('dateouverturesite')%}
+                            <a type="button" class="btn btn-warning"
+                               href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
+                               aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
+                                photos des équipes du concours interacadémique</a>
+                            <a type="button" class="btn btn-info"
+                               href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
+                               title="Modifier ou supprimer certaines photos">Gerer les photos</a>
+                        {% endif %}
+                        {% if ((date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn'))) or (date()<app.session.get('dateouverturesite')) %}
+                            <a type="button" class="btn btn-warning"
+                               href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
+                               title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
+                            <a type="button" class="btn btn-info"
+                               href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
+                               role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
+                                photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
 
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>
@@ -204,13 +198,15 @@
         {% endif %}
     {% endif %}
     {% if centre is defined %}
-        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
+        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_COMITE')!=[] %}
             <div style="text-align:center">
-                <a href="{{ path('core_home') }}">Retour à l'accueil</a>
+                <a href="{{ path('fichiers_choix_centre') }}">Retour à la liste des centres</a>
+
             </div>
         {% else %}
             <div style="text-align:center">
-                <a href="{{ path('fichiers_choix_centre') }}">Retour à la liste des centres</a>
+                <a href="{{ path('core_home') }}">Retour à l'accueil</a>
+
             </div>
 
 

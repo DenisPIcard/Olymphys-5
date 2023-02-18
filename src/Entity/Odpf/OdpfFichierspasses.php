@@ -27,14 +27,16 @@ class OdpfFichierspasses
     private $id;
 
     /**
+     * @var OdpfEditionsPassees|null
      * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class)
      */
-    private ?\App\Entity\Odpf\OdpfEditionsPassees $editionspassees;
+    private ?\App\Entity\Odpf\OdpfEditionsPassees $editionspassees=null;
 
     /**
+     * @var OdpfEquipesPassees|null
      * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
      */
-    private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee;
+    private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee=null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -42,10 +44,10 @@ class OdpfFichierspasses
     private ?int $typefichier;
 
     /**
-     * @Groups({"elastica"})
+     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $nomfichier;
+    private ?string $nomfichier=null;
 
     /**
      *

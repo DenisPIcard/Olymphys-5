@@ -47,7 +47,7 @@ class Repartprix
     /**
      * Get niveau
      *
-     * @return string
+     * @return string|null
      */
     public function getNiveau(): ?string
     {

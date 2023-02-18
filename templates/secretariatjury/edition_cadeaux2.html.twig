@@ -21,18 +21,21 @@
             </thead>
 
             <tbody>
-            {% for equipes in listEquipes %}
-                <tr
-                        {% if equipes.classement == '1er' %} class="danger" {% elseif  equipes.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
-                >
-                    <th><a class="btn btn-primary btn-lg"
-                           href="{{ path('secretariatjury_attrib_cadeaux', {'id_equipe': equipes.id} ) }}"
-                           target="_blank">{{ equipes.lettre }} </a></th>
-                    <td>{{ equipes.classement }} prix</td>
-                    <td>{{ equipes.titreProjet }}</td>
-                    {% if equipes.cadeau != null %}
-                        <td>{{ equipes.cadeau.contenu }} offert par {{ equipes.cadeau.fournisseur|upper }} d'une valeur
-                            de {{ equipes.cadeau.montant }} euros.
+            {% for equipe in listEquipes %}
+                {% if equipe.classement =='3ème' %}
+                    {% set class = 'btn btn-primary' %}
+                {% elseif  equipe.classement =='2ème' %}
+                    {% set class='btn btn-warning' %}
+                {% elseif  equipe.classement =='1er' %}
+                    {% set class='btn btn-danger' %}
+                {% endif %}
+                <tr>
+                    <th><a class="{{ class }}">{{ equipe.equipeinter.lettre }} </a></th>
+                    <td>{{ equipe.classement }} prix</td>
+                    <td>{{ equipe.equipeinter.titreProjet }}</td>
+                    {% if equipe.cadeau != null %}
+                        <td>{{ equipe.cadeau.contenu }} offert par {{ equipe.cadeau.fournisseur|upper }} d'une valeur
+                            de {{ equipe.cadeau.montant }} euros.
                         </td>
                     {% else %}
                         <td></td>
@@ -46,6 +49,6 @@
 
     </div>
 
-    </div>
+
 
 {% endblock %}

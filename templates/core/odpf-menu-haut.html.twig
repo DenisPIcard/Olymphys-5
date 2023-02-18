@@ -104,7 +104,17 @@
                 </li>
             {% elseif is_granted('ROLE_JURY') %}
                 <li class="nav-item  menu_haut">
-                    <a class="nav-link" href="{{ path('cyberjury_accueil') }}">Page Jury</a>
+                    <a class="nav-link  dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Page Jury</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('fichiers_choix_equipe',{choix : 'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true">Les équipes et leurs documents</a>
+                        <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les équipes</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration des frais</a>
+
+                    </div>
                 </li>
             {% elseif is_granted('ROLE_PROF') %}
                 <li class="nav-item dropdown menu_haut">
@@ -116,29 +126,36 @@
                     </div>
                 </li>
             {% endif %}
-            <li class="nav-item dropdown menurouge">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <li class="nav-item dropdown menu_haut">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-                   aria-expanded="false">
-                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        Mon Compte
-                    {% else %}
-                        Connexion
-                    {% endif %}
-                </a>
-
+                   aria-expanded="false">Utilisateur : {{ app.user.prenomNom }}</a>
                 <div class="dropdown-menu login py-0">
-                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        <a class="dropdown-item login py-0" href="#">Utilisateur : {{ app.user.useridentifier }}</a>
-                        <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir le profil</a>
-                        <a class="dropdown-item login py-0" href="{{ path('logout') }}">Déconnexion</a>
-                    {% else %}
-                        <a class="dropdown-item login py-0" href="{{ path('login') }}">Connectez
-                            vous</a> si vous avez un compte,
-                        <a class="dropdown-item login py-0" href="{{ path('register') }}">Créez un
-                            compte</a> si vous en souhaitez un
-                    {% endif %}
+
+                    <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
                 </div>
+            {% endif %}
+
             </li>
+            <li class="nav-item dropdown menurouge">
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
+                        aria-expanded="false">Déconnexion</a>
+
+                {% else %}
+                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">Connexion</a>
+                    <div class="dropdown-menu login" aria-labelledby="dropdownMenu3">
+                        <a class="dropdown-item login py-0" href="{{ path('login') }}">Connectez
+                            vous si vous avez un compte</a>
+                        <a class="dropdown-item login py-0" href="{{ path('register') }}">Créez un
+                            compte si vous en souhaitez un</a>
+                    </div>
+                {% endif %}
+
+            </li>
+
+
         </ul>
     </nav>
 </div>

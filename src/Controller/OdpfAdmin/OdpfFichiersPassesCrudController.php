@@ -100,10 +100,15 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
             ->addOrderBy('eq.numero', 'ASC');
 
         if (isset($_REQUEST['filters'])) {
-            $qb->andWhere('f.editionspassees =:edition')
-                ->setParameter('edition', $this->doctrine->getRepository(OdpfEditionspassees::class)->findOneBy(['id' => $_REQUEST['filters']['editionspassees']]));
 
-
+            if(isset($_REQUEST['filters']['editionspassees'])) {
+                $qb->andWhere('f.editionspassees =:edition')
+                    ->setParameter('edition', $this->doctrine->getRepository(OdpfEditionspassees::class)->findOneBy(['id' => $_REQUEST['filters']['editionspassees']]));
+            }
+            if(isset($_REQUEST['filters']['equipespassees'])) {
+                $qb->andWhere('f.equipepassee =:equipe')
+                    ->setParameter('equipe', $this->doctrine->getRepository(OdpfEquipespassees::class)->findOneBy(['id' => $_REQUEST['filters']['equipespassees']]));
+            }
         }
 
 
@@ -114,7 +119,7 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
     {
         $repositoryEdition = $this->doctrine->getRepository(OdpfEquipesPassees::class);
-        $numtypefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+        $numtypefichier = $_REQUEST['typefichier'];
 
         if ($pageName == Crud::PAGE_NEW) {
 
@@ -170,12 +175,13 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
                 break;
         }
 
-        $panel2 = FormField::addPanel('<p style=" color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '</p> ');
+        $panel2 = FormField::addPanel('<p style=" color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$_REQUEST['typefichier']] . '</p> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('nomfichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
 
 
         $typefichier = IntegerField::new('typefichier');
+
         if ($pageName == Crud::PAGE_INDEX) {
             $context = $this->adminContextProvider->getContext();
             $context->getRequest()->query->set('typefichier', $_REQUEST['typefichier']);

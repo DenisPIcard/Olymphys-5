@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Doctrine\ORM\Mapping\JoinColumn;
 use phpDocumentor\Reflection\Types\Null_;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -87,11 +88,11 @@ class Equipesadmin
     private ?string $lyceeAcademie;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
-    private string $prenomProf1;
+    private ?string $prenomProf1;
 
     /**
      * @var string|null
@@ -122,14 +123,16 @@ class Equipesadmin
     private ?string $rne;
 
     /**
+     * @var Rne|null
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     *
+     * @JoinColumn(name="rne_id_id", referencedColumnName="id", nullable=true)
      */
     private ?Rne $rneId;
 
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
+     * @JoinColumn(name="centre_id", referencedColumnName="id", nullable=true)
      */
     private ?centrescia $centre;
 
@@ -162,11 +165,13 @@ class Equipesadmin
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @JoinColumn(name="id_prof1_id", referencedColumnName="id")
      */
     private ?User $idProf1;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
+     * @JoinColumn(name="id_prof2_id", referencedColumnName="id")
      */
     private ?User $idProf2;
 
@@ -191,9 +196,16 @@ class Equipesadmin
     private ?Collection $equipesstring;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Edition::class )
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
+     * @JoinColumn(name="edition_id", referencedColumnName="id")
+     *
      */
     private ?Edition $edition;
+   /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $retiree = null;
+
 
     public function __construct()
     {
@@ -617,7 +629,7 @@ class Equipesadmin
 
     public function getEdition(): ?Edition
     {
-        return $this->edition;
+        return  $this->edition;
     }
 
     public function setEdition(?Edition $edition): self
@@ -732,6 +744,17 @@ class Equipesadmin
     public function setInscrite(bool $inscrite): self
     {
         $this->inscrite = $inscrite;
+
+        return $this;
+    }
+    public function getRetiree(): ?bool
+    {
+        return $this->retiree;
+    }
+
+    public function setRetiree(?bool $retiree): self
+    {
+        $this->retiree = $retiree;
 
         return $this;
     }

@@ -215,7 +215,7 @@ class PhotosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$panel1, $equipe, $imageFile, $coment, $national, $coment];
+            return [$panel1, $equipe, $imageFile, $coment, $national, $coment,$edition];
         } elseif (Crud::PAGE_EDIT === $pageName) {
             $this->requestStack->getCurrentRequest()->query->set('concours', $concours);
             return [$photo, $imageFile, $equipe, $national, $coment];

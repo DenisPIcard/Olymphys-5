@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Node\Scalar\String_;
 
 /**
  * Jures
@@ -28,17 +29,20 @@ class Jures
     private ?user $iduser;
 
     /**
-     * @ORM\Column(name="prenomJure", type="string", length=255)
+     * @var String|null
+     * @ORM\Column(name="prenomJure", type="string", length=255, nullable=true)
      */
     private ?string $prenomJure = null;
 
     /**
-     * @ORM\Column(name="nomJure", type="string", length=255)
+     * @var String|null
+     * @ORM\Column(name="nomJure", type="string", length=255, nullable=true)
      */
     private ?string $nomJure = null;
 
     /**
-     * @ORM\Column(name="initialesJure", type="string", length=255)
+     * @var String|null
+     * @ORM\Column(name="initialesJure", type="string", length=255, nullable=true)
      */
     private ?string $initialesJure = null;
 
@@ -205,7 +209,7 @@ class Jures
      *
      * @return string
      */
-    public function getInitialesJure(): string
+    public function getInitialesJure(): ?string
     {
         return $this->initialesJure;
     }
@@ -227,7 +231,7 @@ class Jures
     /**
      * Get a
      *
-     * @return int
+     * @return int|null
      */
     public function getA(): ?int
     {
@@ -237,11 +241,11 @@ class Jures
     /**
      * Set a
      *
-     * @param integer $a
+     * @param int|null $a
      *
      * @return Jures
      */
-    public function setA(int $a): Jures
+    public function setA(?int $a): Jures
     {
         $this->a = $a;
 
@@ -251,7 +255,7 @@ class Jures
     /**
      * Get b
      *
-     * @return int
+     * @return int|null
      */
     public function getB(): ?int
     {
@@ -261,11 +265,11 @@ class Jures
     /**
      * Set b
      *
-     * @param integer $b
+     * @param int|null $b
      *
      * @return Jures
      */
-    public function setB(int $b): Jures
+    public function setB(?int $b): Jures
     {
         $this->b = $b;
 
@@ -275,7 +279,7 @@ class Jures
     /**
      * Get c
      *
-     * @return int
+     * @return int|null
      */
     public function getC(): ?int
     {
@@ -285,11 +289,11 @@ class Jures
     /**
      * Set c
      *
-     * @param integer $c
+     * @param int|null $c
      *
      * @return Jures
      */
-    public function setC(int $c): Jures
+    public function setC(?int $c): Jures
     {
         $this->c = $c;
 
@@ -299,7 +303,7 @@ class Jures
     /**
      * Get d
      *
-     * @return int
+     * @return int|null
      */
     public function getD(): ?int
     {
@@ -309,11 +313,11 @@ class Jures
     /**
      * Set d
      *
-     * @param integer $d
+     * @param int|null $d
      *
      * @return Jures
      */
-    public function setD(int $d): Jures
+    public function setD(?int $d): Jures
     {
         $this->d = $d;
 
@@ -323,7 +327,7 @@ class Jures
     /**
      * Get e
      *
-     * @return int
+     * @return int|null
      */
     public function getE(): ?int
     {
@@ -333,11 +337,11 @@ class Jures
     /**
      * Set e
      *
-     * @param integer $e
+     * @param int|null $e
      *
      * @return Jures
      */
-    public function setE(int $e): Jures
+    public function setE(?int $e): Jures
     {
         $this->e = $e;
 
@@ -347,7 +351,7 @@ class Jures
     /**
      * Get f
      *
-     * @return int
+     * @return int|null
      */
     public function getF(): ?int
     {
@@ -357,11 +361,11 @@ class Jures
     /**
      * Set f
      *
-     * @param integer $f
+     * @param int|null $f
      *
      * @return Jures
      */
-    public function setF(int $f): Jures
+    public function setF(?int $f): Jures
     {
         $this->f = $f;
 
@@ -381,11 +385,11 @@ class Jures
     /**
      * Set g
      *
-     * @param integer $g
+     * @param int|null $g
      *
      * @return Jures
      */
-    public function setG(int $g): Jures
+    public function setG(?int $g): Jures
     {
         $this->g = $g;
 
@@ -395,7 +399,7 @@ class Jures
     /**
      * Get h
      *
-     * @return int
+     * @return int|null
      */
     public function getH(): ?int
     {
@@ -405,11 +409,11 @@ class Jures
     /**
      * Set h
      *
-     * @param integer $h
+     * @param int|null $h
      *
      * @return Jures
      */
-    public function setH(int $h): Jures
+    public function setH(?int $h): Jures
     {
         $this->h = $h;
 
@@ -419,7 +423,7 @@ class Jures
     /**
      * Get i
      *
-     * @return int
+     * @return int|null
      */
     public function getI(): ?int
     {
@@ -429,11 +433,11 @@ class Jures
     /**
      * Set i
      *
-     * @param integer $i
+     * @param int|null $i
      *
      * @return Jures
      */
-    public function setI(int $i): Jures
+    public function setI(?int $i): Jures
     {
         $this->i = $i;
 
@@ -443,7 +447,7 @@ class Jures
     /**
      * Get j
      *
-     * @return int
+     * @return int|null
      */
     public function getJ(): ?int
     {
@@ -453,11 +457,11 @@ class Jures
     /**
      * Set j
      *
-     * @param integer $j
+     * @param int|null $j
      *
      * @return Jures
      */
-    public function setJ(int $j): Jures
+    public function setJ(?int $j): Jures
     {
         $this->j = $j;
 
@@ -467,7 +471,7 @@ class Jures
     /**
      * Get k
      *
-     * @return int
+     * @return int|null
      */
     public function getK(): ?int
     {
@@ -477,11 +481,11 @@ class Jures
     /**
      * Set k
      *
-     * @param integer $k
+     * @param int|null $k
      *
      * @return Jures
      */
-    public function setK(int $k): Jures
+    public function setK(?int $k): Jures
     {
         $this->k = $k;
 
@@ -491,7 +495,7 @@ class Jures
     /**
      * Get l
      *
-     * @return int
+     * @return int|null
      */
     public function getL(): ?int
     {
@@ -501,11 +505,11 @@ class Jures
     /**
      * Set l
      *
-     * @param integer $l
+     * @param int|null $l
      *
      * @return Jures
      */
-    public function setL(int $l): Jures
+    public function setL(?int $l): Jures
     {
         $this->l = $l;
 
@@ -515,7 +519,7 @@ class Jures
     /**
      * Get m
      *
-     * @return int
+     * @return int|null
      */
     public function getM(): ?int
     {
@@ -525,11 +529,11 @@ class Jures
     /**
      * Set m
      *
-     * @param integer $m
+     * @param int|null $m
      *
      * @return Jures
      */
-    public function setM(int $m): Jures
+    public function setM(?int $m): Jures
     {
         $this->m = $m;
 
@@ -539,7 +543,7 @@ class Jures
     /**
      * Get n
      *
-     * @return int
+     * @return int|null
      */
     public function getN(): ?int
     {
@@ -549,11 +553,11 @@ class Jures
     /**
      * Set n
      *
-     * @param integer $n
+     * @param int|null $n
      *
      * @return Jures
      */
-    public function setN(int $n): Jures
+    public function setN(?int $n): Jures
     {
         $this->n = $n;
 
@@ -563,7 +567,7 @@ class Jures
     /**
      * Get o
      *
-     * @return int
+     * @return int|null
      */
     public function getO(): ?int
     {
@@ -573,11 +577,11 @@ class Jures
     /**
      * Set o
      *
-     * @param integer $o
+     * @param int|null $o
      *
      * @return Jures
      */
-    public function setO(int $o): Jures
+    public function setO(?int $o): Jures
     {
         $this->o = $o;
 
@@ -587,7 +591,7 @@ class Jures
     /**
      * Get p
      *
-     * @return int
+     * @return int|null
      */
     public function getP(): ?int
     {
@@ -597,11 +601,11 @@ class Jures
     /**
      * Set p
      *
-     * @param integer $p
+     * @param int|null $p
      *
      * @return Jures
      */
-    public function setP(int $p): Jures
+    public function setP(?int $p): Jures
     {
         $this->p = $p;
 
@@ -611,7 +615,7 @@ class Jures
     /**
      * Get q
      *
-     * @return int
+     * @return int|null
      */
     public function getQ(): ?int
     {
@@ -621,11 +625,11 @@ class Jures
     /**
      * Set q
      *
-     * @param integer $q
+     * @param int|null $q
      *
      * @return Jures
      */
-    public function setQ(int $q): Jures
+    public function setQ(?int $q): Jures
     {
         $this->q = $q;
 
@@ -635,7 +639,7 @@ class Jures
     /**
      * Get r
      *
-     * @return int
+     * @return int|null
      */
     public function getR(): ?int
     {
@@ -645,11 +649,11 @@ class Jures
     /**
      * Set r
      *
-     * @param integer $r
+     * @param int|null $r
      *
      * @return Jures
      */
-    public function setR(int $r): Jures
+    public function setR(?int $r): Jures
     {
         $this->r = $r;
 
@@ -659,7 +663,7 @@ class Jures
     /**
      * Get s
      *
-     * @return int
+     * @return int|null
      */
     public function getS(): ?int
     {
@@ -669,11 +673,11 @@ class Jures
     /**
      * Set s
      *
-     * @param integer $s
+     * @param int|null $s
      *
      * @return Jures
      */
-    public function setS(int $s): Jures
+    public function setS(?int $s): Jures
     {
         $this->s = $s;
 
@@ -683,7 +687,7 @@ class Jures
     /**
      * Get t
      *
-     * @return int
+     * @return int|null
      */
     public function getT(): ?int
     {
@@ -693,11 +697,11 @@ class Jures
     /**
      * Set t
      *
-     * @param integer $t
+     * @param int|null $t
      *
      * @return Jures
      */
-    public function setT(int $t): Jures
+    public function setT(?int $t): Jures
     {
         $this->t = $t;
 
@@ -707,7 +711,7 @@ class Jures
     /**
      * Get u
      *
-     * @return int
+     * @return int|null
      */
     public function getU(): ?int
     {
@@ -717,11 +721,11 @@ class Jures
     /**
      * Set u
      *
-     * @param integer $u
+     * @param int|null $u
      *
      * @return Jures
      */
-    public function setU(int $u): Jures
+    public function setU(?int $u): Jures
     {
         $this->u = $u;
 
@@ -731,7 +735,7 @@ class Jures
     /**
      * Get v
      *
-     * @return int
+     * @return int|null
      */
     public function getV(): ?int
     {
@@ -741,11 +745,11 @@ class Jures
     /**
      * Set v
      *
-     * @param integer $v
+     * @param int|null $v
      *
      * @return Jures
      */
-    public function setV(int $v): Jures
+    public function setV(?int $v): Jures
     {
         $this->v = $v;
 
@@ -755,7 +759,7 @@ class Jures
     /**
      * Get w
      *
-     * @return int
+     * @return int|null
      */
     public function getW(): ?int
     {
@@ -765,11 +769,11 @@ class Jures
     /**
      * Set w
      *
-     * @param integer $w
+     * @param int|null $w
      *
      * @return Jures
      */
-    public function setW(int $w): Jures
+    public function setW(?int $w): Jures
     {
         $this->w = $w;
 
@@ -886,7 +890,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setNomJure(string $nomJure): Jures
+    public function setNomJure(?string $nomJure): Jures
     {
         $this->nomJure = $nomJure;
 
@@ -910,7 +914,7 @@ class Jures
      *
      * @return Jures
      */
-    public function setPrenomJure(string $prenomJure): Jures
+    public function setPrenomJure(?string $prenomJure): Jures
     {
         $this->prenomJure = $prenomJure;
 
@@ -937,7 +941,7 @@ class Jures
         return $this->phrases;
     }
 
-    public function addPhrase(phrases $phrase): self
+    public function addPhrase(?phrases $phrase): self
     {
         if (!$this->phrases->contains($phrase)) {
             $this->phrases[] = $phrase;

@@ -4,20 +4,156 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="listephrases">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Suppression champ attribue (fin)">
+      <change afterPath="$PROJECT_DIR$/config/packages/dev/maker.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20230101103713.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20230210165028.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20230212201357.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/Admin/OrgaciaCrudController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/cyberjury/listephrases.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Olymphys-5.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/fos_elastica.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/fos_elastica.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/28-eq-1-autorisation photos-TINTILLiERS-Nelly-5fc7c62e2a564.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/28-eq-1-autorisation photos-VARLET-Tom-5fc7c6446792c.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_HERBINIERE_photos_2021-2022_adultes_SD_plus.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022_adultes_SD_plus CLB.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022_adultes_SD_plus-signed.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022_adultes_SD_plus.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/29_autorisation_photos_2021-2022buridant.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/temp/Autorisation_BOUZIDANE.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SearchController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/doctrine.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/doctrine.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/odpf-accueil.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/odpf-accueil.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/odpf.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/odpf.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel61a35f409c380.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel61a35f614da38.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel61f07420ac7be.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel61f074342e342.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel61f074516dca2.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel61f07463e93e7.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel62416ebc56cd7.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel624d9a39cf021.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel6261d6ac2f0c5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel6261d6ac303c0.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel6261d6ac32148.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel6264a7b30d502.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel62652f2db67d9.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel62652f2db79de.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel62652f2db832c.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel6265ae82750da.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel62670e062fdd6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/odpf/odpf-images/imagescarousels/carousel62670fb4ea8c0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/AdminsiteCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/AdminsiteCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/CadeauxCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/CadeauxCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/Filter/CustomEditionFilter.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/Filter/CustomEditionFilter.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/JuresCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/JuresCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PhotosCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/PhotosCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PrixCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/PrixCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/SelectionneesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/SelectionneesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/VisitesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/VisitesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ComiteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ComiteController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/JuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/JuryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfArticleCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfArticleCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfDashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfDashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfFichiersPassesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfFichiersPassesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfLogosCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfLogosCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfPhotosCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfPhotosCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PhotosController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PhotosController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatadminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Centrescia.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Centrescia.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Edition.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Edition.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Equipes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Fichiersequipes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Fichiersequipes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Jure.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Jures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Jures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Jury.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Newsletter.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Newsletter.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Notes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Notes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfCarousels.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Odpf/OdpfCarousels.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFichierspasses.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Odpf/OdpfFichierspasses.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfImagescarousels.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Odpf/OdpfImagescarousels.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Odpf/OdpfLogos.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Odpf/OdpfLogos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Orgacia.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Orgacia.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Photos.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Photos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Phrases.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Phrases.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Prix.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Prix.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Repartprix.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Repartprix.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Visites.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Visites.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/CadeauxType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/CadeauxType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/EquipesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/EquipesType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PhotosType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PhotosType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Type/Admin/CustomCentreFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Type/Admin/CustomCentreFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Type/Admin/CustomEquipeFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Type/Admin/CustomEquipeFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/AdminsiteRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/CadeauxRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/CadeauxRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/CentresciaRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/CentresciaRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/ClassementRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ClassementRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/EditionRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EditionRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/EditionsPasseesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EditionsPasseesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/ElevesinterRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ElevesinterRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/EquipesPasseesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EquipesPasseesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/EquipesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EquipesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/EquipesadminRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EquipesadminRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/FichiersequipesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/FichiersequipesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/LiaisonRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/LiaisonRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/NotesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/NotesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/OdpfCarouselsRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OdpfCarouselsRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PhotoscnRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PhotoscnthumbRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PhotosinterRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PhotosinterthumbRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/TotalequipesRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/VideosequipesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/VideosequipesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/VisitesRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/VisitesRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/CreatePageEdPassee.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/CreatePageEdPassee.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/OdpfCreateArray.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OdpfCreateArray.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/OdpfListeEquipes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OdpfListeEquipes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe_back.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/espace_prof.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/espace_prof.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/listefichiers.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/listefichiers.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/listefichiers_back.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base1.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base1.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/comite/frais.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/comite/frais.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-accueil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-bloc-archives-photos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-bloc-archives-photos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-le-calendrier.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-le-calendrier.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-menu-haut.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-menu-haut.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/core/odpf-pages.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/odpf-pages.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjury/accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjury/accueil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjury/evaluer.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjury/evaluer.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjury/infos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjury/infos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjury/lescadeaux.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjury/lescadeaux.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjury/tableau.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjury/tableau.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/photos/deposephotos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/photos/deposephotos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/photos/gestion_photos_cn.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/photos/gestion_photos_cn.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/accueil_jury.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/attrib_cadeaux.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/attrib_cadeaux.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/attrib_prix.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/attrib_prix.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/charge_donnees_excel_equipes.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/charge_donnees_excel_equipes.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux2.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_cadeaux2.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_palmares_complet.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_palmares_complet.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_phrases.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_phrases.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_prix.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_prix.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/edition_visites.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/edition_visites.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/form-cadeaux.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/form-cadeaux.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/form-cadeaux2.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/form-cadeaux2.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/lesprix.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/lesprix.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/modifier_prix.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/modifier_prix.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/modifier_prix.html_Senem.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/nav_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/nav_equipe.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/secretariatjury/navigation.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/secretariatjury/navigation.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,12 +167,16 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="ElasticSearch" />
       </map>
     </option>
     <option name="RECENT_COMMON_BRANCH" value="main" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/Controller/SecretariatjuryController.php" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/Entity/Equipes.php" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -201,14 +341,14 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
       <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
       <path value="$PROJECT_DIR$/vendor/symfony/doctrine-messenger" />
-      <path value="$PROJECT_DIR$/vendor/nyholm/dsn" />
-      <path value="$PROJECT_DIR$/vendor/elasticsearch/elasticsearch" />
-      <path value="$PROJECT_DIR$/vendor/friendsofsymfony/elastica-bundle" />
-      <path value="$PROJECT_DIR$/vendor/pagerfanta/pagerfanta" />
       <path value="$PROJECT_DIR$/vendor/ruflin/elastica" />
       <path value="$PROJECT_DIR$/vendor/react/promise" />
+      <path value="$PROJECT_DIR$/vendor/pagerfanta/pagerfanta" />
+      <path value="$PROJECT_DIR$/vendor/elasticsearch/elasticsearch" />
+      <path value="$PROJECT_DIR$/vendor/nyholm/dsn" />
       <path value="$PROJECT_DIR$/vendor/ezimuel/guzzlestreams" />
       <path value="$PROJECT_DIR$/vendor/ezimuel/ringphp" />
+      <path value="$PROJECT_DIR$/vendor/friendsofsymfony/elastica-bundle" />
     </include_path>
   </component>
   <component name="ProblemsViewState">
@@ -221,31 +361,38 @@
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/denis/Documents/varwww/html/Olymphys-5&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ssh.settings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "last_opened_file_path": "/home/alain/PhpstormProjects/Olymphys-5",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/templates/secretariatjury" />
       <recent name="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle/src/Resources/public" />
       <recent name="$PROJECT_DIR$/public/bundles/easyadmin" />
       <recent name="$PROJECT_DIR$/Olymphys-5" />
@@ -258,7 +405,7 @@
   </component>
   <component name="RunManager">
     <configuration name="phpunit.xml.dist" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <TestRunner scope="XML" />
+      <TestRunner />
       <method v="2" />
     </configuration>
   </component>
@@ -307,12 +454,34 @@
       <workItem from="1670578993211" duration="7211000" />
       <workItem from="1670602725511" duration="1329000" />
       <workItem from="1670605338056" duration="1003000" />
-      <workItem from="1671010834566" duration="5019000" />
-      <workItem from="1671345469438" duration="1409000" />
-      <workItem from="1671383810398" duration="2383000" />
-      <workItem from="1671433029180" duration="599000" />
-      <workItem from="1671808378615" duration="722000" />
-      <workItem from="1671915316166" duration="2728000" />
+      <workItem from="1671010834566" duration="8608000" />
+      <workItem from="1671189507806" duration="8555000" />
+      <workItem from="1671375241462" duration="6872000" />
+      <workItem from="1671635849732" duration="4533000" />
+      <workItem from="1671718415023" duration="9314000" />
+      <workItem from="1671730722289" duration="217000" />
+      <workItem from="1671731019197" duration="130000" />
+      <workItem from="1671802846802" duration="10639000" />
+      <workItem from="1672070318960" duration="2857000" />
+      <workItem from="1672145831897" duration="9447000" />
+      <workItem from="1672173090706" duration="3912000" />
+      <workItem from="1672206588906" duration="582000" />
+      <workItem from="1672207194203" duration="188000" />
+      <workItem from="1672239951110" duration="12274000" />
+      <workItem from="1672261288393" duration="3113000" />
+      <workItem from="1672300743793" duration="14886000" />
+      <workItem from="1672333860481" duration="3130000" />
+      <workItem from="1672337299367" duration="11692000" />
+      <workItem from="1672381961450" duration="1880000" />
+      <workItem from="1672417278057" duration="7940000" />
+      <workItem from="1672464030994" duration="5286000" />
+      <workItem from="1672473859884" duration="47000" />
+      <workItem from="1672481120476" duration="834000" />
+      <workItem from="1672487512633" duration="22713000" />
+      <workItem from="1672551715430" duration="4377000" />
+      <workItem from="1672558764093" duration="13405000" />
+      <workItem from="1672609231289" duration="2541000" />
+      <workItem from="1676732290209" duration="344000" />
     </task>
     <task id="LOCAL-00001" summary="suite">
       <created>1667061841437</created>
@@ -363,7 +532,84 @@
       <option name="project" value="LOCAL" />
       <updated>1670952652952</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="revision jury 2">
+      <created>1671029789029</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1671029789029</updated>
+    </task>
+    <task id="LOCAL-00009" summary="modif css actus accueil">
+      <created>1671200811281</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1671200811281</updated>
+    </task>
+    <task id="LOCAL-00010" summary="phrases dans jury 1">
+      <created>1671384204981</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1671384204981</updated>
+    </task>
+    <task id="LOCAL-00011" summary="phrases dans jury 2">
+      <created>1671642560624</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1671642560625</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Attributions">
+      <created>1671730874241</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1671730874241</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Attributions 2">
+      <created>1671816194682</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1671816194682</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Attributions 2">
+      <created>1672073600263</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1672073600263</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Corrections dans le secrétariat jury">
+      <created>1672207332452</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1672207332452</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Correction erreur d'attribution des prix">
+      <created>1672423094463</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1672423094463</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Secretariat jury : cadeaux, prix, palmares">
+      <created>1672519700535</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1672519700535</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Changement du fichier de  liste fichier equipe">
+      <created>1672521751357</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1672521751357</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -415,7 +661,17 @@
     <MESSAGE value="suppression de la ligne Ajax en tete (renderView et non render !)" />
     <MESSAGE value="Correction de l'update des photos &#10;Correction dépot docéquipe&#10;Correction tableau excel des élèves&#10;Correction du filtre pour une équipe, ajout du filtre équipe sélectionnée l'affichage de la liste des élèves" />
     <MESSAGE value="revision jury 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="revision jury 1" />
+    <MESSAGE value="revision jury 2" />
+    <MESSAGE value="modif css actus accueil" />
+    <MESSAGE value="phrases dans jury 1" />
+    <MESSAGE value="phrases dans jury 2" />
+    <MESSAGE value="Attributions" />
+    <MESSAGE value="Attributions 2" />
+    <MESSAGE value="Corrections dans le secrétariat jury" />
+    <MESSAGE value="Correction erreur d'attribution des prix" />
+    <MESSAGE value="Secretariat jury : cadeaux, prix, palmares" />
+    <MESSAGE value="Changement du fichier de  liste fichier equipe" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changement du fichier de  liste fichier equipe" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

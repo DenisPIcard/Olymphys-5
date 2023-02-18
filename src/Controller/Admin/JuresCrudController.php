@@ -29,31 +29,9 @@ class JuresCrudController extends AbstractCrudController
     {
         $nomJure = TextField::new('nomJure');
         $prenomJure = TextField::new('prenomJure');
-        $a = TextareaField::new('A');
-        $b = TextareaField::new('B');
-        $c = TextareaField::new('C');
-        $d = TextareaField::new('D');
-        $e = TextareaField::new('E');
-        $f = TextareaField::new('F');
-        $g = TextareaField::new('G');
-        $h = TextareaField::new('H');
-        $i = TextareaField::new('I');
-        $j = TextareaField::new('J');
-        $k = TextareaField::new('K');
-        $l = TextareaField::new('L');
-        $m = TextareaField::new('M');
-        $n = TextareaField::new('N');
-        $o = TextareaField::new('O');
-        $p = TextareaField::new('P');
-        $q = TextareaField::new('Q');
-        $r = TextareaField::new('R');
-        $s = TextareaField::new('S');
-        $t = TextareaField::new('T');
-        $u = TextareaField::new('U');
-        $v = TextareaField::new('V');
-        $w = TextareaField::new('W');
-        $x = TextareaField::new('X');
-        $y = TextareaField::new('Y');
+
+        $x = IntegerField::new('x');
+        $y = IntegerField::new('y');
         $id = IntegerField::new('id', 'ID');
         $initialesJure = TextField::new('initialesJure');
         $a = IntegerField::new('a');

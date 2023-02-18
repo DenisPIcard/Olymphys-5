@@ -52,7 +52,9 @@ class ProfesseursCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editionEd = $session->get('edition')->getEd();
-
+        if (date('now')<$session->get('dateouverturesite')){
+            $editionEd=$editionEd-1;
+        }
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition'];
@@ -72,7 +74,10 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $editionId = $session->get('edition')->getId();
-
+        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
+        if(date('now')<$session->get('dateouverturesite')){
+            $editionId=$repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1])->getId();
+        }
         if (isset($_REQUEST['filters']['edition'])) {
 
             $editionId = $_REQUEST['filters']['edition'];
@@ -85,10 +90,15 @@ class ProfesseursCrudController extends AbstractCrudController
             ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId])
             ->createAsGlobalAction();
         //->displayAsButton()->setCssClass('btn btn-primary');
-
+        $tableauexcelsel = Action::new('profs_tableau_excel_sel', 'Créer un tableau excel des professeurs sélectionnés', 'fas fa-columns')
+            // if the route needs parameters, you can define them:
+            // 1) using an array
+            ->linkToRoute('profs_tableau_excel_sel', ['idEdition' => $editionId])
+            ->createAsGlobalAction();
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_INDEX, $tableauexcel)
+            ->add(Crud::PAGE_INDEX, $tableauexcelsel)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_DETAIL, Action::EDIT)
@@ -135,13 +145,15 @@ class ProfesseursCrudController extends AbstractCrudController
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
 
-        if ($context->getRequest()->query->get('filters') == null) {
+        if (!isset($_REQUEST['filters'])) {
             $edition = $session->get('edition');
-
+            if(date('now')<$session->get('dateouverturesite')){
+                $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            }
         } else {
-            if (isset($context->getRequest()->query->get('filters')['edition'])) {
+            if (isset($_REQUEST['filters']['edition'])) {
 
-                $idEdition = $context->getRequest()->query->get('filters')['edition'];
+                $idEdition = $_REQUEST['filters']['edition'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
             }
@@ -258,6 +270,135 @@ class ProfesseursCrudController extends AbstractCrudController
             ->setCreator("Olymphys")
             ->setLastModifiedBy("Olymphys")
             ->setTitle("OdPF" . $edition->getEd() . "ème édition - professeurs encadrants")
+            ->setSubject("PROFESSEURS")
+            ->setDescription("Office 2007 XLSX Document pour comité")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'] as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+
+        }
+        $sheet->setCellValue('A1', 'Professeurs de la ' . $edition->getEd() . 'e' . ' édition');
+
+        $ligne = 2;
+
+
+        $sheet->setCellValue('A' . $ligne, 'Nom')
+            ->setCellValue('B' . $ligne, 'Prénom')
+            ->setCellValue('C' . $ligne, 'Adresse')
+            ->setCellValue('D' . $ligne, 'Ville')
+            ->setCellValue('E' . $ligne, 'Code Postal')
+            ->setCellValue('F' . $ligne, 'Courriel')
+            ->setCellValue('G' . $ligne, 'téléphone')
+            ->setCellValue('H' . $ligne, 'Code UAI')
+            ->setCellValue('I' . $ligne, 'Lycée')
+            ->setCellValue('J' . $ligne, 'Commune lycée')
+            ->setCellValue('K' . $ligne, 'Académie')
+            ->setCellValue('L' . $ligne, 'Equipes');;
+
+        $ligne += 1;
+
+        foreach ($listProfs as $prof) {
+
+
+
+
+            $sheet->setCellValue('A' . $ligne, $prof->getUser()->getNom())
+                ->setCellValue('B' . $ligne, $prof->getUser()->getPrenom())
+                ->setCellValue('C' . $ligne, $prof->getUser()->getAdresse())
+                ->setCellValue('D' . $ligne, $prof->getUser()->getVille())
+                ->setCellValue('E' . $ligne, $prof->getUser()->getCode())
+                ->setCellValue('F' . $ligne, $prof->getUser()->getEmail())
+                ->getCell('G' . $ligne)->setValueExplicit($prof->getUser()->getPhone(), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            if ($prof->getUser()->getRneId()!==null) {
+                $sheet->setCellValue('H' . $ligne, $prof->getUser()->getRneId()->getRne())
+                    ->setCellValue('I' . $ligne, $prof->getUser()->getRneId()->getNom())
+                    ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune())
+                    ->setCellValue('K' . $ligne, $prof->getUser()->getRneId()->getAcademie());
+            }
+            $equipesstring = explode('-', $prof->getEquipesstring());
+            $sheet->getRowDimension($ligne)->setRowHeight(12.5 * intval($equipesstring[0]));
+            $sheet->getCell('L' . $ligne)->setValueExplicit($equipesstring[1], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);//'abc \n cde'
+            $sheet->getStyle('A' . $ligne . ':L' . $ligne)->getAlignment()->setWrapText(true);
+            $ligne += 1;
+        }
+
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="professeurs.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        ob_end_clean();
+        $writer->save('php://output');
+
+
+    }
+
+    /**
+     * @Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name="profs_tableau_excel_sel")
+     */
+
+    public function editer_tableau_excel_sel($idEdition)
+    {
+
+
+        $em = $this->doctrine->getManager();
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
+        $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+        $repositoryProfs = $this->doctrine->getManager()->getRepository(Professeurs::class);
+
+        $queryBuilder = $repositoryProfs->createQueryBuilder('p')
+            ->groupBy('p.user')
+            ->leftJoin('p.equipes', 'eqs')
+            ->andWhere('eqs.edition =:edition')
+            ->andWhere('eqs.selectionnee = true')
+            ->setParameter('edition', $edition)
+            ->leftJoin('p.user', 'u')
+            ->orderBY('u.nom', 'ASC');
+        $listProfs = $queryBuilder->getQuery()->getResult();
+
+        if ($listProfs != null) {
+            foreach ($listProfs as $prof) {
+                $equipestring = '';
+
+                $equipes = $repositoryEquipes->createQueryBuilder('e')
+                    ->where('e.edition =:edition')
+                    ->setParameter('edition', $edition)
+                    ->andWhere('e.idProf1 =:user OR e.idProf2 =:user')
+                    ->setParameter('user', $prof->getUser())
+                    ->getQuery()->getResult();
+
+                if ($equipes != null) {
+                    foreach ($equipes as $equipe) {
+                        if ($equipe->getIdProf1() == $prof->getUser()) {
+                            $encad = '(prof1)';
+                        }
+                        if ($equipe->getIdProf2() == $prof->getUser()) {
+                            $encad = '(prof2)';
+                        }
+                        $equipestring = $equipestring . $equipe->getTitreProjet() . $encad;
+                        if (next($equipes) != null) {
+                            $equipestring = $equipestring . "\n";
+                        }
+                    }
+                    $equipestring = count($equipes) . '-' . $equipestring;
+                    $prof->setEquipesstring($equipestring);
+                    $em->persist($prof);
+                    $em->flush();
+                }
+            }
+        }
+
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("OdPF" . $edition->getEd() . "ème édition - professeurs sélectionnés")
             ->setSubject("PROFESSEURS")
             ->setDescription("Office 2007 XLSX Document pour comité")
             ->setKeywords("Office 2007 XLSX")

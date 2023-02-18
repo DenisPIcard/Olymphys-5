@@ -1,4 +1,3 @@
-{# templates/Core/crawl.html.twig #}
 {% extends "base.html.twig" %}
 
 {% block title %}
@@ -27,8 +26,6 @@
             <div class="row">
                 <div class="col-md-8 col-lg-4 order-last order-md-first col-gche-accueil ">
                     <div class="row px-3 pb-0">
-                        {# <img src="{{ asset('images/Bandeau1.png') }}" width="100%" height="auto"
-                             alt="image"> #}
                         {{ include('OdpfAdmin/carousel-accueil.html.twig') }}
                         <div class="menugche-accueil">
                             <h3>les olympiades de Physique France</h3>
@@ -50,9 +47,6 @@
                                 <li><a href="{{ path('core_pages',{choix:'editions'}) }}">Les éditions</a></li>
                                 {#  <li><a href="#">Les mémoires</a></li>
                                 <li><a href="{{ path('core_pages' ,{choix:'les_videos'}) }}">Les vidéos</a></li> #}
-                                {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                    <li><a href="{{ path('goutte_client') }}">Scraper</a></li>
-                                {% endif %}
                                 <li><a data-toggle="modal" href="#modarecherche"> Rechercher des mémoires</a>
 
                                 </li>
@@ -74,7 +68,7 @@
                                         <li><a href="{{ path('core_pages', {choix:'le_calendrier'}) }}">Le
                                                 calendrier</a></li>
                                         <li><a href="{{ path('core_pages', {choix:'inscriptions'}) }}">Inscriptions
-                                                avant le 17 octobre</a></li>
+                                                avant le 18 octobre</a></li>
                                         <li><a href="{{ path('core_pages', {choix:'les_equipes'}) }}">Les équipes</a>
                                         </li>
                                         <li><a href="{{ path('core_pages', {choix:'la_carte_des_equipes'}) }}">Cartes
@@ -93,8 +87,8 @@
 
                             {% for actu in affActus %}
                                     <li>
-                                        <a class="actus-home-titre"
-                                           href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a>
+                                        <p class="actus-home-titre">
+                                        <a href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a></p>
                                         <p class="actus-home-introtext">{{ actu.texte|raw }} ...</p>
                                         <p class="actus-home-lireplus">
                                             <a class="lireplus" href="{{ path('core_actus', {tourn:'rien'}) }}"
@@ -168,7 +162,7 @@
                         <p>
                             Un mail vient de vous être envoyé afin que vous puissiez finaliser votre inscription en
                             cliquant sur un lien.
-                            Le lien est valide 24h.
+                            Le lien est valide 24 h.
                         </p>
 
                     </div>

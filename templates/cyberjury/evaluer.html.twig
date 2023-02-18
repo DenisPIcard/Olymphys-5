@@ -6,7 +6,7 @@
 
         {{ equipe.equipeinter.lettre }} </span>  {{ equipe.equipeinter.titreProjet }}
     {% if memoire!=null %}
-        <a href="{{ asset('/fichiers/memoires/'~ memoire.fichier) }}" class="fas fa-book-reader"
+        <a href="{{ asset('odpf/odpf-archives/'~equipe.equipeinter.edition.ed~'/fichiers/memoires/'~ memoire.fichier) }}" class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
     {% endif %}
 

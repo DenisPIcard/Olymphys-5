@@ -2,7 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

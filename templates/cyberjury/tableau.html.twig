@@ -55,7 +55,7 @@
 
                         {% if memoires[loop.index] != null %}
 
-                            <a href="{{ asset('/fichiers/memoires/'~memoires[loop.index].fichier) }}"
+                            <a href="{{ asset('odpf/odpf-archives/'~memoires[loop.index].edition.ed~'/fichiers/memoires/'~memoires[loop.index].fichier) }}"
                                class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
                         {% endif %}
 

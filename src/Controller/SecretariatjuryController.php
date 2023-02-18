@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Cadeaux;
 use App\Entity\Coefficients;
+use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
 use App\Entity\Jures;
 use App\Entity\Notes;
+use App\Entity\Phrases;
 use App\Entity\Prix;
 use App\Entity\Repartprix;
 use App\Entity\Rne;
@@ -59,21 +62,18 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/accueil", name="secretariatjury_accueil")
      *
      */
-    public function accueil(Request $request): Response
+    public function accueil(): Response
     {
+        $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
-        $repositoryEquipesadmin = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipesadmin::class);
-        $repositoryEleves = $this->doctrine
-            ->getManager()
-            ->getRepository(Elevesinter::class);
-        $repositoryRne = $this->doctrine
-            ->getManager()
-            ->getRepository(Rne::class);
-       /* $repositoryUser = $this->doctrine
-            ->getManager()
-            ->getRepository(User::class);*/
+        if ($edition->getDateouverturesite()>date('now')){
+            $edition= $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+
+        }
+
+        $repositoryEquipesadmin = $em->getRepository(Equipesadmin::class);
+        $repositoryEleves = $em->getRepository(Elevesinter::class);
+        $repositoryRne = $em->getRepository(Rne::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -108,7 +108,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/accueil_jury", name="secretariatjury_accueil_jury")
      *
      */
-    public function accueilJury(Request $request): Response
+    public function accueilJury(): Response
     {
         $tableau = $this->requestStack->getSession()->get('tableau');
         $listEquipes = $tableau[0];
@@ -117,6 +117,8 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository(User::class);
+        $prof1=[];
+        $prof2=[];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -143,21 +145,13 @@ class SecretariatjuryController extends AbstractController
      */
     public function vueglobale(): Response
     {
-        $repositoryNotes = $this
-            ->doctrine
-            ->getManager()
-            ->getRepository(Notes::class);
+        $em = $this->doctrine->getManager();
+        $repositoryNotes = $em->getRepository(Notes::class);
 
-        $repositoryJures = $this
-            ->doctrine
-            ->getManager()
-            ->getRepository(Jures::class);
+        $repositoryJures = $em->getRepository(Jures::class);
         $listJures = $repositoryJures->findAll();
 
-        $repositoryEquipes = $this
-            ->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class);
+        $repositoryEquipes = $em->getRepository(Equipes::class);
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
@@ -180,7 +174,7 @@ class SecretariatjuryController extends AbstractController
 
                 } elseif ($statut == 1) {
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
-                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getSousTotal();
+                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();
                 } else {
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getPoints();
@@ -209,6 +203,7 @@ class SecretariatjuryController extends AbstractController
     {
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
+
         $repositoryEquipes = $em->getRepository(Equipes::class);
 
         $coefficients = $em->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
@@ -217,12 +212,11 @@ class SecretariatjuryController extends AbstractController
 
         foreach ($listEquipes as $equipe) {
             $listesNotes = $equipe->getNotess();
-            $nbre_notes = $equipe->getNbNotes();
+            $nbre_notes = count($equipe->getNotess());//a la place de $equipe->getNbNotes();
 
             $nbre_notes_ecrit = 0;
             $points_ecrit = 0;
             $points = 0;
-
 
             if ($nbre_notes == 0) {
                 $equipe->setTotal(0);
@@ -234,8 +228,15 @@ class SecretariatjuryController extends AbstractController
 
                     $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;
                     $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();
+
                 }
+                $nbNotes = count($equipe->getNotess());//met à jour le nb de notes et le total lors des essais
+                $equipe->setNbNotes($nbNotes);
+                $equipe->setTotal($points/$nbre_notes);
+                $em->persist($equipe);
+                $em->flush();
             }
+
         }
 
         $nbre_equipes = 0;
@@ -243,14 +244,22 @@ class SecretariatjuryController extends AbstractController
         $qb->select('COUNT(e)');
         try {
             $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
 
 
-        $em->flush();
+        $i=1;
+        foreach($classement as $equipe ){
+            $equipe->setRang($i);
+            $em->persist($equipe);
+            $i =$i+1;
 
+        }
+
+        $em->flush();
+        //dd($classement);
         $content = $this->renderView('secretariatjury/classement.html.twig',
             array('classement' => $classement)
         );
@@ -265,9 +274,10 @@ class SecretariatjuryController extends AbstractController
      */
     public function lesprix(): Response
     { //affiche la liste des prix prévus
-        $repositoryPrix = $this->doctrine
-            ->getManager()
-            ->getRepository(Prix::class);
+        $em = $this->doctrine->getManager();
+
+        $repositoryPrix = $em->getRepository(Prix::class);
+
         $ListPremPrix = $repositoryPrix->findBy(['niveau' => '1er']);
 
         $ListDeuxPrix = $repositoryPrix->findBy(['niveau' => '2ème']);
@@ -291,35 +301,40 @@ class SecretariatjuryController extends AbstractController
     { //permet de modifier le niveau d'un prix(id_prix), modifie alors le 'repartprix" (répartition des prix)
 
         $em = $this->doctrine->getManager();
+
         $repositoryPrix = $em->getRepository(Prix::class);
+
         $repositoryRepartprix = $em->getRepository(Repartprix::class);
+
         $prix = $repositoryPrix->find($id_prix);
 
         $form = $this->createForm(PrixType::class, $prix);
+
         $nbrePremPrix = 0;
         $nbreDeuxPrix = 0;
         $nbreTroisPrix = 0;
+
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em->persist($prix);
             $em->flush();
             $niveau = $repositoryRepartprix->findOneBy(['niveau' => '1er']);
             try {
                 $nbrePremPrix = $repositoryPrix->getNbrePrix('1er');
-            } catch (NoResultException|NonUniqueResultException $e) {
+            } catch (NoResultException $e) {
             }
             $niveau->setNbreprix($nbrePremPrix);
             $em->persist($niveau);
             $niveau = $repositoryRepartprix->findOneBy(['niveau' => '2ème']);
             try {
                 $nbreDeuxPrix = $repositoryPrix->getNbrePrix('2ème');
-            } catch (NoResultException|NonUniqueResultException $e) {
+            } catch (NoResultException $e) {
             }
             $niveau->setNbreprix($nbreDeuxPrix);
             $em->persist($niveau);
             $niveau = $repositoryRepartprix->findOneBy(['niveau' => '3ème']);
             try {
                 $nbreTroisPrix = $repositoryPrix->getNbrePrix('3ème');
-            } catch (NoResultException|NonUniqueResultException $e) {
+            } catch (NoResultException $e) {
             }
             $niveau->setNbreprix($nbreTroisPrix);
             $em->persist($niveau);
@@ -345,8 +360,10 @@ class SecretariatjuryController extends AbstractController
     public function approche(Request $request): Response
     {
         $em = $this->doctrine->getManager();
+
         $repositoryEquipes = $em->getRepository(Equipes::class);
         $nbre_equipes = 0;
+
         $qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->select('COUNT(e)');
         try {
@@ -355,7 +372,12 @@ class SecretariatjuryController extends AbstractController
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
-
+        /*$classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
+                                        ->orderBy('e.couleur','ASC')
+                                        ->leftJoin('e.equipeinter','eq')
+                                        ->addOrderBy('e.total','DESC')
+                                        ->getQuery()->getResult();
+*/
         foreach (range('A', 'Z') as $lettre) {
 
             if ($request->query->get($lettre) != null) {
@@ -364,10 +386,29 @@ class SecretariatjuryController extends AbstractController
                 $idequipe = $request->query->get('idEquipe');
 
                 $equipe = $repositoryEquipes->findOneBy(['id' => $idequipe]);
-                $equipe->setCouleur($couleur);
+              /*  switch ($couleur){
+                    case 1: $newclassement='1er';
+                            break;
+                    case 2: $newclassement='2ème';
+                            break;
+                    case 3: $newclassement='3ème';
+                            break;
 
+
+                }
+              */
+                $equipe->setCouleur($couleur);
+                //$equipe->setClassement($newclassement);
                 $em->persist($equipe);
                 $em->flush();
+                /*$classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
+                    ->orderBy('e.couleur','ASC')
+                    ->leftJoin('e.equipeinter','eq')
+                    ->addOrderBy('e.total','DESC')
+                    ->getQuery()->getResult();
+                */
+                //$couleur>$couleurini?$monte=true:$monte=false;
+                //$repositoryEquipes->echange_rang($equipe,$monte);
             }
 
         }
@@ -398,8 +439,11 @@ class SecretariatjuryController extends AbstractController
             ->addOrderBy('i.lettre', 'ASC');
 
         $classement = $qb->getQuery()->getResult();
+
         $class = null;
+        $i=0;
         foreach ($classement as $equipe) {
+            $i+=1;
             $couleur = $equipe->getCouleur();
             switch ($couleur) {
                 case 1 :
@@ -414,9 +458,11 @@ class SecretariatjuryController extends AbstractController
 
             }
             $equipe->setClassement($class);
+            $equipe->setRang($i);
             $em->persist($equipe);
         }
         $em->flush();
+
 
         $content = $this->renderView('secretariatjury/classement_definitif.html.twig',
             array('classement' => $classement,)
@@ -434,15 +480,14 @@ class SecretariatjuryController extends AbstractController
     public function RaZ(): Response
     {
         $em = $this->doctrine->getManager();
-        $repositoryEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class);
+        $repositoryEquipes = $em->getRepository(Equipes::class);
 
-        $repositoryPrix = $this->doctrine
-            ->getManager()
-            ->getRepository(Prix::class);
+        $repositoryPrix = $em->getRepository(Prix::class);
+
         $ListPrix = $repositoryPrix->findAll();
+
         $ListeEquipes = $repositoryEquipes->findAll();
+
         foreach ($ListeEquipes as $equipe) {
             $equipe->setPrix(null);
             $em->persist($equipe);
@@ -462,8 +507,11 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/attrib_prix/{niveau}", name="secretariatjury_attrib_prix", requirements={"niveau"="\d{1}"}))
      *
      */
-    public function attrib_prix(Request $request, $niveau)
+    public function attrib_prix(Request $request, $niveau): RedirectResponse|Response
     {
+
+
+        $em = $this->doctrine->getManager();
         $niveau_court = "";
         $niveau_long = "";
         switch ($niveau) {
@@ -481,101 +529,44 @@ class SecretariatjuryController extends AbstractController
                 $niveau_long = 'troisièmes';
                 break;
         }
-        $repositoryEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class);
-        $repositoryRepartprix = $this->doctrine
-            ->getManager()
-            ->getRepository(Repartprix::class);
-        $repositoryPrix = $this->doctrine
-            ->getManager()
-            ->getRepository(Prix::class);
+        $repositoryEquipes = $em->getRepository(Equipes::class);
+        $repositoryRepartprix = $em->getRepository(Repartprix::class);
+        $repositoryPrix = $em->getRepository(Prix::class);
 
         $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
         $NbrePrix = $repositoryRepartprix->findOneBy(['niveau' => $niveau_court])
             ->getNbreprix();
 
-        $i = 0;
-        $formtab = [];
-        foreach ($ListEquipes as $equipe) {
-            $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
-                ->where('p.niveau = :nivo')
-                ->setParameter('nivo', $niveau_court);
-            $attribue = 0;
-            $Prix_eq = $equipe->getPrix();
-            $intitule_prix = '';
-            if ($Prix_eq != null) { //réunir les deux "if" en un seul ?
-                $intitule_prix = $Prix_eq->getPrix();
-                $qb2[$i]->andwhere('p.id = :prix_sel')
-                    ->setParameter('prix_sel', $Prix_eq->getId());
-            }
-            if (!$Prix_eq) {
-                $qb2[$i]->andwhere('p.attribue = :attribue')
-                    ->setParameter('attribue', $attribue);
-            }
 
-            $formBuilder[$i] = $this->createFormBuilder($equipe);
-            $lettre = strtoupper($equipe->getEquipeinter()->getLettre());
-            $titre = $equipe->getEquipeinter()->getTitreProjet();
-            $id = $equipe->getId();
-            //$titre_form[$i]=$lettre." : ".$titre.".  Prix :  ".$intitule_prix;
-            $formBuilder[$i]->add('prix', EntityType::class, [
-                    'class' => Prix::class,
-                    'query_builder' => $qb2[$i],
-                    'choice_label' => 'getPrix',
-                    'multiple' => false,
-                    'label' => $lettre . " : " . $titre . "      " . $intitule_prix]
-            );
-            $formBuilder[$i]->add('lettre', HiddenType::class, ['data' => $equipe->getEquipeinter()->getLettre(), 'mapped' => false]);
-            $formBuilder[$i]->add('id', HiddenType::class, ['data' => $id, 'mapped' => false]);
-            $formBuilder[$i]->add('Enregistrer', SubmitType::class);
-            $formBuilder[$i]->add('Effacer', SubmitType::class);
-            $form[$i] = $formBuilder[$i]->getForm();
-            $formtab[$i] = $form[$i]->createView();
-            if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) {
-                $em = $this->doctrine->getManager();
-
-
-                foreach (range('A', 'Z') as $lettre_equipe) {
-                    if ($form[$i]->get('lettre')->getData() == $lettre_equipe) {
-                        $equipe = $repositoryEquipes->findOneBy(['id' => $form[$i]->get('id')->getData()]);
-                        //$lettre_equipe = $equipe->getEquipeinter()->getLettre();
-                        $prix = $equipe->getPrix();
-                        if ($form[$i]->get('Enregistrer')->isClicked()) {
-
-                            $prix->setAttribue(1);
-                            $em->persist($equipe);
-
-                            $em->persist($prix);
-                            $em->flush();
-                            $request->getSession()->getFlashBag()->add('notice', 'Prix bien enregistrés');
-                            return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
-
+        $qb = $repositoryPrix->createQueryBuilder('p')
+            ->where('p.niveau = :nivo')
+            ->setParameter('nivo', $niveau_court)
+            ->andwhere('p.attribue = false');
+        $prixNonAttrib=$qb->getQuery()->getResult();
+        if ($request->query->get('equipe') !=null ) {
+           $equipe = $repositoryEquipes->findOneBy(['id' =>  $request->query->get('equipe')]);
+           $request->query->get('prix')==null? $action='effacer': $action='attribuer';
+               if ($action=='effacer') {
+                            $prix = $equipe->getPrix();
+                            $prix->setAttribue(false);
+                            $equipe->setPrix(null);
                         }
-                        if ($form[$i]->get('Effacer')->isClicked()) {
-                            if ($prix !== null) {
-                                $equipe->setPrix(null);
-                                $prix->setAttribue(false);
-                                $em->persist($equipe);
-                                $em->persist($prix);
-                                $em->flush();
-                            }
-                            $request->getSession()->getFlashBag()->add('notice', 'Prix bien effacé');
-                            return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
-
+               if ($action=='attribuer') {
+                            $prix = $repositoryPrix->findOneBy(['id' =>  $request->query->get('prix')]);
+                            $equipe->setPrix($prix);
+                            $prix->setAttribue(true);
                         }
-                    }
-
-                }
-            }
-            $i = $i + 1;
-        }
-
-        $content = $this->renderView('secretariatjury/attrib_prix.html.twig',
+               $em->persist($equipe);
+               $em->persist($prix);
+               $em->flush();
+               $request->getSession()->getFlashBag()->add('info', 'Prix bien enregistré');
+               return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
+           }
+           $content = $this->renderView('secretariatjury/attrib_prix.html.twig',
             array('ListEquipes' => $ListEquipes,
-                'NbrePrix' => $NbrePrix,
-                'niveau' => $niveau_long,
-                'formtab' => $formtab,
+                  'NbrePrix' => $NbrePrix,
+                  'niveau' => $niveau_long,
+                  'prixNonAttrib'=>$prixNonAttrib
             )
         );
         return new Response($content);
@@ -593,6 +584,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository(Equipes::class)
             ->getEquipesPrix();
+        //dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_prix.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }
@@ -605,25 +597,92 @@ class SecretariatjuryController extends AbstractController
      */
     public function edition_visites(): Response
     {
-        $listEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class)
-            ->getEquipesVisites();
+        $em = $this->doctrine->getManager();
+        $listEquipes = $em->getRepository(Equipes::class)
+                          ->getEquipesVisites();
+        //dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }
-
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
-     * @Route("/secretariatjury/lescadeaux", name="secretariatjury_lescadeaux")
+     * @Route("/secretariatjury/attrib_cadeaux/{id_equipe}", name="secretariatjury_attrib_cadeaux",  requirements={"id_equipe"="\d{1}|\d{2}"}))
      *
      */
-    public function lescadeaux(Request $request, $compteur = 1): RedirectResponse|Response
+    public function attrib_cadeaux(Request $request, $id_equipe): RedirectResponse|Response
     {
+        // repris de Olymphys4
         $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository(Equipes::class);
+        $equipe = $repositoryEquipes->find($id_equipe);
+        $repositoryCadeaux = $this->doctrine
+            ->getManager()
+            ->getRepository(Cadeaux::class);
+        $cadeau = $equipe->getCadeau();
+        $listeEquipes = $this->doctrine
+            ->getManager()
+            ->getRepository(Equipes::class)
+            ->getEquipesCadeaux();
+        if (is_null($cadeau)) {
+            $flag = 0;
+            $form = $this->createForm(EquipesType::class, $equipe,
+                array(
+                    'Attrib_Phrases' => false,
+                    'Attrib_Cadeaux' => true,
+                    'Deja_Attrib' => false,
+                ));
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                $em = $this->doctrine->getManager();
+                $em->persist($equipe);
+                $cadeau = $equipe->getCadeau();
+                $cadeau->setAttribue(1);
+                $em->persist($cadeau);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
+                return $this->redirectToroute('secretariatjury_edition_cadeaux', array('listeEquipes' => $listeEquipes));
+            }
+        } else {
+            $flag = 1;
+            $em = $this->doctrine->getManager();
+            $form = $this->createForm(EquipesType::class, $equipe,
+                array(
+                    'Attrib_Phrases' => false,
+                    'Attrib_Cadeaux' => true,
+                    'Deja_Attrib' => true,
+                ));
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                $em->persist($cadeau);
+                if (!$cadeau->getAttribue()) {
+                    $equipe->setCadeau(NULL);
+                }
+                $em->persist($equipe);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Cadeau attribué');
+                return $this->redirectToroute('secretariatjury_edition_cadeaux', array('listeEquipes' => $listeEquipes));
+            }
+        }
+        $content = $this->renderView('secretariatjury/attrib_cadeaux.html.twig',
+            array(
+                'equipe' => $equipe,
+                'form' => $form->createView(),
+                'attribue' => $flag,
+            ));
+        return new Response($content);
+    }
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatjury/lescadeaux/{compteur}", name="secretariatjury_lescadeaux")
+     *
+     */
+    public function lescadeaux(Request $request, $compteur): RedirectResponse|Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $repositoryEquipes = $em->getRepository(Equipes::class);
+
         $nbreEquipes = 0;
         try {
             $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
@@ -632,10 +691,15 @@ class SecretariatjuryController extends AbstractController
                 ->getSingleScalarResult();
         } catch (NoResultException|NonUniqueResultException $e) {
         }
+
         $compteur > $nbreEquipes ? $compteur = 1 : $compteur = $compteur;
+
         $listEquipesCadeaux = $repositoryEquipes->getEquipesCadeaux();
+
         $listEquipesPrix = $repositoryEquipes->getEquipesPrix();
+
         $equipe = $repositoryEquipes->findOneBy(['rang' => $compteur]);
+
         if (is_null($equipe)) {
             $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
                 array(
@@ -668,14 +732,15 @@ class SecretariatjuryController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->doctrine->getManager();
             $em->persist($equipe);
-            if ($form->get('cadeau')->getData()->getAttribue() == false) {
+            $cadeau=$form->get('cadeau')->getData();
+            if (!$form->get('cadeau')->getData()->getAttribue()) {
                 $cadeau->setAttribue(false);
                 $flag = 0;
                 $equipe->setCadeau();
             }
             $em->persist($cadeau);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Cadeaux bien enregistrés');
+            $request->getSession()->getFlashBag()->add('info', 'Cadeaux bien enregistrés');
             if ($compteur <= $nbreEquipes) {
                 return $this->redirectToroute('secretariatjury_lescadeaux', array('compteur' => $compteur + 1));
             } else {
@@ -710,10 +775,9 @@ class SecretariatjuryController extends AbstractController
      */
     public function edition_cadeaux(): Response
     {
-        $listEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class)
-            ->getEquipesCadeaux();
+        $em = $this->doctrine->getManager();
+        $listEquipes = $em->getRepository(Equipes::class)
+                          ->getEquipesCadeaux();
 
         $content = $this->renderView('secretariatjury/edition_cadeaux2.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
@@ -725,12 +789,31 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/edition_phrases", name="secretariatjury_edition_phrases")
      *
      */
-    public function edition_phrases(): Response
+    public function edition_phrases(Request $request): Response
     {
-        $listEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class)
+        $em = $this->doctrine->getManager();
+        $listEquipes = $em->getRepository(Equipes::class)
             ->getEquipesPhrases();
+
+        if ($request->query->get('phrase')!==null){
+         $idPhrase=$request->query->get('phrase');
+         $phraseAGarder= $this->doctrine->getRepository(Phrases::class)->findOneBy(['id'=>$idPhrase]);
+         $listPhrases=$phraseAGarder->getEquipe()->getPhrases();
+         foreach($listPhrases as $phrase){
+             if ($phrase!=$phraseAGarder){
+                 $phraseAGarder->getEquipe()->removePhrases($phrase);
+                 $em->persist($phraseAGarder->getEquipe());
+
+                 $phrase->setJure(null);
+                 $phrase->setEquipe(null);
+                 $em->remove($phrase);
+                 $em->flush();
+                 $em->flush();
+             }
+
+         }
+        }
+
 
         $content = $this->renderView('secretariatjury/edition_phrases.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
@@ -750,9 +833,10 @@ class SecretariatjuryController extends AbstractController
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];
 
-        $repositoryUser = $this->doctrine
-            ->getManager()
-            ->getRepository(User::class);
+        $em = $this->doctrine->getManager();
+
+        $repositoryUser = $em->getRepository(User::class);
+
         $prof1 = [];
         $prof2 = [];
         foreach ($equipes as $equipe) {
@@ -763,10 +847,8 @@ class SecretariatjuryController extends AbstractController
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
-        $listEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class)
-            ->getEquipesPalmares();
+        $listEquipes = $em->getRepository(Equipes::class)
+                          ->getEquipesPalmares();
         $content = $this->renderView('secretariatjury/edition_palmares_complet.html.twig',
             array('listEquipes' => $listEquipes,
                 'lesEleves' => $lesEleves,
@@ -785,16 +867,18 @@ class SecretariatjuryController extends AbstractController
      */
     public function tableau_excel_palmares_site()
     {
+        $em = $this->doctrine->getManager();
         $tableau = $this->requestStack->getSession()->get('tableau');
         $equipes = $tableau[0];
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];
+
         $nbreEquipes = 0;
         $prof1 = [];
         $prof2 = [];
-        $repositoryUser = $this->doctrine
-            ->getManager()
-            ->getRepository(User::class);
+
+        $repositoryUser = $em->getRepository(User::class);
+
         foreach ($equipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -803,15 +887,10 @@ class SecretariatjuryController extends AbstractController
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
 
         }
-        $listEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class)
-            ->getEquipesPalmares();
+        $listEquipes = $em->getRepository(Equipes::class)
+                          ->getEquipesPalmares();
 
-        $repositoryEquipes = $this
-            ->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class);
+        $repositoryEquipes = $em->getRepository(Equipes::class);
 
         try {
             $nbreEquipes = $repositoryEquipes
@@ -871,10 +950,10 @@ class SecretariatjuryController extends AbstractController
         $ligne = 3;
 
         $sheet->setCellValue('A' . $ligne, 'Académie')
-            ->setCellValue('B' . $ligne, 'Lycée, sujet, élèves')
-            ->setCellValue('C' . $ligne, 'Professeurs')
-            ->mergeCells('D' . $ligne . ':E' . $ligne)
-            ->setCellValue('D' . $ligne, 'Prix - Visite de laboratoire - Prix en matériel scientifique');
+              ->setCellValue('B' . $ligne, 'Lycée, sujet, élèves')
+              ->setCellValue('C' . $ligne, 'Professeurs')
+              ->mergeCells('D' . $ligne . ':E' . $ligne)
+              ->setCellValue('D' . $ligne, 'Prix - Visite de laboratoire - Prix en matériel scientifique');
         $sheet->getStyle('A' . $ligne)->applyFromArray($borderArray);
         $sheet->getStyle('B' . $ligne)->applyFromArray($borderArray);
         $sheet->getStyle('C' . $ligne)->applyFromArray($borderArray);
@@ -1011,6 +1090,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function tableau_excel_palmares_jury()
     {
+        $em = $this->doctrine->getManager();
 
         $nbreEquipes = 0;
 
@@ -1018,9 +1098,8 @@ class SecretariatjuryController extends AbstractController
 
         $lycee = $tableau[2];
 
-        $repositoryEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class);
+        $repositoryEquipes = $em->getRepository(Equipes::class);
+
         try {
             $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
                 ->select('COUNT(e)')
@@ -1028,10 +1107,9 @@ class SecretariatjuryController extends AbstractController
                 ->getSingleScalarResult();
         } catch (NoResultException|NonUniqueResultException $e) {
         }
-        $listEquipes = $this->doctrine
-            ->getManager()
-            ->getRepository(Equipes::class)
-            ->getEquipesPalmaresJury();
+        $listEquipes = $em->getRepository(Equipes::class)
+                          ->getEquipesPalmaresJury();
+
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
             ->setCreator("Olymphys")
@@ -1133,12 +1211,12 @@ class SecretariatjuryController extends AbstractController
             $sheet->setCellValue('B' . $ligne, 'Votre lycée recevra');
             $sheet->mergeCells('C' . $ligne . ':D' . $ligne);
             if ($equipe->getCadeau() !== null) {
-                $sheet->setCellValue('C' . $ligne, $equipe->getCadeau()->getRaccourci() . ' offert par ' . $equipe->getCadeau()->getFournisseur());
+                $sheet->setCellValue('C' . $ligne, $equipe->getCadeau()->getRaccourci());//. ' offert par ' . $equipe->getCadeau()->getFournisseur());
             }
             $ligne = $this->getLigne($sheet, $ligne, $styleText, $borderArray);
             $remispar = 'Philippe';
             $lignep = $ligne + 1;
-            $sheet->getRowDimension($ligne)->setRowHeight(20);
+            $sheet->getRowDimension($ligne)->setRowHeight(40);
             $sheet->setCellValue('A' . $ligne, $remispar);
 
             $sheet->mergeCells('B' . $ligne . ':B' . $lignep);
@@ -1150,7 +1228,7 @@ class SecretariatjuryController extends AbstractController
                 ->setVertical(Alignment::VERTICAL_CENTER);
             $aligne = $ligne;
             $ligne += 1;
-            $sheet->getRowDimension($ligne)->setRowHeight(30);
+            $sheet->getRowDimension($ligne)->setRowHeight(40);
 
             $sheet->setCellValue('C' . $ligne, 'AC. ' . $lycee[$lettre][0]->getAcademie())
                 ->setCellValue('D' . $ligne, 'Lycee ' . $lycee[$lettre][0]->getNom() . "\n" . $lycee[$lettre][0]->getCommune());
@@ -1213,7 +1291,7 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
      */
-    public function preparation_tableau_excel_palmares_jury(Request $request)
+    public function preparation_tableau_excel_palmares_jury(Request $request): RedirectResponse|Response
     { //À quoi ça sert ? Qui l'appelle ? Semble servir à remplir voix et intervenant, équipe par équipe
 
         $em = $this->doctrine->getManager();

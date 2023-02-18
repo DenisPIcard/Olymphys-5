@@ -53,10 +53,16 @@ class OdpfCreateArray
         $parrain = $editionpassee->getNomParrain();
         $lienparrain = $editionpassee->getLienparrain();
         $titreparrain = $editionpassee->getTitreParrain();
-        $affiche = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche();
-        $nomaffiche = explode('.', $editionpassee->getAffiche());
-        $nomAfficheHr = $nomaffiche[0] . '-HR.' . $nomaffiche[1];
-        $afficheHr = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $nomAfficheHr;
+        $affiche = '';
+        $afficheHr = '';
+        if ($editionpassee->getAffiche() !== null) {
+            if (file_exists('odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche())) {
+                $affiche = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche();
+                $nomaffiche = explode('.', $editionpassee->getAffiche());
+                $nomAfficheHr = $nomaffiche[0] . '-HR.' . $nomaffiche[1];
+                $afficheHr = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $nomAfficheHr;
+            }
+        }
         $tab = ['choix' => $choix,
             'article' => $article,
             'categorie' => $categorie,

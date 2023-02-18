@@ -1,0 +1,88 @@
+{% extends "base1.html.twig" %}
+{% block title %} Phrases amusantes {% endblock %}
+
+{% block titre3 %}
+    <a {% if (progression) %} class="btn btn-outline-primary btn-lg" {% else %} class="btn btn-primary btn-lg" {% endif %}
+            href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipe.id} ) }}"> {{ equipe.equipeinter.lettre }} </a>
+    {{ equipe.equipeinter.titreProjet }}
+
+    <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
+       title="En savoir plus sur cette équipe"> </a>
+
+{% endblock %} 
+
+{% block navigation %}
+    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span> 
+        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
+    </button>
+
+    {{ include ('cyberjury/navigation.html.twig') }}
+{% endblock %}
+{% block body %}
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Juré</th>
+            <th scope="col">Phrase</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td>
+                <div class="text-danger">
+                    {{ jure.prenomJure }} {{ jure.nomJure }}
+
+                </div>
+            </td>
+            <td>
+
+                {% for phrase in jure.phrases %}
+                    {% if (phrase.equipe==equipe)   %}
+                        {{ phrase.phrase }} {{ phrase.liaison.liaison }} {{ phrase.prix }}
+                    {% endif %}
+                {% endfor %}
+
+            </td>
+            <td>
+                <a href="{{ path('cyberjury_edit_phrases_amusantes',{id:equipe.id}) }}">
+                    <button class="btn-primary">Saisir ou modifier votre phrase amusante</button>
+                </a>
+            </td>
+            <td>
+                {% for phrase in jure.phrases %}
+                {% if (phrase.equipe==equipe)   %}
+                    <a href="{{ path('cyberjury_suprim_phrase_amusante',{idphrase:phrase.id}) }}">
+                        <button class="btn-primary">Supprimer</button>
+                    </a>
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% for phrase in phrases %}
+            {% if phrase.jure != jure %}
+                <tr>
+                    <td>
+                        {{ phrase.jure.prenomJure }} {{ phrase.jure.nomJure }}
+                    </td>
+                    <td>
+                        {{ phrase.phrase }} {{ phrase.liaison.liaison }} {{ phrase.prix }}
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                        <a href="{{ path('cyberjury_suprim_phrase_amusante',{idphrase:phrase.id}) }}">
+                            <button class="btn-primary">Supprimer</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

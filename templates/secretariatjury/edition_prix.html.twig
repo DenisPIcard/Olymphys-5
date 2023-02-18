@@ -26,8 +26,8 @@
                 <tr
                         {% if equipes.classement == '1er' %} class="danger" {% elseif  equipes.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
                 >
-                    <th><span class="btn btn-primary btn-lg">{{ equipes.lettre }} </span></th>
-                    <td>{{ equipes.titreProjet }}</td>
+                    <th><span class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }} </span></th>
+                    <td>{{ equipes.equipeinter.titreProjet }}</td>
                     <td>{{ equipes.classement }} prix</td>
                     <td>{% if  equipes.prix is not null %}{{ equipes.prix.prix }}{% endif %}</td>
                 </tr>

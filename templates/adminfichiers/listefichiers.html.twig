@@ -1,15 +1,11 @@
 
 {% if  equipe.selectionnee == true %}
-    {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et la diaparama cia ne sont pas dans la liste -->
-    {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
-        {%  set liste=[0,1,2,3]%}
-    {% endif %}
+    {%  set liste=[0,1,2,3,4,8] %} <!-- pour le concours national le questionnaire et le diaporama cia ne sont pas dans la liste -->
+
 {% endif %}
 {% if equipe.selectionnee ==false %}
-    {%  set liste=[0,1,2,4,5,7,8]%} <!-- pour le  cia  le diaporama nat n'est pas dans la liste -->
-    {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
-        {%  set liste=[0,1,2,5]%} <!-- le jury n'a accès qu'au mémoires, résumé, et diaporama -->
-    {% endif %}
+    {%  set liste=[0,1,2,4,5,7,8]%} <!-- pour le  cia  le diaporama nat (3) n'est pas dans la liste -->
+
 {% endif %}
 
 <div class="container-fluid">
@@ -65,6 +61,9 @@
                 {% endif %}
                 {% if attrib==0 %}
                      Non encore déposé
+                        {% if  app.user.roles|filter(v => v =='ROLE_JURY')!=[] and app.session.get('concours')=='national' and i<3%}
+                            <a  href="{{ path('voir_fichier_inter',{ 'typefichier' : type_fichier[i] , 'idequipe': equipe.id}) }}">Voir le fichier  des interacadémique</a>
+                        {% endif %}
                 {% endif %}
             </div>
             <div class="col-1 " ><!-- colonne du bouton de dépôt du fichier -->
@@ -72,7 +71,7 @@
                     {%if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
                         {%  if is_granted('ROLE_PROF')%}<!-- le prof , le comité, les organisateurs CIA sont habilités à déposer des fichiers -->
                                 {%  if i<3  %}
-                                    {%  if (app.user.roles|filter(v => v =='ROLE_PROF')!=[])%}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
+                                    {%  if (app.user.roles|filter(v => v =='ROLE_PROF')!=[])  %}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
                                         {% if (app.session.get('concours')=='interacadémique') and (date()<= app.session.get('edition').datelimcia)%}
                                              {%  if attrib==1 %}
                                                 <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
@@ -82,7 +81,6 @@
                                              {% endif %}
                                         {% endif %}
                                         {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) %}
-
                                                  {%  if attrib==1 %}
                                                     <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                                  {% endif %}
@@ -106,7 +104,11 @@
                                                 <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                     {% endif %}
                                     {% if attrib== 0 %}
-                                                <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                                        {#  {% if (equipe.retiree == true and i==3) or (equipe.retiree == true and i==4) %}
+                                                on n'affiche rien dans ce cas
+                                                {% else  %}#}
+                                                    <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+
                                     {% endif %}
                                 {% endif %}
                         {% endif %}
@@ -122,15 +124,7 @@
      {%  if liste_fichiers!=null %}
       <div class="row">
           <div class="col" >
-           {{ form_start(form) }}
-                <div class="my-custom-class-for-errors">
-                    {{ form_errors(form) }}
-                </div>
-                <div class="row">
-                     {{ form_widget(form.save, { 'label': 'Télécharger tous' }) }}
-                </div>
-
-           {{ form_end(form) }}
+              <a href="{{ path('telecharger_un_fichier_zip',{'equipeId': equipe.id, 'concours':concours}) }}" class="btn-primary">Télécharger tous les fichiers</a>
           </div>
       </div>
        {%  else %}

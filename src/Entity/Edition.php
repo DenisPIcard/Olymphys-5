@@ -23,9 +23,10 @@ class Edition
     private ?string $ed = null;
 
     /**
+     *  @var  string A "Y-m-d H:i:s" formatted value
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private ?DateTime $date = null;
+   private ?DateTime $date = null;
 
 
     /**
@@ -39,41 +40,42 @@ class Edition
     private ?string $lieu = null;
 
     /**
-     * @var DateTime
+     * @var  string A "Y-m-d H:i:s" formatted value
      * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
      */
-    protected DateTime $datelimcia;
+    protected ?DateTime $datelimcia;
 
     /**
-     * @var datetime
+     * @var  string A "Y-m-d H:i:s" formatted value
      * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
      */
     protected ?datetime $datelimnat = null;
 
     /**
-     * @var datetime
+     *  @var  string A "Y-m-d H:i:s" formatted value
      * @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
      */
-    protected ?datetime $dateouverturesite = null;
+    protected ?Datetime $dateouverturesite = null;
 
 
     /**
-     * @var datetime
+     * @var  string A "Y-m-d" formatted value
      * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
      */
-    protected ?datetime $concourscia = null;
+    protected ?Datetime $concourscia = null;
 
 
     /**
-     * @var datetime
+     * @var  string A "Y-m-d" formatted value
      * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
      */
     protected ?datetime $concourscn = null;
 
     /**
+     * @var  string A "Y-m-d H:i:s" formatted value
      * @ORM\Column(type="datetime")
      */
-    private ?datetime $dateclotureinscription = null;
+    private ?Datetime $dateclotureinscription = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -95,9 +97,9 @@ class Edition
      */
     private ?string $dateinscriptions = null;
 
-    public function __toString()
+    public function __toString() : string
     {
-        return $this->ed;
+        return strval($this->ed);
 
 
     }

@@ -7,7 +7,7 @@
     {{ equipe.equipeinter.titreProjet }}
 
     {% if memoires!=null %}
-        <a href="/fichiers/memoires/{{ memoires[0].fichier }}" class="fas fa-book-reader"
+        <a href="/odpf/odpf-archives/{{ equipe.equipeinter.edition.ed}}/fichiers/memoires/{{ memoires[0].fichier }}" class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
     {% endif %}
 
@@ -34,11 +34,10 @@
             : {{ equipe.equipeinter.lyceeLocalite|title }}
             , académie : {{ equipe.equipeinter.lyceeAcademie|title }} </li>
         <li> Les enseignants : {{ equipe.equipeinter.prenomProf1|title }}  {{ equipe.equipeinter.nomProf1|title }},
-            email :
-            <a href="mailto:{{ mailprof1 }}">{{ mailprof1 }}</a>, tel : {{ telprof1 }}
-            {% if   equipe.equipeinter.nomProf2 != null %}-
-                {{ equipe.equipeinter.prenomProf2|title }} {{ equipe.equipeinter.nomProf2|title }}, email : <a
-                    href="mailto:{{ mailprof2 }}">{{ mailprof2 }}</a>, tel : {{ telprof2 }}
+
+            {% if   equipe.equipeinter.nomProf2 != null %}
+                {{ equipe.equipeinter.prenomProf2|title }} {{ equipe.equipeinter.nomProf2|title }},
+
             {% endif %}
         </li>
         <li> Les élèves :
@@ -49,7 +48,6 @@
                 {% endfor %}
             </ul>
         </li>
-
-
-        {% endblock %}
-
+    </ul>
+</div>
+{% endblock %}

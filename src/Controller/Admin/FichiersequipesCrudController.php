@@ -4,6 +4,7 @@
 namespace App\Controller\Admin;
 
 
+use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 
@@ -80,7 +81,8 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(CustomEquipeFilter::new('equipe', 'Equipe'));
+            ->add(CustomEquipeFilter::new('equipe', 'equipe'))
+            ->add(CustomEditionFilter::new('edition', 'edition'));
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -125,7 +127,11 @@ class FichiersequipesCrudController extends AbstractCrudController
             $equipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
 
         }
-
+        if(isset($_REQUEST['filters']['edition'])) {
+            $idEdition = $_REQUEST['filters']['edition'];
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
+            $session->set('titreedition', $edition);
+        }
 
         $concours == 1 ? $concourslit = 'national' : $concourslit = 'interacadémique';
         if ($pageName == 'index') {
@@ -139,7 +145,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             if ($typefichier == 3) {
                 $crud = $crud->setPageTitle('index', 'Les diaporamas(concours national) de la ' . $edition->getEd() . $exp . ' édition');
             }
-            if ($typefichier == 4) {
+            if (($typefichier == 4)and ($typefichier==8)) {
                 $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition du concours ' . $concourslit);
             }
             if ($typefichier == 5) {
@@ -393,7 +399,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 if ($numtypefichier == 6) {
                     $panel1 = FormField::addPanel('<p style= "color :red" > Déposer  une nouvelle autorisation photos  </p> ');
                 }
-                if ($numtypefichier == 4) {
+                if (($numtypefichier == 4) or($numtypefichier == 8)) {
                     $panel1 = FormField::addPanel('<p style= "color :red" > Déposer  une nouvelle fiche sécurité  </p> ');
 
                 }
@@ -454,6 +460,9 @@ class FichiersequipesCrudController extends AbstractCrudController
                 break;
             case 7 :
                 $article = 'le';
+                break;
+            case 8 :
+                $article = 'la';
                 break;
         }
 
@@ -581,20 +590,31 @@ class FichiersequipesCrudController extends AbstractCrudController
 
 
         } else {
+            if(isset($_REQUEST['filters']['edition'])) {
+                $idEdition = $_REQUEST['filters']['edition'];
+                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+                $session->set('titreedition', $edition);
 
+                $qb->andWhere('f.edition =:edition')
+                    ->setParameter('edition', $edition);
+            }
+            if(isset($_REQUEST['filters']['equipe'])) {
+                $idEquipe = $_REQUEST['filters']['equipe'];
+                $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
+                $session->set('titreedition', $edition);
 
-            $idEquipe = $_REQUEST['filters']['equipe'];
-            $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
-            $session->set('titreedition', $edition);
-
-            $qb->andWhere('f.equipe =:equipe')
-                ->setParameter('equipe', $equipe);
+                $qb->andWhere('f.equipe =:equipe')
+                    ->setParameter('equipe', $equipe);
+            }
 
 
         }
         $qb->leftJoin('f.equipe', 'e');
-        if (($typefichier == 4) and ($concours == 1)) {//affiche uniquement les autorisations des équipes sélectionnées pour le choix du concours national
-            $qb->andWhere('e.selectionnee = TRUE');
+        if ((($typefichier == 4) or ($typefichier == 8)) and ($concours == 1)) {//affiche uniquement les fiches sécurité expo et oral des équipes sélectionnées pour le choix du concours national
+
+            $qb->andWhere('e.selectionnee = TRUE')
+               ->orWhere('f.typefichier =:value')
+               ->setParameter('value',8);;
         } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours
             $qb->andWhere('f.national =:concours')
                 ->setParameter('concours', $concours);

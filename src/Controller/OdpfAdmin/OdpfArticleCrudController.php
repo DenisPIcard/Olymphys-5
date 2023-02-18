@@ -61,7 +61,7 @@ class OdpfArticleCrudController extends AbstractCrudController
         $tab1 = FormField::addTab('Article ');
 
         // You can use a Form Panel inside a Form Tab
-        $panel1 = FormField::addPanel('Donnéees');
+        $panel1 = FormField::addPanel('Données');
         $panel2 = FormField::addPanel('Autre');
         $titre = TextField::new('titre');
         $choix = TextField::new('choix');

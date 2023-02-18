@@ -1,15 +1,17 @@
 {% extends "base1.html.twig" %}
-{% block title %} Attribution des cadeaux {% endblock %}
+{% block title %}Attribution des cadeaux{% endblock %}
 
 {% block titre3 %}
     <button type="button"
-            class="btn btn-primary btn-lg"> {{ equipe.equipeinter.lettre }} </button>  {{ equipe.titreProjet }}  {% endblock %}
+            class="btn btn-primary btn-lg"> {{ equipe.equipeinter.lettre }} </button>  {{ equipe.equipeinter.titreProjet }}
+{% endblock %}
 
 {% block navigation %}
     {{ include ("secretariatjury/navigation.html.twig") }}
 {% endblock %}
 
 {% block body %}
+
     {% if attribue == 0 %}
         {{ include ("secretariatjury/form-cadeaux.html.twig") }}
     {% else %}

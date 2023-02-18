@@ -27,18 +27,21 @@ class Orgacia
      */
     private $id;
 
-    /**
-     * @var string
-     * @ORM\Column(name="name", type = "string")
-     */
-    private $name;
+
 
     /**
-     * @var string
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      * @ORM\JoinColumn(name ="centre_id", referencedColumnName = "id", nullable=true)
      */
-    private $centre;
+    private ?Centrescia $centre;
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name ="user_id", referencedColumnName = "id", nullable=true)
+     */
+    private ?User $user;
+
 
     /**
      * Get id
@@ -50,47 +53,45 @@ class Orgacia
         return $this->id;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
+
+    /**
+     * Set centre
+     * @param Centrescia $centre
+     *
+     */
+    public function setCentre(?Centrescia $centre) :self
+    {
+        $this->centre = $centre;
+        return $this;
+    }
     /**
      * Get centre
      *
      * @return string
      */
-    public function getCentre()
+    public function getCentre() : ?Centrescia
     {
         return $this->centre;
     }
-
-    /**
-     * Get name
-     * @param String $name
-     *
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
     /**
      * Set centre
-     * @param String $centre
+     * @param User $user
      *
      */
-    public function setCentre($centre)
+    public function setUser(?User $user) :self
     {
-        $this->centre = $centre;
+        $this->user = $user;
         return $this;
     }
-
+    /**
+     * Get centre
+     *
+     * @return User
+     */
+    public function getUser() : ?User
+    {
+        return $this->user;
+    }
 
 }

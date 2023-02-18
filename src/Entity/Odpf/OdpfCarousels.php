@@ -37,7 +37,7 @@ class OdpfCarousels
     private \DateTime $createdAt;
 
     /**
-     * @ORM\Column(type="boolean", length=255)
+     * @ORM\Column(type="boolean", length=255, nullable=true)
      */
     private ?bool $blackbgnd = null;
 

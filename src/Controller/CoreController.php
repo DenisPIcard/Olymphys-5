@@ -78,7 +78,7 @@ class CoreController extends AbstractController
             $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
             $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
             $this->requestStack->getSession()->set('dateclotureinscription', new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
-
+            $this->requestStack->getSession()->set('dateouverturesite', new DateTime($this->requestStack->getSession()->get('edition')->getDateouverturesite()->format('Y-m-d H:i:s')));
 
         }
         $this->requestStack->getSession()->set('pageCourante', 1);

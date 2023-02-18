@@ -35,10 +35,16 @@ class OdpfListeEquipes
         $parrain = $editionpassee->getNomParrain();
         $lienparrain = $editionpassee->getLienparrain();
         $titreparrain = $editionpassee->getTitreParrain();
-        $affiche = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche();
-        $nomaffiche = explode('.', $editionpassee->getAffiche());
-        $nomAfficheHr = $nomaffiche[0] . '-HR.' . $nomaffiche[1];
-        $afficheHr = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $nomAfficheHr;
+        if ($editionpassee->getAffiche() !== null) {
+            if (file_exists('odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche())) {
+                $affiche = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche();
+                $nomaffiche = explode('.', $editionpassee->getAffiche());
+                $nomAfficheHr = $nomaffiche[0] . '-HR.' . $nomaffiche[1];
+                $afficheHr = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $nomAfficheHr;
+            }
+        }
+        $affiche = '';
+        $afficheHr = '';
         $repositoryUser = $this->em->getRepository(User::class);
         $repositoryRne = $this->em->getRepository(Rne::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')

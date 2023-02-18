@@ -50,7 +50,7 @@ class ComiteController extends AbstractController
 
 
     /**
-     * @IsGranted ("ROLE_COMITE")
+     * @IsGranted ("ROLE_JURY")
      * @Route("/comite/frais_lignes", name="comite_frais_lignes")
      */
   /*  public function frais_lignes(Request $request): RedirectResponse|Response
@@ -81,7 +81,7 @@ class ComiteController extends AbstractController
     }
 */
     /**
-     * @IsGranted ("ROLE_COMITE")
+     * @IsGranted ("ROLE_JURY")
      *
      * @Route("/comite/frais,{nblig}", name="comite_frais", requirements={"nblig"="\d{1}|\d{2}"})
      * @throws Exception
@@ -93,6 +93,9 @@ class ComiteController extends AbstractController
             ->getRepository(Edition::class);
 
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
+        if ((date('now')<$edition->getDateouverturesite()) and(in_array('ROLE_JURY',$this->getUser()->getRoles()))){
+            $edition = $repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
         $user = $this->getUser();
         $task = ['nblig' => $nblig];
 

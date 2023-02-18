@@ -236,8 +236,7 @@ class Notes
     }
 
 // Les attributs calculés
-
-    public function getPoints()
+    public function getPoints(): float|int //Calcul le total pour un juré sans l'écrit
     {
 
         return $this->getExper() * $this->coefficients->getExper()
@@ -247,7 +246,7 @@ class Notes
             + $this->getWgroupe() * $this->coefficients->getWgroupe();
     }
 
-    public function getSousTotal()
+    public function getTotalPoints(): float|int //Calcul le total pour un juré avec l'écrit
     {
         return $this->getExper() * $this->coefficients->getExper()
             + $this->getDemarche() * $this->coefficients->getDemarche()
@@ -275,7 +274,7 @@ class Notes
     /**
      * Get equipe
      *
-     * @return Equipes
+     * @return Equipes|null
      */
     public function getEquipe(): ?Equipes
     {
@@ -299,7 +298,7 @@ class Notes
     /**
      * Get jure
      *
-     * @return Jures
+     * @return Jures|null
      */
     public function getJure(): ?Jures
     {
