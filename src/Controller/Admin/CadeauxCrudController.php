@@ -32,13 +32,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CadeauxCrudController extends AbstractCrudController
 {
-    protected EntityManagerInterface $doctrine;
-    protected RequestStack $requeststack;
 
-    public function __Construct(EntityManagerInterface $doctrine,RequestStack $requestStack)
+    public function __Construct(protected EntityManagerInterface $doctrine , protected RequestStack $requestStack)
     {
-        $this->doctrine=$doctrine;
-        $this->requeststack=$requestStack;
+
     }
 
     public static function getEntityFqcn(): string
@@ -147,8 +144,8 @@ class CadeauxCrudController extends AbstractCrudController
             ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery()->getResult();
 
-        $edition = $this->requeststack->getSession()->get('edition');
-        if(date('now')<$this->requeststack->getSession()->get('dateouverturesite')){
+        $edition = $this->requestStack->getSession()->get('edition');
+        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $liste_cadeaux = [];
