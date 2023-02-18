@@ -59,12 +59,8 @@ class FichiersController extends AbstractController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_ORGACIA')")
-     *
-     * @Route("/fichiers/choix_centre", name="fichiers_choix_centre")
-     *
-     */
+    #[Isgranted('ROLE_ORGACIA')]
+    #[Route("/fichiers/choix_centre", name:"fichiers_choix_centre")]
     public function choix_centre(Request $request)
     {
         $session = $this->requestStack->getSession();
@@ -106,12 +102,9 @@ class FichiersController extends AbstractController
         }
     }
 
-    /**
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/fichiers/choix_equipe, {choix}", name="fichiers_choix_equipe")
-     *
-     */
+    #[Isgranted('ROLE_PROF')]
+    #[Route("/fichiers/choix_equipe, {choix}", name:"fichiers_choix_equipe")]
+
     public function choix_equipe(Request $request, $choix)
     {
 
@@ -177,18 +170,9 @@ class FichiersController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_PROF')")
-     * @param Request $request
-     * @param $infos
-     * @param MailerInterface $mailer
-     * @param ValidatorInterface $validator
-     * @return RedirectResponse|Response
-     * @throws NonUniqueResultException
-     * @throws TransportExceptionInterface
-     * @Route("/fichiers/charge_fichiers, {infos}", name="fichiers_charge_fichiers")
-     */
-    public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, ValidatorInterface $validator)
+   #[Isgranted('ROLE_PROF')]
+   #[Route("/fichiers/charge_fichiers, {infos}", name:"fichiers_charge_fichiers")]
+   public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, ValidatorInterface $validator)
     {
         $session = $this->requestStack->getSession();
         $repositoryFichiersequipes = $this->doctrine
@@ -591,9 +575,7 @@ class FichiersController extends AbstractController
         return $fichier;
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
+
     public function RempliOdpfFichiersPasses($fichier)
     {
         $em = $this->doctrine->getManager();
@@ -643,9 +625,6 @@ class FichiersController extends AbstractController
 
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
     public function MailConfirmation(MailerInterface $mailer, string $type_fichier, string $info_equipe)
     {
 
@@ -664,9 +643,6 @@ class FichiersController extends AbstractController
 
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
     public function MailAvertissement(MailerInterface $mailer, string $type_fichier, $equipe)
     {
         $texte = 'Bonjour,<br> Vous venez de déposer le mémoire de l\'équipe ' . $equipe->getLettre() . '- ' . $equipe->getTitreProjet() .
@@ -687,12 +663,8 @@ class FichiersController extends AbstractController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/fichiers/mon_espace", name="mon_espace")
-     *
-     */
+    #[Isgranted('ROLE_PROF')]
+    #[Route("/fichiers/mon_espace", name:"mon_espace")]
     public function mon_espace(Request $request)
     {
 
@@ -737,12 +709,8 @@ class FichiersController extends AbstractController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/fichiers/afficher_liste_fichiers_prof/,{infos}", name="fichiers_afficher_liste_fichiers_prof")
-     *
-     */
+    #[Isgranted('ROLE_PROF')]
+    #[Route("/fichiers/afficher_liste_fichiers_prof/,{infos}", name:"fichiers_afficher_liste_fichiers_prof")]
     public function afficher_liste_fichiers_prof(Request $request, $infos): Response
     {
         $session = $this->requestStack->getSession();
@@ -872,12 +840,8 @@ class FichiersController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     *
-     * @Route("/fichiers/choixedition,{num_type_fichier}", name="fichiers_choixedition")
-     *
-     */
+    #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
+    #[Route("/fichiers/choixedition,{num_type_fichier}", name:"fichiers_choixedition")]
     public function choixedition(Request $request, $num_type_fichier): Response
     {
         $repositoryEdition = $this->doctrine
@@ -893,12 +857,8 @@ class FichiersController extends AbstractController
 
 
 
-    /**
-     * @IsGranted("ROLE_JURY")
-     *
-     * @Route("/fichiers/voir_fichier_inter,{typefichier}, {idequipe}", name="voir_fichier_inter")
-     *
-     */
+    #[IsGranted("ROLE_JURY")]
+    #[Route("/fichiers/voir_fichier_inter,{typefichier}, {idequipe}", name:"voir_fichier_inter")]
     public function voir_fichier_interacademique(Request $request, $typefichier, $idequipe)
     {//pour le jurynational avant que les équipes n'aient déposé leur fichiers cn
 
@@ -933,12 +893,8 @@ class FichiersController extends AbstractController
     }
 
 
-    /**
-     * @IsGranted("ROLE_COMITE")
-     *
-     * @Route("/fichiers/charge_autorisations", name="fichiers_charge_autorisations")
-     *
-     */
+    #[IsGranted("ROLE_COMITE")]
+    #[Route("/fichiers/charge_autorisations", name:"fichiers_charge_autorisations")]
     public function charge_autorisation(Request $request)
     {
         $repositoryFichiersequipes = $this->doctrine
@@ -991,12 +947,8 @@ class FichiersController extends AbstractController
         }
     }
 
-    /**
-     * @IsGranted("ROLE_PROF")
-     *
-     * @Route("/fichiers/telechargerUnFichierProf,{idFichier}", name="telecharger_un_fichier_prof")
-     *
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/fichiers/telechargerUnFichierProf,{idFichier}", name:"telecharger_un_fichier_prof")]
     public function telechargerUnFichierProf($idFichier)
     {
 
@@ -1028,12 +980,8 @@ class FichiersController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted("ROLE_PROF")
-     *
-     * @Route("/fichiers/telechargerZip,{equipeId},{concours}", name="telecharger_un_fichier_zip")
-     *
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/fichiers/telechargerZip,{equipeId},{concours}", name:"telecharger_un_fichier_zip")]
     public function telechargerZip($equipeId, $concours)
     {
         $equipe_choisie = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);

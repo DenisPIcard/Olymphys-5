@@ -5,21 +5,15 @@ namespace App\Entity\Odpf;
 use App\Repository\Odpf\OdpfCategorieRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfCategorieRepository::class)
- */
+#[ORM\Entity(repositoryClass: OdpfCategorieRepository::class)]
 class OdpfCategorie
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $categorie;
 
     public function getId(): ?int

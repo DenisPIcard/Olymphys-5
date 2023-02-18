@@ -20,8 +20,8 @@ class CadeauxType extends AbstractType
         $builder
             ->add('contenu', TextType::class)
             ->add('fournisseur', TextType::class)
-            ->add('montant', MoneyType::class)
-            ->add('attribue', CheckboxType::class, array('required' => false));
+            ->add('montant', MoneyType::class);
+
     }
 
     /**

@@ -5,34 +5,25 @@ namespace App\Entity\Odpf;
 use App\Entity\User;
 use App\Repository\Odpf\OdpfFraisRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
-* @ORM\Entity(repositoryClass=OdpfFraisRepository::class)
-*/
+#[ORM\Entity(repositoryClass: OdpfFraisRepository::class)]
+
 class OdpfFrais
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=user::class, cascade={ "remove"})
-     */
+    #[ORM\OneToOne]
+    private ?User $iduser;
 
-    private ?user $iduser;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type : Types::DATETIME_MUTABLE)]
     private DateTime $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type : Types::DATETIME_MUTABLE)]
     private DateTime $dateFrais;
 
 

@@ -2,149 +2,92 @@
 
 namespace App\Entity;
 
+use App\Repository\JuresRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use PhpParser\Node\Scalar\String_;
 
-/**
- * Jures
- *
- * @ORM\Table(name="jures")
- * @ORM\Entity(repositoryClass="App\Repository\JuresRepository")
- */
+
+#[ORM\Entity(repositoryClass: JuresRepository::class)]
+
 class Jures
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-
-    /**
-     * @ORM\OneToOne(targetEntity=user::class, cascade={ "remove"})
-     */
+    #[ORM\OneToOne]
     private ?user $iduser;
 
-    /**
-     * @var String|null
-     * @ORM\Column(name="prenomJure", type="string", length=255, nullable=true)
-     */
+   #[ORM\Column(length: 255, nullable: true, name:'prenomJure')]
     private ?string $prenomJure = null;
 
-    /**
-     * @var String|null
-     * @ORM\Column(name="nomJure", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true, name: 'nomJure')]
     private ?string $nomJure = null;
 
-    /**
-     * @var String|null
-     * @ORM\Column(name="initialesJure", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true, name: 'initialesJure')]
     private ?string $initialesJure = null;
 
-    /**
-     * @ORM\Column(name="A", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"A", type: Types::SMALLINT, nullable:true)]
     private ?int $a = 0;
 
-    /**
-     * @ORM\Column(name="B", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"B", type: Types::SMALLINT, nullable:true)]
     private ?int $b = 0;
 
-    /**
-     * @ORM\Column(name="C", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"C", type: Types::SMALLINT, nullable:true)]
     private ?int $c = 0;
 
-    /**
-     * @ORM\Column(name="D", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"D", type: Types::SMALLINT, nullable:true)]
     private ?int $d = 0;
 
-    /**
-     * @ORM\Column(name="E", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"E", type: Types::SMALLINT, nullable:true)]
     private ?int $e = 0;
 
-    /**
-     * @ORM\Column(name="F", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"F", type: Types::SMALLINT, nullable:true)]
     private ?int $f = 0;
 
-    /**
-     * @ORM\Column(name="G", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"G", type: Types::SMALLINT, nullable:true)]
     private ?int $g = 0;
 
-    /**
-     * @ORM\Column(name="H", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"H", type: Types::SMALLINT, nullable:true)]
     private ?int $h = 0;
 
-    /**
-     * @ORM\Column(name="I", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"I", type: Types::SMALLINT, nullable:true)]
     private ?int $i = 0;
 
-    /**
-     * @ORM\Column(name="J", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"J", type: Types::SMALLINT, nullable:true)]
     private ?int $j = 0;
 
-    /**
-     *
-     * @ORM\Column(name="K", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"K", type: Types::SMALLINT, nullable:true)]
     private ?int $k = 0;
 
-    /**
-     * @ORM\Column(name="L", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"L", type: Types::SMALLINT, nullable:true)]
     private ?int $l = 0;
 
-    /**
-     * @ORM\Column(name="M", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"M", type: Types::SMALLINT, nullable:true)]
     private ?int $m = 0;
 
-    /**
-     * @ORM\Column(name="N", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"N", type: Types::SMALLINT, nullable:true)]
     private ?int $n = 0;
 
-    /**
-     * @ORM\Column(name="O", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"O", type: Types::SMALLINT, nullable:true)]
     private ?int $o = 0;
 
-    /**
-     * @ORM\Column(name="P", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"P", type: Types::SMALLINT, nullable:true)]
     private ?int $p = 0;
 
-    /**
-     * @ORM\Column(name="Q", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"Q", type: Types::SMALLINT, nullable:true)]
     private ?int $q = 0;
 
-    /**
-     * @ORM\Column(name="R", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"R", type: Types::SMALLINT, nullable:true)]
     private ?int $r = 0;
 
-    /**
-     * @ORM\Column(name="S", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"S", type: Types::SMALLINT, nullable:true)]
     private ?int $s = 0;
 
-    /**
-     * @ORM\Column(name="T", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"T", type: Types::SMALLINT, nullable:true)]
     private ?int $t = 0;
 
     /**
@@ -152,40 +95,26 @@ class Jures
      */
     private ?int $u = 0;
 
-    /**
-     * @ORM\Column(name="V", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"V", type: Types::SMALLINT, nullable:true)]
     private ?int $v = 0;
 
-    /**
-     * @ORM\Column(name="W", type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"W", type: Types::SMALLINT, nullable:true)]
     private ?int $w = 0;
 
 
-    /**
-     * @ORM\Column(name ="X",type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"X", type: Types::SMALLINT, nullable:true)]
     private ?int $x = 0;
 
-    /**
-     * @ORM\Column(name="Y",type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"Y", type: Types::SMALLINT, nullable:true)]
     private ?int $y = 0;
 
-    /**
-     * @ORM\Column(name="Z",type="smallint", nullable=true)
-     */
+    #[ORM\Column(name:"Z", type: Types::SMALLINT, nullable:true)]
     private ?int $z = 0;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
-     */
-    private ?Collection $notesj;
+   #[ORM\OneToMany(targetEntity: Notes::class, mappedBy: "jure")]
+   private ?Collection $notesj;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="jure")
-     */
+    #[ORM\OneToMany(targetEntity:Phrases::class, mappedBy:"jure")]
     private ?Collection $phrases;
 
 

@@ -46,10 +46,10 @@
                             {% if equipe.classement == '1er' %} class="danger"
                             {% elseif  equipe.classement == '2ème' %} class="warning"
                             {% else %} class="active" {% endif %} >
-                        {% if  equipe.phrase is null %}
+                        {% if  equipe.phrases is null %}
                         {% else %}
 
-                        <p style="color:blue">{{ equipe.phrase.phrase }} {{ equipe.phrase.liaison.liaison }} {{ equipe.phrase.prix }}</p>
+                        <p style="color:blue">{{ equipe.phrases[0].phrase }} {{ equipe.phrases[0].liaison.liaison }} {{ equipe.phrases[0].prix }}</p>
                     </td>
                     {% endif %}
                 </tr>

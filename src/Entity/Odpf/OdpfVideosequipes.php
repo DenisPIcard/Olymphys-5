@@ -5,27 +5,20 @@ namespace App\Entity\Odpf;
 use App\Repository\Odpf\OdpfVideosequipesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfVideosequipesRepository::class)
- */
+#[ORM\Entity(repositoryClass :OdpfVideosequipesRepository::class)]
+
 class OdpfVideosequipes
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id= null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable :true)]
     private $lien;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
-     */
-    private $equipe;
+    #[ORM\ManyToOne(targetEntity:OdpfEquipesPassees::class)]
+    private ?OdpfEquipesPassees $equipe;
 
     public function getId(): ?int
     {

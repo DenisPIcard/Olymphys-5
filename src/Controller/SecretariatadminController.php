@@ -13,6 +13,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -53,12 +54,8 @@ class SecretariatadminController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     * @Route("/secretariatadmin/charge_rne", name="secretariatadmin_charge_rne")
-     * @param Request $request
-     * @return RedirectResponse|Response
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_rne", name:"secretariatadmin_charge_rne")]
     public function charge_rne(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier des élèves '];
@@ -132,15 +129,8 @@ class SecretariatadminController extends AbstractController
 
     }
 
-
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/charge_user", name="secretariatadmin_charge_user")
-     *
-     */
-
-
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_user", name:"secretariatadmin_charge_user")]
     public function charge_user(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier '];
@@ -225,12 +215,8 @@ class SecretariatadminController extends AbstractController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/cree_equipes", name="secretariatadmin_cree_equipes")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/cree_equipes", name:"secretariatadmin_cree_equipes")]
     public function cree_equipes(Request $request): RedirectResponse|Response
     {
         $session = $this->requestStack->getSession();
@@ -288,12 +274,8 @@ class SecretariatadminController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/charge_jures", name="secretariatadmin_charge_jures")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_jures", name:"secretariatadmin_charge_jures")]
     public function charge_jures(Request $request): RedirectResponse|Response
     {
 
@@ -384,12 +366,8 @@ class SecretariatadminController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/charge_equipe_id_rne", name="secretariatadmin_charge_equipe_id_rne")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_equipe_id_rne", name:"secretariatadmin_charge_equipe_id_rne")]
     public function charge_equipe_id_rne(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
@@ -416,12 +394,8 @@ class SecretariatadminController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/set_editon_equipe", name="secretariatadmin_set_editon_equipe")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/set_editon_equipe", name:"secretariatadmin_set_editon_equipe")]
     public function set_edition_equipe(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
@@ -456,12 +430,8 @@ class SecretariatadminController extends AbstractController
         return $this->redirectToRoute('core_home');
     }
 
-    /**
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/secretariatadmin/modif_equipe,{idequipe}", name="modif_equipe")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/modif_equipe,{idequipe}", name:"modif_equipe")]
     public function modif_equipe(Request $request, $idequipe): RedirectResponse|Response
     {
         $em = $this->doctrine->getManager();
@@ -549,12 +519,8 @@ class SecretariatadminController extends AbstractController
 
 
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/youtube_remise_des prix", name="secretariatadmin_youtube_remise_des_prix")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/youtube_remise_des prix", name:"secretariatadmin_youtube_remise_des_prix")]
     public function youtube_remise_des_prix(Request $request): RedirectResponse|Response
 
     {

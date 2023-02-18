@@ -3,48 +3,33 @@
 namespace App\Entity;
 
 use App\Repository\CoefficientsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=CoefficientsRepository::class)
- */
+#[ORM\Entity(repositoryClass: CoefficientsRepository::class)]
 class Coefficients
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type : Types::INTEGER)]
     private ?int $demarche = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type : Types::INTEGER)]
     private ?int $oral = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type : Types::INTEGER)]
     private ?int $origin = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type : Types::INTEGER)]
     private ?int $wgroupe = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type : Types::INTEGER)]
     private ?int $ecrit = 0;
 
-    /**
-     * @ORM\Column(type="integer",)
-     */
+    #[ORM\Column(type : Types::INTEGER)]
     private ?int $exper = 0;
 
     public function getId(): ?int

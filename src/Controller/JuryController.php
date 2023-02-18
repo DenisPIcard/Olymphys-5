@@ -18,9 +18,11 @@ use App\Form\NotesType;
 use App\Form\PhrasesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use App\Entity\Fichiersequipes;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -44,10 +46,8 @@ class JuryController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-
-    /**
-     * @Route("cyberjury/accueil", name="cyberjury_accueil")
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("cyberjury/accueil", name:"cyberjury_accueil")]
     public function accueil(Request $request): Response
 
     {
@@ -122,11 +122,8 @@ class JuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"})
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route( "/infos_equipe/{id}", name :"cyberjury_infos_equipe",requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
         $repositoryJures = $this->doctrine
@@ -204,12 +201,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/lescadeaux", name="cyberjury_lescadeaux")
-     *
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/lescadeaux", name:"cyberjury_lescadeaux")]
     public function lescadeaux(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
@@ -235,12 +228,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/lesprix", name="cyberjury_lesprix")
-     *
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/lesprix", name:"cyberjury_lesprix")]
     public function lesprix(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
@@ -271,12 +260,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("palmares", name="cyberjury_palmares")
-     *
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("palmares", name:"cyberjury_palmares")]
     public function palmares(Request $request): RedirectResponse|Response
     {
         $repositoryJures = $this->doctrine
@@ -328,14 +313,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/evaluer_une_equipe/{id}", name="cyberjury_evaluer_une_equipe", requirements={"id_equipe"="\d{1}|\d{2}"})
-     *
-     * @throws NonUniqueResultException
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/evaluer_une_equipe/{id}", name:"cyberjury_evaluer_une_equipe", requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function evaluer_une_equipe(Request $request, Equipes $equipe, $id): RedirectResponse|Response
     {
         $user = $this->getUser();
@@ -441,30 +420,22 @@ class JuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     * @Route("/tableau_de_bord", name ="cyberjury_tableau_de_bord")
-     *
-     * @throws NonUniqueResultException
-     */
-    public function tableau(): Response
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/tableau_de_bord,{critere},{sens}", name:"cyberjury_tableau_de_bord")]
+    public function tableau($critere, $sens): Response
     {
         $user = $this->getUser();
         $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-
-        $repositoryNotes = $this->doctrine
-            ->getManager()
-            ->getRepository(Notes::class);
-
-        $queryBuilder = $repositoryNotes->createQueryBuilder('n');
-        $queryBuilder
-            ->where('n.jure=:id_jure')
-            ->setParameter('id_jure', $id_jure)
-            ->orderBy('n.total', 'DESC');
-
-        $MonClassement = $queryBuilder->getQuery()->getResult();
+        $ordre=array(
+            'EXP'=>'DESC',
+            'DEM'=>'DESC',
+            'ORI'=>'DESC',
+            'TRE'=>'DESC',
+            'ORA'=>'DESC',
+            'TOT'=>'DESC');
+        $ordre[$critere]=$sens;
+        $MonClassement = $this->classement($critere,$sens,$id_jure)->getQuery()->getResult();
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
@@ -472,7 +443,11 @@ class JuryController extends AbstractController
         $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository(Fichiersequipes::class);
+        $repositoryNotes = $this->doctrine
+            ->getManager()
+            ->getRepository(Notes::class);
 
+        $rangs=$repositoryNotes->get_rangs($id_jure);
 
         $memoires = array();
         $listEquipes = array();
@@ -507,18 +482,13 @@ class JuryController extends AbstractController
         }
 
         $content = $this->renderView('cyberjury/tableau.html.twig',
-            array('listEquipes' => $listEquipes, 'jure' => $jure, 'memoires' => $memoires)
+            array('listEquipes' => $listEquipes, 'jure' => $jure, 'memoires' => $memoires, 'ordre'=>$ordre,'critere'=>$critere,'rangs'=>$rangs)
         );
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     *
-     * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/liste_phrases_amusantes/{id}", name : "cyberjury_phrases_amusantes",requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function liste_phrases_amusantes(Request $request, $id): Response
     {
         $user = $this->getUser();
@@ -569,14 +539,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     *
-     * @Route("/edit_phrases/{id}", name = "cyberjury_edit_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
-     * @throws NonUniqueResultException
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/edit_phrases/{id}", name : "cyberjury_edit_phrases_amusantes",requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function edit_phrases(Request $request, Equipes $equipe, $id): RedirectResponse|Response
     {
 
@@ -641,13 +605,8 @@ class JuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_JURY')")
-     *
-     *
-     * @Route("/supr_phrase/{idphrase}", name = "cyberjury_suprim_phrase_amusante")
-     */
+    #[IsGranted('ROLE_JURY')]
+    #[Route("/supr_phrase/{idphrase}", name : "cyberjury_suprim_phrase_amusante")]
     public function supr_phrase(Request $request, $idphrase): Response
     {
         $user = $this->getUser();
@@ -660,7 +619,7 @@ class JuryController extends AbstractController
         $phrase = $this->doctrine->getRepository(Phrases::class)->findOneBy(['id' => $idphrase]);
         $equipe = $phrase->getEquipe();
         $idEquipe = $equipe->getId();
-        $equipe->removePhrases($phrase);
+        $equipe->removePhrase($phrase);
         $phrase->setJure(null);
         $phrase->setEquipe(null);
         $this->em->remove($phrase);
@@ -682,5 +641,39 @@ class JuryController extends AbstractController
 
 
     }
+    public function classement($critere,$sens,$id_jure) : QueryBuilder
+        {
+            $repositoryNotes = $this->doctrine
+                ->getManager()
+                ->getRepository(Notes::class);
+
+            $queryBuilder = $repositoryNotes->createQueryBuilder('n');
+            $queryBuilder
+                ->where('n.jure=:id_jure')
+                ->setParameter('id_jure', $id_jure);
+            switch ($critere) {
+                case 'EXP':
+                    $queryBuilder->orderBy('n.exper', $sens);
+                    break;
+                case('ORI') :
+                    $queryBuilder->orderBy('n.origin', $sens);
+                    break;
+                case('ORA') :
+                    $queryBuilder->orderBy('n.oral', $sens);
+                    break;
+                case('DEM') :
+                    $queryBuilder->orderBy('n.demarche', $sens);
+                    break;
+                case('TRE') :
+                    $queryBuilder->orderBy('n.wgroupe', $sens);
+                    break;
+                case('TOT') :
+                    $queryBuilder->orderBy('n.total', $sens);
+                    break;
+
+            }
+
+            return $queryBuilder;
+        }
 
 }

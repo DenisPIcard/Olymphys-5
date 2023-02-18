@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Repository\PhotosRepository;
 use App\Service\ImagesCreateThumbs;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,86 +13,46 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * Photos
- * @Vich\Uploadable
- * @ORM\Table(name="photos")
- * @ORM\Entity(repositoryClass="App\Repository\PhotosRepository")
- *
- */
+#[ORM\Entity(repositoryClass:PhotosRepository::class)]
+#[Vich\Uploadable]
 class Photos
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id=null;
 
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE", nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity:Equipesadmin::class)]
+    #[ORM\JoinColumn(name: "equipe_id", referencedColumnName: "id", nullable: true, onDelete: "CASCADE")]
     private ?Equipesadmin $equipe = null;
 
-    /**
-     * @ORM\Column(type="string", length=255,  nullable=true)
-     *
-     * @var string
-     */
-    private ?string $photo;
+    #[ORM\Column(length:255,  nullable:true)]
+    private ?string $photo = null;
 
-    /**
-     *
-     * @var File
-     * @Vich\UploadableField(mapping="photos", fileNameProperty="photo")
-     *
-     */
-    private $photoFile;
+    #[Vich\UploadableField(mapping: 'photos', fileNameProperty: 'photo')]
+    private ?File $photoFile = null;
 
 
-    /**
-     * @ORM\Column(type="string", length=125,  nullable=true)
-     *
-     * @var string
-     */
-    private $coment;
+    #[ORM\Column(length:255,  nullable:true)]
+    private $coment = null;
 
-    /**
-     * @ORM\Column(type="boolean",  nullable=true)
-     *
-     * @var boolean
-     */
-    private ?bool $national;
+    #[ORM\Column(nullable:true)]
+    private ?bool $national = null ;
 
 
-    /**
-     *
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
-     */
-    private $updatedAt;
+   #[ORM\Column(nullable:true)]
+   private ?DateTime $updatedAt = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Edition::class)
-     * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id",nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity:Edition::class)]
+    #[ORM\JoinColumn(name:"edition_id",  referencedColumnName:"id",nullable:true)]
     private ?Edition $edition=null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class)
-     * @ORM\JoinColumn(name="editionspassees_id",  referencedColumnName="id",nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity:OdpfEditionsPassees::class)]
+    #[ORM\JoinColumn(name:"editionspassees_id",  referencedColumnName:"id",nullable:true)]
     private ?OdpfEditionsPassees $editionspassees;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
-     * @ORM\JoinColumn(name="equipepassee_id",  referencedColumnName="id",nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity:OdpfEquipesPassees::class)]
+    #[ORM\JoinColumn(name:"equipepassee_id",  referencedColumnName:"id",nullable:true)]
     private ?OdpfEquipesPassees $equipepassee;
 
     public function __construct()
@@ -106,9 +67,6 @@ class Photos
         return $this->photoFile;
     }
 
-    /**
-     * @param File|UploadedFile $photoFile
-     */
     public function setPhotoFile(?File $photoFile = null): void
 
     {
@@ -273,21 +231,8 @@ class Photos
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function createThumbs()
     {
-
         $imagesCreateThumbs = new ImagesCreateThumbs();
         $imagesCreateThumbs->createThumbs($this);
         return $this;

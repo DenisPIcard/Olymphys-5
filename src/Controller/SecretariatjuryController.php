@@ -14,6 +14,7 @@ use App\Entity\Phrases;
 use App\Entity\Prix;
 use App\Entity\Repartprix;
 use App\Entity\Rne;
+use App\Entity\Visites;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
@@ -31,6 +32,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Proxies\__CG__\App\Entity\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,24 +58,19 @@ class SecretariatjuryController extends AbstractController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/accueil", name="secretariatjury_accueil")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/accueil", name:"secretariatjury_accueil")]
     public function accueil(): Response
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
-        if ($edition->getDateouverturesite()>date('now')){
-            $edition= $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
+        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+                $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
-
-        $repositoryEquipesadmin = $em->getRepository(Equipesadmin::class);
-        $repositoryEleves = $em->getRepository(Elevesinter::class);
-        $repositoryRne = $em->getRepository(Rne::class);
+        $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);
+        $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
+        $repositoryRne = $this->doctrine->getRepository(Rne::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -102,12 +99,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/accueil_jury", name="secretariatjury_accueil_jury")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/accueil_jury", name:"secretariatjury_accueil_jury")]
     public function accueilJury(): Response
     {
         $tableau = $this->requestStack->getSession()->get('tableau');
@@ -137,21 +130,17 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/vueglobale", name="secretariatjury_vueglobale")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/vueglobale", name:"secretariatjury_vueglobale")]
     public function vueglobale(): Response
     {
         $em = $this->doctrine->getManager();
-        $repositoryNotes = $em->getRepository(Notes::class);
+        $repositoryNotes = $this->doctrine->getRepository(Notes::class);
 
-        $repositoryJures = $em->getRepository(Jures::class);
+        $repositoryJures =$this->doctrine->getRepository(Jures::class);
         $listJures = $repositoryJures->findAll();
 
-        $repositoryEquipes = $em->getRepository(Equipes::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipes::class);
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
@@ -193,20 +182,16 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/classement", name="secretariatjury_classement")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/classement", name:"secretariatjury_classement")]
     public function classement(): Response
     {
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
 
-        $repositoryEquipes = $em->getRepository(Equipes::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipes::class);
 
-        $coefficients = $em->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+        $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
         $listEquipes = $repositoryEquipes->findAll();
 
@@ -266,12 +251,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/lesprix", name="secretariatjury_lesprix")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/lesprix", name:"secretariatjury_lesprix")]
     public function lesprix(): Response
     { //affiche la liste des prix prévus
         $em = $this->doctrine->getManager();
@@ -292,11 +273,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/modifier_prix/{id_prix}", name="secretariatjury_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"}))
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/modifier_prix/{id_prix}", name:"secretariatjury_modifier_prix", requirements:["id_prix"=>"\d{1}|\d{2}"])]
     public function modifier_prix(Request $request, $id_prix): Response
     { //permet de modifier le niveau d'un prix(id_prix), modifie alors le 'repartprix" (répartition des prix)
 
@@ -351,12 +329,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/approche", name="secretariatjury_approche")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/approche", name:"secretariatjury_approche")]
     public function approche(Request $request): Response
     {
         $em = $this->doctrine->getManager();
@@ -421,12 +395,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/classement_definitif", name="secretariatjury_classement_definitif")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/classement_definitif", name:"secretariatjury_classement_definitif")]
     public function classementdefinitif(): Response
     {
         $em = $this->doctrine->getManager();
@@ -471,12 +441,8 @@ class SecretariatjuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/mise_a_zero", name="secretariatjury_mise_a_zero")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/mise_a_zero", name:"secretariatjury_mise_a_zero")]
     public function RaZ(): Response
     {
         $em = $this->doctrine->getManager();
@@ -501,12 +467,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/attrib_prix/{niveau}", name="secretariatjury_attrib_prix", requirements={"niveau"="\d{1}"}))
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[route("/secretariatjury/attrib_prix/{niveau}", name:"secretariatjury_attrib_prix", requirements:["niveau"=>"\d{1}"])]
     public function attrib_prix(Request $request, $niveau): RedirectResponse|Response
     {
 
@@ -540,24 +502,30 @@ class SecretariatjuryController extends AbstractController
 
         $qb = $repositoryPrix->createQueryBuilder('p')
             ->where('p.niveau = :nivo')
-            ->setParameter('nivo', $niveau_court)
-            ->andwhere('p.attribue = false');
-        $prixNonAttrib=$qb->getQuery()->getResult();
+            ->setParameter('nivo', $niveau_court);
+        $prixNiveau=$qb->getQuery()->getResult();
+        $prixNonAttrib=[];
+        $i=0;
+        foreach($prixNiveau as $prix){
+            if ($prix->getEquipe()===null){
+                $prixNonAttrib[$i]=$prix;
+                $i=+1;
+            }
+
+        }
         if ($request->query->get('equipe') !=null ) {
            $equipe = $repositoryEquipes->findOneBy(['id' =>  $request->query->get('equipe')]);
            $request->query->get('prix')==null? $action='effacer': $action='attribuer';
                if ($action=='effacer') {
                             $prix = $equipe->getPrix();
-                            $prix->setAttribue(false);
                             $equipe->setPrix(null);
                         }
                if ($action=='attribuer') {
                             $prix = $repositoryPrix->findOneBy(['id' =>  $request->query->get('prix')]);
                             $equipe->setPrix($prix);
-                            $prix->setAttribue(true);
+
                         }
                $em->persist($equipe);
-               $em->persist($prix);
                $em->flush();
                $request->getSession()->getFlashBag()->add('info', 'Prix bien enregistré');
                return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
@@ -572,12 +540,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/edition_prix", name="secretariatjury_edition_prix")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/edition_prix", name:"secretariatjury_edition_prix")]
     public function edition_prix(): Response
     {
         $listEquipes = $this->doctrine
@@ -589,27 +553,79 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/edition_visites", name="secretariatjury_edition_visites")
-     *
-     */
-    public function edition_visites(): Response
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/edition_visites", name:"secretariatjury_edition_visites")]
+    public function edition_visites(Request $request): Response
     {
         $em = $this->doctrine->getManager();
-        $listEquipes = $em->getRepository(Equipes::class)
-                          ->getEquipesVisites();
-        //dd($listEquipes);
-        $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
+        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->findAll();
+
+        if ($request->get('form')){
+               $idEquipe=$request->get('form')['id'];
+               $idVisite=$request->get('form')['visite'];
+
+               $visite=$this->doctrine->getRepository(Visites::class)->findOneBy(['id'=>$idVisite]);
+               $equipe=$this->doctrine->getRepository(Equipes::class)->findOneBy(['id'=>$idEquipe]);
+               isset($request->get('form')['enregistrer'])?$action='enregistrer':$action='effacer';
+               if ($action=='enregistrer'){
+                    //$visite->setEquipe($equipe);
+                    $equipe->setVisite($visite);
+                    //$this->doctrine->getManager()->persist($visite);
+                    $this->doctrine->getManager()->persist($equipe);
+                    $this->doctrine->getManager()->flush();
+               }
+               if($action =='effacer'){
+                   $equipe->setVisite(null);
+                   //$visite->setEquipe(null);
+                   $this->doctrine->getManager()->persist($equipe);
+                   $this->doctrine->getManager()->flush();
+               }
+               $request->initialize();
+        }
+        $listeVisite=$this->doctrine->getRepository(Visites::class)->findAll();
+        $visitesNonAttr=[];
+        $i=0;
+        foreach($listeVisite as $visite) {
+            if ($visite->getEquipe()===null){
+                $visitesNonAttr[$i]=$visite;
+                $i=+1;
+             }
+        }
+        $i=0;
+        foreach($listEquipes as $equipe) {
+                $placeholder='Choisir une visite';
+                if ($equipe->getVisite()!=null) {
+
+                    $visitesNonAttr[count($visitesNonAttr)] = $equipe->getVisite();
+                    $placeholder = $equipe->getVisite();
+                }
+                $form[$i] =$this->createFormBuilder($equipe)
+                    ->add('enregistrer', SubmitType::class)
+                    ->add('effacer',SubmitType::class)
+                    ->add('visite', EntityType::class,[
+                        'class'=>Visites::class,
+                        'choices'=>$visitesNonAttr,
+                        'choice_label'=>'getIntitule',
+                        'data'=>$equipe->getVisite(),
+                        'placeholder'=>$placeholder,
+                        'label'=>null
+
+                        ])
+                    ->add('id',HiddenType::class,['data'=>$equipe->getId()])
+                    ->getForm();
+                $Form[$i]=$form[$i]->createView();
+                if ($equipe->getVisite()!=null) {
+                    unset($visitesNonAttr[array_key_last($visitesNonAttr)]);
+                }
+
+            $i=$i+1;
+        }
+
+        $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes,'form'=>$Form));
         return new Response($content);
     }
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/attrib_cadeaux/{id_equipe}", name="secretariatjury_attrib_cadeaux",  requirements={"id_equipe"="\d{1}|\d{2}"}))
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/attrib_cadeaux/{id_equipe}", name:"secretariatjury_attrib_cadeaux",  requirements:["id_equipe"=>"\d{1}|\d{2}"])]
     public function attrib_cadeaux(Request $request, $id_equipe): RedirectResponse|Response
     {
         // repris de Olymphys4
@@ -653,10 +669,14 @@ class SecretariatjuryController extends AbstractController
                     'Deja_Attrib' => true,
                 ));
             if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
                 $em->persist($cadeau);
+                $em->flush();
+
                 if (!$cadeau->getAttribue()) {
                     $equipe->setCadeau(NULL);
                 }
+
                 $em->persist($equipe);
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Cadeau attribué');
@@ -671,12 +691,9 @@ class SecretariatjuryController extends AbstractController
             ));
         return new Response($content);
     }
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/lescadeaux/{compteur}", name="secretariatjury_lescadeaux")
-     *
-     */
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/lescadeaux/{compteur}", name:"secretariatjury_lescadeaux")]
     public function lescadeaux(Request $request, $compteur): RedirectResponse|Response
     {
         $em = $this->doctrine->getManager();
@@ -727,17 +744,25 @@ class SecretariatjuryController extends AbstractController
                 'Attrib_Couleur' => false,
             );
         }
-        $form = $this->createForm(EquipesType::class, $equipe, $array);
 
+        $form = $this->createForm(EquipesType::class, $equipe, $array);
+        $equipeini=$this->doctrine->getRepository(Equipes::class)->find($equipe->getId());
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
             $em = $this->doctrine->getManager();
-            $em->persist($equipe);
             $cadeau=$form->get('cadeau')->getData();
-            if (!$form->get('cadeau')->getData()->getAttribue()) {
-                $cadeau->setAttribue(false);
-                $flag = 0;
-                $equipe->setCadeau();
+              //  dd($_REQUEST);
+
+            if(isset($_REQUEST['cyberjury_equipes']['Effacer'])){
+
+                $equipe->setCadeau(null);
+                //$cadeau->setAttribue(false);
             }
+           if (isset($_REQUEST['cyberjury_equipes']['Enregistrer'])) {
+                $equipe->setCadeau($cadeau);
+                //$cadeau->setAttribue(true);
+            }
+            $em->persist($equipe);
             $em->persist($cadeau);
             $em->flush();
             $request->getSession()->getFlashBag()->add('info', 'Cadeaux bien enregistrés');
@@ -767,12 +792,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/edition_cadeaux", name="secretariatjury_edition_cadeaux")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/edition_cadeaux", name:"secretariatjury_edition_cadeaux")]
     public function edition_cadeaux(): Response
     {
         $em = $this->doctrine->getManager();
@@ -783,12 +804,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/edition_phrases", name="secretariatjury_edition_phrases")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/edition_phrases", name:"secretariatjury_edition_phrases")]
     public function edition_phrases(Request $request): Response
     {
         $em = $this->doctrine->getManager();
@@ -819,12 +836,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/palmares_complet", name="secretariatjury_edition_palmares_complet")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/palmares_complet", name:"secretariatjury_edition_palmares_complet")]
     public function tableau_palmares_complet(): Response
     {
         $tableau = $this->requestStack->getSession()->get('tableau');
@@ -858,13 +871,8 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/excel_site", name="secretariatjury_tableau_excel_palmares_site")
-     *
-     * @throws Exception
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/excel_site", name:"secretariatjury_tableau_excel_palmares_site")]
     public function tableau_excel_palmares_site()
     {
         $em = $this->doctrine->getManager();
@@ -971,8 +979,8 @@ class SecretariatjuryController extends AbstractController
                 ->setCellValue('B' . $ligne, 'Lycée ' . $lycee[$lettre][0]->getNom() . " - " . $lycee[$lettre][0]->getCommune())
                 ->setCellValue('C' . $ligne, $prof1[$lettre][0]->getPrenom() . " " . strtoupper($prof1[$lettre][0]->getNom()))
                 ->setCellValue('D' . $ligne, $equipe->getClassement() . ' ' . 'prix');
-            if ($equipe->getPhrase() !== null) {
-                $sheet->setCellValue('E' . $ligne, $equipe->getPhrase()->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
+            if ($equipe->getPhrases() !== null) {
+                $sheet->setCellValue('E' . $ligne, $equipe->getPhrases()[0]->getPhrase() . ' ' . $equipe->getPhrases()[0]->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()[0]->getPrix());
             } else {
                 $sheet->setCellValue('E' . $ligne, 'Phrase');
             }
@@ -1081,13 +1089,8 @@ class SecretariatjuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/excel_jury", name="secretariatjury_tableau_excel_palmares_jury")
-     *
-     * @throws Exception
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/excel_jury", name:"secretariatjury_tableau_excel_palmares_jury")]
     public function tableau_excel_palmares_jury()
     {
         $em = $this->doctrine->getManager();
@@ -1186,9 +1189,9 @@ class SecretariatjuryController extends AbstractController
             $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
             $remispar = 'Philippe'; //remplacer $remispar par $voix1 et $voix2
 
-            if ($equipe->getPhrase() != null) {
+            if ($equipe->getPhrases() != null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
-                $sheet->setCellValue('B' . $ligne, $equipe->getPhrase()->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
+                $sheet->setCellValue('B' . $ligne, $equipe->getPhrases()[0]->getPhrase() . ' ' . $equipe->getPhrases()[0]->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()[0]->getPrix());
             }
             $sheet->getStyle('B' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)
@@ -1268,13 +1271,6 @@ class SecretariatjuryController extends AbstractController
         $writer->save('php://output');
     }
 
-    /**
-     * @param Worksheet $sheet
-     * @param $ligne
-     * @param array $styleText
-     * @param array $borderArray
-     * @return int
-     */
     public function getLigne(Worksheet $sheet, $ligne, array $styleText, array $borderArray): int
     {
         $sheet->getStyle('C' . $ligne . ':D' . $ligne)->getAlignment()->setWrapText(true);
@@ -1286,11 +1282,8 @@ class SecretariatjuryController extends AbstractController
         return $ligne;
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name : "secretariatjury_preparation_tableau_excel_palmares_jury")]
     public function preparation_tableau_excel_palmares_jury(Request $request): RedirectResponse|Response
     { //À quoi ça sert ? Qui l'appelle ? Semble servir à remplir voix et intervenant, équipe par équipe
 
@@ -1340,12 +1333,8 @@ class SecretariatjuryController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/excel_prix", name="secretariatjury_excel_prix")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/excel_prix", name:"secretariatjury_excel_prix")]
     public function excel_prix(Request $request): RedirectResponse|Response
     {  //fonction appelée à partir de l'admin page les prix dans le PrixCrudcontroller
 

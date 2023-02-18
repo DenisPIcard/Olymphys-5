@@ -2,98 +2,64 @@
 
 namespace App\Entity;
 
+use App\Repository\RneRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\RneRepository")
- */
+#[ORM\Entity(repositoryClass: RneRepository::class)]
 class Rne
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=10, unique=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $rne = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $commune = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $academie = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $pays = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    
     private ?string $departement = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $appellationOfficielle = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $boitePostale = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $codePostal = null;
 
-    /**
-     * @ORM\Column(type="string", length=11, nullable=true)
-     */
+    #[ORM\Column(length: 11, nullable: true)]
     private ?string $sigle = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $denominationPrincipale = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $acheminement = null;
 
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=1, nullable=true)
-     */
+    #[ORM\Column(type: Types::DECIMAL, precision:10, scale:1, nullable:true)]
     private ?string $coordonneeX = null;
 
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=1, nullable=true)
-     */
+    #[ORM\Column(type: Types::DECIMAL, precision:10, scale:1, nullable:true)]
     private ?string $coordonneeY = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nature = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom;
 
     public function __toString()

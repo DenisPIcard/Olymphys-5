@@ -2,70 +2,42 @@
 
 namespace App\Entity;
 
+use App\Repository\ElevesinterRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Integer;
 
-/**
- * Eleves
- *
- * @ORM\Table(name="elevesinter")
- * @ORM\Entity(repositoryClass="App\Repository\ElevesinterRepository")
- */
+#[ORM\Entity(repositoryClass: ElevesinterRepository::class)]
 class Elevesinter
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="numsite", type="integer", nullable=true)
-     *
-     */
+    #[ORM\Column(type : Types::INTEGER, nullable: true)]
     private ?int $numsite = 0;
 
-    /**
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
-    /**
-     *
-     * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $prenom = null;
-    /**
-     * @ORM\Column(name="genre", type="string", length=1, nullable=true)
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $genre = null;
 
-    /**
-     *
-     * @ORM\Column(name="classe", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $classe = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
-     */
-    private ?Equipesadmin $equipe;
+    #[ORM\ManyToOne]
+    private ?Equipesadmin $equipe=null;
 
-    /**
-     *
-     * @ORM\Column(name="courriel", type="string",length=60, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $courriel = null;
 
-
-    /**
-     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="eleve", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="autorisationphotos_id",  referencedColumnName="id" , nullable=true)
-     */
+    #[ORM\OneToOne(targetEntity: Fichiersequipes::class, mappedBy: 'eleve', cascade : ['persist', 'remove'] )]
     private ?Fichiersequipes $autorisationphotos;
-
 
     public function __toString()
     {
@@ -84,102 +56,58 @@ class Elevesinter
         return $NomPrenom;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Get numsite
-     *
-     * @return integer
-     */
     public function getNumsite(): ?int
     {
         return $this->numsite;
     }
 
-    /**
-     * Set numsite
-     *
-     * @var integer
-     */
+
     public function setNumsite($numsite)
     {
         $this->numsite = $numsite;
     }
 
-    /**
-     * Get nom
-     *
-     * @return string
-     */
+
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return Elevesinter
-     */
-    public function setNom(string $nom): Elevesinter
+
+    public function setNom(?string $nom): Elevesinter
     {
         $this->nom = $nom;
 
         return $this;
     }
 
-    /**
-     * Get prenom
-     *
-     * @return string
-     */
+
     public function getPrenom(): ?string
     {
         return $this->prenom;
     }
 
-    /**
-     * Set prenom
-     *
-     * @param string $prenom
-     *
-     * @return Elevesinter
-     */
-    public function setPrenom(string $prenom): Elevesinter
+
+    public function setPrenom(?string $prenom): Elevesinter
     {
         $this->prenom = $prenom;
 
         return $this;
     }
 
-    /**
-     * Get classe
-     *
-     * @return string
-     */
+
     public function getClasse(): ?string
     {
         return $this->classe;
     }
 
-    /**
-     * Set classe
-     *
-     * @param string $classe
-     *
-     * @return Elevesinter
-     */
-    public function setClasse(string $classe): Elevesinter
+
+    public function setClasse(?string $classe): Elevesinter
     {
         $this->classe = $classe;
 
@@ -191,7 +119,7 @@ class Elevesinter
         return $this->equipe;
     }
 
-    public function setEquipe($Equipe): Elevesinter
+    public function setEquipe(?Equipesadmin $Equipe): Elevesinter
     {
         $this->equipe = $Equipe;
 
@@ -203,7 +131,7 @@ class Elevesinter
         return $this->courriel;
     }
 
-    public function setCourriel($courriel): Elevesinter
+    public function setCourriel(?string $courriel): Elevesinter
     {
         $this->courriel = $courriel;
 
@@ -215,7 +143,7 @@ class Elevesinter
         return $this->genre;
     }
 
-    public function setGenre($genre): Elevesinter
+    public function setGenre(?string $genre): Elevesinter
     {
         $this->genre = $genre;
 
@@ -227,7 +155,7 @@ class Elevesinter
         return $this->autorisationphotos;
     }
 
-    public function setAutorisationphotos($autorisation): Elevesinter
+    public function setAutorisationphotos(?Fichiersequipes $autorisation): Elevesinter
     {
         $this->autorisationphotos = $autorisation;
 

@@ -32,9 +32,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[AllowDynamicProperties] class PrixCrudController extends AbstractCrudController
 {
-        public function __Construct(protected EntityManagerInterface $doctrine,protected RequestStack $requestStack)
-    {
+    protected EntityManagerInterface $doctrine;
+    protected RequestStack $requeststack;
 
+    public function __Construct(EntityManagerInterface $doctrine,RequestStack $requestStack)
+    {
+        $this->doctrine=$doctrine;
+        $this->requeststack=$requestStack;
     }
 
     public static function getEntityFqcn(): string

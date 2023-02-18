@@ -3,7 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Cadeaux;
+use App\Entity\Equipes;
 use App\Entity\Liaison;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -35,7 +38,13 @@ class EquipesType extends AbstractType
      * @var bool
      */
     private $Attrib_Couleur;
+    private EntityManagerInterface $doctrine;
 
+    public function __construct(EntityManagerInterface $doctrine){
+        $this->doctrine=$doctrine;
+
+
+    }
     /**
      * {@inheritdoc}
      */
@@ -46,8 +55,14 @@ class EquipesType extends AbstractType
         $this->Attrib_Cadeaux = $options['Attrib_Cadeaux'];
         $this->Deja_Attrib = $options['Deja_Attrib'];
         $this->Attrib_Couleur = $options['Attrib_Couleur'];
-
-
+        $liste = $this->doctrine->getRepository(Cadeaux::class)->findAll();
+        $listeCadeaux= [];
+        $i=0;
+        foreach($liste as $cadeau ){
+            if ($cadeau->getEquipe()===null){
+                $listeCadeaux[$i]=$cadeau;
+            };
+        }
         if ($options['Modifier_Rang']) {
             $builder
                 ->add('rang', IntegerType::class) // au lieu de TextType
@@ -75,17 +90,14 @@ class EquipesType extends AbstractType
             if ($options['Deja_Attrib']) {
                 $builder
                     ->add('cadeau', CadeauxType::class)
-                    ->add('Enregistrer', SubmitType::class);
+                    ->add('Enregistrer', SubmitType::class)
+                    ->add('Effacer', SubmitType::class);
             } else {
+
                 $builder
                     ->add('cadeau', EntityType::class, [
                         'class' => Cadeaux::class,
-                        'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('c')
-                                ->where('c.attribue = 0')
-                                ->orderBy('c.montant', 'DESC');
-                        },
-                        'choice_label' => 'displayCadeau',
+                        'choices' => $listeCadeaux,
                         'multiple' => false])
                     ->add('Enregistrer', SubmitType::class);
 

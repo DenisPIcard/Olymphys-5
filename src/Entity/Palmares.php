@@ -2,162 +2,98 @@
 
 namespace App\Entity;
 
+use App\Repository\PalmaresRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Palmares
- *
- * @ORM\Table(name="palmares")
- * @ORM\Entity(repositoryClass="App\Repository\PalmaresRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass : PalmaresRepository::class)]
+
 class Palmares
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id=null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="categorie", type="string", length=255)
-     */
-    private $categorie;
+   #[ORM\Column(length : 255, nullable: true)]
+   private ?string $categorie=null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $a;
+   #[ORM\OneToOne]
+    private ?Prix $a;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $b;
+    #[ORM\OneToOne]
+    private ?Prix $b;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $c;
+    #[ORM\OneToOne]
+    private ?Prix $c;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $d;
+    #[ORM\OneToOne]
+    private ?Prix $d;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $e;
+    #[ORM\OneToOne]
+    private ?Prix $e;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $f;
+    #[ORM\OneToOne]
+    private ?Prix $f;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $g;
+    #[ORM\OneToOne]
+    private ?Prix $g;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $h;
+    #[ORM\OneToOne]
+    private ?Prix $h;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $i;
+    #[ORM\OneToOne]
+    private ?Prix $i;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $j;
+    #[ORM\OneToOne]
+    private ?Prix $j;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $k;
+    #[ORM\OneToOne]
+    private ?Prix $k;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $l;
+    #[ORM\OneToOne]
+    private ?Prix $l;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $m;
+    #[ORM\OneToOne]
+    private ?Prix $m;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $n;
+    #[ORM\OneToOne]
+    private ?Prix $n;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $o;
+    #[ORM\OneToOne]
+    private ?Prix $o;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $p;
+    #[ORM\OneToOne]
+    private ?Prix $p;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $q;
+    #[ORM\OneToOne]
+    private ?Prix $q;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $r;
+    #[ORM\OneToOne]
+    private ?Prix $r;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $s;
+    #[ORM\OneToOne]
+    private ?Prix $s;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $t;
+    #[ORM\OneToOne]
+    private ?Prix $t;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $u;
+    #[ORM\OneToOne]
+    private ?Prix $u;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $v;
+    #[ORM\OneToOne]
+    private ?Prix $v;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $w;
+    #[ORM\OneToOne]
+    private ?Prix $w;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $x;
+    #[ORM\OneToOne]
+    private ?Prix $x;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $y;
+    #[ORM\OneToOne]
+    private ?Prix $y;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private $z;
+    #[ORM\OneToOne]
+    private ?Prix $z;
 
     /**
      * @ORM\PostPersist

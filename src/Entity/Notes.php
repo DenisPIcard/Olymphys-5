@@ -2,78 +2,49 @@
 
 namespace App\Entity;
 
+use App\Repository\NotesRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Notes
- *
- * @ORM\Table(name="notes")
- * @ORM\Entity(repositoryClass="App\Repository\NotesRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: NotesRepository::class)]
 class Notes
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="exper", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $exper = 0;
 
-    /**
-     * @ORM\Column(name="demarche", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $demarche = 0;
 
-    /**
-     * @ORM\Column(name="oral", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $oral = 0;
 
-    /**
-     * @ORM\Column(name="origin", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $origin = 0;
 
-    /**
-     * @ORM\Column(name="Wgroupe", type="smallint")
-     */
+    #[ORM\Column(type: Types::SMALLINT, name:'Wgroupe')]
     private ?int $wgroupe = 0;
 
-    /**
-     * @ORM\Column(name="ecrit", type="smallint", nullable=true)
-     */
+    #[ORM\Column(type: Types::SMALLINT)]
     private ?int $ecrit = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
-     * @ORM\JoinColumn(name="equipe_id",nullable=false)
-     */
+   #[ORM\ManyToOne(targetEntity : Equipes::class, inversedBy:"notess")]
     private Equipes $equipe;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity : Jures::class, inversedBy:"notesj")]
     private Jures $jure;
 
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $total = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Coefficients::class)
-     * @ORM\JoinColumn(name="coefficients_id",  referencedColumnName="id",onDelete="CASCADE" )
-     */
-    private ?coefficients $coefficients;
-
+    #[ORM\ManyToOne(targetEntity: Coefficients::class) ]
+    #[ORM\JoinColumn(name:"coefficients_id",  referencedColumnName:"id",onDelete:"CASCADE" )]
+    private ?Coefficients $coefficients;
 
     const NE_PAS_NOTER = 0; // pour les écrits....
     const INSUFFISANT = 1;
@@ -81,23 +52,12 @@ class Notes
     const BIEN = 3;
     const EXCELLENT = 4;
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId(): int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set exper
-     *
-     * @param integer $exper
-     *
-     * @return Notes
-     */
     public function setExper(int $exper): Notes
     {
         $this->exper = $exper;
@@ -105,23 +65,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get exper
-     *
-     * @return int
-     */
     public function getExper(): ?int
     {
         return $this->exper;
     }
 
-    /**
-     * Set demarche
-     *
-     * @param integer $demarche
-     *
-     * @return Notes
-     */
     public function setDemarche(int $demarche): Notes
     {
         $this->demarche = $demarche;
@@ -129,23 +77,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get demarche
-     *
-     * @return int
-     */
     public function getDemarche(): ?int
     {
         return $this->demarche;
     }
 
-    /**
-     * Set oral
-     *
-     * @param integer $oral
-     *
-     * @return Notes
-     */
     public function setOral(int $oral): Notes
     {
         $this->oral = $oral;
@@ -153,23 +89,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get oral
-     *
-     * @return int
-     */
     public function getOral(): ?int
     {
         return $this->oral;
     }
 
-    /**
-     * Set origin
-     *
-     * @param integer $origin
-     *
-     * @return Notes
-     */
     public function setOrigin(int $origin): Notes
     {
         $this->origin = $origin;
@@ -177,23 +101,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get origin
-     *
-     * @return int
-     */
     public function getOrigin(): ?int
     {
         return $this->origin;
     }
 
-    /**
-     * Set wgroupe
-     *
-     * @param integer $wgroupe
-     *
-     * @return Notes
-     */
     public function setWgroupe(int $wgroupe): Notes
     {
         $this->wgroupe = $wgroupe;
@@ -201,23 +113,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get wgroupe
-     *
-     * @return int
-     */
     public function getWgroupe(): ?int
     {
         return $this->wgroupe;
     }
 
-    /**
-     * Set ecrit
-     *
-     * @param integer $ecrit
-     *
-     * @return Notes
-     */
     public function setEcrit(int $ecrit): Notes
     {
         $this->ecrit = $ecrit;
@@ -225,11 +125,6 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get ecrit
-     *
-     * @return int
-     */
     public function getEcrit(): ?int
     {
         return $this->ecrit;
@@ -257,13 +152,6 @@ class Notes
 
     }
 
-    /**
-     * Set equipe
-     *
-     * @param Equipes $equipe
-     *
-     * @return Notes
-     */
     public function setEquipe(Equipes $equipe): Notes
     {
         $this->equipe = $equipe;
@@ -271,23 +159,11 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get equipe
-     *
-     * @return Equipes|null
-     */
     public function getEquipe(): ?Equipes
     {
         return $this->equipe;
     }
 
-    /**
-     * Set jure
-     *
-     * @param Jures $jure
-     *
-     * @return Notes
-     */
     public function setJure(Jures $jure): Notes
     {
         $this->jure = $jure;
@@ -295,11 +171,6 @@ class Notes
         return $this;
     }
 
-    /**
-     * Get jure
-     *
-     * @return Jures|null
-     */
     public function getJure(): ?Jures
     {
         return $this->jure;

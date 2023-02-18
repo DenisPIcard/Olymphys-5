@@ -40,9 +40,7 @@ class UtilisateurController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @Route("/profile_show", name="profile_show")
-     */
+    #[Route("/profile_show", name:"profile_show")]
     public function profileShow(): Response
     {
         $user = $this->getUser();
@@ -51,13 +49,7 @@ class UtilisateurController extends AbstractController
         ));
     }
 
-    /**
-     * Edit the user.
-     *
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @Route("profile_edit", name="profile_edit")
-     */
+    #[Route("profile_edit", name:"profile_edit")]
     public function profileEdit(Request $request, ManagerRegistry $doctrine)
     {
         $user = $this->getUser();
@@ -84,13 +76,7 @@ class UtilisateurController extends AbstractController
         ));
     }
 
-    /**
-     *
-     *
-     *
-     * @Route("/Utilisateur/inscrire_equipe,{idequipe}", name="inscrire_equipe")
-     * @throws TransportExceptionInterface
-     */
+    #[Route("/Utilisateur/inscrire_equipe,{idequipe}", name:"inscrire_equipe")]
     public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe)
     {
 
@@ -330,12 +316,8 @@ class UtilisateurController extends AbstractController
 
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/Utilisateur/supr_eleve,{eleve}", name="supr_eleve")
-     */
+    #[IsGranted('ROLE_PROF')]
+    #[Route("/Utilisateur/supr_eleve,{eleve}", name:"supr_eleve")]
     public function supr_eleve($eleveId)
     {
 
@@ -481,13 +463,8 @@ class UtilisateurController extends AbstractController
         return $checkchange;
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/Utilisateur/pre_supr_eleve", name="pre_supr_eleve")
-     */
-
+    #[IsGgranted('ROLE_PROF')]
+    #[Route("/Utilisateur/pre_supr_eleve", name:"pre_supr_eleve")]
     public function pre_supr_eleve(Request $request, ManagerRegistry $doctrine): RedirectResponse
     {
         $session = $this->requestStack->getSession();

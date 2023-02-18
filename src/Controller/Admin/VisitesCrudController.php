@@ -31,8 +31,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class VisitesCrudController extends AbstractCrudController
 {
-    public function __Construct( protected EntityManagerInterface $doctrine,protected RequestStack $requestStack)
+
+    protected EntityManagerInterface $doctrine;
+    protected RequestStack $requeststack;
+
+    public function __Construct(EntityManagerInterface $doctrine,RequestStack $requestStack)
     {
+        $this->doctrine=$doctrine;
+        $this->requeststack=$requestStack;
     }
     public static function getEntityFqcn(): string
     {
@@ -124,8 +130,8 @@ class VisitesCrudController extends AbstractCrudController
                                         ->addOrderBy('eq.lettre', 'ASC')
                                         ->getQuery()->getResult();
 
-        $edition = $this->requestStack->getSession()->get('edition');
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        $edition = $this->requeststack->getSession()->get('edition');
+        if(date('now')<$this->requeststack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
             }
         $liste_visites = [];

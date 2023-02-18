@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\EquipesRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
@@ -19,121 +21,79 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="user")
- * @UniqueEntity(fields="email", message="Cet email est déjà enregistré en base.")
- * @UniqueEntity(fields="username", message="Cet identifiant est déjà enregistré en base")
- */
+#[ORM\Entity(repositoryClass:UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    protected ?string $token = null;
-    /**
-     * @ORM\Column(name="rne", type="string", length=255, nullable=true)
-     */
-    protected ?string $rne = null;
-    /**
-     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
-     */
-    protected ?string $nom = null;
-    /**
-     * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
-     */
-    protected ?string $prenom = null;
-    /**
-     * @ORM\Column(name="adresse", type="string", length=255, nullable=true)
-     */
-    protected ?string $adresse = null;
-    /**
-     * @ORM\Column(name="ville", type="string", length=255, nullable=true)
-     */
-    protected ?string $ville = null;
-    /**
-     * @ORM\Column(name="code", type="string", length=11, nullable=true)
-     */
-    protected ?string $code = null;
-    /**
-     * @ORM\Column(name="phone", type="string", length=15, nullable=true)
-     */
-    protected ?string $phone = null;
-    /**
-     * @ORM\Column(name="civilite", type="string", length=15, nullable=true)
-     */
-    protected ?string $civilite = null;
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
-    /**
-     * @ORM\Column(type="string", length=50, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Length(max=50)
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $token = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $rne = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $nom = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $prenom = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $adresse = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $ville = null;
+
+    #[ORM\Column(length: 11, nullable: true)]
+    protected ?string $code = null;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    protected ?string $phone = null;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    protected ?string $civilite = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $username = null;
-    /**
-     * @ORM\Column(type="array")
-     */
-    private ?array $roles = null;
-    /**
-     * @ORM\Column(type="string")
-     */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $password = null;
+
     private ?string $plainPassword = null;
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Length(max=60)
-     * @Assert\Email()
-     */
-    private ?string $email = null;
-    /**
-     * @ORM\Column(name="is_active", type="boolean", nullable=true)
-     */
+
+    #[ORM\Column(nullable: true)]
     private ?bool $isActive = null;
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+
+    #[ORM\Column(nullable: true)]
     private ?DateTime $passwordRequestedAt = null;
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
-     * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" , nullable= true)
-     */
-    private ?Centrescia $centrecia;
-    /**
-     * @ORM\Column(name="createdAt", type="datetime", nullable=true)
-     */
+
+    #[ORM\Column(type : Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $createdAt;
-    /**
-     * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
-     */
+
+    #[ORM\Column(nullable: true)]
     private ?DateTime $updatedAt = null;
-    /**
-     * @ORM\Column(name="lastVisit", type="datetime", nullable=true)
-     */
+
+    #[ORM\Column(nullable: true)]
     private ?DateTime $lastVisit = null;
-    /**
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
-     * @ORM\JoinColumn( referencedColumnName="id", nullable=true)
-     */
+
+    #[ORM\OneToOne(targetEntity : Fichiersequipes::class, cascade: ['persist'])]
     private ?Fichiersequipes $autorisationphotos = null;
 
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     */
-    private ?rne $rneId;
+    #[ORM\ManyToOne]
+    private ?Rne $rneId=null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?bool $newsletter;
+
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private array $roles = [];
+
+    #[ORM\Column(length: 255,  unique: true)]
+    private ?string $email = null;
 
 
     #[Pure] public function __construct()
@@ -149,23 +109,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->prenom . ' ' . $this->getNom();
     }
 
-    /**
-     * Get nom
-     *
-     * @return string|null
-     */
+
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return User
-     */
     public function setNom(string $nom): User
     {
         $this->nom = $nom;
@@ -178,14 +127,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
+
     public function getUsername(): ?string
     {
-        return (string)$this->username;
+        return $this->username;
     }
 
 
@@ -196,26 +141,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * The public representation of the user (e.g. a username, an email address, etc.)
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return $this->username;
     }
 
-    public function getCentrecia(): ?Centrescia
-    {
-        return $this->centrecia;
-    }
-
-    public function setCentrecia($centrecia): User
-    {
-        $this->centrecia = $centrecia;
-        return $this;
-    }
 
     public function getEmail(): ?string
     {
@@ -228,25 +158,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
+
     public function getToken(): ?string
     {
         return $this->token;
     }
 
-    /**
-     * @param string|null $token
-     */
+
     public function setToken(?string $token): void
     {
         $this->token = $token;
     }
 
-    /**
-     * @see UserInterface
-     */
+
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -271,9 +195,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -297,9 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
+
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -318,11 +238,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    /**
-     * @Assert\NotBlank(groups={"registration"})
-     * @Assert\Length(max=4096)
-     */
-
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
@@ -334,23 +249,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get Adresse
-     *
-     * @return string|null
-     */
     public function getAdresse(): ?string
     {
         return $this->adresse;
     }
 
-    /**
-     * Set adresse
-     *
-     * @param string|null $adresse
-     *
-     * @return User
-     */
+
     public function setAdresse(?string $adresse): User
     {
         $this->adresse = $adresse;
@@ -358,23 +262,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get ville
-     *
-     * @return string|null
-     */
+
     public function getVille(): ?string
     {
         return $this->ville;
     }
 
-    /**
-     * Set ville
-     *
-     * @param string|null $ville
-     *
-     * @return User
-     */
     public function setVille(?string $ville): User
     {
         $this->ville = $ville;
@@ -382,23 +275,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get code
-     *
-     * @return string|null
-     */
+
     public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * Set Code
-     *
-     * @param string|null $code
-     *
-     * @return User
-     */
+
     public function setCode(?string $code): User
     {
         $this->code = $code;
@@ -406,23 +289,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get
-     *
-     * @return string|null
-     */
     public function getCivilite(): ?string
     {
         return $this->civilite;
     }
 
-    /**
-     * Set civilite
-     *
-     * @param string|null $civilite
-     *
-     * @return User
-     */
+
     public function setCivilite(?string $civilite): User
     {
         $this->civilite = $civilite;
@@ -430,22 +302,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get phone
-     *
-     * @return string|null
-     */
+
     public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    /**
-     * Set phone
-     *
-     * @param string|null $phone
-     * @return User
-     */
+
     public function setPhone(?string $phone): User
     {
         $this->phone = $phone;
@@ -453,22 +316,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get rne
-     *
-     * @return string|null
-     */
+
     public function getRne(): ?string
     {
         return $this->rne;
     }
 
-    /**
-     * Set rne
-     *
-     * @param string|null $rne
-     * @return User
-     */
+
     public function setRne(?string $rne): User
     {
         $this->rne = $rne;
@@ -476,23 +330,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Get prenom
-     *
-     * @return string|null
-     */
     public function getPrenom(): ?string
     {
         return $this->prenom;
     }
 
-    /**
-     * Set prenom
-     *
-     * @param string|null $prenom
-     *
-     * @return User
-     */
+
     public function setPrenom(?string $prenom): User
     {
         $this->prenom = $prenom;
@@ -500,50 +343,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /*
-    * Get createdAt
-    */
     public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    /*
-     * Set updatedAt
-     */
     public function setCreatedAt(?Datetime $createdAt): User
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    /*
-     * Get updatedAt
-     */
+
     public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    /*
-     * Set updatedAt
-     */
+
     public function setUpdatedAt(?Datetime $updatedAt): User
     {
         $this->updatedAt = $updatedAt;
         return $this;
     }
 
-    /* Get lastVisit
-    */
+
     public function getLastVisit(): ?DateTime
     {
         return $this->lastVisit;
     }
 
-    /*
-     * Set lastVisit
-     */
+
     public function setLastVisit(?DateTime $lastVisit): User
     {
         $this->lastVisit = $lastVisit;
@@ -629,4 +459,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isActive = $data['isActive'];
 
     }
+
+
 }

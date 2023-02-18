@@ -39,53 +39,46 @@ class ComiteController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted ("ROLE_COMITE")
-     * @Route("/comite/accueil", name="comite_accueil")
-     */
+    #[IsGranted ("ROLE_COMITE")]
+    #[Route("/comite/accueil", name:"comite_accueil")]
     public function accueil(): Response
     {
         return $this->render('comite/accueil.html.twig');
     }
 
+    /*
+       #[IsGranted("ROLE_JURY")]
+       #[Route("/comite/frais_lignes", name:"comite_frais_lignes")
+     /*  public function frais_lignes(Request $request): RedirectResponse|Response
+       {
+           // $user=$this->getUser();
 
-    /**
-     * @IsGranted ("ROLE_JURY")
-     * @Route("/comite/frais_lignes", name="comite_frais_lignes")
-     */
-  /*  public function frais_lignes(Request $request): RedirectResponse|Response
-    {
-        // $user=$this->getUser();
+           $repositoryEdition = $this->doctrine
+               ->getManager()
+               ->getRepository(Edition::class);
 
-        $repositoryEdition = $this->doctrine
-            ->getManager()
-            ->getRepository(Edition::class);
+           $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
 
-        $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
+           $task = ['message' => '1'];
+           $form = $this->createFormBuilder($task)
+               ->add('nblignes', IntegerType::class, ['label' => 'De combien de lignes avez vous besoin'])
+               ->add('Entree', SubmitType::class)
+               ->getForm();
 
-        $task = ['message' => '1'];
-        $form = $this->createFormBuilder($task)
-            ->add('nblignes', IntegerType::class, ['label' => 'De combien de lignes avez vous besoin'])
-            ->add('Entree', SubmitType::class)
-            ->getForm();
+           $form->handleRequest($request);
+           if ($form->isSubmitted() && $form->isValid()) {
+               $data = $form->getData();
+               $nblig = $data['nblignes'];
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $nblig = $data['nblignes'];
-
-            return $this->redirectToroute('comite_frais', ['nblig' => $nblig]);
-        }
-        $content = $this->renderView('comite/frais_lignes.html.twig', ['edition' => $edition, 'form' => $form->createView()]);
-        return new Response($content);
-    }
-*/
-    /**
-     * @IsGranted ("ROLE_JURY")
-     *
-     * @Route("/comite/frais,{nblig}", name="comite_frais", requirements={"nblig"="\d{1}|\d{2}"})
-     * @throws Exception
-     */
+               return $this->redirectToroute('comite_frais', ['nblig' => $nblig]);
+           }
+           $content = $this->renderView('comite/frais_lignes.html.twig', ['edition' => $edition, 'form' => $form->createView()]);
+           return new Response($content);
+       }
+   */
+    #[IsGranted("ROLE_JURY")]
+    #[Route("/comite/frais,{nblig}", name:"comite_frais", requirements:["nblig"=>"\d{1}|\d{2}"])]
+   //* @throws TransportExceptionInterface
     public function frais(Request $request, ExcelCreate $create, $nblig=1): RedirectResponse|Response
     {
         $repositoryEdition = $this->doctrine
@@ -130,11 +123,9 @@ class ComiteController extends AbstractController
 
     }
 
-    /**
-     * @Route("/comite/envoi_frais", name="comite_envoi_frais")
-     * @throws TransportExceptionInterface
-     */
-    public function envoi_frais(Request $request, Mailer $mailer): Response
+    #[Route("/comite/envoi_frais", name:"comite_envoi_frais")]
+     //@throws TransportExceptionInterface
+   public function envoi_frais(Request $request, Mailer $mailer): Response
     {
         $user = $this->getUser();
         $defaultData = ['message' => 'Charger votre fichier de frais '];

@@ -358,8 +358,8 @@ class LivredorController extends AbstractController
 
         $idedition = explode('-', $choix)[0];
         $type = explode('-', $choix)[1];
-        $edition = $repositoryEdition = $this->doctrine
-            ->getRepository(OdpfEditionsPassees::class)->findOneById(['id' => $idedition]);
+        $edition =$this->doctrine
+            ->getRepository(Edition::class)->findOneById(['id' => $idedition]);
 
         $phpWord = new  PhpWord();
 
@@ -381,7 +381,7 @@ class LivredorController extends AbstractController
         );
 
         if (($type == 'prof') or ($type == 'comite') or ($type == 'jury')) {
-            $livredor = $this - $this->doctrine
+            $livredor = $this->doctrine
                     ->getRepository(Livredor::class)->createQueryBuilder('l')
                     ->leftJoin('l.user', 'p')
                     ->addOrderBy('p.nom', 'ASC')
@@ -396,6 +396,7 @@ class LivredorController extends AbstractController
                     ->getManager()
                     ->getRepository(Equipesadmin::class);
                 $section->addText('Livre d\'or des professeurs - Edition ' . $edition->getEd() . ' année ' . $edition->getAnnee(), array('bold' => true, 'size' => 14, 'spaceAfter' => 240), 'pStyle');
+                $section->addText('Remplis en ligne du fait de la tenue en distanciel du ' . $edition->getEd() . 'e concours national', array('bold' => true, 'size' => 10, 'spaceAfter' => 240), 'pStyle');
                 $section->addTextBreak(3);
                 if ($livredor != null) {
                     foreach ($livredor as $texte) {
@@ -483,6 +484,7 @@ class LivredorController extends AbstractController
 
             if ($livredor != null) {
                 $section->addText('Livre d\'or des élèves- Edition ' . $edition->getEd() . ' année ' . $edition->getAnnee(), array('bold' => true, 'size' => 14, 'spaceAfter' => 240), 'pStyle');
+
                 $section->addTextBreak(3);
                 foreach ($livredor as $texte) {
 
@@ -511,7 +513,7 @@ class LivredorController extends AbstractController
         }
         $categorie = $type;
         $filesystem = new Filesystem();
-        $fileName = $edition->getEdition() . ' annee ' . $edition->getAnnee() . ' livre d\'or ' . $categorie . '.docx';
+        $fileName = $edition->getEd() . ' annee ' . $edition->getAnnee() . ' livre d\'or ' . $categorie . '.docx';
 
         try {
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');

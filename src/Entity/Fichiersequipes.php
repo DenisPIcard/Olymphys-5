@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Repository\FichiersequipesRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\HttpFoundation\File\File;
@@ -10,93 +12,48 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * Memoires
- * @Vich\Uploadable
- * @ORM\Table(name="fichiersequipes")
- * @ORM\Entity(repositoryClass="App\Repository\FichiersequipesRepository")
- *
- */
+#[ORM\Entity(repositoryClass:FichiersequipesRepository::class)]
+#[Vich\Uploadable]
 class Fichiersequipes //extends BaseMedia
 {
-
-
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
-     */
+
+    #[ORM\ManyToOne(cascade : ['remove'])]
     private ?Equipesadmin $equipe = null;
 
-    /**
-     * @ORM\Column(type="string", length=255,  nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $fichier = null;
 
-
-    /**
-     *
-     * @var File
-     * @Vich\UploadableField(mapping="fichiersequipes", fileNameProperty="fichier")
-     *
-     *
-     */
+    #[Vich\UploadableField(mapping: 'fichiersequipes', fileNameProperty: 'fichier')]
     private ?File $fichierFile = null;
-    /**
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $typefichier = null;
 
 
-    /**
-     *
-     * @ORM\Column(type="boolean", nullable=true)
-     * @var boolean
-     */
+    #[ORM\Column(nullable: true)]
     private ?bool $national = false;
 
 
-    /**
-     *
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?DateTime $updatedAt = null;
 
+    #[ORM\OneToOne(inversedBy: 'autorisationphotos', cascade: ['persist'])]
+    private ?User $prof = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true )
-     */
-    private ?user $prof = null;
-
-    /**
-     *
-     *
-     * @ORM\Column(type="string", length=255,  nullable=true, )
-     *
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nomautorisation = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Edition::class)
-     * @JoinColumn(name="edition_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne]
     private ?Edition $edition = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist"})
-     * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true)
-     */
-    private ?Elevesinter $eleve;
+
+    #[ORM\OneToOne(inversedBy: 'autorisationphotos', cascade: ['persist'])]
+    private ?Elevesinter $eleve=null;
 
 
     public function getFichierFile(): ?File
@@ -104,7 +61,15 @@ class Fichiersequipes //extends BaseMedia
 
         return $this->fichierFile;
     }
-
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $fichierFile
+     */
     public function setFichierFile(?File $fichierFile)
 
     {
