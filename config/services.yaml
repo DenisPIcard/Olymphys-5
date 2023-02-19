@@ -106,12 +106,10 @@ services:
 
         # you can also restrict listeners to a specific Doctrine connection
         connection: 'default'
-# app/config/services.yaml
-
 
   App\Controller\SearchController:
      tags: ['controller.service_arguments']
 
      public: true
      arguments:
-       - '@fos_elastica.finder.odpfFichierspasses'
+       -  '@fos_elastica.finder.odpfFichierspasses'

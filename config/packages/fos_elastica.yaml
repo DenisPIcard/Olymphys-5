@@ -1,17 +1,31 @@
 # Read the documentation: https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/doc/setup.md
 fos_elastica:
     clients:
-        default:  { host: localhost, port: 8000 }
+        default:  { host: localhost, port: 8000}
     indexes:
+
         odpfFichierspasses:
             serializer:
                 groups: [ elastica ]
             persistence:
                 driver: orm
                 model: App\Entity\Odpf\OdpfFichierspasses
-                finder: ~
                 provider: ~
+                finder: ~
+
             properties:
                 nomfichier: ~
+                editionspassees: ~
+                equipepassee : ~
+                typefichier : ~
+                fichierFile : ~
+                updatedAt : ~
+                nomautorisation : ~
+                national : ~
+
+
+
+
+
 
 
