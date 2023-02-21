@@ -19,7 +19,6 @@
                 <th>Intitulé</th>
             </tr>
             </thead>
-
             <tbody>
 
             {% for equipes in listEquipes %}
@@ -32,8 +31,8 @@
                     <td>{% if  equipes.prix is not null %}{{ equipes.prix.prix }}{% endif %}</td>
                 </tr>
             {% endfor %}
-
             </tbody>
+
         </table>
     </div>
 

@@ -126,8 +126,8 @@
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 <li class="nav-item dropdown menu_haut">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-                   aria-expanded="false">Utilisateur : {{ app.user.prenomNom }}</a>
-                <div class="dropdown-menu login py-0">
+                   aria-expanded="false">{{ app.user.prenomNom }}</a>
+                <div class="dropdown-menu">
 
                     <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
                 </div>

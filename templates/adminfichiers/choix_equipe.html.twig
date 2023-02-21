@@ -4,7 +4,8 @@
 
 
 {% block titre3 %}
-    <div class="text-center">Concours {{ phase }}<br>
+    {# <div class="text-center"> #}
+        Concours {{ phase }}<br>
 
         {% if app.user.roles|filter(v => v =='ROLE_JURY') %}
             {% if jure != null %}
@@ -37,7 +38,7 @@
             {% endif %}
         {% endif %}
 
-    </div>
+    {#</div>  #}
 
 {% endblock %}
 
@@ -120,47 +121,53 @@
         {% endif %}
     </div>
     {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
+
         <div class="table">
-            <tr>
-                <td> {% if date()< app.session.get('edition').dateclotureinscription and date()>=app.session.get('dateouverturesite')%}
-                        <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
-                           title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
-                    {% endif %}
-                </td>
-            </tr>
+            <table>
+                <thead>
+                    <tr>
+                        <td> {% if date()< app.session.get('edition').dateclotureinscription and date()>=app.session.get('dateouverturesite')%}
+                                <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
+                                   title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {% if liste_equipes!=null %}
+                                 {% if  date()<= app.session.get('datelimphotoscia') and date()>app.session.get('dateouverturesite')%}
+                                    <a type="button" class="btn btn-warning"
+                                       href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
+                                       aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
+                                        photos des équipes du concours interacadémique</a>
+                                    <a type="button" class="btn btn-info"
+                                       href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
+                                       title="Modifier ou supprimer certaines photos">Gerer les photos</a>
+                                {% endif %}
+                                {% if ((date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn'))) or (date()<app.session.get('dateouverturesite')) %}
+                                    <a type="button" class="btn btn-warning"
+                                       href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
+                                       title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
+                                    <a type="button" class="btn btn-info"
+                                       href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
+                                       role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
+                                        photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
 
-            <tr>
-                <td>
-                    {% if liste_equipes!=null %}
-                         {% if  date()<= app.session.get('datelimphotoscia') and date()>app.session.get('dateouverturesite')%}
-                            <a type="button" class="btn btn-warning"
-                               href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
-                               aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
-                                photos des équipes du concours interacadémique</a>
-                            <a type="button" class="btn btn-info"
-                               href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
-                               title="Modifier ou supprimer certaines photos">Gerer les photos</a>
-                        {% endif %}
-                        {% if ((date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn'))) or (date()<app.session.get('dateouverturesite')) %}
-                            <a type="button" class="btn btn-warning"
-                               href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
-                               title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
-                            <a type="button" class="btn btn-info"
-                               href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
-                               role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
-                                photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
-
-                        {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         {% if doc_equipes!=null %}
             <div class="container-fluid">
                 <h3 style="text-align:center">
                     Documents à télécharger
                 </h3>
-                <table class="table table-responsive table-bordered text-center">
+                <table class="table table-responsive table-bordered text-center frais">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">Type</th>

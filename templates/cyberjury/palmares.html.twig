@@ -5,9 +5,6 @@
 {% block titre3 %} Palmarès {% endblock %}
 
 {% block navigation %}
-    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span>
-        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
-    </button>
 
     {{ include ('cyberjury/navigation.html.twig') }}
 {% endblock %}
@@ -22,8 +19,7 @@
             <th>Équipe</th>
             <th>Titre du projet</th>
         </tr>
-        </thead>
-        <tbody>
+        <tbody
         {% for premier in ListPremPrix %}
             <tr class="danger">
                 <td><span class="btn btn-primary btn-lg"> {{ premier.equipeinter.lettre }}</span></td>

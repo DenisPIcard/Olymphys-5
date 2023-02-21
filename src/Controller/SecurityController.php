@@ -196,7 +196,7 @@ class SecurityController extends AbstractController
      * @Route("/forgottenPassword", name="forgotten_password")
      * @throws TransportExceptionInterface
      */
-    public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator)
+    public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): RedirectResponse|Response
     {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
