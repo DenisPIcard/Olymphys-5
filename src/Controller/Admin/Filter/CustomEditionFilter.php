@@ -28,8 +28,9 @@ class CustomEditionFilter implements FilterInterface
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
-        $queryBuilder->addOrderBy('entity.edition', 'DESC')
-            ->andWhere('entity.edition =:value')
+        $queryBuilder->join('entity.equipe','e')
+            ->addOrderBy('e.edition', 'DESC')
+            ->andWhere('e.edition =:value')
             ->setParameter('value', $filterDataDto->getValue());;
 
 

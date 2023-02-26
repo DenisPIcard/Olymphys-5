@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomPhotosEquipesFilter;
+use App\Entity\Edition;
 use App\Entity\Equipesadmin;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
@@ -70,13 +71,18 @@ class PhotosCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
+        $edition= $this->requestStack->getSession()->get('edition');
+        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+
+        }
         if ($concours == null) {
             $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
             $concours == 1 ? $concours = 'national' : $concours = 'interacadémique';
         }
 
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, '<h2 class="rougeodpf">Les photos du ' . $this->requestStack->getSession()->get('edition')->getEd() . '<sup>e</sup> concours ' . $concours . '</h2>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<h2 class="rougeodpf">Les photos du ' . $edition->getEd() . '<sup>e</sup> concours ' . $concours . '</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo du concours ' . $concours)
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo du concours ' . $concours)
             ->setSearchFields(['id', 'photo', 'coment'])
@@ -230,11 +236,15 @@ class PhotosCrudController extends AbstractCrudController
         if (null == $concours) {
             $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
         }
+        $edition= $this->requestStack->getSession()->get('edition');
+        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
-        $session = $this->requestStack->getSession();
+        }
+
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
             ->andWhere('entity.edition =:edition')
-            ->setParameter('edition', $session->get('edition'));
+            ->setParameter('edition', $edition);
 
         if ($concours == 'interacadémique') {
 

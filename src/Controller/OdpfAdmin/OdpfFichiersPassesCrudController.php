@@ -277,9 +277,7 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         return $typeFichier;
     }
 
-    /**
-     * @Route("/Admin/FichiersequipesCrud/telechargerUnFichierOdpf", name="telechargerUnFichierOdpf")
-     */
+   #[Route("/Admin/FichiersequipesCrud/telechargerUnFichierOdpf", name:"telechargerUnFichierOdpf")]
     public function telechargerUnFichierOdpf(AdminContext $context)
     {
         $idFichier = $_REQUEST['routeParams']['idEntity'];

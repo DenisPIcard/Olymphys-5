@@ -7,7 +7,9 @@ use App\Repository\Odpf\OdpfEditionsPasseesRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -21,7 +23,7 @@ class OdpfEditionsPassees
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column( length:255, nullable:true)]
+    #[ORM\Column( type : Types::INTEGER, nullable:true)]
     private ?int $edition = null;
 
     #[ORM\Column( length:255, nullable:true)]
@@ -68,19 +70,19 @@ class OdpfEditionsPassees
     public function __construct()
     {
         $this->odpfEquipesPassees = new ArrayCollection();
-        $this->photos = new ArrayCollection();
+
     }
 
 
     public function __toString(): string
     {
         $numEd = strval($this->edition);
-        if (strlen(strval($this->edition)) == 1) {
+        /*if (strlen(strval($this->edition)) == 1) {
 
             $numEd = '0' . strval($this->edition);
 
-        }
-        return $numEd;
+        }*/
+        return $this->edition;
     }
 
 

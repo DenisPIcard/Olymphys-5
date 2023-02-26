@@ -161,19 +161,19 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setParameter('edition', $edition)
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
-        $nom = TextField::new('nom');
-        $prenom = TextField::new('prenom');
+        $nom = TextField::new('nom')->setSortable(true);
+        $prenom = TextField::new('prenom')->setSortable(true);
         $genre = TextField::new('genre');
         $courriel = TextField::new('courriel');
-        $equipe = AssociationField::new('equipe')->setFormTypeOptions(['choices' => $listEquipes]);;
+        $equipe = AssociationField::new('equipe')->setFormTypeOptions(['choices' => $listEquipes])->setSortable(true);;
         $id = IntegerField::new('id', 'ID');
         $numsite = IntegerField::new('numsite');
         $classe = TextField::new('classe');
         $autorisationphotos = AssociationField::new('autorisationphotos');
 
-        $equipeNumero = IntegerField::new('equipe.numero', ' Numéro équipe');
-        $equipeTitreProjet = TextareaField::new('equipe.titreProjet', 'Projet');
-        $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville');
+        $equipeNumero = IntegerField::new('equipe.numero', ' Numéro équipe')->setSortable(true);
+        $equipeTitreProjet = TextareaField::new('equipe.titreProjet', 'Projet')->setSortable(true);
+        $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville')->setSortable(true);
         $equipeEdition = TextareaField::new('equipe.edition', 'Edition');
         $autorisationphotosFichier = AssociationField::new('autorisationphotos', 'Autorisation photos');
 
@@ -190,7 +190,7 @@ class ElevesinterCrudController extends AbstractCrudController
 
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    /*public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
@@ -200,14 +200,15 @@ class ElevesinterCrudController extends AbstractCrudController
         if(date('now')<$session->get('dateouverturesite')){
             $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
-        $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e');
+        $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e')
+                            ->leftJoin('e.equipe', 'eq');
         if (!isset($_REQUEST['filters'])) {
-            $qb ->leftJoin('e.equipe', 'eq')
-                ->andWhere('eq.edition =:edition')
+            $qb->andWhere('eq.edition =:edition')
                 ->setParameter('edition', $edition)
                 ->andWhere('eq.inscrite =:value')
-                ->setParameter('value','1')
-                ->orderBy('eq.numero', 'ASC');
+                ->setParameter('value','1');
+
+
 
         } else {
 
@@ -228,12 +229,49 @@ class ElevesinterCrudController extends AbstractCrudController
                     ->orderBy('eq.numero', 'ASC');;
             }
         }
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='nom'){
+                $qb->addOrderBy('e.nom', $sort['nom']);
+            }
+            if (key($sort)=='prenom'){
+                $qb->addOrderBy('e.prenom', $sort['prenom']);
+            }
+            if (key($sort)=='autorisationphotos'){
+                $qb->leftJoin('e.autorisationphotos','f')
+                    ->addOrderBy('f.fichier', $sort['autorisationphotos']);
+            }
+            if (key($sort)=='equipe.numero'){
+                $qb->addOrderBy('eq.numero', $sort['equipe.numero']);
+            }
+            if (key($sort)=='equipe.lyceeLocalite'){
+                $qb->addOrderBy('eq.lyceeLocalite', $sort['equipe.lyceeLocalite']);
+            }
+        }
+        else{
+            $qb->orderBy('eq.numero', 'ASC');
+        }
        return $qb;
+    }*/
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
+        $session = $this->requestStack->getSession();
+        $edition=$session->get('edition');
+        $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        if(date('now')<$session->get('dateouverturesite')){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
+        $response->join('entity.equipe', 'eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->setParameter('edition',$edition)
+                    ->addOrderBy('eq.numero','ASC');
+
+        return $response;
+        //return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters); // TODO: Change the autogenerated stub
     }
 
-    /**
-     * @Route("/Admin/ElevesinteradminCrud/eleves_tableau_excel,{ideditionequipe}", name="eleves_tableau_excel")
-     */
+    #[Route("/Admin/ElevesinteradminCrud/eleves_tableau_excel,{ideditionequipe}", name:"eleves_tableau_excel")]
     public function elevestableauexcel($ideditionequipe)
     {
         $idedition = explode('-', $ideditionequipe)[0];

@@ -209,10 +209,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
     }
 
-    /**
-     * @Route("/Professeurs/editer_tableau_excel,{idEdition}", name="profs_tableau_excel")
-     */
-
+    #[Route("/Professeurs/editer_tableau_excel,{idEdition}", name:"profs_tableau_excel")]
     public function editer_tableau_excel($idEdition)
     {
 
@@ -337,10 +334,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
     }
 
-    /**
-     * @Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name="profs_tableau_excel_sel")
-     */
-
+   #[Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name:"profs_tableau_excel_sel")]
     public function editer_tableau_excel_sel($idEdition)
     {
 
