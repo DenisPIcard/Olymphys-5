@@ -61,7 +61,7 @@
                 {% endif %}
                 {% if attrib==0 %}
                      Non encore déposé
-                        {% if  app.user.roles|filter(v => v =='ROLE_JURY')!=[] and app.session.get('concours')=='national' and i<3%}
+                        {% if  app.user.roles|filter(v => v =='ROLE_JURY')!=[] and app.session.get('concours')=='national' and i<5%}
                             <a  href="{{ path('voir_fichier_inter',{ 'typefichier' : type_fichier[i] , 'idequipe': equipe.id}) }}">Voir le fichier  des interacadémique</a>
                         {% endif %}
                 {% endif %}

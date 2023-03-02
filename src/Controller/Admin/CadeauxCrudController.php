@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Cadeaux;
+use App\Entity\Edition;
 use App\Entity\Equipes;
 use App\Entity\Prix;
 use App\Entity\Visites;
@@ -31,13 +32,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CadeauxCrudController extends AbstractCrudController
 {
-    protected EntityManagerInterface $doctrine;
-    protected RequestStack $requeststack;
 
-    public function __Construct(EntityManagerInterface $doctrine,RequestStack $requestStack)
+    public function __Construct(protected EntityManagerInterface $doctrine , protected RequestStack $requestStack)
     {
-        $this->doctrine=$doctrine;
-        $this->requeststack=$requestStack;
+
     }
 
     public static function getEntityFqcn(): string
@@ -140,12 +138,23 @@ class CadeauxCrudController extends AbstractCrudController
     #[Route("/Admin/CadeauxCrud/cadeaux_tableau_excel", name:"cadeaux_tableau_excel")]
     public function cadeauxstableauexcel()
     {
-        $repositoryCadeaux = $this->doctrine->getRepository(Cadeaux::class);
-        $edition = $this->requeststack->getSession()->get('edition');
-        $liste_cadeaux = $repositoryCadeaux->createQueryBuilder('c')
-            ->join('c.equipe','eq')
-            ->where('eq.cadeau is not null')
+
+        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->join('e.equipeinter','eq')
+            ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery()->getResult();
+
+        $edition = $this->requestStack->getSession()->get('edition');
+        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
+        $liste_cadeaux = [];
+        $i=0;
+        foreach($listEquipes as $equipe){
+
+            $liste_cadeaux[$i]=$equipe->getCadeau();
+            $i=$i+1;
+        }
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()

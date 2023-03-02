@@ -40,9 +40,7 @@ class SecurityController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @Route("/security/login", name="login")
-     */
+    #[Route("/security/login", name:"login")]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
@@ -56,19 +54,13 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/logout", name="logout")
-     * @throws Exception
-     */
+    #[Route("/logout", name:"logout")]
     public function logout()
     {
         throw new Exception('Sera intercepté avant d\'en arriver là !');
     }
 
-    /**
-     * @Route("/register", name="register")
-     * @throws TransportExceptionInterface
-     */
+   #[Route("/register", name:"register")]
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): Response
     {
 
@@ -137,12 +129,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     *
-     * @Route("/verif_mail/{id}/{token}", name="verif_mail")
-     *
-     * @throws TransportExceptionInterface
-     */
+    #[Route("/verif_mail/{id}/{token}", name:"verif_mail")]
     public function verifMail(User $user, Request $request, Mailer $mailer, ManagerRegistry $doctrine, string $token): RedirectResponse
     {
         $rneRepository = $doctrine->getManager()->getRepository(Rne::class);
@@ -192,11 +179,8 @@ class SecurityController extends AbstractController
         return !($interval > $daySeconds);
     }
 
-    /**
-     * @Route("/forgottenPassword", name="forgotten_password")
-     * @throws TransportExceptionInterface
-     */
-    public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): RedirectResponse|Response
+   #[Route("/forgottenPassword", name:"forgotten_password")]
+   public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator)
     {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
@@ -248,9 +232,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/reset_password/{id}/{token}", name="reset_password")
-     */
+    #[Route("/reset_password/{id}/{token}", name:"reset_password")]
     public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder)
     {
 

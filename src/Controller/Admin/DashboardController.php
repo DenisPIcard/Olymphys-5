@@ -153,9 +153,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
 
-    /**
-     * @Route("/admin", name="admin")
-     */
+    #[Route("/admin", name:"admin")]
     public function index(): Response
     {
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null) {

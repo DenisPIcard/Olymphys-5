@@ -30,9 +30,7 @@ class OdpfEditionspasseesController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @Route("/odpf/editionspassees/equipe,{id}", name="odpf_editionspassees_equipe")
-     */
+   #[Route("/odpf/editionspassees/equipe,{id}", name:"odpf_editionspassees_equipe")]
     public function equipe($id, OdpfCreateArray $createArray): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
@@ -71,9 +69,7 @@ class OdpfEditionspasseesController extends AbstractController
         return $this->render('core/odpf-editions-passees-equipe.html.twig', $tab);
     }
 
-    /**
-     * @Route("/odpf/editionspassees/editions", name="odpf_editionspassees_editions")
-     */
+    #[Route("/odpf/editionspassees/editions", name:"odpf_editionspassees_editions")]
     public function editions(OdpfCreateArray $createArray): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
@@ -176,14 +172,17 @@ class OdpfEditionspasseesController extends AbstractController
 
         if ($videos != null) {
             $textevideo = '<div class="table">';
+            $i=1;
             foreach ($videos as $video) {
-                $lien = preg_replace(
+               /*$lien = preg_replace(
                     "/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
                     "<iframe  width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/$2\" allowfullscreen; frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe>",
                     $video->getLien()
-                );
+                );*/
+                $lien = '<a href="'.$video->getLien().'" target="_blank"> Vidéo '.$i.' : '.$video->getLien().'</a>';
 
-                $textevideo = $textevideo . '<tr><td> ' . $lien . '</td></tr>';
+                $textevideo = $textevideo . '<tr><td>'.$lien.' </td></tr>';
+            $i=+1;
             }
 
             $textevideo = $textevideo . '</div>';

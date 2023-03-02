@@ -267,9 +267,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         return $actions;
     }
 
-    /**
-     * @Route("/Admin/FichiersequipesCrud/telechargerFichierss,{ideditionequipe}", name="telechargerFichiers")
-     */
+   #[Route("/Admin/FichiersequipesCrud/telechargerFichierss,{ideditionequipe}", name:"telechargerFichiers")]
     public function telechargerFichiers(AdminContext $context, $ideditionequipe)
     {
         $session = $this->requestStack->getSession();
@@ -348,9 +346,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         return $response;
     }
 
-    /**
-     * @Route("/Admin/FichiersequipesCrud/telechargerUnFichier", name="telechargerUnFichier")
-     */
+    #[Route("/Admin/FichiersequipesCrud/telechargerUnFichier", name:"telechargerUnFichier")]
     public function telechargerUnFichier(AdminContext $context)
     {
         if (isset($_REQUEST['routeParams'])) {
@@ -491,8 +487,8 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->setFormTypeOptions(['required' => true])
             ->setColumns('col-sm-4 col-lg-3 col-xxl-2');
         $national = BooleanField::new('national');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $nomautorisation = TextField::new('nomautorisation', 'NOM');
+        $updatedAt = DateTimeField::new('updatedAt')->setSortable(true);
+        $nomautorisation = TextField::new('nomautorisation', 'NOM')->setSortable(true);
         $edition = AssociationField::new('edition', 'Edition');
         $eleve = AssociationField::new('eleve')->setQueryBuilder(function ($queryBuilder) {
             return $queryBuilder->select()->leftJoin('entity.equipe', 'eq')
@@ -513,13 +509,13 @@ class FichiersequipesCrudController extends AbstractCrudController
                 ->addOrderBy('entity.nom', 'ASC');//    ->addOrderBy('entity.numero','ASC'))
         })->setFormTypeOptions(['placeholder' => 'Non']);
         $editionEd = TextareaField::new('edition.ed', 'Edition');
-        $equipelibel = AssociationField::new('equipe', 'Equipe');
+        $equipelibel = AssociationField::new('equipe', 'Equipe')->setSortable(true);
         if ($numtypefichier != 6) {
-            $equipeNumero = IntegerField::new('equipe.numero', 'numero');
-            $equipeLettre = TextField::new('equipe.lettre', 'Lettre equipe');
-            $equipeTitreprojet = TextField::new('equipe.titreprojet', 'Projet');
+            $equipeNumero = IntegerField::new('equipe.numero', 'numero')->setSortable(true);
+            $equipeLettre = TextField::new('equipe.lettre', 'Lettre equipe')->setSortable(true);
+            $equipeTitreprojet = TextField::new('equipe.titreprojet', 'Projet')->setSortable(true);
         };
-        $updatedat = DateTimeField::new('updatedat', 'Déposé le ');
+        $updatedat = DateTimeField::new('updatedat', 'Déposé le ')->setSortable(true);
 
         if (Crud::PAGE_INDEX === $pageName) {
             if ($numtypefichier == 6) {
@@ -634,13 +630,32 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
 
-        if ($concours == 0) {
-            $qb->addOrderBy('e.numero', 'ASC');
-        }
-        if ($concours == 1) {
-            $qb->addOrderBy('e.lettre', 'ASC');
-        }
 
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='equipe.lettre'){
+                $qb->addOrderBy('e.lettre', $sort['equipe.lettre']);
+            }
+            if (key($sort)=='equipe.numero'){
+                $qb->addOrderBy('e.numero', $sort['equipe.numero']);
+            }
+            if (key($sort)=='fichier'){
+                $qb->addOrderBy('f.fichier', $sort['fichier']);
+            }
+            if (key($sort)=='equipe'){
+                $qb->addOrderBy('f.equipe', $sort['equipe']);
+            }
+        }
+        else{
+            if ($concours == 0) {
+                $qb->addOrderBy('e.numero', 'ASC');
+            }
+            if ($concours == 1) {
+                $qb->addOrderBy('e.lettre', 'ASC');
+            }
+
+
+        }
         return $qb;
     }
 

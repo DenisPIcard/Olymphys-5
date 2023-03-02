@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use AllowDynamicProperties;
+use App\Entity\Edition;
 use App\Entity\Equipes;
 use App\Entity\Prix;
 use App\Entity\Visites;
@@ -139,9 +140,22 @@ use Symfony\Component\Routing\Annotation\Route;
     public function prixtableauexcel()
     {
         $repositoryPrix = $this->doctrine->getRepository(Prix::class);
-        $edition = $this->requeststack->getSession()->get('edition');
-        $liste_prix = $repositoryPrix->findAll();
+        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->join('e.equipeinter','eq')
+            ->addOrderBy('eq.lettre', 'ASC')
+            ->getQuery()->getResult();
 
+        $edition = $this->requeststack->getSession()->get('edition');
+        if(date('now')<$this->requeststack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
+        $liste_prix = [];
+        $i=0;
+        foreach($listEquipes as $equipe){
+
+            $liste_prix[$i]=$equipe->getprix();
+            $i=$i+1;
+        }
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
             ->setCreator("Olymphys")

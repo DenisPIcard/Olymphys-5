@@ -231,9 +231,9 @@ class UtilisateurController extends AbstractController
                     $equipe->setRne($this->getUser()->getRne());
                     $equipe->setRneid($rne_objet);
                     $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
-                    $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
+                    $equipe->setNomLycee($rne_objet->getnom());
                     $equipe->setLyceeAcademie($rne_objet->getAcademie());
-                    $equipe->setLyceeLocalite($rne_objet->getAcheminement());
+                    $equipe->setLyceeLocalite($rne_objet->getCommune());
                     $nbeleves = $equipe->getNbeleves();
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
@@ -463,7 +463,7 @@ class UtilisateurController extends AbstractController
         return $checkchange;
     }
 
-    #[IsGgranted('ROLE_PROF')]
+    #[IsGranted('ROLE_PROF')]
     #[Route("/Utilisateur/pre_supr_eleve", name:"pre_supr_eleve")]
     public function pre_supr_eleve(Request $request, ManagerRegistry $doctrine): RedirectResponse
     {

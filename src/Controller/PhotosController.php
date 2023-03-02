@@ -44,15 +44,8 @@ class PhotosController extends AbstractController
         $this->requestStack = $requestStack;
         $this->doctrine = $doctrine;
     }
-
-
-    /**
-     * @IsGranted("ROLE_PROF")
-     *
-     * @Route("/photos/deposephotos,{concours}", name="photos_deposephotos")
-     *
-     * @throws ImagickException
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/photos/deposephotos,{concours}", name:"photos_deposephotos")]
     public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {
         $em = $this->doctrine->getManager();
@@ -237,13 +230,8 @@ class PhotosController extends AbstractController
 
     }
 
-
-    /**
-     *
-     * @IsGranted("ROLE_PROF")
-     * @Route("/photos/gestion_photos, {infos}", name="photos_gestion_photos")
-     *
-     */
+    #[Isgranted("ROLE_PROF")]
+    #[Route("/photos/gestion_photos, {infos}", name:"photos_gestion_photos")]
     public function gestion_photos(Request $request, $infos)
     {
         $choix = explode('-', $infos)[3];
@@ -442,12 +430,8 @@ class PhotosController extends AbstractController
 
     }
 
-    /**
-     *
-     * @IsGranted("ROLE_PROF")
-     * @Route("/photos/confirme_efface_photo, {concours_photoid_infos}", name="photos_confirme_efface_photo")
-     *
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/photos/confirme_efface_photo, {concours_photoid_infos}", name:"photos_confirme_efface_photo")]
     public function confirme_efface_photo(Request $request, $concours_photoid_infos)
     {
         $filesystem = new Filesystem();
@@ -489,13 +473,7 @@ class PhotosController extends AbstractController
 
     }
 
-    /**
-     *
-     *
-     * @Route("/photos/voirgalerie {infos}", name="photos_voir_galerie")
-     *
-     */
-
+    #[Route("/photos/voirgalerie {infos}", name:"photos_voir_galerie")]
     public function voirgalerie(Request $request, $infos)
     {
         $repositoryPhotos = $this->doctrine
