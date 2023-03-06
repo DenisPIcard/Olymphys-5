@@ -8,6 +8,7 @@ use App\Entity\Equipesadmin;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -72,7 +73,7 @@ class PhotosCrudController extends AbstractCrudController
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
         $edition= $this->requestStack->getSession()->get('edition');
-        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if (new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
         }
@@ -151,7 +152,7 @@ class PhotosCrudController extends AbstractCrudController
 
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $edition=$this->requestStack->getSession()->get('edition');
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         //dd($_REQUEST);
@@ -199,10 +200,10 @@ class PhotosCrudController extends AbstractCrudController
             ->setFormTypeOptions(['class' => Equipesadmin::class,
                                   'choices'=>$listeEquipes,
 
-                                    ]);
+                                    ])->setSortable(true);
 
-        $edition = AssociationField::new('edition');
-        $editionpassee = AssociationField::new('editionspassees', 'Edition');
+        $edition = AssociationField::new('edition')->setSortable(true);
+        $editionpassee = AssociationField::new('editionspassees', 'Edition')->setSortable(true);
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')
             ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
@@ -214,13 +215,13 @@ class PhotosCrudController extends AbstractCrudController
         $concours == 'national' ? $valnat = true : $valnat = false;
         $national = Field::new('national')->setFormTypeOption('data', $valnat);
 
-        $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
+        $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ')->setSortable(true);
 
 
-        $equipeCentreCentre = TextareaField::new('equipe.centre.centre', 'Centre académique');
-        $equipeNumero = IntegerField::new('equipe.numero', 'N° équipe');
-        $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet');
-        $equipeLettre = TextField::new('equipe.lettre', 'Lettre');
+        $equipeCentreCentre = TextField::new('equipe.centre', 'Centre académique')->setSortable(true);
+        $equipeNumero = IntegerField::new('equipe.numero', 'N° équipe')->setSortable(true);
+        $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet')->setSortable(true);
+        $equipeLettre = TextField::new('equipe.lettre', 'Lettre')->setSortable(true);
         $imageFile = Field::new('photoFile')
             ->setFormType(FileType::class)
             ->setLabel('Photo')
@@ -262,14 +263,14 @@ class PhotosCrudController extends AbstractCrudController
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
 
         if (null == $concours) {
-            $concours = 'interacadémique';
+            $concours = 'interacademique';
             if (str_contains($_REQUEST['referrer'],'national')){
                 $concours='national';
             }
 
         }
         $edition= $this->requestStack->getSession()->get('edition');
-        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if (new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
         }
@@ -278,7 +279,7 @@ class PhotosCrudController extends AbstractCrudController
             ->andWhere('entity.edition =:edition')
             ->setParameter('edition', $edition);
 
-        if ($concours == 'interacadémique') {
+        if ($concours == 'interacademique') {
 
             $qb->andWhere('entity.national =:concours')
                 ->setParameter('concours', 0);
@@ -290,11 +291,27 @@ class PhotosCrudController extends AbstractCrudController
         }
 
         $qb->leftJoin('entity.equipe', 'e');
-        if ($concours == 'interacadémique') {
-            $qb->addOrderBy('e.numero', 'ASC');
+
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='equipe.lettre'){
+                $qb->addOrderBy('e.lettre', $sort['equipe.lettre']);
+            }
+            if (key($sort)=='equipe.numero'){
+                $qb->addOrderBy('e.numero', $sort['equipe.numero']);
+            }
+            if (key($sort)=='equipe.centre.centre'){
+                $qb->addOrderBy('e.centre.centre', $sort['equipe.centre.centre']);
+            }
+
         }
-        if ($concours == 'national') {
-            $qb->addOrderBy('e.lettre', 'ASC');
+        else{
+            if ($concours == 'interacadémique') {
+                $qb->addOrderBy('e.numero', 'ASC');
+            }
+            if ($concours == 'national') {
+                $qb->addOrderBy('e.lettre', 'ASC');
+            }
         }
         return $qb;
     }
