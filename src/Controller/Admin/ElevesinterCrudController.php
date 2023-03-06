@@ -7,6 +7,7 @@ use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
+use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -56,7 +57,7 @@ class ElevesinterCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $repositoryEquipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
         $editionEd = $session->get('edition')->getEd();
-        if (date('now')<$session->get('dateouverturesite')){
+        if (new DateTime('now')<$session->get('dateouverturesite')){
             $editionEd=$editionEd-1;
         }
         $equipeTitre = '';
@@ -117,7 +118,7 @@ class ElevesinterCrudController extends AbstractCrudController
         }
 
         if (((!isset($_REQUEST['filters'])) or (isset($_REQUEST['filters']['edition']))) and (!isset($_REQUEST['filters']['equipe']))){
-            if(date('now')<$session->get('dateouverturesite')){
+            if(new DateTime('now')<$session->get('dateouverturesite')){
                 $editionId=$repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1])->getId();
             }
               if (isset($_REQUEST['filters']['edition'])){
@@ -152,7 +153,7 @@ class ElevesinterCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $edition= $this->requestStack->getSession()->get('edition');
-        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if (new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
         }
@@ -259,7 +260,7 @@ class ElevesinterCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $edition=$session->get('edition');
         $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        if(date('now')<$session->get('dateouverturesite')){
+        if(new DateTime('now')<$session->get('dateouverturesite')){
             $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $response->join('entity.equipe', 'eq')
@@ -349,7 +350,7 @@ class ElevesinterCrudController extends AbstractCrudController
         $ligne += 1;
 
         foreach ($liste_eleves as $eleve) {
-            $rne = $eleve->getEquipe()->getRneId();
+            $uai = $eleve->getEquipe()->getUaiId();
 
             $sheet->setCellValue('A' . $ligne, $eleve->getEquipe()->getEdition())
                 ->setCellValue('B' . $ligne, $eleve->getEquipe()->getNumero());
@@ -361,9 +362,9 @@ class ElevesinterCrudController extends AbstractCrudController
                 ->setCellValue('F' . $ligne, $eleve->getGenre())
                 ->setCellValue('G' . $ligne, $eleve->getCourriel())
                 ->setCellValue('H' . $ligne, $eleve->getEquipe())
-                ->setCellValue('I' . $ligne, $rne->getNom())
-                ->setCellValue('J' . $ligne, $rne->getCommune())
-                ->setCellValue('K' . $ligne, $rne->getAcademie());
+                ->setCellValue('I' . $ligne, $uai->getNom())
+                ->setCellValue('J' . $ligne, $uai->getCommune())
+                ->setCellValue('K' . $ligne, $uai->getAcademie());
 
             $ligne += 1;
         }

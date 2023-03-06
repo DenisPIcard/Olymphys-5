@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\RneRepository;
+use App\Repository\UaiRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RneRepository::class)]
-class Rne
+#[ORM\Entity(repositoryClass: UaiRepository::class)]
+class Uai
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,7 +15,7 @@ class Rne
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $rne = null;
+    private ?string $uai = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $commune = null;
@@ -64,7 +64,7 @@ class Rne
 
     public function __toString()
     {
-        return $this->rne;
+        return $this->uai;
     }
 
     public function getId(): ?int
@@ -72,14 +72,14 @@ class Rne
         return $this->id;
     }
 
-    public function getRne(): ?string
+    public function getUai(): ?string
     {
-        return $this->rne;
+        return $this->uai;
     }
 
-    public function setRne(string $rne): self
+    public function setUai(string $uai): self
     {
-        $this->rne = $rne;
+        $this->uai = $uai;
 
         return $this;
     }

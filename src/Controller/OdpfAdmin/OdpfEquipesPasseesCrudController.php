@@ -9,7 +9,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Photos;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -137,16 +137,16 @@ use function Symfony\Component\String\u;
             for ($row = 2; $row <= $highestRow; ++$row) {
 
                 $titreProjet = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
-                $rne = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
-                $rneObj = $this->doctrine->getRepository(Rne::class)->findOneBy(['rne' => $rne]);
+                $uai = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+                $uaiObj = $this->doctrine->getRepository(Uai::class)->findOneBy(['uai' => $uai]);
                 $numeroEquipe = intval($worksheet->getCellByColumnAndRow(4, $row)->getValue());
                 $lettreEquipe = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
 
 
-                if ($rneObj !== null) {
-                    $nomLycee = $rneObj->getNom();
-                    $localiteLycee = $rneObj->getCommune();
-                    $academieLycee = $rneObj->getAcademie();
+                if ($uaiObj !== null) {
+                    $nomLycee = $uaiObj->getNom();
+                    $localiteLycee = $uaiObj->getCommune();
+                    $academieLycee = $uaiObj->getAcademie();
 
                 }
                 $prenomProf1 = u(u($worksheet->getCellByColumnAndRow(22, $row)->getValue())->lower())->camel()->title()->toString();

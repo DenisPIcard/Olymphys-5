@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Rne;
+use App\Entity\Uai;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Rne|null find($id, $lockMode = null, $lockVersion = null)
- * @method Rne|null findOneBy(array $criteria, array $orderBy = null)
- * @method Rne[]    findAll()
- * @method Rne[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Uai|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Uai|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Uai[]    findAll()
+ * @method Uai[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RneRepository extends ServiceEntityRepository
+class UaiRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Rne::class);
+        parent::__construct($registry, Uai::class);
     }
 
     // /**
-    //  * @return Rne[] Returns an array of Rne objects
+    //  * @return Uai[] Returns an array of Uai objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class RneRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Rne
+    public function findOneBySomeField($value): ?Uai
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.exampleField = :val')

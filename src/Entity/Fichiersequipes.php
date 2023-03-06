@@ -324,7 +324,7 @@ class Fichiersequipes //extends BaseMedia
                 $Lettre = $this->getEquipe()->getLettre();
 
                 $nom_equipe = $this->getEquipe()->getTitreProjet();
-                $ville = $this->getEquipe()->getRneId()->getCommune();
+                $ville = $this->getEquipe()->getUaiId()->getCommune();
 
                 $infoequipe = 'Eq ' . $Lettre . ' - ' . $nom_equipe . '-' . $ville;
             }

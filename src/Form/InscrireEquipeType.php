@@ -21,7 +21,7 @@ class InscrireEquipeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $rne = $options['rne'];
+        $uai = $options['uai'];
         $required = [true, true, false, false, false, false];
         $builder->add('titreProjet', TextType::class, [
             'label' => 'Titre du projet',
@@ -29,11 +29,11 @@ class InscrireEquipeType extends AbstractType
         ])
             ->add('idProf1', EntityType::class, [
                 'class' => User::class,
-                'query_builder' => function (EntityRepository $er) use ($rne) {
+                'query_builder' => function (EntityRepository $er) use ($uai) {
                     return $er->createQueryBuilder('u')
-                        ->andWhere('u.rne =:rne')
+                        ->andWhere('u.uai =:uai')
                         ->andWhere('u.isActive = 1')
-                        ->setParameter('rne', $rne)
+                        ->setParameter('uai', $uai)
                         ->addOrderBy('u.nom', 'ASC');
                 },
                 'choice_value' => 'getId',
@@ -44,10 +44,10 @@ class InscrireEquipeType extends AbstractType
             ->add('idProf2', EntityType::class, [
                 'class' => User::class,
                 'required' => false,
-                'query_builder' => function (EntityRepository $er) use ($rne) {
+                'query_builder' => function (EntityRepository $er) use ($uai) {
                     return $er->createQueryBuilder('u')
-                        ->andWhere('u.rne =:rne')
-                        ->setParameter('rne', $rne)
+                        ->andWhere('u.uai =:uai')
+                        ->setParameter('uai', $uai)
                         ->andWhere('u.isActive = 1')
                         ->addOrderBy('u.nom', 'ASC');
                 },
@@ -136,7 +136,7 @@ class InscrireEquipeType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => Equipesadmin::class, 'rne' => null]);
+        $resolver->setDefaults(['data_class' => Equipesadmin::class, 'uai' => null]);
 
     }
 }

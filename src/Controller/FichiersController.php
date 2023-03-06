@@ -13,7 +13,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Orgacia;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Form\ToutfichiersType;
@@ -124,7 +124,7 @@ class FichiersController extends AbstractController
         $user = $this->getUser();
         $roles = $user->getRoles();
         $jure = null;
-        $rne_objet = null;
+        $uai_objet = null;
         $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $choix]);
         $centre === null ?: $phase = 'interacadémique';
         if (in_array('ROLE_ORGACIA', $user->getRoles())) {
@@ -132,8 +132,8 @@ class FichiersController extends AbstractController
             $phase = 'interacadémique';
         }
         if (in_array('ROLE_PROF', $user->getRoles())) {
-            if ( $user->getRneId()) {
-                $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+            if ( $user->getUaiId()) {
+                $uai_objet = $this->doctrine->getRepository(Uai::class)->find(['id' => $user->getUaiId()]);
             }
         }
         if (in_array('ROLE_JURY', $roles)) {
@@ -160,7 +160,7 @@ class FichiersController extends AbstractController
                 'choix' => $choix,
                 'jure' => $jure,
                 'doc_equipes' => $docequipes,
-                'rneObj' => $rne_objet,
+                'uaiObj' => $uai_objet,
                 'centre' => $centre));
             return new Response($content);
 

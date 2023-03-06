@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -257,14 +258,13 @@ class PhotosController extends AbstractController
 
         $concourseditioncentre = explode('-', $infos);
         $concours = $concourseditioncentre[0];
-        $idedition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
-        $editionN = $repositoryEdition->findOneBy(['id' => $idedition]);
-        $editionN1 = $editionN->getEd()-1;
-
+        $editionN = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
+        $editionN1 =  $repositoryEdition->findOneBy(['ed'=>$editionN->getEd()-1]);
+        new DateTime('now')>=$this->requestStack->getSession()->get('ouverturesite')?$edition=$editionN:$edition=$editionN1;
         if ($concours == 'inter') {
             $qb = $repositoryEquipesadmin->createQueryBuilder('e')
-                ->andWhere('e.edition =:editionN')
-                ->setParameter('editionN', $editionN)
+                ->andWhere('e.edition =:edition')
+                ->setParameter('edition', $edition)
                 ->addOrderBy('e.numero', 'ASC');
 
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
@@ -316,15 +316,13 @@ class PhotosController extends AbstractController
         if ($concours == 'cn') {
 
             $equipe = $repositoryEquipesadmin->findOneBy(['id' => $concourseditioncentre[2]]);
-            $editionN = $this->requestStack->getSession()->get('edition');
-            $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
+
             $equipes = $repositoryEquipesadmin->createQueryBuilder('eq')
                 ->andWhere('eq.selectionnee = TRUE')
                 ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')
                 ->setParameter('prof', $id_user)
-                ->andWhere('eq.edition =:editionN or eq.edition =:editionN1')
-                ->setParameter('editionN1',$editionN1)
-                ->setParameter('editionN', $editionN)
+                ->andWhere('eq.edition =:edition')
+                ->setParameter('edition',$edition)
                 ->getQuery()->getResult();
 
             $qb2 = $repositoryPhotos->createQueryBuilder('p')
@@ -404,9 +402,7 @@ class PhotosController extends AbstractController
 
         }
         if (!isset($formtab)) {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Vous n\'avez pas déposé de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
+            $request->getSession()->set('info', 'Vous n\'avez pas déposé de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
             return $this->redirectToRoute('core_home');
 
 
@@ -421,7 +417,7 @@ class PhotosController extends AbstractController
         }
 
         if ($concours == 'cn') {
-            $edition=$editionN1;
+
             $content = $this
                 ->renderView('photos/gestion_photos_cn.html.twig', array('formtab' => $formtab, 'liste_photos' => $liste_photos,
                     'edition' => $edition, 'equipe' => $equipe, 'concours' => 'national', 'choix' => $choix));

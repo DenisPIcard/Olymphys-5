@@ -13,7 +13,7 @@
             <br> membre du jury
         {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             {{ user.prenom }} {{ user.nom }}<br>
-            Lycée {{ rneObj.nom }} de {{ rneObj.commune }}
+            Lycée {{ uaiObj.nom }} de {{ uaiObj.commune }}
         {% endif %}
         {% if app.user.roles|filter(v => v =='ROLE_PROF')==[] %}
             {% if app.user.roles|filter(v => v =='ROLE_COMITE')=='ROLE_COMITE' %}
@@ -62,7 +62,7 @@
                         <div class="col">
                             <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }}
                             {% if is_granted('ROLE_PROF' ) %}
-                                <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
+                                <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
                             {% endif %}
                             {% if equipe.inscrite== false %}
                                 <div class="inscritered"><i>(Equipe non inscrite)</i></div>
@@ -96,7 +96,7 @@
                                 <b>{{ equipe.numero }}</b>{% endif %}
                             - {{ equipe.titreProjet }}
                             {% if is_granted('ROLE_PROF') %}
-                                <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
+                                <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
                             {% endif %}
 
                         </div>

@@ -119,7 +119,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
         $pageName = $this->requestStack->getMainRequest()->query->get('crudAction');
         $edition = $session->get('edition');
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         if (isset($_REQUEST['filters']['equipe'])) {
@@ -400,7 +400,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
 
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $numtypefichier = $_REQUEST['typefichier'];
@@ -585,7 +585,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $edition = $this->requestStack->getSession()->get('edition');
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $repositoryEquipe = $this->doctrine->getRepository(Equipesadmin::class);
