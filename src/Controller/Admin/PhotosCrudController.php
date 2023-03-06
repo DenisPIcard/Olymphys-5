@@ -76,10 +76,8 @@ class PhotosCrudController extends AbstractCrudController
             $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
         }
-        if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
-            $concours == 1 ? $concours = 'national' : $concours = 'interacadémique';
-        }
+
+
 
         return $crud
             ->setPageTitle(Crud::PAGE_INDEX, '<h2 class="rougeodpf">Les photos du ' . $edition->getEd() . '<sup>e</sup> concours ' . $concours . '</h2>')
@@ -101,7 +99,7 @@ class PhotosCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-
+        $urlIndex=$this->generateUrl('admin',['crudAction'=>'index','crudController'=>'photosCrudController','concours'=>$concours]);
         $attribEditionPassee = Action::new('attribEditionsPassees', 'Attribuer les éditions passéées', 'fa fa-file-download')
             ->linkToRoute('attribEditionsPassees')->createAsGlobalAction();
         return $actions
@@ -114,6 +112,9 @@ class PhotosCrudController extends AbstractCrudController
             })
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer une photo')->setHtmlAttributes(['concours' => $this->requestStack->getCurrentRequest()->query->get('concours')]);
+            })
+            ->update(Crud::PAGE_EDIT,Action::INDEX,function (Action $action){
+                return $action->setLabel('Retour à la liste')->setHtmlAttributes(['concours' => $this->requestStack->getCurrentRequest()->query->get('concours')]);
             })
             ->add(Crud::PAGE_INDEX, $attribEditionPassee)
             ->setPermission($attribEditionPassee, 'ROLE_SUPER_ADMIN');
@@ -146,33 +147,60 @@ class PhotosCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-
-
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-        if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
+
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $edition=$this->requestStack->getSession()->get('edition');
+        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
+        //dd($_REQUEST);
+        if (($concours==null) and (str_contains($_REQUEST['referrer'],'national'))){
+            $concours='national';
+
+        }
+
+        if (($concours==null) and (str_contains($_REQUEST['referrer'],'interacademique'))){
+            $concours='interacademique';
+
+        }
+        $this->requestStack->getCurrentRequest()->query->set('concours',$concours);
+        /*if($_REQUEST['crudAction']=='index') {
+            if ($concours == null) {
+                $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
+            }
+        }
+        if($_REQUEST['crudAction']=='edit') {
+            if ($concours == null) {
+              $this->doctrine->getRepository(Photos::class)->find($_REQUEST['entityId'])->getNational()==true?$concours='natiuonal': $concours = 'interacadémique' ;
+            }
+        }
+
         $context = $this->adminContextProvider->getContext();
 
+        if($_REQUEST['crudAction']=='index') {
+            //$_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
+            $concours = $_REQUEST['concours'];
+        }
+        if($_REQUEST['crudAction']=='edit') {
+                    $this->doctrine->getRepository(Photos::class)->find($_REQUEST['entityId'])->getNational()==true?$concours='national': $concours = 'interacadémique' ;
+        }
+        */
+        $concours == 'national' ? $tag = 1 : $tag = 0;
+
+        $listeEquipes= $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+                              ->andWhere('e.edition =:edition')
+                              ->setParameter('edition', $edition)
+                              ->addOrderBy('e.numero', 'ASC')
+                              ->addOrderBy('e.lettre', 'ASC')
+                              ->getQuery()->getResult()  ;
         $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer pour la ' . $this->requestStack->getSession()->get('edition')->getEd() . '<sup>e</sup> édition</p> ');
         $equipe = AssociationField::new('equipe')
-            ->setFormTypeOptions(['class' => Equipesadmin::class])
-            ->setQueryBuilder(function ($queryBuilder) {
-                $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
-                $concours == 'national' ? $tag = 1 : $tag = 0;
+            ->setFormTypeOptions(['class' => Equipesadmin::class,
+                                  'choices'=>$listeEquipes,
 
-                $queryBuilder->select()->andWhere('entity.edition =:edition')
-                    ->andWhere('entity.edition =:edition')
-                    ->setParameter('edition', $this->requestStack->getSession()->get('edition'));
-                if ($tag == 1) {
-                    $queryBuilder->andWhere('entity.selectionnee =:selectionnee ')
-                        ->setParameter('selectionnee', $tag);
-                }
-                $queryBuilder->addOrderBy('entity.numero', 'ASC')
-                    ->addOrderBy('entity.lettre', 'ASC');
-                return $queryBuilder;
-            }
-            );
+                                    ]);
+
         $edition = AssociationField::new('edition');
         $editionpassee = AssociationField::new('editionspassees', 'Edition');
         $id = IntegerField::new('id', 'ID');
@@ -211,7 +239,7 @@ class PhotosCrudController extends AbstractCrudController
             ;*/
 
         if (Crud::PAGE_INDEX === $pageName) {
-            if ($concours == 'interacadémique') {
+            if ($concours == 'interacademique') {
                 return [$editionpassee, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
             if ($concours == 'national') {
@@ -234,7 +262,11 @@ class PhotosCrudController extends AbstractCrudController
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
 
         if (null == $concours) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
+            $concours = 'interacadémique';
+            if (str_contains($_REQUEST['referrer'],'national')){
+                $concours='national';
+            }
+
         }
         $edition= $this->requestStack->getSession()->get('edition');
         if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
@@ -327,25 +359,7 @@ class PhotosCrudController extends AbstractCrudController
 
     }
 
-    public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
-    {
 
-        if (!isset($_REQUEST['erreur'])) {
-           $this->addFlash('success', 'La photo a bien été déposée');
-        }
-        if (isset($_REQUEST['erreur'])){
-            $this->addFlash('warning', 'La photo n\'a pas été déposée, erreur de type !');
-        }
-        //concours=interacadémique&crudAction=index&crudControllerFqcn=App\Controller\Admin\PhotosCrudController&entityFqcn=App\Entity\Photos&menuIndex=9&page=1&referrer=%2Fadmin%3Fconcours%3Dinteracad%25C3%25A9mique%26crudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CPhotosCrudController%26entityFqcn%3DApp%255CEntity%255CPhotos%26menuIndex%3D9%26signature%3DD_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA%26submenuIndex%3D7&signature=D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA&sort[updatedAt]=DESC&submenuIndex=7
-        if ($_REQUEST['menuIndex'] == 9) {
-
-            return $this->redirectToRoute('admin', ['concours' => 'interacadémique', 'crudAction' => 'index', 'crudControllerFqcn' => 'App\Controller\Admin\PhotosCrudController', 'entityFqcn' => 'App\Entity\Photos', 'menuIndex' => 9, 'page' => 1, 'signature' => 'D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA', 'sort[updatedAt]' => 'DESC', 'submenuIndex' => 7]); // TODO: Change the autogenerated stub
-        }
-        if ($_REQUEST['menuIndex'] == 10) {
-
-            return $this->redirectToRoute('admin', ['concours' => 'national', 'crudAction' => 'index', 'crudControllerFqcn' => 'App\Controller\Admin\PhotosCrudController', 'entityFqcn' => 'App\Entity\Photos', 'menuIndex' => 9, 'page' => 1, 'signature' => 'D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA', 'sort[updatedAt]' => 'DESC', 'submenuIndex' => 7]); // TODO: Change the autogenerated stub
-        }
-    }
 
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void

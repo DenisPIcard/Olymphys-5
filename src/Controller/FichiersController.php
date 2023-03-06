@@ -93,9 +93,7 @@ class FichiersController extends AbstractController
                 );
             return new Response($content);
         } else {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore de centre attribué pour le  concours interacadémique de l\'édition ' . $edition->getEd());
+            $request->getSession()->set('info', 'Pas encore de centre attribué pour le  concours interacadémique de l\'édition ' . $edition->getEd());
             return $this->redirectToRoute('core_home');
 
 
@@ -152,9 +150,7 @@ class FichiersController extends AbstractController
             else{
                 $message='';
             }
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
+            $request->getSession()->set('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
 
         }
         $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
