@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Equipesadmin;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -32,7 +32,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendMessage(User $user, Rne $rne_obj): TemplatedEmail
+    public function sendMessage(User $user, Uai $rne_obj): TemplatedEmail
     {
         $email = (new TemplatedEmail())
             ->from(new Address('info@olymphys.fr'))

@@ -93,7 +93,7 @@ class DashboardController extends AbstractDashboardController
                 ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
-                ->setQueryParameter('concours', 'interacadémique'),
+                ->setQueryParameter('concours', 'interacademique'),
             MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 7)

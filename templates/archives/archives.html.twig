@@ -104,11 +104,11 @@
                                     {% if memoire is not null %}
                                         {{ memoire.equipe.lettre }} - <a
                                             href="{{ asset('fichiers/memoires/'~memoire.fichier) }}">{{ memoire.equipe.titreProjet }}</a>
-                                        <i>Lycée {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }} </i>
+                                        <i>Lycée {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }} </i>
 
                                     {% else %}
                                         {{ equipe.lettre~' ' }} - {{ ' '~equipe.titreprojet~' ' }}<i>
-                                        Lycée {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }} </i>
+                                        Lycée {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }} </i>
                                     {% endif %}
 
 
@@ -239,7 +239,7 @@
                                             <a href="{{ asset('fichiers/memoires/'~memoire.fichier) }}">{{ memoire.equipe.titreProjet }}</a>
                                         {% endif %}
 
-                                        <i>Lycée {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }} </i>
+                                        <i>Lycée {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }} </i>
 
                                         (
                                         {% if annexe is not null %}

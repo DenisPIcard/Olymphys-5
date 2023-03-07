@@ -16,6 +16,7 @@ use App\Form\Type\Admin\CustomCentreFilterType;
 use App\Form\Type\CentreType;
 use App\Service\Maj_profsequipes;
 use App\Service\OdpfRempliEquipesPassees;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -70,7 +71,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
-        if (date('now')<$session->get('dateouverturesite')){
+        if (new DateTime('now')<$session->get('dateouverturesite')){
             $editioned=$editioned-1;
         }
         if (isset($_REQUEST['filters']['edition'])) {
@@ -89,7 +90,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
 
         $crud->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
-            ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
+            ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'uai', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50)
             ->renderContentMaximized();
 
@@ -105,10 +106,16 @@ class EquipesadminCrudController extends AbstractCrudController
         $editionId = 'na';
         $centreId = 'na';
         $selectionnee='na';
-        if (!isset($_REQUEST['filters'])) {
-            $editionId = $session->get('edition')->getId();
 
-        }
+
+
+            $edition = $session->get('edition');
+            $editionId= $this->requestStack->getSession()->get('edition')->getId();
+            if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+                $editionId=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1])->getId();
+
+            }
+
 
         if (isset($_REQUEST['filters']['centre'])) {
             $centreId = $_REQUEST['filters']['centre'];
@@ -126,6 +133,7 @@ class EquipesadminCrudController extends AbstractCrudController
         }
 
         if (!isset($_REQUEST['lycees'])) {
+
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes', 'fa fa_array',)
                 // if the route needs parameters, you can define them:
                 // 1) using an array
@@ -135,6 +143,8 @@ class EquipesadminCrudController extends AbstractCrudController
 
         }
         if (isset($_REQUEST['lycees'])) {
+
+
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des lycées', 'fa fa_array',)
                 // if the route needs parameters, you can define them:
                 // 1) using an array
@@ -168,8 +178,8 @@ class EquipesadminCrudController extends AbstractCrudController
             $idEquipe = $this->adminContextProvider->getContext()->getRequest()->query->get('entityId');
             $equipe = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
 
-            $rne = $equipe->getRne();
-            $listProfs = $this->doctrine->getManager()->getRepository(User::class)->findBy(['rne' => $rne, 'isActive' => true]);
+            $uai = $equipe->getUai();
+            $listProfs = $this->doctrine->getManager()->getRepository(User::class)->findBy(['uai' => $uai, 'isActive' => true]);
             $listeCentres = $this->doctrine->getManager()->getRepository(Centrescia::class)->findBy(['actif' => true]);
         } else {
             $listProfs = [];
@@ -189,11 +199,11 @@ class EquipesadminCrudController extends AbstractCrudController
         $denominationLycee = TextField::new('denominationLycee');
         $lyceeLocalite = TextField::new('lyceeLocalite', 'Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie', 'Académie');
-        $rne = TextField::new('rneId.rne', 'Code UAI')->setFormTypeOption('required',false);
-        $lyceeAdresse = TextField::new('rneId.adresse', 'Adresse');
-        $lyceeCP = TextField::new('rneId.codePostal', 'Code Postal');
-        $lyceePays = TextField::new('rneId.pays', 'Pays');
-        $lyceeEmail = EmailField::new('rneId.email', 'courriel');
+        $uai = TextField::new('uaiId.uai', 'Code UAI')->setFormTypeOption('required',false);
+        $lyceeAdresse = TextField::new('uaiId.adresse', 'Adresse');
+        $lyceeCP = TextField::new('uaiId.codePostal', 'Code Postal');
+        $lyceePays = TextField::new('uaiId.pays', 'Pays');
+        $lyceeEmail = EmailField::new('uaiId.email', 'courriel');
         $contribfinance = ChoiceField::new('contribfinance', 'Contr. finance')->setChoices(['Prof1-avec versement anticipé de la contribution financière' => 'Prof1-avec versement anticipé de la contribution',
             'Prof1-avec remboursement à postériori des frais engagés' => 'Prof1-avec remboursement à postériori des frais engagés',
             'Prof2-avec versement anticipé de la contribution financière' => 'Prof2-avec versement anticipé de la contribution',
@@ -208,7 +218,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $description = TextareaField::new('description', 'Description du projet');
         $inscrite = BooleanField::new('inscrite');
         $retiree= BooleanField::new('retiree');
-        $rneId = AssociationField::new('rneId')->setFormTypeOption('required',false);
+        $uaiId = AssociationField::new('uaiId')->setFormTypeOption('required',false);
         $edition = AssociationField::new('edition', 'Edition');
         $editionEd = TextareaField::new('edition.ed', 'Edition');
         $centreCentre = AssociationField::new('centre', 'Centre CIA');
@@ -224,7 +234,7 @@ class EquipesadminCrudController extends AbstractCrudController
         if (Crud::PAGE_INDEX === $pageName) {
             if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')) {
 
-                return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
+                return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $uai];
             } else {
                 return [$numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $nomLycee, $lyceeLocalite, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet, $createdAt];
             }
@@ -232,26 +242,26 @@ class EquipesadminCrudController extends AbstractCrudController
 
             if ($this->adminContextProvider->getContext()->getRequest()->query->get('menuIndex') == 7) {
 
-                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $rne, $retiree];
+                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $uai, $retiree];
             } else {
 
-                return [$id,  $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $rne,];
+                return [$id,  $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $uai,];
             }
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$edition, $numero, $lettre, $rneId, $lyceeAcademie, $titreProjet, $centre, $IdProf1, $IdProf2];
+            return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $titreProjet, $centre, $IdProf1, $IdProf2];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$edition, $numero, $lettre, $rneId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire,$retiree];
+            return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire,$retiree];
         }
 
     }
 
-   /* public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $edition= $session->get('edition');
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        if(date('now')<$session->get('dateouverturesite')){
+        if(new Datetime('now')<$session->get('dateouverturesite')){
             $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
@@ -295,22 +305,55 @@ class EquipesadminCrudController extends AbstractCrudController
                 $qb->addOrderBy('e.lettre', 'ASC');
             }
         }
-
+        if (isset($_REQUEST['sort'])){
+            $qb->resetDQLPart('orderBy');
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='lettre'){
+                $qb->addOrderBy('e.lettre', $sort['lettre']);
+            }
+            if (key($sort)=='numero'){
+                $qb->addOrderBy('e.numero', $sort['numero']);
+            }
+            if (key($sort)=='selectionnee'){
+                $qb->addOrderBy('e.selectionnee', $sort['selectionnee'])
+                ->addOrderBy('e.lettre', 'ASC');
+            }
+            if (key($sort)=='createdAt'){
+                $qb->addOrderBy('e.createdAt', $sort['createdAt']);
+            }
+            if (key($sort)=='centre'){
+                $qb->join('e.centre','c')
+                    ->addOrderBy('c.centre', $sort['centre']);
+            }
+        }
 
         return $qb;
-    }*/
+    }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+  /*  public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+        $edition= $this->requestStack->getSession()->get('edition');
+        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+
+        }
+
         $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+
+        if ($filters===null) {
+            $response->andWhere('entity.edition =:edition')
+                ->setParameter('edition', $edition);
+        }
 
         return $response;
         //return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters); // TODO: Change the autogenerated stub
     }
+  */
 
     #[Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name:"equipes_tableau_excel")]
     public function equipestableauexcel($ideditioncentre)
     {
+
         $idedition = explode('-', $ideditioncentre)[0];
         $idcentre = explode('-', $ideditioncentre)[1];
         if (isset(explode('-', $ideditioncentre)[2])){
@@ -345,7 +388,7 @@ class EquipesadminCrudController extends AbstractCrudController
                 ->andWhere('e.centre =:centre')
                 ->setParameter('centre', $centre);
         }
-        if (isset($selectionnee) and ($selectionnee != 'na')) {
+        if (($selectionnee != 'na')) {
 
             $queryBuilder
                 ->andWhere('e.selectionnee  = 1');
@@ -393,7 +436,7 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setCellValue('I' . $ligne, 'Nom du lycée')
             ->setCellValue('J' . $ligne, 'Commune')
             ->setCellValue('K' . $ligne, 'Académie')
-            ->setCellValue('L' . $ligne, 'rne')
+            ->setCellValue('L' . $ligne, 'uai')
             ->setCellValue('M' . $ligne, 'Description')
             ->setCellValue('N' . $ligne, 'Origine du projet')
             ->setCellValue('O' . $ligne, 'Contribution financière à ')
@@ -413,7 +456,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $idprof2 = $equipe->getIdProf2();
             $prof1 = $repositoryProf->findOneBy(['id' => $idprof1]);
             $prof2 = $repositoryProf->findOneBy(['id' => $idprof2]);
-            $rne = $equipe->getRneId();
+            $uai = $equipe->getUaiId();
 
             $sheet->setCellValue('A' . $ligne, $equipe->getId())
                 ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd())
@@ -428,10 +471,10 @@ class EquipesadminCrudController extends AbstractCrudController
 
             }
             $sheet->setCellValue('H' . $ligne, $equipe->getSelectionnee())
-                ->setCellValue('I' . $ligne, $rne->getNom())
-                ->setCellValue('J' . $ligne, $rne->getCommune())
-                ->setCellValue('K' . $ligne, $rne->getAcademie())
-                ->setCellValue('L' . $ligne, $rne->getRne())
+                ->setCellValue('I' . $ligne, $uai->getNom())
+                ->setCellValue('J' . $ligne, $uai->getCommune())
+                ->setCellValue('K' . $ligne, $uai->getAcademie())
+                ->setCellValue('L' . $ligne, $uai->getUai())
                 ->setCellValue('M' . $ligne, $equipe->getDescription())
                 ->setCellValue('N' . $ligne, $equipe->getOrigineprojet())
                 ->setCellValue('O' . $ligne, $equipe->getContribfinance())
@@ -532,16 +575,16 @@ class EquipesadminCrudController extends AbstractCrudController
         $ligne += 1;
 
         foreach ($liste_lycees as $lycee) {
-            $rne = $lycee->getRneId();
+            $uai = $lycee->getUaiId();
 
             $sheet->setCellValue('A' . $ligne, $lycee->getEdition())
-                ->setCellValue('B' . $ligne, $rne->getDenominationPrincipale())
-                ->setCellValue('C' . $ligne, $rne->getNom())
-                ->setCellValue('D' . $ligne, $rne->getAdresse())
-                ->setCellValue('E' . $ligne, $rne->getCodePostal())
-                ->setCellValue('F' . $ligne, $rne->getCommune())
-                ->setCellValue('G' . $ligne, $rne->getAcademie())
-                ->setCellValue('H' . $ligne, $rne->getRne());
+                ->setCellValue('B' . $ligne, $uai->getDenominationPrincipale())
+                ->setCellValue('C' . $ligne, $uai->getNom())
+                ->setCellValue('D' . $ligne, $uai->getAdresse())
+                ->setCellValue('E' . $ligne, $uai->getCodePostal())
+                ->setCellValue('F' . $ligne, $uai->getCommune())
+                ->setCellValue('G' . $ligne, $uai->getAcademie())
+                ->setCellValue('H' . $ligne, $uai->getUai());
 
             $ligne += 1;
         }
@@ -607,9 +650,9 @@ class EquipesadminCrudController extends AbstractCrudController
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $uai = $entityInstance->getRneId();
+        $uai = $entityInstance->getUaiId();
         if ($uai !==null) {
-            $entityInstance->setRne($uai->getRne());
+            $entityInstance->setUai($uai->getUai());
             $entityInstance->setNomLycee($uai->getNom());
             $entityInstance->setLyceeLocalite($uai->getCommune());
             $entityInstance->setLyceeAcademie($uai->getAcademie());

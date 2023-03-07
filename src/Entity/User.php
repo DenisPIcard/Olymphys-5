@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected ?string $token = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    protected ?string $rne = null;
+    protected ?string $uai = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     protected ?string $nom = null;
@@ -84,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     #[ORM\ManyToOne]
-    private ?Rne $rneId=null;
+    private ?Uai $uaiId=null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $newsletter;
@@ -317,15 +317,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    public function getRne(): ?string
+    public function getUai(): ?string
     {
-        return $this->rne;
+        return $this->uai;
     }
 
 
-    public function setRne(?string $rne): User
+    public function setUai(?string $uai): User
     {
-        $this->rne = $rne;
+        $this->uai = $uai;
 
         return $this;
     }
@@ -408,14 +408,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
-    public function getRneId(): ?rne
+    public function getUaiId(): ?Uai
     {
-        return $this->rneId;
+        return $this->uaiId;
     }
 
-    public function setRneId(?rne $rneId): self
+    public function setUaiId(?Uai $uaiId): self
     {
-        $this->rneId = $rneId;
+        $this->uaiId = $uaiId;
 
         return $this;
     }

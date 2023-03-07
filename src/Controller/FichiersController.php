@@ -13,7 +13,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Orgacia;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Form\ToutfichiersType;
@@ -93,9 +93,7 @@ class FichiersController extends AbstractController
                 );
             return new Response($content);
         } else {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore de centre attribué pour le  concours interacadémique de l\'édition ' . $edition->getEd());
+            $request->getSession()->set('info', 'Pas encore de centre attribué pour le  concours interacadémique de l\'édition ' . $edition->getEd());
             return $this->redirectToRoute('core_home');
 
 
@@ -126,7 +124,7 @@ class FichiersController extends AbstractController
         $user = $this->getUser();
         $roles = $user->getRoles();
         $jure = null;
-        $rne_objet = null;
+        $uai_objet = null;
         $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $choix]);
         $centre === null ?: $phase = 'interacadémique';
         if (in_array('ROLE_ORGACIA', $user->getRoles())) {
@@ -134,8 +132,8 @@ class FichiersController extends AbstractController
             $phase = 'interacadémique';
         }
         if (in_array('ROLE_PROF', $user->getRoles())) {
-            if ( $user->getRneId()) {
-                $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+            if ( $user->getUaiId()) {
+                $uai_objet = $this->doctrine->getRepository(Uai::class)->find(['id' => $user->getUaiId()]);
             }
         }
         if (in_array('ROLE_JURY', $roles)) {
@@ -152,9 +150,7 @@ class FichiersController extends AbstractController
             else{
                 $message='';
             }
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
+            $request->getSession()->set('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
 
         }
         $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
@@ -164,7 +160,7 @@ class FichiersController extends AbstractController
                 'choix' => $choix,
                 'jure' => $jure,
                 'doc_equipes' => $docequipes,
-                'rneObj' => $rne_objet,
+                'uaiObj' => $uai_objet,
                 'centre' => $centre));
             return new Response($content);
 

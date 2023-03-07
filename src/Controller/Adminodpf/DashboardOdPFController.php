@@ -18,7 +18,7 @@ use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Entity\Visites;
 use App\Entity\Professeurs;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;

@@ -48,11 +48,11 @@
                     {% endif %}
                     <a href="{{ asset('/fichiers/memoires/'~memoire.fichier) }}">{{ memoire.equipe.titreProjet }}</a>
 
-                    <h8><i>Lycée {{ memoire.equipe.rneId.nom }}, {{ memoire.equipe.rneId.commune }} </i></h8>
+                    <h8><i>Lycée {{ memoire.equipe.uaiId.nom }}, {{ memoire.equipe.uaiId.commune }} </i></h8>
                 {% endif %}
                 {% if memoire is null %}
                     {% if resume is not null %}
-                        <h8><i>Lycée {{ resume.equipe.rneId.nom }}, {{ resume.equipe.rneId.commune }} </i></h8>
+                        <h8><i>Lycée {{ resume.equipe.uaiId.nom }}, {{ resume.equipe.uaiId.commune }} </i></h8>
 
                     {% endif %}
                 {% endif %}
