@@ -474,8 +474,8 @@ class FichiersController extends AbstractController
     public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof, $equipe)
     {
         $em = $this->doctrine->getManager();
-        $edition = $this->requestStack->getSession()->get('edition');
-        $edition = $em->merge($edition);
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $edition = $this->doctrine->getRepository(Edition::class)->find($editionId);
         $repositoryFichiersequipes = $this->doctrine->getRepository(Fichiersequipes::class);
 
         $fileFichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $newFilename, $newFilename, null, null, true);

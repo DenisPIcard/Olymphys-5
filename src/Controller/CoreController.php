@@ -42,8 +42,9 @@ class CoreController extends AbstractController
 
         $user = $this->getUser();
 
-        $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-        //dd($edition);
+        $repository = $doctrine->getRepository(Edition::class);
+        $edition=$repository->findOneBy([], ['id' => 'desc']);
+
 
         $this->requestStack->getSession()->set('edition', $edition);
 
@@ -56,30 +57,10 @@ class CoreController extends AbstractController
             if ($dateconnect <= $datecia) {
                 $concours = 'interacadémique';
             }
-            $datelimphotoscia = date_create();
-            $datelimphotoscn = date_create();
-            $datelimdiaporama = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
-            $p = new DateInterval('P7D');
-            $datelimlivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
-
-            $datelivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
-            $datelimlivredoreleve = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
-            date_date_set($datelimphotoscia, $edition->getconcourscia()->format('Y'), $edition->getconcourscia()->format('m'), $edition->getconcourscia()->format('d') + 30);
-            date_date_set($datelimphotoscn, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 30);
-            date_date_set($datelivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 1);
-            date_date_set($datelimdiaporama, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 7);
-            date_date_set($datelimlivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 8);
             $this->requestStack->getSession()->set('concours', $concours);
-            $this->requestStack->getSession()->set('datelimphotoscia', $datelimphotoscia);
-            $this->requestStack->getSession()->set('datelimphotoscn', $datelimphotoscn);
-            $this->requestStack->getSession()->set('datelivredor', $datelivredor);
-            $this->requestStack->getSession()->set('datelimlivredor', $datelimlivredor);
-            $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
-            $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
-            $this->requestStack->getSession()->set('dateclotureinscription', new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
-            $this->requestStack->getSession()->set('dateouverturesite', new DateTime($this->requestStack->getSession()->get('edition')->getDateouverturesite()->format('Y-m-d H:i:s')));
-
+            $repository->setDates($edition);
         }
+
         $this->requestStack->getSession()->set('pageCourante', 1);
         $this->requestStack->getSession()->set('pageFCourante', 1);
         $repo = $doctrine->getRepository(OdpfArticle::class);
