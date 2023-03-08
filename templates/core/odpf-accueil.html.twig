@@ -2,34 +2,49 @@
 
 {% block title %}
     Accueil - {{ parent() }}
+    {# inclut le Titre, pour affichage dans la barre #}
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+    {{ parent() }}{# inclut les feuilles de styles de base.html.twig #}
     <link rel="stylesheet" href="{{ asset('css/odpf-accueil.css') }}">
 {% endblock %}
 
 {% block contenu %}
+    {# va se placer dans le block contenu de base.html.twig #}
     <div id="barre_haut">
+       {#  trace une barre noire en haut de page : odpf.css l.35#}
     </div>
     <div id="wrapper">
+        {# place une ligne gris foncé : odpf.css l.41 #}
         <div class="container bg-white">
+            {# cree un container, en fonction du media : odpf.css l. 56 à 78 #}
 
             {{ include('core/odpf-menu-haut.html.twig') }}
+            {#  inclut le menu haut #}
             <div class="row justify-content-between">
-                <div class="col-md-8 col-lg-5"><a href="{{ path('core_home') }}"><img
-                                src="{{ asset('odpf/odpf-images/site-logo-398x106.png') }}" alt="Logo Olympiades"
-                                style="width:100%; height:auto"></a></div>
-                <div class="col-md-8 col-lg-4 pr-0"><img src="{{ asset('odpf/odpf-images/home-rightcol-top2.png') }}"
-                                                         alt="image_en_tete" style="width:100%; height:auto"></div>
+                {# place ensuite les images : logo et illustration : elles sont placées sur la ligne suivante #}
+                <div class="col-md-8 col-lg-5"><a href="{{ path('core_home') }}">
+                        <img  src="{{ asset('odpf/odpf-images/site-logo-398x106.png') }}" alt="Logo Olympiades"
+                              style="width:100%; height:auto"></a>
+                </div>
+                <div class="col-md-8 col-lg-4 pr-0">
+                    <img src="{{ asset('odpf/odpf-images/home-rightcol-top2.png') }}" alt="image_en_tete" style="width:100%; height:auto">
+                </div>
             </div>
             <div class="row">
+                {# démarre une ligne, découpée en colonnes #}
                 <div class="col-md-8 col-lg-4 order-last order-md-first col-gche-accueil ">
+                    {# crée une colonne de 8/12 en mode médium, de 4/12 en mode large, placée à la fin sauf enmode medium, suivant la classe col-gche-accueil odpf-acceuil.css l. 64 #}
                     <div class="row px-3 pb-0">
+                        {# crée une ligne avec 1rem de padding gauche et droite, et 0 en bas #}
                         {{ include('OdpfAdmin/carousel-accueil.html.twig') }}
+                        {#  inclut le carrousel #}
                         <div class="menugche-accueil">
+                            {#  crée le fond noir : odpf-accueil.css l.14 #}
                             <h3>les olympiades de Physique France</h3>
                             <ul>
+                                {# ces items de menu renvoient à la fonction pages du CoreController, avec des variables choix #}
                                 <li><a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">C'est quoi ?</a></li>
                                 <li><a href="{{ path('core_pages' ,{choix:'comment_ca_se_passe'}) }}">Comment ça se
                                         passe ?</a></li>
@@ -85,7 +100,7 @@
                             <h3>Actus</h3>
                             <ul class="actus-home">
 
-                            {% for actu in affActus %}
+                                {% for actu in affActus %}
                                     <li>
                                         <p class="actus-home-titre">
                                         <a href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a></p>

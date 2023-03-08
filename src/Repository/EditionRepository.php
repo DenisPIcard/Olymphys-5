@@ -44,6 +44,10 @@ class EditionRepository extends ServiceEntityRepository
             ->setParameter('lastid', $lastid);
 
     }
+
+    /**
+     * @throws \Exception
+     */
     public function setDates($edition)
     {
         $datelimphotoscia = date_create();

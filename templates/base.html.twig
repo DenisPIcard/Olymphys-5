@@ -9,6 +9,7 @@ Layout de départ du site #}
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}"/>
 
     <title>{% block title %}Olympiades{% endblock %}</title>
+
     {% block stylesheets %}
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
@@ -30,16 +31,19 @@ Layout de départ du site #}
 
 
 {% if is_granted('IS_IMPERSONATOR') %}
+    {# prévient de l'impersonation'  #}
     <div class="alert alert-warning" style="margin-bottom: 0;">
         Vous êtes switché à un compte User
         <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>
     </div>
 {% endif %}
 {% block contenu %}
+    {# place pour inclure le contenu #}
 {% endblock %}
 
 {% block flash %}
     {{ include('flash.html.twig') }}
+    {# les flash sont des messages d'alerte #}
 {% endblock %}
 
 
@@ -57,6 +61,7 @@ Layout de départ du site #}
         });
     </script>
     <script type="text/javascript">
+        {# permet la construction de fenêtres modales #}
         $(document).ready(function () {
             $('#modalinfo').modal();
             $('#modalinfo').modal('open');

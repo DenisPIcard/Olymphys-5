@@ -62,26 +62,26 @@ class CoreController extends AbstractController
         }
         $this->requestStack->getSession()->set('pageCourante', 1);
         $this->requestStack->getSession()->set('pageFCourante', 1);
-
+        //pour construire les paginateurs des Actus et de la FAQ
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $tab = $repo->accueil_actus();
-
+        //Construit le tableau des données à transmettre au template : les actus de l'acceil
         $article = $repo->findOneBy(['choix' => 'accueil']);
         $tab['article'] = $article;
+        // ajoute les articles destinés à l'accueil
 
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
-
+        // ajoute la liste de la Foire aux questions
+        // le tout est transmis au template
         return $this->render('core/odpf-accueil.html.twig', $tab);
 
     }
 
     #[Route("/core/pages,{choix}", name:"core_pages")]
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {     /*  if($this->requestStack->getSession()->get('edition') == false){
-                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-                $this->requestStack->getSession()->set('edition', $edition);
-            }*/
+    {
+        // construit les pages
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -139,6 +139,7 @@ class CoreController extends AbstractController
     #[Route("/core/actus,{tourn}", name:"core_actus")]
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
+        // construit le tableau des éléments à passer au template pour créer le menu des actus
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -155,6 +156,7 @@ class CoreController extends AbstractController
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
         }
+        // construit la liste des éléments à afficher, et à avoir, pour le menu Actus
         $repo = $doctrine->getRepository(OdpfArticle::class);
 
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
@@ -164,7 +166,7 @@ class CoreController extends AbstractController
         $tab['listfaq'] = $listfaq;
         $nbpages = $tab['nbpages'];
         $pageCourante = $this->requestStack->getSession()->get('pageCourante');
-
+        // paginateur
         switch ($tourn) {
             case 'debut':
                 $pageCourante = 1;
@@ -197,6 +199,7 @@ class CoreController extends AbstractController
     #[Route("/core/faq,{tourn}", name:"core_faq")]
     public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
+        // construit le tableau des éléments à passer au template pour créer le menu des FAQ
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -212,6 +215,7 @@ class CoreController extends AbstractController
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'faq']);
         $faq = $repo->faq_paginee();
+        // construit la liste des éléments à afficher, et à avoir, pour le meu FAQ
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
         $nbpages = $faq['nbpages'];
@@ -220,7 +224,7 @@ class CoreController extends AbstractController
         $tab['choix'] = 'faq';
         $tab['titre'] = $faq['titre'];
         $pageFCourante = $this->requestStack->getSession()->get('pageFCourante');
-
+        // paginateur
         switch ($tourn) {
             case 'debut':
                 $pageFCourante = 1;
@@ -249,9 +253,9 @@ class CoreController extends AbstractController
     }
 
     #[Route("/core/mentions,{mention}", name:"core_mentions")]
-
     public function mentions(Request $request, ManagerRegistry $doctrine, $mention): Response
     {
+        // construit le tableau des éléments à passer au template pour créer le menu des mentions de bas de page
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -285,7 +289,7 @@ class CoreController extends AbstractController
         $tab['edition'] = $edition;
         $tab['article'] = $article;
         $tab['titre'] = 'mentions';
-        //dd($tab);
+
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
