@@ -35,49 +35,65 @@ class CoreController extends AbstractController
     }
 
 
+    /**
+     * @throws Exception
+     */
     #[Route("/", name:"core_home")]
-    // * @throws Exception
-     public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
+    public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
     {
 
         $user = $this->getUser();
 
-        $repository = $doctrine->getRepository(Edition::class);
-        $edition=$repository->findOneBy([], ['id' => 'desc']);
-
+        $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
 
         $this->requestStack->getSession()->set('edition', $edition);
 
         if (null != $user) {
             $datecia = $edition->getConcourscia();
             $dateconnect = new datetime('now');
+            $concours='';
             if ($dateconnect > $datecia) {
-                $concours = 'national';
-            }
-            if ($dateconnect <= $datecia) {
-                $concours = 'interacadémique';
-            }
-            $this->requestStack->getSession()->set('concours', $concours);
-            $repository->setDates($edition);
-        }
+                $concours = 'national';}
+            else {
+                $concours = 'interacadémique';}
+            $datelimphotoscia = date_create();
+            $datelimphotoscn = date_create();
+            $datelimdiaporama = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
+            $p = new DateInterval('P7D');
+            $datelimlivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
 
+            $datelivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
+            $datelimlivredoreleve = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
+            date_date_set($datelimphotoscia, $edition->getconcourscia()->format('Y'), $edition->getconcourscia()->format('m'), $edition->getconcourscia()->format('d') + 30);
+            date_date_set($datelimphotoscn, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 30);
+            date_date_set($datelivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 1);
+            date_date_set($datelimdiaporama, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 7);
+            date_date_set($datelimlivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 8);
+            $this->requestStack->getSession()->set('concours', $concours);
+            $this->requestStack->getSession()->set('datelimphotoscia', $datelimphotoscia);
+            $this->requestStack->getSession()->set('datelimphotoscn', $datelimphotoscn);
+            $this->requestStack->getSession()->set('datelivredor', $datelivredor);
+            $this->requestStack->getSession()->set('datelimlivredor', $datelimlivredor);
+            $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
+            $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
+            $this->requestStack->getSession()->set('dateclotureinscription', new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
+            $this->requestStack->getSession()->set('dateouverturesite', new DateTime($this->requestStack->getSession()->get('edition')->getDateouverturesite()->format('Y-m-d H:i:s')));
+
+        }
         $this->requestStack->getSession()->set('pageCourante', 1);
         $this->requestStack->getSession()->set('pageFCourante', 1);
+
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $tab = $repo->accueil_actus();
-        $listfaq = $repo->listfaq();
-        //dd($listfaq);
+
         $article = $repo->findOneBy(['choix' => 'accueil']);
-        $tab['listfaq'] = $listfaq;
         $tab['article'] = $article;
-        // dd($tab);
-        if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
-            return $this->redirectToRoute('forgotten_password');
+        $listfaq = $repo->listfaq();
+        $tab['listfaq'] = $listfaq;
 
-        } else {
-            return $this->render('core/odpf-accueil.html.twig', $tab);
-        }
+        return $this->render('core/odpf-accueil.html.twig', $tab);
+
     }
 
     #[Route("/core/pages,{choix}", name:"core_pages")]
