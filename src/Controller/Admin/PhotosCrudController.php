@@ -72,12 +72,18 @@ class PhotosCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-        $edition= $this->requestStack->getSession()->get('edition');
-        if (new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
-            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        if ($concours===null){
+            $concours=$this->requestStack->getSession()->get('concours');
 
         }
-
+        if ($concours!==null){
+            $this->requestStack->getSession()->set('concours',$concours);
+        }
+        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
+        $edition= $this->requestStack->getSession()->get('edition');
+        if(new Datetime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        }
 
 
         return $crud
@@ -149,23 +155,20 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $edition=$this->requestStack->getSession()->get('edition');
-        if(new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(new DateTime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
             $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         //dd($_REQUEST);
-        if (($concours==null) and (str_contains($_REQUEST['referrer'],'national'))){
-            $concours='national';
+        if ($concours===null){
+            $concours=$this->requestStack->getSession()->get('concours');
 
         }
-
-        if (($concours==null) and (str_contains($_REQUEST['referrer'],'interacademique'))){
-            $concours='interacademique';
-
+        if ($concours!==null){
+            $this->requestStack->getSession()->set('concours',$concours);
         }
-        $this->requestStack->getCurrentRequest()->query->set('concours',$concours);
+        //dd($this->requestStack->getSession()->get('concours'));
         /*if($_REQUEST['crudAction']=='index') {
             if ($concours == null) {
                 $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
@@ -250,9 +253,11 @@ class PhotosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
+           //$this->requestStack->getSession()->set('concours', $concours);
             return [$panel1, $equipe, $imageFile, $coment, $national, $coment,$edition];
+
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            $this->requestStack->getCurrentRequest()->query->set('concours', $concours);
+            //$this->requestStack->getSession()->set('concours', $concours);
             return [$photo, $imageFile, $equipe, $national, $coment];
         }
     }
@@ -261,18 +266,16 @@ class PhotosCrudController extends AbstractCrudController
 
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-
+        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
         if (null == $concours) {
-            $concours = 'interacademique';
-            if (str_contains($_REQUEST['referrer'],'national')){
-                $concours='national';
+            $concours = $this->requestStack->getSession()->get('concours');
             }
 
-        }
-        $edition= $this->requestStack->getSession()->get('edition');
-        if (new DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
-            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
+
+        $edition= $this->requestStack->getSession()->get('edition');
+        if(new DateTime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
 
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -381,7 +384,9 @@ class PhotosCrudController extends AbstractCrudController
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-
+        if($entityInstance->getEquipe()->getNumero()>=100){
+            $entityInstance->setNational(true);
+        }
         if ($entityInstance->getPhotoFile() !== null) //on dépose une nouvelle photo
         {
             $name = $entityInstance->getPhoto();

@@ -153,11 +153,14 @@ class PhotosController extends AbstractController
                         $photo = new Photos();
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if (($equipe->getLettre() === null) or ($concours=='inter'))  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
+                        if (($equipe->getLettre() === null) or ($concours=='inter') )  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
                             $photo->setNational(FALSE);
                         }
                         if (($equipe->getLettre() !== null) and ($concours=='cn')) {
 
+                            $photo->setNational(TRUE);
+                        }
+                        if ($equipe->getNumero()>=100){
                             $photo->setNational(TRUE);
                         }
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier

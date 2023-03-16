@@ -9,7 +9,6 @@ use App\Entity\Edition;
 use App\Entity\Equipesadmin;
 use App\Entity\Orgacia;
 use App\Entity\User;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -97,7 +96,7 @@ class EquipesadminRepository extends ServiceEntityRepository
     public function getEquipes_prof_cn(User $prof, Edition $edition): array
     {
         $entityManager = $this->getEntityManager();
-        $edition=$this->doctrine->getRepository(Edition::class)->find($edition->getId());
+        $edition=$this->requestStack->getSession()->get('edition');
 
         $query = $entityManager->createQuery(
             'SELECT e
@@ -136,15 +135,14 @@ class EquipesadminRepository extends ServiceEntityRepository
         $editionN=$this->requestStack->getSession()->get('edition');
         $editionN1= $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
         $concours == 'interacadémique'?$selectionnee=false:$selectionnee=true;
-        $qb = $em->getRepository(Equipesadmin::class)->createQueryBuilder('e');
-        new DateTime('now')>=$this->requestStack->getSession()->get('dateouverturesite')? $editionAff=$editionN: $editionAff=$editionN1;
-        $qb->andWhere('e.edition =:edition');
+        $qb = $em->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+                       ->andWhere('e.edition =:editionN or e.edition=:editionN1');
         $concours == 'interacadémique'?$qb->orderBy('e.numero', 'ASC'):$qb->orderBy('e.lettre', 'ASC');
 
         if (in_array('ROLE_PROF',$user->getRoles()) and (!in_array('ROLE_JURY',$user->getRoles()))) {// à cause du juré qui est prof et juré selon les années
             $qb ->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
                 ->andWhere('e.selectionnee = :selectionnee')
-                ->setParameters(['edition' => $editionAff, 'prof' => $user, 'selectionnee' => $selectionnee]);
+                ->setParameters(['editionN' => $editionN,'editionN1'=>$editionN1, 'prof' => $user, 'selectionnee' => $selectionnee]);
             $listeEquipes= $qb->getQuery()->getResult();
         }
         if ( (in_array('ROLE_JURY',$user->getRoles())) or (in_array('ROLE_JURYCIA',$user->getRoles())) or (in_array('ROLE_COMITE',$user->getRoles())) or (in_array('ROLE_ORGACIA',$user->getRoles()))or(in_array('ROLE_SUPER_ADMIN',$user->getRoles()))){
@@ -154,7 +152,7 @@ class EquipesadminRepository extends ServiceEntityRepository
             if ($choix=='liste_cn_comite') {
                 $qb ->andWhere('e.numero <:valeur')
                     ->andWhere('e.selectionnee = 1')
-                    ->setParameters(['edition' => $editionAff, 'valeur' => 100]);
+                    ->setParameters(['editionN' => $editionN, 'editionN1'=>$editionN1, 'valeur' => 100]);
                 $listeEquipes= $qb->getQuery()->getResult();
             }
 

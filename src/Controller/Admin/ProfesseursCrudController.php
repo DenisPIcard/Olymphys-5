@@ -51,10 +51,12 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
-        $editionEd = $session->get('edition')->getEd();
-        if (new DateTime('now')<$session->get('dateouverturesite')){
-            $editionEd=$editionEd-1;
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $edition = $session->get('edition');
+        $editionEd=$edition->getEd();
+        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            $editionEd=$edition->getEd();
         }
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
         if (isset($_REQUEST['filters']['edition'])) {
@@ -76,10 +78,12 @@ class ProfesseursCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $session = $this->requestStack->getSession();
-        $editionId = $session->get('edition')->getId();
+        $edition= $session->get('edition');
+        $editionId=$edition->getId();
         $repositoryEdition=$this->doctrine->getRepository(Edition::class);
-        if(new DateTime('now')<$session->get('dateouverturesite')){
-            $editionId=$repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1])->getId();
+        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            $editionId=$edition->getId();
         }
         if (isset($_REQUEST['filters']['edition'])) {
 
@@ -114,7 +118,7 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $nom = IntegerField::new('user.nom', 'nom');
         $prenom = TextField::new('user.prenom', 'Prénom');
-        $nomLycee = TextField::new('user.uaiId.appellationOfficielle', 'Lycée');
+        $nomLycee = TextField::new('user.uaiId.nom', 'Lycée');
         $lyceeLocalite = TextField::new('user.uaiId.commune', 'Ville');
         $lyceeAcademie = TextField::new('user.uaiId.academie', 'Académie');
         $uai = TextField::new('user.uai', 'Code UAI');
@@ -150,7 +154,8 @@ class ProfesseursCrudController extends AbstractCrudController
 
         if (!isset($_REQUEST['filters'])) {
             $edition = $session->get('edition');
-            if(new DateTime('now')<$session->get('dateouverturesite')){
+
+            if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
                 $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
             }
         } else {

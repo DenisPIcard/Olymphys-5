@@ -92,15 +92,9 @@ class UtilisateurController extends AbstractController
             }
             if ($idequipe == 'x') {
                 if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
-
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
-
-
-                    return $this->redirectToRoute('core_home');
-
-
+                    $this->requestStack->getSession()
+                        ->set('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
+                    return $this->redirectToRoute('fichiers_choix_equipe',array('choix'=>'liste_prof'));
                 }
             }
 

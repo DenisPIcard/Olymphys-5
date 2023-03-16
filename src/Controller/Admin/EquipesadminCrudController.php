@@ -71,7 +71,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
-        if (new DateTime('now')<$session->get('dateouverturesite')){
+        if (new DateTime('now')<$session->get('edition')->getDateouverturesite()){
             $editioned=$editioned-1;
         }
         if (isset($_REQUEST['filters']['edition'])) {
@@ -111,7 +111,8 @@ class EquipesadminCrudController extends AbstractCrudController
 
             $edition = $session->get('edition');
             $editionId= $this->requestStack->getSession()->get('edition')->getId();
-            if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+            if (date('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
+                $edition=$this->requestStack->getSession()->get('edition');
                 $editionId=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1])->getId();
 
             }
@@ -261,7 +262,7 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
         $context = $this->adminContextProvider->getContext();
         $edition= $session->get('edition');
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        if(new Datetime('now')<$session->get('dateouverturesite')){
+        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
             $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
@@ -460,7 +461,7 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
 
             $sheet->setCellValue('A' . $ligne, $equipe->getId())
                 ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd())
-                ->setCellValue('C' . $ligne, $equipe->getCentre())
+                ->setCellValue('C' . $ligne, $equipe->getCentre()->getCentre())
                 ->setCellValue('D' . $ligne, $equipe->getTitreprojet())
                 ->setCellValue('E' . $ligne, $equipe->getNumero())
                 ->setCellValue('F' . $ligne, $equipe->getLettre())

@@ -234,7 +234,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
             if ($entityInstance->getNational() == FALSE) {
                 $newFileName = $slugger->slug($ed . '-' . $centre .'-'.$numero_equipe . '-' . $nom_equipe . '.' . $endName);
             }
-            if ($entityInstance->getNational() == TRUE) {
+            if (($entityInstance->getNational() == TRUE) or ($entityInstance->getEquipepassee()->getNumero()>=100) ) {
                 $equipepassee->getLettre() === null ? $idEquipe = $equipepassee->getNumero() : $idEquipe = $equipepassee->getLettre();
 
                 $newFileName = $ed . '-CN-eq-' . $idEquipe . '-' . $nom_equipe . '.' . $endName;
@@ -277,7 +277,10 @@ class OdpfPhotosCrudController extends AbstractCrudController
     {
         $entityInstance->setEditionspassees($entityInstance->getEquipepassee()->getEditionspassees());
         $entityInstance->getEquipe() === null ? $entityInstance->setEdition(null) : $entityInstance->setEdition($entityInstance->getEquipe()->getEdition());
-        $this->adminContextProvider->getContext()->getEntity();
+
+        if ($entityInstance->getEquipePassee()->getNumero()>=100){
+            $entityInstance->setNational(true);
+        }
 
         //$this->doctrine->getManager()->flush();
         parent::persistEntity($entityManager, $entityInstance);

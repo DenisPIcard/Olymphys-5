@@ -166,7 +166,9 @@
             </div>
         </div>
     </div>
-
+    {% if app.session.get('info')!='' %}
+        {{ include('modales/modale_info.html.twig') }}
+    {% endif %}
     <div class="modal fade" id="modalfichier" tabindex="-1" role="dialog">{#  pour les fichiers  #}
         <div class="modal-dialog" role="document">
 

@@ -65,7 +65,7 @@ class SecretariatjuryController extends AbstractController
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
 
-        if (new \DateTime('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if (new \DateTime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
                 $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);

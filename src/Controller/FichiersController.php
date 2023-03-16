@@ -143,14 +143,15 @@ class FichiersController extends AbstractController
         }
 
         $liste_equipes = $repositoryEquipesadmin->getListeEquipe($user, $phase, $choix, $centre);
+
         if ($liste_equipes == null) {
-            if(date('now')>= $this->requestStack->getSession()->get('dateouverturesite')) {
-                $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+
+            if(new DateTime('now')>= $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+
+
+               $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+               $request->getSession()->set('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
             }
-            else{
-                $message='';
-            }
-            $request->getSession()->set('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
 
         }
         $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
@@ -713,7 +714,7 @@ class FichiersController extends AbstractController
 
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(date('now')<$edition->getDateouverturesite()){
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $equipe_choisie = $repositoryEquipesadmin->find(['id' => $id_equipe]);
