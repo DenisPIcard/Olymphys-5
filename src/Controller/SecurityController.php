@@ -60,7 +60,10 @@ class SecurityController extends AbstractController
         throw new Exception('Sera intercepté avant d\'en arriver là !');
     }
 
-   #[Route("/register", name:"register")]
+    /**
+     * @throws TransportExceptionInterface
+     */
+    #[Route("/register", name:"register")]
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): Response
     {
 
@@ -80,7 +83,7 @@ class SecurityController extends AbstractController
             if ($uaiRepository->findOneBy(['uai' => $uai]) == null) {
                 $request->getSession()
                     ->getFlashBag()
-                    ->add('alert', 'Ce n° RNE n\'est pas valide !');
+                    ->add('alert', 'Cette UAI n\'est pas valide !');
 
                 return $this->redirectToRoute('register');
             }
@@ -109,11 +112,6 @@ class SecurityController extends AbstractController
             $user->setCode($code);
             $phone = $form->get('phone')->getData();
             $user->setPhone($phone);
-            /* if ($session->get('resetpwd')==true){
-                 $user->setLastVisit(new \datetime('now'));
-                $session->set('resetpwd',null);
-             }
-             */
             // Enregistre le membre en base
             $em = $doctrine->getManager();
             $em->persist($user);
@@ -179,9 +177,12 @@ class SecurityController extends AbstractController
         return !($interval > $daySeconds);
     }
 
-   #[Route("/forgottenPassword", name:"forgotten_password")]
-   public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator)
-    {
+    /**
+     * @throws TransportExceptionInterface
+     */
+    #[Route("/forgottenPassword", name:"forgotten_password")]
+   public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): RedirectResponse|Response
+   {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
             ->add('email', EmailType::class, [
@@ -228,12 +229,12 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/password_request.html.twig', [
-            'passwordRequestForm' => $form->createView(), 'resetpwd' => $session->get('resetpwd')
+            'passwordRequestForm' => $form->createView()
         ]);
     }
 
     #[Route("/reset_password/{id}/{token}", name:"reset_password")]
-    public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder)
+    public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder): RedirectResponse|Response
     {
 
         // interdit l'accès à la page si:
@@ -264,7 +265,6 @@ class SecurityController extends AbstractController
             $em = $this->doctrine->getManager();
             $em->persist($user);
             $em->flush();
-            $session->set('resetpwd', null);
             $request->getSession()->getFlashBag()->add('success', "Votre mot de passe a été renouvelé.");
 
             return $this->redirectToRoute('login');

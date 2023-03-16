@@ -53,11 +53,9 @@ Layout de départ du site #}
 
         <div id="menu" class="col-md-2 sd-1">
             <ul class="nav flex-column nav-pills ml-3">
-                {% if app.session.get('resetpwd')== true %}
-                    <a href="{{ path('logout') }}">Accueil du site</a>
-                {% else %}
-                    <a href="{{ path('core_home') }}">Accueil du site</a>
-                {% endif %}
+
+                <a href="{{ path('core_home') }}">Accueil du site</a>
+
                 <p></p>
                 {% block navigation %}
                     <ul class="nav flex-column nav-pills">

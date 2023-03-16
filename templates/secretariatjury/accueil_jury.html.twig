@@ -13,7 +13,7 @@
     <div class="table-responsive">
 
         <table class="table">
-
+            <thead>
             {% for equipe in listEquipes %}
                 {% set lettre = equipe.lettre %}
                 <tr class="active">
@@ -33,7 +33,8 @@
                     </td>
 
                 </tr>
-
+                </thead>
+                <tbody>
                 <tr>
                     <th>Les élèves</th>
                     <td>
@@ -73,6 +74,7 @@
                 </tr>
 
             {% endfor %}
+            </tbody>
         </table>
     </div>
 {% endblock %}
