@@ -8,6 +8,7 @@ use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfPartenaires;
+use App\Entity\Orgacia;
 use App\Entity\Photos;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
@@ -43,6 +44,7 @@ class CoreController extends AbstractController
         $user = $this->getUser();
 
         $repository = $doctrine->getRepository(Edition::class);
+
         $edition=$repository->findOneBy([], ['id' => 'desc']);
         $editionN1=$repository->findOneBy(['ed'=>$edition->getEd()-1]);
 

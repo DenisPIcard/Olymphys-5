@@ -99,7 +99,7 @@
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Page Organisateurs</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
+                        <div class="login py-0">Centre de {{app.user.centrecia.centre  }}</div>
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>

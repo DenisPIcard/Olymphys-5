@@ -38,6 +38,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
@@ -134,18 +135,23 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $concours == 1 ? $concourslit = 'national' : $concourslit = 'interacadémique';
+        $concoursmemoire=$concourslit;
+        if(($concoursmemoire == 'interacadémique') and (new DateTime('now')>$edition->getConcoursCia())){
+            $concoursmemoire=$concourslit.'(équipes non sélectionnées)';
+        }
+
         if ($pageName == 'index') {
             if (($typefichier == 0) | ($typefichier == 2)) {
                 //dump($typefichier);
                 //dump($edition->getEd());
                 //dd('Les ' . $this->getParameter('type_fichier_lit')[$typefichier] . 's de la ' . $edition->getEd() . $exp . ' édition');
-                $crud = $crud->setPageTitle('index', 'Les ' . $this->getParameter('type_fichier_lit')[$typefichier] . 's de la ' . $edition->getEd() . $exp . ' édition. Concours ' . $concourslit);
+                $crud = $crud->setPageTitle('index', 'Les ' . $this->getParameter('type_fichier_lit')[$typefichier] . 's de la ' . $edition->getEd() . $exp . ' édition. Concours ' . $concoursmemoire);
             }
 
             if ($typefichier == 3) {
                 $crud = $crud->setPageTitle('index', 'Les diaporamas(concours national) de la ' . $edition->getEd() . $exp . ' édition');
             }
-            if (($typefichier == 4)and ($typefichier==8)) {
+            if (($typefichier == 4)or ($typefichier==8)) {
                 $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition du concours ' . $concourslit);
             }
             if ($typefichier == 5) {
@@ -535,7 +541,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         if ($numtypefichier != 6) {
             $equipeNumero = IntegerField::new('equipe.numero', 'numero')->setSortable(true);
             $equipeLettre = TextField::new('equipe.lettre', 'Lettre equipe')->setSortable(true);
-            $equipeTitreprojet = TextField::new('equipe.titreprojet', 'Projet')->setSortable(true);
+            $equipeTitreProjet = TextField::new('equipe.titreProjet', 'Projet')->setSortable(true);
         };
         $updatedat = DateTimeField::new('updatedat', 'Déposé le ')->setSortable(true);
 
@@ -544,7 +550,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             if ($numtypefichier == 6) {
                 return [$editionEd, $equipelibel, $fichier, $updatedat];
             } else {
-                return [$editionEd, $equipeNumero, $equipeLettre, $equipeTitreprojet, $fichier, $updatedat];
+                return [$editionEd, $equipeNumero, $equipeLettre, $equipeTitreProjet, $fichier, $updatedat];
             }
         }
         if (Crud::PAGE_DETAIL === $pageName) {
@@ -597,15 +603,16 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $concours = $context->getRequest()->query->get('concours');
 
+        $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
         if ($typefichier == 0) {
-            $qb = $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
-                ->andWhere('f.typefichier <=:typefichier')
+            $qb //= $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+                ->andWhere('entity.typefichier <=:typefichier')
                 ->setParameter('typefichier', $typefichier + 1);
         }
         if ($typefichier > 1) {
-            $qb = $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
-                ->andWhere('f.typefichier =:typefichier')
+            $qb //= $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+                ->andWhere('entity.typefichier =:typefichier')
                 ->setParameter('typefichier', $typefichier);
 
         }
@@ -613,7 +620,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         if (!isset($_REQUEST['filters'])) {
 
-            $qb->andWhere('f.edition =:edition')
+            $qb->andWhere('entity.edition =:edition')
                 ->setParameter('edition', $edition);
 
 
@@ -623,7 +630,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
 
-                $qb->andWhere('f.edition =:edition')
+                $qb->andWhere('entity.edition =:edition')
                     ->setParameter('edition', $edition);
             }
             if(isset($_REQUEST['filters']['equipe'])) {
@@ -631,20 +638,20 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
                 $session->set('titreedition', $edition);
 
-                $qb->andWhere('f.equipe =:equipe')
+                $qb->andWhere('entity.equipe =:equipe')
                     ->setParameter('equipe', $equipe);
             }
 
 
         }
-        $qb->leftJoin('f.equipe', 'e');
+        $qb->leftJoin('entity.equipe', 'e');
         if ((($typefichier == 4) or ($typefichier == 8)) and ($concours == 1)) {//affiche uniquement les fiches sécurité expo et oral des équipes sélectionnées pour le choix du concours national
 
             $qb->andWhere('e.selectionnee = TRUE')
-               ->orWhere('f.typefichier =:value')
+               ->orWhere('entity.typefichier =:value')
                ->setParameter('value',8);;
         } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours
-            $qb->andWhere('f.national =:concours')
+            $qb->andWhere('entity.national =:concours')
                 ->setParameter('concours', $concours);
         }
 
@@ -660,10 +667,14 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $qb->addOrderBy('e.numero', $sort['equipe.numero']);
             }
             if (key($sort)=='fichier'){
-                $qb->addOrderBy('f.fichier', $sort['fichier']);
+                $qb->addOrderBy('entity.fichier', $sort['fichier']);
             }
-            if (key($sort)=='equipe'){
-                $qb->addOrderBy('f.equipe', $sort['equipe']);
+
+            if (key($sort)=='equipe.titreProjet'){
+                $qb->addOrderBy('e.titreProjet', $sort['equipe.titreProjet']);
+            }
+            if (key($sort)=='updatedat'){
+                $qb->addOrderBy('entity.updatedAt', $sort['updatedat']);
             }
         }
         else{
@@ -676,6 +687,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
 
         }
+
         return $qb;
     }
 

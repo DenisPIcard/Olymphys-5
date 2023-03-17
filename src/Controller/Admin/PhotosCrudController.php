@@ -223,7 +223,7 @@ class PhotosCrudController extends AbstractCrudController
 
         $equipeCentreCentre = TextField::new('equipe.centre', 'Centre académique')->setSortable(true);
         $equipeNumero = IntegerField::new('equipe.numero', 'N° équipe')->setSortable(true);
-        $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet')->setSortable(true);
+        $equipeTitreprojet = TextareaField::new('equipe.titreProjet', 'Projet')->setSortable(true);
         $equipeLettre = TextField::new('equipe.lettre', 'Lettre')->setSortable(true);
         $imageFile = Field::new('photoFile')
             ->setFormType(FileType::class)
@@ -296,6 +296,7 @@ class PhotosCrudController extends AbstractCrudController
         $qb->leftJoin('entity.equipe', 'e');
 
         if (isset($_REQUEST['sort'])){
+            $qb->resetDQLPart('orderBy');
             $sort=$_REQUEST['sort'];
             if (key($sort)=='equipe.lettre'){
                 $qb->addOrderBy('e.lettre', $sort['equipe.lettre']);
@@ -303,13 +304,20 @@ class PhotosCrudController extends AbstractCrudController
             if (key($sort)=='equipe.numero'){
                 $qb->addOrderBy('e.numero', $sort['equipe.numero']);
             }
-            if (key($sort)=='equipe.centre.centre'){
-                $qb->addOrderBy('e.centre.centre', $sort['equipe.centre.centre']);
-            }
+            if (key($sort)=='equipe.centre'){
 
+                $qb->leftJoin('e.centre','c')
+                   ->addOrderBy('c.centre', $sort['equipe.centre']);
+            }
+            if (key($sort)=='equipe.titreProjet'){
+                $qb->addOrderBy('e.titreProjet', $sort['equipe.titreProjet']);
+            }
+            if (key($sort)=='updatedAt'){
+                $qb->addOrderBy('entity.updatedAt', $sort['updatedAt']);
+            }
         }
         else{
-            if ($concours == 'interacadémique') {
+            if ($concours == 'interacademique') {
                 $qb->addOrderBy('e.numero', 'ASC');
             }
             if ($concours == 'national') {

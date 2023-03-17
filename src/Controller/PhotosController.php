@@ -156,11 +156,11 @@ class PhotosController extends AbstractController
                         if (($equipe->getLettre() === null) or ($concours=='inter') )  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
                             $photo->setNational(FALSE);
                         }
-                        if (($equipe->getLettre() !== null) and ($concours=='cn')) {
+                        if (($equipe->getLettre() !== null) or ($concours=='cn')) {
 
                             $photo->setNational(TRUE);
                         }
-                        if ($equipe->getNumero()>=100){
+                        if ($equipe->getNumero()>=100){ //ces "équipes" sont des équipes technique remise des prix, ambiance du concours, etc, ...
                             $photo->setNational(TRUE);
                         }
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
@@ -352,12 +352,17 @@ class PhotosController extends AbstractController
             $form[$i] = $this->createForm(FormType::class, $photo);
 //if($photo->getComent()==null){$data=$photo->getEquipe()->getTitreProjet();}
 //else {$data=$photo->getComent();}
-            $form[$i]->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
-                ->add('coment', TextType::class, [
 
+            $form[$i]->add('equipe',EntityType::class,[
+                        'class'=>Equipesadmin::class,
+                        'choices'=>$equipes,
+                    ])
+                    ->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
+                    ->add('coment', TextType::class, [
                     'required' => false,
-// 'data'=>$data
-                ]);
+                    ])
+                    ;
+
             if ($concours == 'inter') {
                 $form[$i]->add('equipe', EntityType::class, [
                     'class' => Equipesadmin::class,

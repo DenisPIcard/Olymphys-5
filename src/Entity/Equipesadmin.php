@@ -114,6 +114,7 @@ class Equipesadmin
     {
         $this->equipesstring = new ArrayCollection();
         $this->idProf2 = null;
+        $this->selectionnee=false;
     }
 
     public function __toString(): string
@@ -121,7 +122,7 @@ class Equipesadmin
         $ed = $this->getEdition()->getEd();
 
         if ($this->getLettre() != null) {
-            return $ed . '-' . $this->lettre . '-' . $this->titreProjet;
+            return $ed . '-' . $this->numero.'-'.$this->lettre . '-' . $this->titreProjet;
         } else {
             return $ed . '-' . $this->numero . '-' . $this->titreProjet;
         }
@@ -176,7 +177,7 @@ class Equipesadmin
     {
         $nomcentre = '';
 
-        $this->getLettre() === null ? $Numero = $this->getNumero() : $Numero = $this->getLettre();
+        $this->getLettre() === null ? $Numero = $this->getNumero() : $Numero = $this->numero.'-'.$this->getLettre();
         $edition = $this->getEdition();
         if ($centre = $this->getCentre()) {
             $nomcentre = $this->getCentre()->getCentre() . '-';
@@ -196,10 +197,12 @@ class Equipesadmin
         if ($this->getSelectionnee() == '1') {
 
             $lettre = $this->getLettre();
-
+            if($lettre===null){
+                $lettre=$this->numero;
+            }
 
             $nom_equipe = $this->getTitreProjet();
-            $infoequipe = $lettre . ' - ' . $nom_equipe;
+            $infoequipe = $edition->getEd().'-'.$lettre . ' - ' . $nom_equipe;
             if ($this->getUaiId()) {
                 $infoequipe = $infoequipe . '-' . $this->getUaiId()->getCommune();
             }
@@ -208,6 +211,7 @@ class Equipesadmin
             return $infoequipe;
 
         }
+        return $this-> $edition->getEd().'-'.$this->titreProjet;
     }
 
 

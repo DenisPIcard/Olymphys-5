@@ -749,7 +749,7 @@ class FichiersController extends AbstractController
         $qbJuryNat = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
-            ->andWhere('t.typefichier in (0,1,2,3)')
+            ->andWhere('t.typefichier in (0,1,2,3,4,8)')
             ->andWhere('t.national =:national')
             ->setParameter('national', TRUE);
 
