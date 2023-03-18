@@ -35,9 +35,14 @@
 
     {# #}
     <li><strong>Vendredi {{ date(app.session.get('edition').date)|date('j') }} et
-            samedi {{ date(app.session.get('edition').concourscn)|date('j m Y') }}</strong> : Concours National,
-        organisé par l'<em><strong>{{ app.session.get('edition').lieu }}</strong><br/></em></li>
-
+            samedi {{ date(app.session.get('edition').concourscn)|date('j')}}
+            {% if date(app.session.get('edition').concourscn)|date('m') == 1 %}
+                janvier
+            {% else %}
+                février
+            {% endif %}
+            {{ date(app.session.get('edition').concourscn)|date( 'Y') }}</strong> : Concours National,
+        organisé par l'<em><strong>{{ app.session.get('edition').lieu }}<strong><br></em></li>
 </ul>
 <p><strong>DATES LIMITES</strong></p>
 <ul>
