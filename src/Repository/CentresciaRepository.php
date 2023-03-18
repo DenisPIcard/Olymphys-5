@@ -22,13 +22,6 @@ class CentresciaRepository extends ServiceEntityRepository
     }
 
 
-    public function getCentres(CentresciaRepository $cr): QueryBuilder
-    {
-
-        return $cr->createQueryBuilder('c')->select('c');
-        //->where('e.lettre = :lettre')
-        //->setParameter('lettre',$lettre);
-    }
 
 
 }
