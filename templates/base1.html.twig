@@ -18,7 +18,7 @@ Layout de départ des utils du site #}
     <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
     <link rel="stylesheet" href="{{ asset('css/base1.css') }}">
     <link rel="stylesheet" href="{{ asset('css/odpf-pages.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/galeries.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
@@ -75,7 +75,7 @@ Layout de départ des utils du site #}
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="false">Connexion</a>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
-                                    <a class="dropdown-item " href="{{ path('login') }}">Connectez
+                                    <a class="dropdown-item " href="{{ path('login') }}" style="color:#b1191d; font-size: 12px">Connectez
                                             vous si vous avez un compte</a>
                                 </div>
                             {% endif %}
@@ -189,6 +189,66 @@ Layout de départ des utils du site #}
             $('#modalinfo').modal('open');
         });
     </script>
+    <script type="text/javascript">
+        slides = document.getElementsByClassName("containercarousel");
+        imgs = document.getElementsByClassName("img-fluid");
+        modal = document.getElementsByClassName("modal-gal");
+        modalImg = document.getElementsByClassName("modal-content-gal");
+        modalCap = document.getElementsByClassName("modal-caption-gal");
+
+        function modalShow(j) {
+            var img = document.getElementById("photo".concat(j));
+            var cap = document.getElementById("caption".concat(j));
+            modalhref = document.getElementsByClassName("btn");
+            modalImg[0].src = img.src.replace('/thumbs/', '/');
+            modalImg[0].style.height = "250px";
+            if (cap != null) {
+                modalCap[0].innerHTML = cap.innerHTML;
+            }
+            modalhref[0].href = modalImg[0].src;
+            let array = modalImg[0].src.split('/');
+            length = array.length;
+            let file = array[length - 1];
+            file = file.split('%20').join('_');
+            modalhref[0].download = file;
+            modal[0].style.display = "block";
+
+        }
+
+        span = document.getElementsByClassName("close")[0];
+        span.onclick = function () {
+            modal[0].style.display = "none";
+        }
+
+        function modalClose() {
+            modalImg[0].style.display = "none";
+        }
+
+        $('#carousel').carousel({
+            interval: 5000
+        })
+
+        $('.carousel .carousel-item').each(function () {
+            var minPerSlide = 4;
+            var next = $(this).next();
+            if (!next.length) {
+                next = $(this).siblings(':first');
+            }
+            next.children(':first-child').clone().appendTo($(this));
+
+            for (var i = 0; i < minPerSlide; i++) {
+                next = next.next();
+                if (!next.length) {
+                    next = $(this).siblings(':first');
+                }
+
+                next.children(':first-child').clone().appendTo($(this));
+            }
+        });
+
+
+    </script>
+
 
 {% endblock %}
 
