@@ -199,7 +199,7 @@ Layout de départ des utils du site #}
         function modalShow(j) {
             var img = document.getElementById("photo".concat(j));
             var cap = document.getElementById("caption".concat(j));
-            modalhref = document.getElementsByClassName("btn");
+            modalhref = document.getElementsByClassName("btn-primary");
             modalImg[0].src = img.src.replace('/thumbs/', '/');
             modalImg[0].style.height = "250px";
             if (cap != null) {
