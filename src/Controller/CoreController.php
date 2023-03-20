@@ -81,6 +81,7 @@ class CoreController extends AbstractController
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
     {
         // construit les pages
+        // try catch sert à rediriger les internautes vers le départ si la session s'est interrompue
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -97,14 +98,14 @@ class CoreController extends AbstractController
 
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $listfaq = $repo->listfaq();
-        if ($choix == 'les_equipes') {
-            $tab = $OdpfListeEquipes->getArray($choix);
+        if ($choix == 'les_equipes') { // dirige vers le traitement de chaque choix
+            $tab = $OdpfListeEquipes->getArray($choix);//Le service construit la liste
             $tab['listfaq'] = $listfaq;
         } elseif ($choix == 'mecenes' or $choix == 'donateurs') {
             $repo1 = $doctrine->getRepository(OdpfLogos::class);
-            $tab = $repo1->logospartenaires($choix);
+            $tab = $repo1->logospartenaires($choix);// la fonction est dans le repository
             $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
-            $tab['partenaires'] = $repo2->textespartenaires();
+            $tab['partenaires'] = $repo2->textespartenaires();//la fonction est dans le repository
             $tab['listfaq'] = $listfaq;
         } elseif ($choix == 'editions') {
             $editions = $doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
@@ -118,13 +119,12 @@ class CoreController extends AbstractController
                     ->findOneBy(['edition' => $editionaffichee->getEdition()])->getEdition();
             $photosed = $this->doctrine->getRepository(photos::class)->findBy(['editionspassees' => $editionaffichee]);
             count($photosed) != 0 ? $photostest = true : $photostest = false;
-            $tab = $OdpfCreateArray->getArray($choix);
+            $tab = $OdpfCreateArray->getArray($choix);// construit le tableau de résultat à afficher par le template
             $tab['edition_affichee'] = $editionaffichee;
             $tab['editions'] = $editions;
             $tab['choice'] = $choice;
             $tab['listfaq'] = $listfaq;
             $tab['photostest'] = $photostest;
-            // dd($tab);
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 
         } else {
@@ -151,16 +151,12 @@ class CoreController extends AbstractController
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
         }
-        if (!$this->requestStack->getSession()->get('edition')) {
-            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-            $this->requestStack->getSession()->set('edition', $edition);
-        }
+
         // construit la liste des éléments à afficher, et à avoir, pour le menu Actus
         $repo = $doctrine->getRepository(OdpfArticle::class);
 
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
         $tab = $repo->actuspaginees();
-        //dd($tab);
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
         $nbpages = $tab['nbpages'];
@@ -190,7 +186,6 @@ class CoreController extends AbstractController
         $affActus = $actutil[$pageCourante - 1];
 
         $tab['affActus'] = $affActus;
-        //dd($tab);
 
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
@@ -198,7 +193,7 @@ class CoreController extends AbstractController
     #[Route("/core/faq,{tourn}", name:"core_faq")]
     public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
-        // construit le tableau des éléments à passer au template pour créer le menu des FAQ
+        // construit le tableau des éléments à passer au template pour créer la page des FAQ
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -223,7 +218,7 @@ class CoreController extends AbstractController
         $tab['choix'] = 'faq';
         $tab['titre'] = $faq['titre'];
         $pageFCourante = $this->requestStack->getSession()->get('pageFCourante');
-        // paginateur
+        // paginateur identique à celui des actus. La différence est dans le FCourante
         switch ($tourn) {
             case 'debut':
                 $pageFCourante = 1;
