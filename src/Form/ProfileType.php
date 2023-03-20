@@ -23,7 +23,7 @@ class ProfileType extends AbstractType
             ->add('ville', TextType::class, ['required' => true, 'label' => 'Votre ville'])
             ->add('code', TextType::class, ['required' => true, 'label' => 'Votre code'])
             ->add('phone', TextType::class, ['required' => true, 'label' => 'Votre téléphone, portable, si possible',])
-            ->add('rne', TextType::class, ['required' => false, 'label' => 'RNE, si vous comptez inscrire une équipe'])
+            ->add('uai', TextType::class, ['required' => false, 'label' => 'UAI, si vous comptez inscrire une équipe'])
             ->add('Modification', SubmitType::class, ['label' => 'Valider ces modifications']);;
     }
 

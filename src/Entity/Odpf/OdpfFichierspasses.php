@@ -26,7 +26,7 @@ class OdpfFichierspasses
     #[ORM\ManyToOne(targetEntity:OdpfEditionsPassees::class)]
     private ?OdpfEditionsPassees $editionspassees=null;
 
-    #[ORM\ManyToOne(targetEntity:OdpfEquipesPassees::class)]
+    #[ORM\ManyToOne(targetEntity:OdpfEquipesPassees::class, cascade:['remove', ])]
     private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee=null;
 
     #[ORM\Column(nullable:true)]

@@ -13,7 +13,7 @@ use App\Entity\Notes;
 use App\Entity\Phrases;
 use App\Entity\Prix;
 use App\Entity\Repartprix;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\Visites;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
@@ -65,12 +65,12 @@ class SecretariatjuryController extends AbstractController
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
 
-        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if (new \DateTime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
                 $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
-        $repositoryRne = $this->doctrine->getRepository(Rne::class);
+        $repositoryUai = $this->doctrine->getRepository(Uai::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -86,8 +86,8 @@ class SecretariatjuryController extends AbstractController
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe' => $equipe]);
-            $rne = $equipe->getRne();
-            $lycee[$lettre] = $repositoryRne->findBy(['rne' => $rne]);
+            $uai = $equipe->getUai();
+            $lycee[$lettre] = $repositoryUai->findBy(['uai' => $uai]);
         }
 
         $tableau = [$listEquipes, $lesEleves, $lycee];

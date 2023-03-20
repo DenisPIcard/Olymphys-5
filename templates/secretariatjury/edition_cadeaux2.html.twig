@@ -11,16 +11,14 @@
     <div class="container">
 
         <table class="table table-striped">
-            <thead>
+
             <tr>
                 <th>Lettre</th>
                 <th>Prix</th>
                 <th>Titre projet</th>
                 <th>Cadeau</th>
             </tr>
-            </thead>
 
-            <tbody>
             {% for equipe in listEquipes %}
                 {% if equipe.classement =='3ème' %}
                     {% set class = 'btn btn-primary' %}
@@ -43,7 +41,7 @@
                 </tr>
             {% endfor %}
 
-            </tbody>
+
         </table>
 
 

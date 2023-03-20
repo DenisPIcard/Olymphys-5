@@ -1,32 +1,31 @@
 {# templates/base1.html.twig
-Layout de départ du site #}
+Layout de départ des utils du site #}
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}"/>
+
     <title>{% block title %}Olymphys{% endblock %}</title>
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-              crossorigin="anonymous">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
-        <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
-        <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/galeries.css') }}">
-        {#  <link rel="stylesheet" href="{{ asset('css/imagesgalery.css') }}"> #}
-        <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-              integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-              crossorigin="anonymous">
-    {% endblock %}
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/base1.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/odpf-pages.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/galeries.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+{% endblock %}
 </head>
 
 <body>
@@ -36,100 +35,220 @@ Layout de départ du site #}
         <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>
     </div>
 {% endif %}
-<div class="container-fluid">
-    <div class="page-header">
-        <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicomplet.png') }}" alt="logo des OdpF" width="300"/></a>
-
+{# <div class="container-fluid"> #}
+    <div id="barre_haut">
     </div>
-    <div class="row">
-        <div class="col-md-8 col-lg-3 col-md-first">
-        </div>
-        <div class="col-md-9 order-md-last">
-            <h3> {% block titre3 %}
-                {% endblock %}
-            </h3>
-        </div>
+    <div id="wrapper">
+        <div class="container-fluid bg-white">
 
-    </div>
-    <div class="row">
 
-        <div id="menu" class="col-md-8 col-lg-3 col-md-first">
-            <ul class="nav flex-column nav-pills ml-1">
-                {% if app.session.get('resetpwd')== true %}
-                    <a href="{{ path('logout') }}">Accueil du site</a>
-                {% else %}
-                    <a href="{{ path('core_home') }}">Accueil du site</a>
-                {% endif %}
-                <p></p>
-                {% block navigation %}
-                    <ul class="nav flex-column nav-pills">
+            <div class="row justify-content-center">
+                <nav>
 
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <li>Utilisateur : {{ app.user.useridentifier }}</li>
-                            <li><a href="{{ path('profile_show') }}">Voir le profil</a></li>
-                            <li><a href="{{ path('logout') }}">Déconnexion</a></li>
-                        {% else %}
-                            <li><a href="{{ path('login') }}">Connectez vous</a> si vous avez un compte,</li>
-                            <li>Ou <a href="{{ path('register') }}">créez un compte</a> si vous en souhaitez un</li>
-                            <li>Sinon, entrez dans le menu</li>
+                    <ul class="nav flex-column flex-md-row">
 
-                        {% endif %}
+                        <li class="nav-item dropdown menurouge">
+                            <a class="nav-link" href="{{ path('core_home') }}"  role="button" aria-haspopup="true"
+                                   aria-expanded="false">Accueil du site</a>
+
+                        </li>
+
+                        {% block navigation %}
+                        {% endblock %}
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                         <li class="nav-item dropdown menu_haut">
+                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false"> {{ app.user.prenomNom }}</a>
+                             <div class="dropdown-menu ">
+
+                                    <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
+                             </div>
+                         </li>
+                    {% endif %}
+
+                        <li class="nav-item dropdown menurouge">
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
+                                       aria-expanded="false">Déconnexion</a>
+
+                            {% else %}
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Connexion</a>
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenu3">
+                                    <a class="dropdown-item " href="{{ path('login') }}" style="color:#b1191d; font-size: 12px">Connectez
+                                            vous si vous avez un compte</a>
+                                </div>
+                            {% endif %}
+                        </li>
+
+
                     </ul>
+
+                </nav>
+            </div>
+
+          <div class="logo">
+                <a href="{{ path('core_home') }}"><img src="{{ asset('images/Phicompletblanc.png') }}" alt="logo des OdpF" width="300"/></a>
+
+          </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-6 col-lg-1 col-md-first">
+            </div>
+            <div class="col-md-10">
+                <h3 class="text-center"> {% block titre3 %}
+                    {% endblock %}
+                </h3>
+            </div>
+            <div class="col-md-1 order-md-last">
+            </div>
+
+
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-6 col-lg-1 col-md-first">
+            </div>
+            <div class="col-md-10 ">
+                {% block body %}
                 {% endblock %}
-            </ul>
+
+            </div>
+            <div class="col-md-1 order-md-last">
+            </div>
         </div>
 
+        <div class="row">
 
-        <div id="content" class="col-md-9 order-md-last">
 
-            <hr>
-            {% block body %}
 
-            {% endblock %}
-            {% block nav_eq %}
-            {% endblock %}
+            <div id="content" class="col-md-9 order-md-last">
+
+                <hr>
+
+                {% block nav_eq %}
+                {% endblock %}
+            </div>
         </div>
-    </div>
 
     <hr>
 
 
-</div>
+    </div>
 
 
-<hr>
+    <hr>
 
-<footer>
-    {% block flash %}
-        {{ include('flash.html.twig') }}
-    {% endblock %}
-    <p>
-    <div class="ml-3">Réalisé sous Symfony6 <a href="https://symfony.com/" target="_blank"><img
-                    src="{{ asset("images/logosymfony.png") }}" class="img-thumbnail" alt="Symfony"></a> à l'aide de PhpStorm <a
-                href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank" > <img
-                    src="{{ asset('images/logophpstorm.jpg') }}" class="img-thumbnail" alt="PhpStorm"></a></div>
+    <footer>
+        {% block flash %}
+            {{ include('flash.html.twig') }}
+        {% endblock %}
+        <p>
 
+        <div class="ml-3">Site créé avec <a href="https://www.symfony.com" target="_blank" rel="noopener"><img
+                    style="margin-bottom: 0; vertical-align: middle;"
+                    src="{{ asset('odpf/odpf-images/logo-symfony.png') }}" alt="symfony logo"
+                    width="30">
+        </a> et le support de <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"
+                                 rel="noopener"><img style="margin-bottom: 0; vertical-align: middle;"
+                                                     src="{{ asset('odpf/odpf-images/logo-PhpStorm.png') }}"
+                                                     alt="PhpStorm logo" width="30">
+        </a>
+        </div>
 
-    <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a></div>
+        <div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a></div>
 
-</footer>
-
+    </footer>
+    </div>
 
 {% block javascripts %}
-    {# <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> #}
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#form1").on('change', function () {
+                $("#form1").submit();
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        {# permet la construction de fenêtres modales #}
+        $(document).ready(function () {
+            $('#modalinfo').modal();
+            $('#modalinfo').modal('open');
+        });
+    </script>
+    <script type="text/javascript">
+        slides = document.getElementsByClassName("containercarousel");
+        imgs = document.getElementsByClassName("img-fluid");
+        modal = document.getElementsByClassName("modal-gal");
+        modalImg = document.getElementsByClassName("modal-content-gal");
+        modalCap = document.getElementsByClassName("modal-caption-gal");
+
+        function modalShow(j) {
+            var img = document.getElementById("photo".concat(j));
+            var cap = document.getElementById("caption".concat(j));
+            modalhref = document.getElementsByClassName("btn-primary");
+            modalImg[0].src = img.src.replace('/thumbs/', '/');
+            modalImg[0].style.height = "250px";
+            if (cap != null) {
+                modalCap[0].innerHTML = cap.innerHTML;
+            }
+            modalhref[0].href = modalImg[0].src;
+            let array = modalImg[0].src.split('/');
+            length = array.length;
+            let file = array[length - 1];
+            file = file.split('%20').join('_');
+            modalhref[0].download = file;
+            modal[0].style.display = "block";
+
+        }
+
+        span = document.getElementsByClassName("close")[0];
+        span.onclick = function () {
+            modal[0].style.display = "none";
+        }
+
+        function modalClose() {
+            modalImg[0].style.display = "none";
+        }
+
+        $('#carousel').carousel({
+            interval: 5000
+        })
+
+        $('.carousel .carousel-item').each(function () {
+            var minPerSlide = 4;
+            var next = $(this).next();
+            if (!next.length) {
+                next = $(this).siblings(':first');
+            }
+            next.children(':first-child').clone().appendTo($(this));
+
+            for (var i = 0; i < minPerSlide; i++) {
+                next = next.next();
+                if (!next.length) {
+                    next = $(this).siblings(':first');
+                }
+
+                next.children(':first-child').clone().appendTo($(this));
+            }
+        });
+
+
+    </script>
+
 
 {% endblock %}
 

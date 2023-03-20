@@ -86,9 +86,10 @@ class ComiteController extends AbstractController
             ->getRepository(Edition::class);
 
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
-        if ((date('now')<$edition->getDateouverturesite()) and(in_array('ROLE_JURY',$this->getUser()->getRoles()))){
+        if (date('now')<$edition->getDateouverturesite()){
             $edition = $repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
         }
+
         $user = $this->getUser();
         $task = ['nblig' => $nblig];
 

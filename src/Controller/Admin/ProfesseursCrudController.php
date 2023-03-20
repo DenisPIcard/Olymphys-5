@@ -6,6 +6,7 @@ use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Entity\Edition;
 use App\Entity\Equipesadmin;
 use App\Entity\Professeurs;
+use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -50,10 +51,12 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
-        $editionEd = $session->get('edition')->getEd();
-        if (date('now')<$session->get('dateouverturesite')){
-            $editionEd=$editionEd-1;
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $edition = $session->get('edition');
+        $editionEd=$edition->getEd();
+        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            $editionEd=$edition->getEd();
         }
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
         if (isset($_REQUEST['filters']['edition'])) {
@@ -63,8 +66,10 @@ class ProfesseursCrudController extends AbstractCrudController
         }
         return $crud
             ->setPageTitle(Crud::PAGE_DETAIL, 'Professeur')
-            ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50);
+            ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'uai', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
+            ->setPaginatorPageSize(50)
+            ;
+
         //->overrideTemplates(['layout' => 'bundles/EasyAdminBundle/list_profs.html.twig',]);
 
 
@@ -73,10 +78,12 @@ class ProfesseursCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $session = $this->requestStack->getSession();
-        $editionId = $session->get('edition')->getId();
+        $edition= $session->get('edition');
+        $editionId=$edition->getId();
         $repositoryEdition=$this->doctrine->getRepository(Edition::class);
-        if(date('now')<$session->get('dateouverturesite')){
-            $editionId=$repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1])->getId();
+        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
+            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            $editionId=$edition->getId();
         }
         if (isset($_REQUEST['filters']['edition'])) {
 
@@ -111,10 +118,10 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $nom = IntegerField::new('user.nom', 'nom');
         $prenom = TextField::new('user.prenom', 'Prénom');
-        $nomLycee = TextField::new('user.rneId.appellationOfficielle', 'Lycée');
-        $lyceeLocalite = TextField::new('user.rneId.commune', 'Ville');
-        $lyceeAcademie = TextField::new('user.rneId.academie', 'Académie');
-        $rne = TextField::new('user.rne', 'Code UAI');
+        $nomLycee = TextField::new('user.uaiId.nom', 'Lycée');
+        $lyceeLocalite = TextField::new('user.uaiId.commune', 'Ville');
+        $lyceeAcademie = TextField::new('user.uaiId.academie', 'Académie');
+        $uai = TextField::new('user.uai', 'Code UAI');
         $equipes = IntegerField::new('equipesstring', 'Equipes');
         $telephone = TextField::new('user.phone', 'Téléphone');
         $mail = EmailField::new('user.email', 'Mail');
@@ -122,13 +129,13 @@ class ProfesseursCrudController extends AbstractCrudController
         $ville = TextField::new('user.ville', 'Ville');
         $code = TextField::new('user.code', 'CP');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
+            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $uai, $equipes];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes, $mail, $telephone, $adresse, $code, $ville];
+            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $uai, $equipes, $mail, $telephone, $adresse, $code, $ville];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
+            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $uai, $equipes];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
+            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $uai, $equipes];
         }
     }
 
@@ -147,7 +154,8 @@ class ProfesseursCrudController extends AbstractCrudController
 
         if (!isset($_REQUEST['filters'])) {
             $edition = $session->get('edition');
-            if(date('now')<$session->get('dateouverturesite')){
+
+            if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
                 $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
             }
         } else {
@@ -209,10 +217,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
     }
 
-    /**
-     * @Route("/Professeurs/editer_tableau_excel,{idEdition}", name="profs_tableau_excel")
-     */
-
+    #[Route("/Professeurs/editer_tableau_excel,{idEdition}", name:"profs_tableau_excel")]
     public function editer_tableau_excel($idEdition)
     {
 
@@ -312,11 +317,11 @@ class ProfesseursCrudController extends AbstractCrudController
                 ->setCellValue('E' . $ligne, $prof->getUser()->getCode())
                 ->setCellValue('F' . $ligne, $prof->getUser()->getEmail())
                 ->getCell('G' . $ligne)->setValueExplicit($prof->getUser()->getPhone(), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            if ($prof->getUser()->getRneId()!==null) {
-                $sheet->setCellValue('H' . $ligne, $prof->getUser()->getRneId()->getRne())
-                    ->setCellValue('I' . $ligne, $prof->getUser()->getRneId()->getNom())
-                    ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune())
-                    ->setCellValue('K' . $ligne, $prof->getUser()->getRneId()->getAcademie());
+            if ($prof->getUser()->getUaiId()!==null) {
+                $sheet->setCellValue('H' . $ligne, $prof->getUser()->getUaiId()->getUai())
+                    ->setCellValue('I' . $ligne, $prof->getUser()->getUaiId()->getNom())
+                    ->setCellValue('J' . $ligne, $prof->getUser()->getUaiId()->getCommune())
+                    ->setCellValue('K' . $ligne, $prof->getUser()->getUaiId()->getAcademie());
             }
             $equipesstring = explode('-', $prof->getEquipesstring());
             $sheet->getRowDimension($ligne)->setRowHeight(12.5 * intval($equipesstring[0]));
@@ -337,10 +342,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
     }
 
-    /**
-     * @Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name="profs_tableau_excel_sel")
-     */
-
+   #[Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name:"profs_tableau_excel_sel")]
     public function editer_tableau_excel_sel($idEdition)
     {
 
@@ -439,10 +441,10 @@ class ProfesseursCrudController extends AbstractCrudController
                 ->setCellValue('E' . $ligne, $prof->getUser()->getCode())
                 ->setCellValue('F' . $ligne, $prof->getUser()->getEmail())
                 ->getCell('G' . $ligne)->setValueExplicit($prof->getUser()->getPhone(), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('H' . $ligne, $prof->getUser()->getRneId()->getRne())
-                ->setCellValue('I' . $ligne, $prof->getUser()->getRneId()->getNom())
-                ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune());
-            $sheet->setCellValue('K' . $ligne, $prof->getUser()->getRneId()->getAcademie());
+            $sheet->setCellValue('H' . $ligne, $prof->getUser()->getUaiId()->getUai())
+                ->setCellValue('I' . $ligne, $prof->getUser()->getUaiId()->getNom())
+                ->setCellValue('J' . $ligne, $prof->getUser()->getUaiId()->getCommune());
+            $sheet->setCellValue('K' . $ligne, $prof->getUser()->getUaiId()->getAcademie());
 
             $equipesstring = explode('-', $prof->getEquipesstring());
             $sheet->getRowDimension($ligne)->setRowHeight(12.5 * intval($equipesstring[0]));

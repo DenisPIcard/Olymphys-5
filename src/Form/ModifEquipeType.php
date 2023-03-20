@@ -33,7 +33,7 @@ class ModifEquipeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $rne = $options['rne'];
+        $uai = $options['uai'];
         $eleves = $options['eleves'];
         $nbEleves = count($eleves);
 
@@ -48,10 +48,10 @@ class ModifEquipeType extends AbstractType
         ])
             ->add('idProf1', EntityType::class, [
                 'class' => User::class,
-                'query_builder' => function (EntityRepository $er) use ($rne) {
+                'query_builder' => function (EntityRepository $er) use ($uai) {
                     return $er->createQueryBuilder('u')
-                        ->andWhere('u.rne =:rne')
-                        ->setParameter('rne', $rne)
+                        ->andWhere('u.uai =:uai')
+                        ->setParameter('uai', $uai)
                         ->andWhere('u.isActive = 1')
                         ->addOrderBy('u.nom', 'ASC');
                 },
@@ -63,10 +63,10 @@ class ModifEquipeType extends AbstractType
             ->add('idProf2', EntityType::class, [
                 'class' => User::class,
                 'required' => false,
-                'query_builder' => function (EntityRepository $er) use ($rne) {
+                'query_builder' => function (EntityRepository $er) use ($uai) {
                     return $er->createQueryBuilder('u')
-                        ->andWhere('u.rne =:rne')
-                        ->setParameter('rne', $rne)
+                        ->andWhere('u.uai =:uai')
+                        ->setParameter('uai', $uai)
                         ->andWhere('u.isActive = 1')
                         ->addOrderBy('u.nom', 'ASC');
                 },
@@ -209,7 +209,7 @@ class ModifEquipeType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => Equipesadmin::class, 'rne' => null, 'eleves' => null]);
+        $resolver->setDefaults(['data_class' => Equipesadmin::class, 'uai' => null, 'eleves' => null]);
 
     }
 }

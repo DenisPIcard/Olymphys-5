@@ -96,7 +96,7 @@ class EquipesadminRepository extends ServiceEntityRepository
     public function getEquipes_prof_cn(User $prof, Edition $edition): array
     {
         $entityManager = $this->getEntityManager();
-        $edition=$this->doctrine->getRepository(Edition::class)->find($edition->getId());
+        $edition=$this->requestStack->getSession()->get('edition');
 
         $query = $entityManager->createQuery(
             'SELECT e

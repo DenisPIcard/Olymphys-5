@@ -60,10 +60,10 @@ class Equipesadmin
     private ?string $nomProf2 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $rne=null;
+    private ?string $uai=null;
 
     #[ORM\ManyToOne]
-    private ?Rne $rneId =null;
+    private ?Uai $uaiId =null;
 
     #[ORM\ManyToOne]
     private ?Centrescia $centre;
@@ -114,6 +114,7 @@ class Equipesadmin
     {
         $this->equipesstring = new ArrayCollection();
         $this->idProf2 = null;
+        $this->selectionnee=false;
     }
 
     public function __toString(): string
@@ -121,7 +122,7 @@ class Equipesadmin
         $ed = $this->getEdition()->getEd();
 
         if ($this->getLettre() != null) {
-            return $ed . '-' . $this->lettre . '-' . $this->titreProjet;
+            return $ed . '-' . $this->numero.'-'.$this->lettre . '-' . $this->titreProjet;
         } else {
             return $ed . '-' . $this->numero . '-' . $this->titreProjet;
         }
@@ -176,7 +177,7 @@ class Equipesadmin
     {
         $nomcentre = '';
 
-        $this->getLettre() === null ? $Numero = $this->getNumero() : $Numero = $this->getLettre();
+        $this->getLettre() === null ? $Numero = $this->getNumero() : $Numero = $this->numero.'-'.$this->getLettre();
         $edition = $this->getEdition();
         if ($centre = $this->getCentre()) {
             $nomcentre = $this->getCentre()->getCentre() . '-';
@@ -196,18 +197,21 @@ class Equipesadmin
         if ($this->getSelectionnee() == '1') {
 
             $lettre = $this->getLettre();
-
+            if($lettre===null){
+                $lettre=$this->numero;
+            }
 
             $nom_equipe = $this->getTitreProjet();
-            $infoequipe = $lettre . ' - ' . $nom_equipe;
-            if ($this->getRneId()) {
-                $infoequipe = $infoequipe . '-' . $this->getRneId()->getCommune();
+            $infoequipe = $edition->getEd().'-'.$lettre . ' - ' . $nom_equipe;
+            if ($this->getUaiId()) {
+                $infoequipe = $infoequipe . '-' . $this->getUaiId()->getCommune();
             }
 
 
             return $infoequipe;
 
         }
+        return $this-> $edition->getEd().'-'.$this->titreProjet;
     }
 
 
@@ -327,25 +331,25 @@ class Equipesadmin
         return $this->nomProf2;
     }
 
-    public function getRne(): ?string
+    public function getUai(): ?string
     {
-        return $this->rne;
+        return $this->uai;
     }
 
-    public function setRne(?string $rne): Equipesadmin
+    public function setUai(?string $uai): Equipesadmin
     {
-        $this->rne = $rne;
+        $this->uai = $uai;
         return $this;
     }
 
-    public function getRneId(): ?Rne
+    public function getUaiId(): ?Uai
     {
-        return $this->rneId;
+        return $this->uaiId;
     }
 
-    public function setRneId(?Rne $rne_id): Equipesadmin
+    public function setUaiId(?Uai $uai_id): Equipesadmin
     {
-        $this->rneId = $rne_id;
+        $this->uaiId = $uai_id;
         return $this;
     }
 

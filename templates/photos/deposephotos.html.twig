@@ -16,14 +16,14 @@
 
 
 {% block titre3 %}Déposer les photos des épreuves
-    {% if concours=='cia' %}
+    {% if concours=='inter' %}
         interacadémiques
     {% endif %}
     {% if concours =='cn' %}
         nationales
     {% endif %}
 
-    {% if date()<app.session.get('dateouverturesite') %}
+    {% if date()<app.session.get('edition').dateouverturesite %}
         {% set numEd=edition.ed-1 %}
     {% else %}
         {% set numEd=edition.ed %}

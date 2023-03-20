@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -44,15 +45,8 @@ class PhotosController extends AbstractController
         $this->requestStack = $requestStack;
         $this->doctrine = $doctrine;
     }
-
-
-    /**
-     * @IsGranted("ROLE_PROF")
-     *
-     * @Route("/photos/deposephotos,{concours}", name="photos_deposephotos")
-     *
-     * @throws ImagickException
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/photos/deposephotos,{concours}", name:"photos_deposephotos")]
     public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {
         $em = $this->doctrine->getManager();
@@ -159,11 +153,14 @@ class PhotosController extends AbstractController
                         $photo = new Photos();
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if (($equipe->getLettre() === null) or ($concours=='inter'))  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
+                        if (($equipe->getLettre() === null) or ($concours=='inter') )  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
                             $photo->setNational(FALSE);
                         }
-                        if (($equipe->getLettre() !== null) and ($concours=='cn')) {
+                        if (($equipe->getLettre() !== null) or ($concours=='cn')) {
 
+                            $photo->setNational(TRUE);
+                        }
+                        if ($equipe->getNumero()>=100){ //ces "équipes" sont des équipes technique remise des prix, ambiance du concours, etc, ...
                             $photo->setNational(TRUE);
                         }
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
@@ -237,13 +234,8 @@ class PhotosController extends AbstractController
 
     }
 
-
-    /**
-     *
-     * @IsGranted("ROLE_PROF")
-     * @Route("/photos/gestion_photos, {infos}", name="photos_gestion_photos")
-     *
-     */
+    #[Isgranted("ROLE_PROF")]
+    #[Route("/photos/gestion_photos, {infos}", name:"photos_gestion_photos")]
     public function gestion_photos(Request $request, $infos)
     {
         $choix = explode('-', $infos)[3];
@@ -269,14 +261,13 @@ class PhotosController extends AbstractController
 
         $concourseditioncentre = explode('-', $infos);
         $concours = $concourseditioncentre[0];
-        $idedition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
-        $editionN = $repositoryEdition->findOneBy(['id' => $idedition]);
-        $editionN1 = $editionN->getEd()-1;
-
+        $editionN = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
+        $editionN1 =  $repositoryEdition->findOneBy(['ed'=>$editionN->getEd()-1]);
+        new DateTime('now')>=$this->requestStack->getSession()->get('ouverturesite')?$edition=$editionN:$edition=$editionN1;
         if ($concours == 'inter') {
             $qb = $repositoryEquipesadmin->createQueryBuilder('e')
-                ->andWhere('e.edition =:editionN')
-                ->setParameter('editionN', $editionN)
+                ->andWhere('e.edition =:edition')
+                ->setParameter('edition', $edition)
                 ->addOrderBy('e.numero', 'ASC');
 
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
@@ -328,15 +319,13 @@ class PhotosController extends AbstractController
         if ($concours == 'cn') {
 
             $equipe = $repositoryEquipesadmin->findOneBy(['id' => $concourseditioncentre[2]]);
-            $editionN = $this->requestStack->getSession()->get('edition');
-            $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
+
             $equipes = $repositoryEquipesadmin->createQueryBuilder('eq')
                 ->andWhere('eq.selectionnee = TRUE')
                 ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')
                 ->setParameter('prof', $id_user)
-                ->andWhere('eq.edition =:editionN or eq.edition =:editionN1')
-                ->setParameter('editionN1',$editionN1)
-                ->setParameter('editionN', $editionN)
+                ->andWhere('eq.edition =:edition')
+                ->setParameter('edition',$edition)
                 ->getQuery()->getResult();
 
             $qb2 = $repositoryPhotos->createQueryBuilder('p')
@@ -363,12 +352,17 @@ class PhotosController extends AbstractController
             $form[$i] = $this->createForm(FormType::class, $photo);
 //if($photo->getComent()==null){$data=$photo->getEquipe()->getTitreProjet();}
 //else {$data=$photo->getComent();}
-            $form[$i]->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
-                ->add('coment', TextType::class, [
 
+            $form[$i]->add('equipe',EntityType::class,[
+                        'class'=>Equipesadmin::class,
+                        'choices'=>$equipes,
+                    ])
+                    ->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
+                    ->add('coment', TextType::class, [
                     'required' => false,
-// 'data'=>$data
-                ]);
+                    ])
+                    ;
+
             if ($concours == 'inter') {
                 $form[$i]->add('equipe', EntityType::class, [
                     'class' => Equipesadmin::class,
@@ -416,9 +410,7 @@ class PhotosController extends AbstractController
 
         }
         if (!isset($formtab)) {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Vous n\'avez pas déposé de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
+            $request->getSession()->set('info', 'Vous n\'avez pas déposé de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
             return $this->redirectToRoute('core_home');
 
 
@@ -433,7 +425,7 @@ class PhotosController extends AbstractController
         }
 
         if ($concours == 'cn') {
-            $edition=$editionN1;
+
             $content = $this
                 ->renderView('photos/gestion_photos_cn.html.twig', array('formtab' => $formtab, 'liste_photos' => $liste_photos,
                     'edition' => $edition, 'equipe' => $equipe, 'concours' => 'national', 'choix' => $choix));
@@ -442,12 +434,8 @@ class PhotosController extends AbstractController
 
     }
 
-    /**
-     *
-     * @IsGranted("ROLE_PROF")
-     * @Route("/photos/confirme_efface_photo, {concours_photoid_infos}", name="photos_confirme_efface_photo")
-     *
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/photos/confirme_efface_photo, {concours_photoid_infos}", name:"photos_confirme_efface_photo")]
     public function confirme_efface_photo(Request $request, $concours_photoid_infos)
     {
         $filesystem = new Filesystem();
@@ -489,13 +477,7 @@ class PhotosController extends AbstractController
 
     }
 
-    /**
-     *
-     *
-     * @Route("/photos/voirgalerie {infos}", name="photos_voir_galerie")
-     *
-     */
-
+    #[Route("/photos/voirgalerie {infos}", name:"photos_voir_galerie")]
     public function voirgalerie(Request $request, $infos)
     {
         $repositoryPhotos = $this->doctrine

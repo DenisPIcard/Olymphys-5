@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use App\Form\ResettingType;
 use App\Form\UserRegistrationFormType;
@@ -40,9 +40,7 @@ class SecurityController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @Route("/security/login", name="login")
-     */
+    #[Route("/security/login", name:"login")]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
@@ -56,23 +54,20 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/logout", name="logout")
-     * @throws Exception
-     */
+    #[Route("/logout", name:"logout")]
     public function logout()
     {
         throw new Exception('Sera intercepté avant d\'en arriver là !');
     }
 
     /**
-     * @Route("/register", name="register")
      * @throws TransportExceptionInterface
      */
+    #[Route("/register", name:"register")]
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): Response
     {
 
-        $rneRepository = $doctrine->getRepository(Rne::class);
+        $uaiRepository = $doctrine->getRepository(Uai::class);
 
         // création du formulaire
         $user = new User();
@@ -83,20 +78,20 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $rne = $form->get('rne')->getData();
+            $uai = $form->get('uai')->getData();
 
-            if ($rneRepository->findOneBy(['rne' => $rne]) == null) {
+            if ($uaiRepository->findOneBy(['uai' => $uai]) == null) {
                 $request->getSession()
                     ->getFlashBag()
-                    ->add('alert', 'Ce n° RNE n\'est pas valide !');
+                    ->add('alert', 'Cette UAI n\'est pas valide !');
 
                 return $this->redirectToRoute('register');
             }
-            $rneId = $rneRepository->findBy(['rne' => $rne]);
+            $uaiId = $uaiRepository->findBy(['uai' => $uai]);
             $password = $passwordEncoder->hashPassword($user, $user->getPlainPassword());
             $user->setPassword($password);
-            $user->setRne($rne);
-            $user->setRneId($rneId[0]);
+            $user->setUai($uai);
+            $user->setUaiId($uaiId[0]);
 
             $user->setIsActive(0);//inactive l'User en attente de la vérification du mail
             $user->setToken($tokenGenerator->generateToken());
@@ -117,11 +112,6 @@ class SecurityController extends AbstractController
             $user->setCode($code);
             $phone = $form->get('phone')->getData();
             $user->setPhone($phone);
-            /* if ($session->get('resetpwd')==true){
-                 $user->setLastVisit(new \datetime('now'));
-                $session->set('resetpwd',null);
-             }
-             */
             // Enregistre le membre en base
             $em = $doctrine->getManager();
             $em->persist($user);
@@ -137,16 +127,11 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     *
-     * @Route("/verif_mail/{id}/{token}", name="verif_mail")
-     *
-     * @throws TransportExceptionInterface
-     */
+    #[Route("/verif_mail/{id}/{token}", name:"verif_mail")]
     public function verifMail(User $user, Request $request, Mailer $mailer, ManagerRegistry $doctrine, string $token): RedirectResponse
     {
-        $rneRepository = $doctrine->getManager()->getRepository(Rne::class);
-        $rne = $user->getRne();
+        $uaiRepository = $doctrine->getManager()->getRepository(Uai::class);
+        $uai = $user->getUai();
         // interdit l'accès à la page si:
         // le token associé au membre est null
         // le token enregistré en base et le token présent dans l'url ne sont pas égaux
@@ -166,9 +151,9 @@ class SecurityController extends AbstractController
         $em = $this->doctrine->getManager();
         $em->persist($user);
         $em->flush();
-        $rne = $user->getRne();
-        $rne_obj = $rneRepository->findOneBy(['rne' => $rne]);
-        $mailer->sendMessage($user, $rne_obj);
+        $uai = $user->getUai();
+        $uai_obj = $uaiRepository->findOneBy(['uai' => $uai]);
+        $mailer->sendMessage($user, $uai_obj);
         $request->getSession()->getFlashBag()->add('success', "Votre inscription est terminée, vous pouvez vous connecter.");
 
         return $this->redirectToRoute('login');
@@ -193,11 +178,11 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/forgottenPassword", name="forgotten_password")
      * @throws TransportExceptionInterface
      */
-    public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator)
-    {
+    #[Route("/forgottenPassword", name:"forgotten_password")]
+   public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): RedirectResponse|Response
+   {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
             ->add('email', EmailType::class, [
@@ -244,14 +229,12 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/password_request.html.twig', [
-            'passwordRequestForm' => $form->createView(), 'resetpwd' => $session->get('resetpwd')
+            'passwordRequestForm' => $form->createView()
         ]);
     }
 
-    /**
-     * @Route("/reset_password/{id}/{token}", name="reset_password")
-     */
-    public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder)
+    #[Route("/reset_password/{id}/{token}", name:"reset_password")]
+    public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder): RedirectResponse|Response
     {
 
         // interdit l'accès à la page si:
@@ -282,7 +265,6 @@ class SecurityController extends AbstractController
             $em = $this->doctrine->getManager();
             $em->persist($user);
             $em->flush();
-            $session->set('resetpwd', null);
             $request->getSession()->getFlashBag()->add('success', "Votre mot de passe a été renouvelé.");
 
             return $this->redirectToRoute('login');

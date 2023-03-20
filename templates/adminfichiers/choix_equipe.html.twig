@@ -13,7 +13,7 @@
             <br> membre du jury
         {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             {{ user.prenom }} {{ user.nom }}<br>
-            Lycée {{ rneObj.nom }} de {{ rneObj.commune }}
+            Lycée {{ uaiObj.nom }} de {{ uaiObj.commune }}
         {% endif %}
         {% if app.user.roles|filter(v => v =='ROLE_PROF')==[] %}
             {% if app.user.roles|filter(v => v =='ROLE_COMITE')=='ROLE_COMITE' %}
@@ -62,7 +62,7 @@
                         <div class="col">
                             <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }}
                             {% if is_granted('ROLE_PROF' ) %}
-                                <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
+                                <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
                             {% endif %}
                             {% if equipe.inscrite== false %}
                                 <div class="inscritered"><i>(Equipe non inscrite)</i></div>
@@ -96,7 +96,7 @@
                                 <b>{{ equipe.numero }}</b>{% endif %}
                             - {{ equipe.titreProjet }}
                             {% if is_granted('ROLE_PROF') %}
-                                <h8><i> (Lycee {{ equipe.rneId.nom }}, {{ equipe.rneId.commune }})</i></h8>
+                                <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
                             {% endif %}
 
                         </div>
@@ -132,7 +132,7 @@
             <tr>
                 <td>
                     {% if liste_equipes!=null %}
-                         {% if  date()<= app.session.get('datelimphotoscia') and date()>app.session.get('dateouverturesite')%}
+                         {% if  date()<= app.session.get('edition').concourscn and date()>app.session.get('edition').dateouverturesite%}
                             <a type="button" class="btn btn-warning"
                                href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
                                aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
@@ -141,7 +141,7 @@
                                href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
                                title="Modifier ou supprimer certaines photos">Gerer les photos</a>
                         {% endif %}
-                        {% if ((date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn'))) or (date()<app.session.get('dateouverturesite')) %}
+                        {% if ((date()> app.session.get('edition').concourscia) and (date()< app.session.get('edition').concourscn)) %}
                             <a type="button" class="btn btn-warning"
                                href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
                                title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
@@ -151,6 +151,17 @@
                                 photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
 
                         {% endif %}
+                        {%if date()>app.session.get('editionN1').concourscn and date()<app.session.get('edition').dateouverturesite  %}
+                        <a type="button" class="btn btn-warning"
+                           href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
+                           title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
+                        <a type="button" class="btn btn-info"
+                           href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('editionN1').id~'-prof-1'}) }}"
+                           role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
+                            photos des épreuves nationales de la {{ app.session.get('editionN1').ed }}<sup>e</sup></a>
+                        {% endif %}
+
+
                     {% endif %}
                 </td>
             </tr>
@@ -212,19 +223,39 @@
 
         {% endif %}
     {% endif %}
-
-
+    {% if app.session.get('info')!='' %}
+        {{ include('modales/modale_info.html.twig') }}
+       {% endif %}
+    {{ app.session.set('info','') }}
 
 
 
 
     {% block javascripts %}
         <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+                crossorigin="anonymous">
 
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+                integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+                crossorigin="anonymous"></script>
         <script>
 
             bsCustomFileInput.init()
         </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#modalinfo').modal();
+                $('#modalinfo').modal('open');
+            });
+        </script>
+
     {% endblock %}
+
 
 {% endblock %}

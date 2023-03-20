@@ -63,21 +63,21 @@ class OdpfArticleCrudController extends AbstractCrudController
         // You can use a Form Panel inside a Form Tab
         $panel1 = FormField::addPanel('Données');
         $panel2 = FormField::addPanel('Autre');
-        $titre = TextField::new('titre');
-        $choix = TextField::new('choix');
+        $titre = TextField::new('titre')->setSortable(true);
+        $choix = TextField::new('choix')->setSortable(true);
         $texte = AdminCKEditorField::new('texte');
-        $categorie = AssociationField::new('categorie');
+        $categorie = AssociationField::new('categorie')->setSortable(true);
         $alt_image = TextField::new('alt_image');
         $descr_image = AdminCKEditorField::new('descr_image');
         $titre_objectifs = TextField::new('titre_objectifs');
         $texte_objectifs = AdminCKEditorField::new('texte_objectifs');
         $carousel = AssociationField::new('carousel')->setFormTypeOptions(['choices' => $listCarousels]);
-        $createdAt = DateTimeField::new('createdAt', 'Créé  le ');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
+        $createdAt = DateTimeField::new('createdAt', 'Créé  le ')->setSortable(true);
+        $updatedAt = DateTimeField::new('updatedAt')->setSortable(true);
+        //$updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ')->setSortable(true);
         $publie = BooleanField::new('publie', 'publié');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedat];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
@@ -105,14 +105,38 @@ class OdpfArticleCrudController extends AbstractCrudController
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        $context = $this->adminContextProvider->getContext();
-        $qb = $this->doctrine->getRepository(OdpfArticle::class)->createQueryBuilder('a')
-            ->addOrderBy('a.createdAt', 'DESC');
-        if (isset($_REQUEST['filters'])) {
-            $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['id' => $_REQUEST['filters']['categorie']['value']]);
-            $qb->andWhere('a.categorie =:categorie')
-                ->setParameter('categorie', $categorie);
+        $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters) //le tri selon les éditions ne fonctionne pas bien
+            ->join('entity.categorie', 'eq');
+            //->resetDQLPart('orderBy');
+        if (isset($_REQUEST['sort'])){
+            $sort=$_REQUEST['sort'];
+            if (key($sort)=='titre'){
+                $response->addOrderBy('entity.titre', $sort['titre']);
+            }
+            if (key($sort)=='choix'){
+                $response->addOrderBy('entity.choix', $sort['choix']);
+            }
+            if (key($sort)=='texte'){
+                $response->addOrderBy('entity.texte', $sort['texte']);
+            }
+            if (key($sort)=='categorie'){
+                $response->addOrderBy('entity.categorie', $sort['categorie']);
+
+            if (key($sort)=='createdAt'){
+                    $response->addOrderBy('entity.createdAt', $sort['createdAt']);
+            }
+            if (key($sort)=='updatedAt'){
+                    $response->addOrderBy('entity.updatedAt', $sort['updatedAt']);
+            }
+            }
+
         }
-        return $qb;
+        else {
+
+            $response->OrderBy('entity.updatedAt', 'DESC');
+
+        }
+
+        return $response;
     }
 }

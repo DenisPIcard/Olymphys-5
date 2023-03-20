@@ -31,13 +31,8 @@ class VideosController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-
-    /**
-     * @IsGranted("ROLE_PROF")
-     *
-     * @Route("/videos/liens_videos,{infos}", name="videos_liens_videos")
-     *
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/videos/liens_videos,{infos}", name:"videos_liens_videos")]
     public function liens_videos(Request $request, $infos)
     {
         $repositoryEquipesadmin = $this->doctrine

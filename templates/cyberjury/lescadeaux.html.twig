@@ -4,27 +4,23 @@
 {% block titre3 %} Les Cadeaux {% endblock %}
 
 {% block navigation %}
-    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span>
-        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
-    </button>
-
     {{ include ('cyberjury/navigation.html.twig') }}
 {% endblock %}
 
 {% block body %}
 
-    <div>
+
         <table class="table table-striped">
             <thead>
-            <tr class="danger">
+            <tr>
                 <th>Cadeau</th>
                 <th>Offert par</th>
-                <th>Valeur</th>
+
             </tr>
             </thead>
             <tbody>
             {% for cadeaux in ListCadeaux %}
-                <tr class="danger">
+                <tr>
                     <td> {{ cadeaux.contenu }} </td>
                     <td> {{ cadeaux.fournisseur }} </td>
 
@@ -32,7 +28,7 @@
             {% endfor %}
             </tbody>
         </table>
-    </div>
+
 
 
 

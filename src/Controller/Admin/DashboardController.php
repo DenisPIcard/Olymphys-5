@@ -93,7 +93,7 @@ class DashboardController extends AbstractDashboardController
                 ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
-                ->setQueryParameter('concours', 'interacadémique'),
+                ->setQueryParameter('concours', 'interacademique'),
             MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 7)
@@ -153,9 +153,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
 
-    /**
-     * @Route("/admin", name="admin")
-     */
+    #[Route("/admin", name:"admin")]
     public function index(): Response
     {
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null) {

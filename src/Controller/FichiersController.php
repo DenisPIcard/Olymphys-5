@@ -13,7 +13,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Orgacia;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Form\ToutfichiersType;
@@ -93,9 +93,7 @@ class FichiersController extends AbstractController
                 );
             return new Response($content);
         } else {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore de centre attribué pour le  concours interacadémique de l\'édition ' . $edition->getEd());
+            $request->getSession()->set('info', 'Pas encore de centre attribué pour le  concours interacadémique de l\'édition ' . $edition->getEd());
             return $this->redirectToRoute('core_home');
 
 
@@ -126,7 +124,7 @@ class FichiersController extends AbstractController
         $user = $this->getUser();
         $roles = $user->getRoles();
         $jure = null;
-        $rne_objet = null;
+        $uai_objet = null;
         $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $choix]);
         $centre === null ?: $phase = 'interacadémique';
         if (in_array('ROLE_ORGACIA', $user->getRoles())) {
@@ -134,8 +132,8 @@ class FichiersController extends AbstractController
             $phase = 'interacadémique';
         }
         if (in_array('ROLE_PROF', $user->getRoles())) {
-            if ( $user->getRneId()) {
-                $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
+            if ( $user->getUaiId()) {
+                $uai_objet = $this->doctrine->getRepository(Uai::class)->find(['id' => $user->getUaiId()]);
             }
         }
         if (in_array('ROLE_JURY', $roles)) {
@@ -145,16 +143,15 @@ class FichiersController extends AbstractController
         }
 
         $liste_equipes = $repositoryEquipesadmin->getListeEquipe($user, $phase, $choix, $centre);
+
         if ($liste_equipes == null) {
-            if(date('now')>= $this->requestStack->getSession()->get('dateouverturesite')) {
-                $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+
+            if(new DateTime('now')>= $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+
+
+               $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+               $request->getSession()->set('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
             }
-            else{
-                $message='';
-            }
-            $request->getSession()
-                ->getFlashBag()
-                ->add('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
 
         }
         $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
@@ -164,7 +161,7 @@ class FichiersController extends AbstractController
                 'choix' => $choix,
                 'jure' => $jure,
                 'doc_equipes' => $docequipes,
-                'rneObj' => $rne_objet,
+                'uaiObj' => $uai_objet,
                 'centre' => $centre));
             return new Response($content);
 
@@ -199,7 +196,7 @@ class FichiersController extends AbstractController
         $choix = $info[2];
         $roles = $this->getUser()->getRoles();
         if (in_array('ROLE_PROF', $roles)) {
-            if ($choix == 0 or $choix == 1 or $choix == 2) {
+            if ($choix == 0 or $choix == 1 or $choix == 2) {//memoire, annexe et résumé doivent être remis avbant la date limite
 
                 if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
                     $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
@@ -221,7 +218,7 @@ class FichiersController extends AbstractController
 
             }
         }
-        if (count($info) >= 5) {//pour les autorisations photos
+        if (count($info) >= 5) {//pour les autorisations photos info comporte un cinquième paramètre
             $id_citoyen = $info[3];
 
 
@@ -240,22 +237,18 @@ class FichiersController extends AbstractController
             }
 
 
-        } else {
+        } else {//pour les autre fichiers info comporte moins de cinq paramètres
             $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
             $attrib = $info[3];
-            if ($attrib == '1') {//upload d'un fichier FichierID est fourni par la fenêtre modale
-                $idfichier = $request->query->get('FichierID');
-
+            if ($attrib == '1') {//upload d'un fichier : FichierID est fourni par la fenêtre modale de confirmation d'écrasement du fichier
+                $idfichier = $request->query->get('FichierID');// envoyé par la fenêtre modale
                 $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
                 if ($fichier != null) {
                     $choix = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getTypefichier();
-
                 } else {//Cela indique que le fichier n'est pas valide car valid_fichier fait disparaître les paramètres de $request->query
                     $idfichier = $session->get('idFichier');
-
                     $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
                     $choix = $fichier->getTypefichier();// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
-
                 }
                 if ($choix == 6) {//nécessaire lors l'appel du dépôt d'une nouvelle autorisation
 
@@ -263,7 +256,6 @@ class FichiersController extends AbstractController
                         $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getEleve();//pour les élèves
                         if ($citoyen === null) {
                             $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getProf();//pour les profs
-
                         }
 
                     } else {  //Cela indique que le fichier n'est pas valide car valid_fichier fait disparaître les paramètres de $request->query
@@ -278,18 +270,9 @@ class FichiersController extends AbstractController
             }
         }
 
-
-        $edition = $this->requestStack->getSession()->get('edition');
-
-        $datelimnat = $edition->getDatelimnat();
-
-        $dateconnect = new datetime('now');
-
-        $form1 = $this->createForm(ToutfichiersType::class, ['choix' => $choix]);
         if (isset($equipe)) {
             $nom_equipe = $equipe->getTitreProjet();
             $lettre_equipe = $equipe->getLettre();
-
             $donnees_equipe = $lettre_equipe . ' - ' . $nom_equipe;
 
             if (!$lettre_equipe) {
@@ -297,11 +280,11 @@ class FichiersController extends AbstractController
                 $nom_equipe = $equipe->getTitreProjet();
                 $donnees_equipe = $numero_equipe . ' - ' . $nom_equipe;
             }
-        } else {
-            $donnees_equipe = $citoyen->getPrenom() . ' ' . $citoyen->getNom();
-
-
+        } else {// si $equipe n'existe pas c'est que c'est une autorisation photo
+            $donnees_equipe = $citoyen->getPrenom() . ' ' . $citoyen->getNom();// pour les autorisations photos
         }
+        $form1 = $this->createForm(ToutfichiersType::class, ['choix' => $choix]);
+
         $form1->handleRequest($request);
 
         if ($form1->isSubmitted() && $form1->isValid()) {
@@ -311,7 +294,7 @@ class FichiersController extends AbstractController
 
             $num_type_fichier = $form1->get('choice')->getData();
 
-            if (!isset($num_type_fichier)) {//sert pour les mémoires et annexes
+            if (!isset($num_type_fichier)) {//sert pour les mémoires et annexes que l'on doit sélectionner dans le formulaire de dépôt du fichier
 
                 $this->addFlash('alert', 'Sélectionner le type de fichier !');
                 return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -324,8 +307,8 @@ class FichiersController extends AbstractController
                 $idFichier = $fichier->getId();
                 $fichier->getProf() == null ? $prof = false : $prof = true;
             }
-            $violations = $validFichier->validation_fichiers($file, $num_type_fichier, $idFichier)['text'];
-            if ($violations != '') {
+            $violations = $validFichier->validation_fichiers($file, $num_type_fichier, $idFichier)['text'];//test si le fichier a le bon format
+            if ($violations != '') {//Le fichier n'a pas le bon format
                 $request->getSession()
                     ->getFlashBag()
                     ->add('alert', $violations);
@@ -334,7 +317,7 @@ class FichiersController extends AbstractController
             }
             $em = $this->doctrine->getManager();
             $edition = $this->requestStack->getSession()->get('edition');
-            $edition = $em->merge($edition);
+            $edition = $repositoryEdition->findOneBy(['id'=>$edition->getId()]);
             if ($num_type_fichier == 6) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
@@ -353,7 +336,7 @@ class FichiersController extends AbstractController
                 $fichier = $this->deposeAutorisations($newFilename, $citoyen, $attrib, $prof, $equipe);
                 if ($fichier === null) {
                     $message = 'Une erreur est survenue, le fichier n\'a pas été déposé, veuillez prévenir l\'administrateur du site';
-                    $this->requestStack->getCurrentRequest()->getSession()
+                    $this->requestStack->getSession()
                         ->getFlashBag()
                         ->add('alert', $message);
                     return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $this->requestStack->getSession()->get('concours') . '-liste_prof'));
@@ -363,9 +346,7 @@ class FichiersController extends AbstractController
                 $nom_fichier = $fichier->getFichier();
             } else {
                 if ($attrib == 0) {
-
                     $fichier = new Fichiersequipes();
-
                 }
                 if ($attrib > 0) {
                     $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
@@ -377,7 +358,6 @@ class FichiersController extends AbstractController
                 $fichier->setFichierFile($file);
 
                 if ($attrib == 0) {
-
                     if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos et fiche sécurité
                         if ($num_type_fichier < 6) {
                             try {
@@ -415,13 +395,9 @@ class FichiersController extends AbstractController
                         $fichier->setEquipe($equipe);
                     }
                     $fichier->setNational(0);
-
-
                     if ($phase == 'national') {
                         $fichier->setNational(1);
                     }
-
-
                     $fichier->setFichierFile($file);
                 }
                 try {
@@ -469,7 +445,7 @@ class FichiersController extends AbstractController
 
                     $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
                 } else {
-                    if ($type_fichier == 'mémoire') {
+                    if (($type_fichier == 'mémoire') or ($type_fichier == 'annexe')) {
 
                         $this->MailAvertissement($mailer, $type_fichier, $equipe);
                     } else {
@@ -486,7 +462,6 @@ class FichiersController extends AbstractController
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
         }
 
-
         if ($choix == '6') {
             $content = $this
                 ->renderView('adminfichiers\charge_fichier_fichier.html.twig', array('form' => $form1->createView(), 'donnees_equipe' => $donnees_equipe, 'citoyen' => $citoyen, 'choix' => $choix, 'infos' => $infos));
@@ -500,8 +475,8 @@ class FichiersController extends AbstractController
     public function deposeAutorisations($newFilename, $citoyen, $attrib, $prof, $equipe)
     {
         $em = $this->doctrine->getManager();
-        $edition = $this->requestStack->getSession()->get('edition');
-        $edition = $em->merge($edition);
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $edition = $this->doctrine->getRepository(Edition::class)->find($editionId);
         $repositoryFichiersequipes = $this->doctrine->getRepository(Fichiersequipes::class);
 
         $fileFichier = new UploadedFile($this->getParameter('app.path.tempdirectory') . '/' . $newFilename, $newFilename, null, null, true);
@@ -739,7 +714,7 @@ class FichiersController extends AbstractController
 
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+        if(date('now')<$edition->getDateouverturesite()){
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
         }
         $equipe_choisie = $repositoryEquipesadmin->find(['id' => $id_equipe]);
@@ -774,7 +749,7 @@ class FichiersController extends AbstractController
         $qbJuryNat = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
-            ->andWhere('t.typefichier in (0,1,2,3)')
+            ->andWhere('t.typefichier in (0,1,2,3,4,8)')
             ->andWhere('t.national =:national')
             ->setParameter('national', TRUE);
 
@@ -871,6 +846,12 @@ class FichiersController extends AbstractController
                 break;
             case 'resumes'  :
                 $numTypefichier = 2;
+                break;
+            case 'diaporama'  :
+                $numTypefichier = 5;
+                break;
+            case 'fichessecur'  :
+                $numTypefichier = 4;
                 break;
         }
         $equipe = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $idequipe]);

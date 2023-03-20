@@ -4,9 +4,9 @@
             {{ categorie }}
         </h1>
     </div>
-    <div class="col-md-12 col-lg-8">
-        <div class="row  justify-content-end">
-            <nav>
+    <div class="col-md-12 col-lg-8">{# taille responsive #}
+        <div class="row  justify-content-end">{# une ligne, alignée à droite #}
+            <nav>{# menu de navigation des pages d'actus: 5 par page #}
 
                 <ul class="nav flex-column flex-md-row paginactus">
 
@@ -60,7 +60,7 @@
     {% for actu in affActus %}
 
         <h4 class="titractus mb-0">
-            {{ actu.titre|raw }}
+            {{ actu.titre|raw }}{# actu.titre et actu.texte viennent de l'OdpfArticle #}
         </h4>
         <div class="description" style="border-bottom: 1px solid #111a21;">
         </div>
