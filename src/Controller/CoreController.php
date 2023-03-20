@@ -58,7 +58,6 @@ class CoreController extends AbstractController
             else {
                 $concours = 'interacadémique';}
 
-            $repository->setDates($edition);
         }
         $this->requestStack->getSession()->set('pageCourante', 1);
         $this->requestStack->getSession()->set('pageFCourante', 1);
