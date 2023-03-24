@@ -29,7 +29,6 @@
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpoffice/phpspreadsheet": "^1.11",
         "phpoffice/phpword": "^0.18",
-        "sensio/framework-extra-bundle": "^6.2",
         "smalot/pdfparser": "*",
         "spatie/pdf-to-text": "^1.3",
         "symfony/asset": "6.2.*",
@@ -121,12 +120,7 @@
     "conflict": {
         "symfony/symfony": "*"
     },
-    "extra": {
-        "symfony": {
-            "allow-contrib": false,
-            "require": "6.2.*"
-        }
-    },
+
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "3.5.x-dev",
         "phpunit/phpunit": "^9.5",
@@ -134,5 +128,10 @@
         "symfony/css-selector": "6.2.*",
         "symfony/maker-bundle": "^1.48",
         "symfony/phpunit-bridge": "^6.2"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true
+        }
     }
 }

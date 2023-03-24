@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class OdpfCarouselsCrudController extends AbstractCrudController
@@ -205,12 +206,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         parent::updateEntity($entityManager, $entityInstance);
     }
 
-    /**
-     * @Security("is_granted('ROLE_ADMIN')")
-     *
-     * @Route("/admin/OdpfCarousels/add_diapo,{idCarousel},{idDiapo}", name="add_diapo")
-     *
-     */
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route("/admin/OdpfCarousels/add_diapo,{idCarousel},{idDiapo}", name:"add_diapo")]
     public function addDiapo(Request $request, $idCarousel, $idDiapo): RedirectResponse|Response
     {
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
@@ -281,12 +278,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_ADMIN')")
-     *
-     * @Route("/admin/OdpfCarousels/supr_diapo", name="supr_diapo")
-     *
-     */
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route("/admin/OdpfCarousels/supr_diapo", name:"supr_diapo")]
     public function suprDiapo(Request $request): RedirectResponse|Response
     {
 
@@ -349,12 +342,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         return $diapo;
     }
 
-    /**
-     * @Security("is_granted('ROLE_ADMIN')")
-     *
-     * @Route("/admin/OdpfCarousels/bouge_diapo,{idDiapo},{updown}", name="bouge_diapo")
-     *
-     */
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route("/admin/OdpfCarousels/bouge_diapo,{idDiapo},{updown}", name:"bouge_diapo")]
     public function bougeDiapo($idDiapo, $updown): RedirectResponse|Response
     {
         $diapoBouge = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);

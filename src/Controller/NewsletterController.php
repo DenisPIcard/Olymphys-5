@@ -11,7 +11,6 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,6 +25,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class NewsletterController extends AbstractController
@@ -41,10 +41,8 @@ class NewsletterController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @Route("/newsletter/write,{id}", name="newsletter_write")
-     * @IsGranted ("ROLE_SUPER_ADMIN")
-     */
+    #[Route("/newsletter/write,{id}", name:"newsletter_write")]
+    #[IsGranted("ROLE_SUPER_ADMIN")]
     public function write(Request $request, $id)
     {
         if ($id == 0) {
@@ -76,10 +74,8 @@ class NewsletterController extends AbstractController
 
     }
 
-    /**
-     * @Route("/newsletter/init", name="newsletter_init")
-     * @IsGranted ("ROLE_SUPER_ADMIN")
-     */
+     #[Route("/newsletter/init", name:"newsletter_init")]
+    #[IsGranted ("ROLE_SUPER_ADMIN")]
     public function init(Request $request)
 
     {
@@ -93,10 +89,8 @@ class NewsletterController extends AbstractController
 
     }
 
-    /**
-     * @Route("/newsletter/delete", name="newsletter_delete")
-     * @IsGranted ("ROLE_SUPER_ADMIN")
-     */
+    #[Route("/newsletter/delete", name:"newsletter_delete")]
+    #[IsGranted ("ROLE_SUPER_ADMIN")]
     public function delete(Request $request): RedirectResponse
 
     {
@@ -115,10 +109,8 @@ class NewsletterController extends AbstractController
     }
 
 
-    /**
-     * @Route("/newsletter/liste", name="newsletter_liste")
-     * @IsGranted ("ROLE_SUPER_ADMIN")
-     */
+   #[Route("/newsletter/liste", name:"newsletter_liste")]
+   #[IsGranted ("ROLE_SUPER_ADMIN")]
     public function liste(Request $request)
     {
         $newsletters = [];
@@ -131,11 +123,8 @@ class NewsletterController extends AbstractController
         return $this->render('newsletter/liste.html.twig', ['newsletters' => $newsletters]);
 
     }
-
-    /**
-     * @Route("/newsletter/send,{id}", name="newsletter_send")
-     * @IsGranted ("ROLE_SUPER_ADMIN")
-     */
+    #[Route("/newsletter/send,{id}", name:"newsletter_send")]
+    #[IsGranted ("ROLE_SUPER_ADMIN")]
     public function send(Request $request, int $id, MessageBusInterface $messageBus)
     {
         $session = $this->requestStack->getSession();
@@ -183,10 +172,8 @@ class NewsletterController extends AbstractController
 
     }
 
-    /**
-     * @Route("/newsletter/duplicate,{id}", name="newsletter_duplicate")
-     * @IsGranted ("ROLE_SUPER_ADMIN")
-     */
+    #[Route("/newsletter/duplicate,{id}", name:"newsletter_duplicate")]
+    #[IsGranted ("ROLE_SUPER_ADMIN")]
     public function duplicate(Request $request, int $id)
     {
         $newsletter = $this->em->getRepository(Newsletter::class)->find(['id' => $id]);
@@ -223,11 +210,7 @@ class NewsletterController extends AbstractController
         return new Response();
     }
 
-    /**
-     *
-     * @Route ("/newsletter/desinscription,{userid}", name="newsletter_desinscription")
-     * @throws TransportExceptionInterface
-     */
+    #[Route ("/newsletter/desinscription,{userid}", name:"newsletter_desinscription")]
     public function desinscription(Request $request, User $userid, MailerInterface $mailer)
     {
 
@@ -250,11 +233,8 @@ class NewsletterController extends AbstractController
         return $this->redirectToRoute('core_home');
     }
 
-    /**
-     *
-     * @Route ("/newsletter/confirmDesinscription/{token}/{userid}", name="newsletter_confirm_desinscription")
-     */
-    public function confirmDesinscription(Request $request, $token, User $userid)
+    #[Route ("/newsletter/confirmDesinscription/{token}/{userid}", name:"newsletter_confirm_desinscription")]
+       public function confirmDesinscription(Request $request, $token, User $userid)
     {
 
         if ($userid->getToken() == $token) {
