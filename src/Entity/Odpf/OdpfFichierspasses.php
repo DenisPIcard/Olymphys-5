@@ -33,6 +33,7 @@ class OdpfFichierspasses
     private ?int $typefichier;
 
     #[ORM\Column(length:255, nullable:true)]
+    #[Groups('Elastica')]
     private ?string $nomfichier=null;
 
     #[Vich\UploadableField(mapping:"odpfFichierspasses", fileNameProperty:"nomfichier")]

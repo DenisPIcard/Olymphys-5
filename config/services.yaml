@@ -43,7 +43,11 @@ services:
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
     bind:
       odpfimagecarouselsDir: '%kernel.project_dir%/public/odpf-images/imagescarousels'
-      FOS\ElasticaBundle\Finder\TransformedFinder $odpfFichierspassesFinder: '@fos_elastica.finder.odpfFichierspasses'
+
+        # replace "articles" with the name of your index
+        # and replace the class of the Finder
+  ACSEO\TypesenseBundle\Finder\CollectionFinder: '@typesense.finder.user'
+
   App\:
     resource: '../src/'
     exclude:
@@ -109,7 +113,12 @@ services:
 
   App\Controller\SearchController:
      tags: ['controller.service_arguments']
-
      public: true
      arguments:
-       -  '@fos_elastica.finder.odpfFichierspasses'
+         - '@fos_elastica.manager'
+
+  App\Controller\TypeSenseController:
+    tags: ['controller.service_arguments']
+    public: true
+    arguments:
+      - $userFinder : '@typesense.finder.user'

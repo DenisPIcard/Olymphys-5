@@ -14,18 +14,18 @@ use Exception;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Style\Cell;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class LivredorController extends AbstractController
 {
@@ -39,12 +39,9 @@ class LivredorController extends AbstractController
     }
 
 
-    /**
-     * @IsGranted("ROLE_PROF")
-     * @Route("/livredor/choix_equipe", name="livredor_choix_equipe")
-     * @return RedirectResponse|Response
-     */
-    public function choix_equipe(Request $request, RequestStack $requestStack)
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/livredor/choix_equipe", name:"livredor_choix_equipe")]
+    public function choix_equipe(Request $request, RequestStack $requestStack):Response
     {
 
         $idprof = $this->getUser()->getId();
@@ -85,11 +82,8 @@ class LivredorController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted("ROLE_PROF")
-     * @Route("/livredor/saisie_texte,{id}", name="livredor_saisie_texte")
-     * @return RedirectResponse|Response
-     */
+   #[IsGranted("ROLE_PROF")]
+   #[Route("/livredor/saisie_texte,{id}", name:"livredor_saisie_texte")]
     public function saisie_texte(Request $request, $id): Response
     {
         $em = $this->doctrine->getManager();
@@ -106,11 +100,11 @@ class LivredorController extends AbstractController
 
             $equipe = $this->doctrine
                 ->getManager()
-                ->getRepository(Equipesadmin::class)->findOneById(['id' => $id_]);
+                ->getRepository(Equipesadmin::class)->findOneBy(['id' => $id_]);
 
             $livredor = $this->doctrine
                 ->getManager()
-                ->getRepository(Livredor::class)->findOneByEquipe(['equipe' => $equipe]);
+                ->getRepository(Livredor::class)->findOneBy(['equipe' => $equipe]);
             if ($livredor != null) {
                 $texteini = $livredor->getTexte();
             }
@@ -137,10 +131,10 @@ class LivredorController extends AbstractController
 
             $prof = $this->doctrine
                 ->getManager()
-                ->getRepository(User::class)->findOneById(['id' => $id_]);
+                ->getRepository(User::class)->findOneBy(['id' => $id_]);
             $livredor = $this->doctrine
                 ->getManager()
-                ->getRepository(Livredor::class)->findOneByUser(['user' => $prof]);
+                ->getRepository(Livredor::class)->findOneBy(['user' => $prof]);
             if ($livredor != null) {
                 $texteini = $livredor->getTexte();
 
@@ -165,7 +159,7 @@ class LivredorController extends AbstractController
                     ->getManager()
                     ->getRepository(Livredor::class)->findOneByEquipe(['equipe' => $equipe]);
                 if ($livredor == null) {
-                    $livredor = new livredoreleves();
+                    $livredor = new livredor();
                 }
                 $livredor->setNom($noms);
                 $livredor->setTexte($texte);
@@ -208,12 +202,9 @@ class LivredorController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     * @Route("/livredor/choix_edition,{action}", name="livredor_choix_edition")
-     * @return RedirectResponse|Response
-     */
-    public function choix_edition(Request $request, $action): Response
+   #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
+   #[Route("/livredor/choix_edition,{action}", name:"livredor_choix_edition")]
+   public function choix_edition(Request $request, $action): Response
     {
         $repositoryEdition = $this->doctrine
             ->getRepository(OdpfEditionsPassees::class);
@@ -238,11 +229,8 @@ class LivredorController extends AbstractController
     }
 
 
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     * @Route("/livredor/lire,{choix}", name="livredor_lire")
-     * @return RedirectResponse|Response
-     */
+   #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
+   #[Route("/livredor/lire,{choix}", name:"livredor_lire")]
     public function lire(Request $request, $choix): Response
     {
         $type = explode('-', $choix)[1];
@@ -347,12 +335,8 @@ class LivredorController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted("ROLE_COMITE")
-     * @Route("/livredor/editer,{choix}", name="livredor_editer")
-     *
-     * @throws \PhpOffice\PhpWord\Exception\Exception
-     */
+    #[IsGranted("ROLE_COMITE")]
+    #[Route("/livredor/editer,{choix}", name:"livredor_editer")]
     public function editer(Request $request, $choix)
     {
 
