@@ -192,10 +192,10 @@ class OdpfEditionspasseesController extends AbstractController
                     "<iframe  width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/$2\" allowfullscreen; frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe>",
                     $video->getLien()
                 );*/
-                $lien = '<a href="'.$video->getLien().'" target="_blank"> Vidéo '.$i.' : '.$video->getLien().'</a>';
+                $lien = '<a href="'.$video->getLien().'" target="_blank"> Vidéo '.$i.'</a><br>';
 
                 $textevideo = $textevideo . '<tr><td>'.$lien.' </td></tr>';
-            $i=+1;
+            $i=$i+1;
             }
 
             $textevideo = $textevideo . '</div>';
