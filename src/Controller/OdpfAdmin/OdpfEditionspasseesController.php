@@ -120,9 +120,16 @@ class OdpfEditionspasseesController extends AbstractController
         } else {
             $academie = ', académie de ' . $equipe->getAcademie() . '.';
         }
+        //test du répertoire de travail
+        if(explode(':',$_SERVER['SERVER_NAME'])[0]=='localhost'){
+            $texte= '<a href="/odpf/editionspassees/editions?sel=' . $equipe->getEditionspassees()->getId() . '">Retour</a>';
+        }
+        else{
+            $texte='<a href="/../public/index.php/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>';
+        }
         //sur le site : <a href="/../public/index.php/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
 
-        $texte = '<a href="/odpf/editionspassees/editions?sel=' . $equipe->getEditionspassees()->getId() . '">Retour</a>
+        $texte = $texte.'
                          
                 <table>
                 <thead>

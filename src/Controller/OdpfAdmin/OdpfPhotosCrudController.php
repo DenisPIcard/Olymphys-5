@@ -408,7 +408,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
         else {
 
             $response->OrderBy('ed.edition', 'DESC')
-                    ->addOrderBy('eq.numero', 'ASC');
+                     ->addOrderBy('eq.numero', 'ASC');
         }
 
         return $response;

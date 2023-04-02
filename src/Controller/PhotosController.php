@@ -510,7 +510,7 @@ class PhotosController extends AbstractController
 
                 if (null != $listPhotos) {
                     $rand_keys = array_rand($listPhotos, 1);
-                    $photos[$equipe->getNumero()] = $listPhotos[$rand_keys];
+                    $equipe->getNumero()!==null?$photos[$equipe->getNumero()] = $listPhotos[$rand_keys]:$photos[$equipe->getLettre()] = $listPhotos[$rand_keys];
                 }
 
             }

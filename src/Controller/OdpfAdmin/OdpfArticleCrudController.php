@@ -103,10 +103,10 @@ class OdpfArticleCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
         return $actions;
     }
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+   public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters) //le tri selon les éditions ne fonctionne pas bien
-            ->join('entity.categorie', 'eq');
+            ->leftJoin('entity.categorie', 'eq');
             //->resetDQLPart('orderBy');
         if (isset($_REQUEST['sort'])){
             $sort=$_REQUEST['sort'];

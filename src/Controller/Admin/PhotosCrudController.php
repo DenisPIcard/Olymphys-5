@@ -321,7 +321,8 @@ class PhotosCrudController extends AbstractCrudController
                 $qb->addOrderBy('e.numero', 'ASC');
             }
             if ($concours == 'national') {
-                $qb->addOrderBy('e.lettre', 'ASC');
+                $qb ->addOrderBy('e.lettre', 'ASC')
+                    ->addOrderBy('e.numero', 'ASC');
             }
         }
         return $qb;

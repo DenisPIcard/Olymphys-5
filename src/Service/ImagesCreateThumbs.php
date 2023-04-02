@@ -23,7 +23,7 @@ class ImagesCreateThumbs
      * @throws ImagickException
      */
     public function createThumbs($image)
-    {
+    {   set_time_limit(60);
         if (($image instanceof OdpfImagescarousels) or ($image instanceof OdpfLogos)) {
             if ($image instanceof OdpfImagescarousels) {
                 $path = 'odpf/odpf-images/imagescarousels/';
