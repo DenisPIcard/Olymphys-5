@@ -82,7 +82,7 @@ class CreatePageEdPassee
         //en local
         //$texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' .$equipe->getNumero().' '. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
-        if(explode(':',$_SERVER['SERVER_NAME'])[0]=='localhost'){
+        if($_SERVER['SERVER_NAME']=='127.0.0.1'){
             $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' '. $equipe->getTitreProjet() .'</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
         }

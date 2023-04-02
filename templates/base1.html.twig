@@ -199,18 +199,18 @@ Layout de départ des utils du site #}
         function modalShow(j) {
             var img = document.getElementById("photo".concat(j));
             var cap = document.getElementById("caption".concat(j));
-            modalhref = document.getElementsByClassName("btn-primary");
+            modalhref = document.getElementById("enregistrer-image");
             modalImg[0].src = img.src.replace('/thumbs/', '/');
             modalImg[0].style.height = "250px";
             if (cap != null) {
                 modalCap[0].innerHTML = cap.innerHTML;
             }
-            modalhref[0].href = modalImg[0].src;
+            modalhref.href = modalImg[0].src;
             let array = modalImg[0].src.split('/');
             length = array.length;
             let file = array[length - 1];
             file = file.split('%20').join('_');
-            modalhref[0].download = file;
+            modalhref.download = file;
             modal[0].style.display = "block";
 
         }
