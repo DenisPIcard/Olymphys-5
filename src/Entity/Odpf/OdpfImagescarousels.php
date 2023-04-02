@@ -3,7 +3,6 @@
 namespace App\Entity\Odpf;
 
 use App\Repository\Odpf\OdpfImagescarouselsRepository;
-use App\Service\FichierNamer;
 use App\Service\ImagesCreateThumbs;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,60 +10,34 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- *OdpfImagescarousels
- * @ORM\Table(name="odpf_imagescarousels")
- * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
- *
- */
+#[ORM\Entity(repositoryClass: OdpfImagescarouselsRepository::class)]
 class OdpfImagescarousels
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(nullable: true)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private ?DateTime $updatedAt;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt= null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private DateTime $createdAt;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $createdAt = null;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $coment;
+    #[ORM\Column(nullable: true)]
+    private ?string $coment= null;
 
-    /**
-     *
-     *
-     * @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
-     * @var File
-     */
+   #[Vich\UploadableField(mapping:"odpfImagescarousels", fileNameProperty:"name")]
     private ?File $imageFile = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfCarousels::class, inversedBy="images")
-     */
+
+    #[ORM\ManyToOne(targetEntity:OdpfCarousels::class,inversedBy: 'images')]
     private ?Odpfcarousels $carousel;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?int $numero = null;
 
 

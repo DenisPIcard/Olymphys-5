@@ -7,6 +7,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    {# La série de if permet de choisir la page de fond, différente selon la page affichée #}
     {% if categorie.categorie == 'Les Olympiades' or categorie.categorie == 'mentions' %}
         <link rel="stylesheet" href="{{ asset('css/odpf-olympiades.css') }}">
     {% elseif categorie.categorie == 'Le Concours' %}
@@ -22,11 +23,11 @@
 
 {% block contenu %}
     <div id="wrapper">
-    <div class="container bg-white">
+    <div class="container bg-white">{# cree un container, en fonction du media : odpf.css l. 56 à 78 #}
         {% include 'core/odpf-menu-haut.html.twig' %}
         {% include 'core/odpf-en-tete-ppal.html.twig' %}
 
-
+        {# série de pages plus simples #}
         {% if choix == 'actus' %}
             {% include 'core/odpf-actus.html.twig' %}
         {% elseif categorie.categorie == 'faq' %}
@@ -37,9 +38,9 @@
             {% include 'core/odpf-mecenes.html.twig' %}
         {% elseif choix ==  'donateurs' %}
             {% include 'core/odpf-donateurs.html.twig' %}
-        {% else %}
-            <div class="row ">
-                <div class="col-md-12 col-lg-9">
+        {% else %}{# la page type #}
+            <div class="row ">{# tout est dans la même ligne #}
+                <div class="col-md-12 col-lg-9">{# divisée en deux colonnes #}
                     <h1 class="titre-ppal">
                         {{ categorie }}
                         {% if categorie.categorie == 'Les Olympiades' %}
@@ -48,12 +49,12 @@
                             <br/><strong>{{ edition.annee }}</strong>
                         {% endif %}
                     </h1>
-                    {% if choix != 'philippe-lancel' and choix != 'academie' %}
-                        <div class="row">
-                            <div class="col-md-3 col-lg-3">
-                                <div class="menugche">
+                    {% if choix != 'philippe-lancel' and choix != 'academie' %}{# pages ordinaires #}
+                        <div class="row">{# la lcolonne représente une ligne #}
+                            <div class="col-md-3 col-lg-3">{# divisée en deux colonnes #}
+                                <div class="menugche"> {# affiche le menu, selon la page #}
                                     <nav>
-                                        <ul class="nav flex-column">
+                                        <ul class="nav flex-column">{# menu nav de Bootstrap #}
                                             {% if categorie.categorie == 'Les Olympiades' %}
                                                 <li class="nav-item {% if choix == 'c_est_quoi' %} active {% endif %}">
                                                     <a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}"
@@ -64,8 +65,8 @@
                                                 <li class="nav-item {% if choix == 'pourquoi_participer' %} active {% endif %}">
                                                     <a href="{{ path('core_pages' ,{choix:'pourquoi_participer'}) }}"
                                                        class="nav-link">Pourquoi participer ?</a></li>
-                                                <li class="nav-item {% if choix == 'les_aides' %} active {% endif %}"><a
-                                                            href="{{ path('core_pages' ,{choix:'les_aides'}) }}"
+                                                <li class="nav-item {% if choix == 'les_aides' %} active {% endif %}">
+                                                    <a href="{{ path('core_pages' ,{choix:'les_aides'}) }}"
                                                             class="nav-link">Les aides</a></li>
                                                 <li class="nav-item {% if choix == 'les_recompenses' %} active {% endif %}">
                                                     <a href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}"
@@ -107,47 +108,47 @@
                                 {% endif %}
                             </div>
 
-                            <div class="col-md-9 col-lg-9">
+                            <div class="col-md-9 col-lg-9">{# deuxième colonne dans la colonne de gauche #}
                                 <div class="col-centre">
                                     <h2 class="sous-titre">{{ titre|raw }}</h2>
                                     <div class="contenu">
                                         {% if choix == 'le_calendrier' %}
-                                        {% include 'core/odpf-le-calendrier.html.twig' %}
-                                    {% elseif choix == 'les_equipes' %}
-                                    {% include 'core/odpf-les-equipes.html.twig' %}
-                                    {% elseif choix == 'la_carte_des_equipes' %}
-                                    {{ texte|raw }}
-                                        <p><img src="{{ asset('odpf/odpf-images/31-Carte_France.png') }}" alt="Carte"
+                                            {% include 'core/odpf-le-calendrier.html.twig' %}{# page spéciale, construite en template #}
+                                        {% elseif choix == 'les_equipes' %}
+                                            {% include 'core/odpf-les-equipes.html.twig' %}{# page spéciale, table #}
+                                        {% elseif choix == 'la_carte_des_equipes' %}
+                                            {{ texte|raw }}{# texte vient de l'OdpfArticle, raw est un filtre twig pour affixher le texte formatté #}
+                                            <p><img src="{{ asset('odpf/odpf-images/31-Carte_France.png') }}" alt="Carte"
                                                 width="588" height="562"></p>
-                                    <br/>
-                                        <p><img src="{{ asset('odpf/odpf-images/31-Carte_monde.png') }}" alt="World Map"
+                                            <br/>
+                                             <p><img src="{{ asset('odpf/odpf-images/31-Carte_monde.png') }}" alt="World Map"
                                                 width="500" height="300">
-                                            {% else %}
-                                                {{ texte|raw }}
-                                            {% endif %}
-                                            {% if choix == 'inscriptions' %}
-                                        <ul>
-                                            <li>Les
-                                                <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours
+                                        {% else %}
+                                            {{ texte|raw }}
+                                         {% endif %}
+                                         {% if choix == 'inscriptions' %}
+                                            <ul>
+                                                <li>Les
+                                                    <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours
                                                     Interacadémiques</a></li>
-                                            <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours
+                                                <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours
                                                     National</a></li>
-                                        </ul>
+                                            </ul>
                                         {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% else %}<!--Lancel/Académie-->
+                    {% else %}<!--Lancel/Académie pages spéciales, hors menu-->
                         <div class="col-centre">
-                            <h2 class="sous-titre">{{ titre|raw }}</h2>
+                            <h2 class="sous-titre">{{ titre|raw }}</h2>{# titre et texte viennent de l'OdpfAticle #}
                             <div class="contenu">
                                 {{ texte|raw }}
                             </div>
                         </div>
                     {% endif %}
                 </div>
-                <div class="col-md-8 col-lg-3 pr-0"><!--col dte-->
+                <div class="col-md-8 col-lg-3 pr-0"><!--col dte deuxième colonne de la ligne principale-->
                     {% if  categorie.categorie == 'Les Olympiades' %}
                         <img src="{{ asset('odpf/odpf-images/colright-illustration-01.png') }}" alt="image_en_tete"
                              style="width:100%; height:auto;">
@@ -158,7 +159,7 @@
                     {% if  categorie.categorie == 'Les Olympiades' or choix =='inscriptions' %}
                         <div class="bloc-objectifs">
                             <div class="titre">
-                                <p>{{ titre_objectifs|raw }}</p>
+                                <p>{{ titre_objectifs|raw }}</p>{# titre_objectifs et texte vienet de l'Odpfarticle #}
                             </div>
                             <div class="contenu">
                                 {{ texte_objectifs|raw }}

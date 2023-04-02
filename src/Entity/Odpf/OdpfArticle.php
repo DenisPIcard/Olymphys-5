@@ -4,87 +4,57 @@ namespace App\Entity\Odpf;
 
 use DateTime;
 use App\Repository\Odpf\OdpfArticleRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfArticleRepository::class)
- */
+#[ORM\Entity(repositoryClass: OdpfArticleRepository::class)]
 class OdpfArticle
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $choix;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $titre;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $soustitre;
+    #[ORM\Column(length : 255, nullable: true)]
+    private ?string $choix=null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfCategorie::class)
-     * @ORM\JoinColumn(name="id_categorie",  referencedColumnName="id" )
-     */
-    private ?OdpfCategorie $categorie;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $titre=null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $soustitre=null;
+
+    #[ORM\ManyToOne]
+    private ?OdpfCategorie $categorie=null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $alt_image;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $descr_image;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT,  nullable: true)]
     private ?string $texte;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre_objectifs;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type : Types::TEXT, nullable: true)]
     private ?string $texte_objectifs;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OdpfCarousels::class)
-     * @ORM\JoinColumn(name="id_carousel",  referencedColumnName="id" )
-     */
-    private ?odpfCarousels $carousel;
+    #[ORM\ManyToOne]
+    private ?OdpfCarousels $carousel=null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(nullable: false)]
     private DateTime $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?DateTime $updatedAt;
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     */
+
+    #[ORM\Column(nullable: true)]
     private bool $publie;
 
     public function __construct()

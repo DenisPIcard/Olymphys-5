@@ -11,52 +11,32 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * Odpf_documents
- * @ORM\Table(name="odpf_documents")
- * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=OdpfDocumentsRepository::class)
- */
+#[Vich\Uploadable]
+#[ORM\Entity(repositoryClass:OdpfDocumentsRepository::class)]
+
 class OdpfDocuments
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable:true)]
     private ?string $fichier = null;
 
-    /**
-     * @var File
-     * @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
-     *
-     */
+    #[Vich\UploadableField(mapping:"odpfDocuments", fileNameProperty:"fichier")]
     private ?File $fichierFile = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
-     */
-    private DateTime $updatedAt;
+    #[ORM\Column(nullable:true)]
+    private ?DateTime $updatedAt=null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable:true)]
     private ?string $type;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable:true)]
     private ?string $titre;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length:255, nullable:true)]
     private ?string $description;
 
     public function getId(): ?int

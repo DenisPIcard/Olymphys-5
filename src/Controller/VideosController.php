@@ -7,7 +7,7 @@ use App\Entity\Equipesadmin;
 use App\Entity\Videosequipes;
 use App\Form\ConfirmType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class VideosController extends AbstractController
@@ -31,13 +32,8 @@ class VideosController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-
-    /**
-     * @IsGranted("ROLE_PROF")
-     *
-     * @Route("/videos/liens_videos,{infos}", name="videos_liens_videos")
-     *
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/videos/liens_videos,{infos}", name:"videos_liens_videos")]
     public function liens_videos(Request $request, $infos)
     {
         $repositoryEquipesadmin = $this->doctrine

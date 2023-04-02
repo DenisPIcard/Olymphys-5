@@ -2,7 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Rne;
+use App\Entity\Edition;
+use App\Entity\Uai;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -19,7 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class RneCrudController extends AbstractCrudController
+class UaiCrudController extends AbstractCrudController
 {
     private RequestStack $requestStack;
     private AdminContextProvider $adminContextProvider;
@@ -34,7 +35,7 @@ class RneCrudController extends AbstractCrudController
 
     public static function getEntityFqcn(): string
     {
-        return Rne::class;
+        return Uai::class;
     }
 
 
@@ -46,7 +47,7 @@ class RneCrudController extends AbstractCrudController
         $CP = TextField::new('codePostal', 'CP');
         $ville = TextField::new('commune', 'Ville');
         $academie = TextField::new('academie', 'Académie');
-        $codeUAI = IntegerField::new('rne', 'Code UAI');
+        $codeUAI = IntegerField::new('uai', 'Code UAI');
         if (Crud::PAGE_INDEX === $pageName) {
             return [$nom, $adresse, $CP, $ville, $academie, $codeUAI,];
         } elseif (Crud::PAGE_DETAIL === $pageName) {

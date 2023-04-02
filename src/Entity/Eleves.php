@@ -2,26 +2,19 @@
 
 namespace App\Entity;
 
+use App\Repository\ElevesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Eleves
- *
- * @ORM\Table(name="eleves")
- * @ORM\Entity(repositoryClass="App\Repository\ElevesRepository")
- */
+#[ORM\Entity(repositoryClass : ElevesRepository::class)]
+
 class Eleves
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id=null;
 
     /**
      * @var string

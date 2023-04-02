@@ -9,31 +9,53 @@
 {% block body %}
 
     <div class="container">
+            <div class="row">
+                <div class="col-1">
+                    Lettre
+                </div>
+                <div class="col-7 text-center">
+                    Visite
+                </div>
+                <div class="col-2">
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Lettre</th>
-                <th>Titre projet</th>
-                <th>Visite de laboratoire</th>
-            </tr>
-            </thead>
+                </div>
+                <div class="col-2">
 
-            <tbody>
+                </div>
+            </div>
 
+            {% set i = 0  %}
             {% for equipes in listEquipes %}
-                <tr>
-                    <th><span class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }} </span></th>
-                    <td>{{ equipes.equipeinter.titreProjet }}</td>
-                    <td>{% if equipes.visite != NULL %}
-                            {{ equipes.visite.intitule }}
-                        {% endif %}
-                    </td>
-                </tr>
+
+                    {{ form_start(form[i]) }}
+
+                    <div class="my-custom-class-for-errors">
+                        {{ form_errors(form[i]) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-1">
+                            <span class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }} </span>
+                        </div>
+
+                        <div class="col-7">
+                            {{ form_widget(form[i].id)}}
+                            {{ form_widget(form[i].visite,{'label':''} )}}
+                        </div>
+                        <div class="col-2" >
+                            {{ form_widget(form[i].enregistrer) }}
+                        </div>
+                        <div class="col-2">
+                            {{ form_widget(form[i].effacer) }}
+                        </div>
+                    </div>
+                    {{ form_end(form[i]) }}
+
+                    <hr>
+                {% set i = i+1 %}
             {% endfor %}
 
-            </tbody>
-        </table>
+
     </div>
 
 {% endblock %}

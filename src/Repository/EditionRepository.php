@@ -3,9 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Edition;
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @method Edition|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,27 +19,9 @@ use Doctrine\Persistence\ManagerRegistry;
 class EditionRepository extends ServiceEntityRepository
 
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
         parent::__construct($registry, Edition::class);
-    }
-
-
-    public function getEdition(EditionRepository $er): QueryBuilder
-    {
-
-        return $er->createQueryBuilder('e')->select('e');
-
-    }
-
-    public function getLastEdition(EditionRepository $er): QueryBuilder
-    {
-        $edition = $er->findOneBy([], ['id' => 'desc']);
-        $lastid = $edition->getId();
-        return $er->createQueryBuilder('e')->select('e')
-            ->where('e.id=:lastid')
-            ->setParameter('lastid', $lastid);
-
     }
 
 

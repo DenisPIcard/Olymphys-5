@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use App\Entity\Equipesadmin;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\User;
-use App\Entity\Rne;
+use App\Entity\Uai;
 
 
 class OdpfListeEquipes
@@ -46,7 +46,7 @@ class OdpfListeEquipes
         $affiche = '';
         $afficheHr = '';
         $repositoryUser = $this->em->getRepository(User::class);
-        $repositoryRne = $this->em->getRepository(Rne::class);
+        $repositoryUai = $this->em->getRepository(Uai::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -57,8 +57,8 @@ class OdpfListeEquipes
             ->getResult();
         foreach ($listEquipes as $equipe) {
             $numero = $equipe->getNumero();
-            $rne = $equipe->getRne();
-            $lycee[$numero] = $repositoryRne->findBy(['rne'=>$rne]);
+            $rne = $equipe->getUai();
+            $lycee[$numero] = $repositoryUai->findBy(['rne'=>$rne]);
             $idprof1 = $equipe->getIdProf1();
             $prof1[$numero] = $repositoryUser->findBy(['id'=>$idprof1]);
             $idprof2 = $equipe->getIdProf2();

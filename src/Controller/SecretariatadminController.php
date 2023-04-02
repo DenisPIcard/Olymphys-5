@@ -7,13 +7,12 @@ use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
 use App\Entity\Jures;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -26,6 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
@@ -53,13 +53,9 @@ class SecretariatadminController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     * @Route("/secretariatadmin/charge_rne", name="secretariatadmin_charge_rne")
-     * @param Request $request
-     * @return RedirectResponse|Response
-     */
-    public function charge_rne(Request $request): RedirectResponse|Response
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_uai", name:"secretariatadmin_charge_uai")]
+    public function charge_uai(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier des élèves '];
         $form = $this->createFormBuilder($defaultData)
@@ -67,10 +63,10 @@ class SecretariatadminController extends AbstractController
             ->add('save', SubmitType::class)
             ->getForm();
 
-        $repositoryRne = $this
+        $repositoryUai = $this
             ->doctrine
             ->getManager()
-            ->getRepository(Rne::class);
+            ->getRepository(Uai::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -84,63 +80,56 @@ class SecretariatadminController extends AbstractController
 
             for ($row = 2; $row <= $highestRow; ++$row) {
 
-                $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();//On lit le rne
-                $rne = $repositoryRne->findOneByRne($value);//On vérifie si  cet rne est déjà dans la base
-                if (!$rne) { // si le rne n'existe pas, on le crée
-                    $rne = new rne();
+                $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();//On lit le uai
+                $uai = $repositoryUai->findOneByUai($value);//On vérifie si  cet uai est déjà dans la base
+                if (!$uai) { // si le uai n'existe pas, on le crée
+                    $uai = new Uai();
                 } //sinon on écrase les précédentes données
-                $rne->setRne($value);
+                $uai->setUai($value);
                 $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
-                $rne->setNature($value);
+                $uai->setNature($value);
                 $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-                $rne->setSigle($value);
+                $uai->setSigle($value);
                 $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
-                $rne->setCommune($value);
+                $uai->setCommune($value);
                 $value = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
-                $rne->setAcademie($value);
+                $uai->setAcademie($value);
                 $value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
-                $rne->setPays($value);
+                $uai->setPays($value);
                 $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
-                $rne->setDepartement($value);
+                $uai->setDepartement($value);
                 $value = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
-                $rne->setDenominationPrincipale($value);
+                $uai->setDenominationPrincipale($value);
                 $value = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
-                $rne->setAppellationOfficielle($value);
+                $uai->setAppellationOfficielle($value);
                 $value = $worksheet->getCellByColumnAndRow(11, $row)->getValue();
-                $rne->setNom($value);
+                $uai->setNom($value);
                 $value = $worksheet->getCellByColumnAndRow(12, $row)->getValue();
-                $rne->setAdresse($value);
+                $uai->setAdresse($value);
                 $value = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
-                $rne->setBoitePostale($value);
+                $uai->setBoitePostale($value);
                 $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();
-                $rne->setCodePostal($value);
+                $uai->setCodePostal($value);
                 $value = $worksheet->getCellByColumnAndRow(15, $row)->getValue();
-                $rne->setAcheminement($value);
+                $uai->setAcheminement($value);
                 $value = $worksheet->getCellByColumnAndRow(16, $row)->getValue();
-                $rne->setCoordonneeX($value);
+                $uai->setCoordonneeX($value);
                 $value = $worksheet->getCellByColumnAndRow(17, $row)->getValue();
-                $rne->setCoordonneeY($value);
-                $em->persist($rne);
+                $uai->setCoordonneeY($value);
+                $em->persist($uai);
                 $em->flush();
 
             }
             return $this->redirectToRoute('core_home');
         }
         $content = $this
-            ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('form' => $form->createView(), 'titre' => 'Enregistrer le RNE'));
+            ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('form' => $form->createView(), 'titre' => 'Enregistrer le uai'));
         return new Response($content);
 
     }
 
-
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/charge_user", name="secretariatadmin_charge_user")
-     *
-     */
-
-
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_user", name:"secretariatadmin_charge_user")]
     public function charge_user(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier '];
@@ -189,8 +178,8 @@ class SecretariatadminController extends AbstractController
                     $user->setEmail($value);
 
 
-                    $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue(); //rne
-                    $user->setrne($value);
+                    $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue(); //uai
+                    $user->setuai($value);
                     $value = $worksheet->getCellByColumnAndRow(9, $row)->getValue(); //adresse
                     $user->setAdresse($value);
                     $value = $worksheet->getCellByColumnAndRow(10, $row)->getValue(); //ville
@@ -225,12 +214,8 @@ class SecretariatadminController extends AbstractController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/cree_equipes", name="secretariatadmin_cree_equipes")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/cree_equipes", name:"secretariatadmin_cree_equipes")]
     public function cree_equipes(Request $request): RedirectResponse|Response
     {
         $session = $this->requestStack->getSession();
@@ -288,12 +273,8 @@ class SecretariatadminController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/charge_jures", name="secretariatadmin_charge_jures")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_jures", name:"secretariatadmin_charge_jures")]
     public function charge_jures(Request $request): RedirectResponse|Response
     {
 
@@ -384,27 +365,23 @@ class SecretariatadminController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/charge_equipe_id_rne", name="secretariatadmin_charge_equipe_id_rne")
-     *
-     */
-    public function charge_equipe_id_rne(Request $request): RedirectResponse
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/charge_equipe_id_uai", name:"secretariatadmin_charge_equipe_id_uai")]
+    public function charge_equipe_id_uai(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository(Equipesadmin::class);
-        $repositoryRne = $this->doctrine
+        $repositoryUai = $this->doctrine
             ->getManager()
-            ->getRepository(Rne::class);
+            ->getRepository(Uai::class);
         $equipes = $repositoryEquipes->findAll();
         $em = $this->doctrine->getManager();
-        $rnes = $repositoryRne->findAll();
+        $uais = $repositoryUai->findAll();
         foreach ($equipes as $equipe) {
-            foreach ($rnes as $rne) {
-                if ($rne->getRne() == $equipe->getRne()) {
-                    $equipe->setRneId($rne);
+            foreach ($uais as $uai) {
+                if ($uai->getUai() == $equipe->getUai()) {
+                    $equipe->setUaiId($uai);
                 }
             }
             $em->persist($equipe);
@@ -416,12 +393,8 @@ class SecretariatadminController extends AbstractController
 
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/set_editon_equipe", name="secretariatadmin_set_editon_equipe")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/set_editon_equipe", name:"secretariatadmin_set_editon_equipe")]
     public function set_edition_equipe(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
@@ -456,12 +429,8 @@ class SecretariatadminController extends AbstractController
         return $this->redirectToRoute('core_home');
     }
 
-    /**
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/secretariatadmin/modif_equipe,{idequipe}", name="modif_equipe")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/modif_equipe,{idequipe}", name:"modif_equipe")]
     public function modif_equipe(Request $request, $idequipe): RedirectResponse|Response
     {
         $em = $this->doctrine->getManager();
@@ -549,12 +518,8 @@ class SecretariatadminController extends AbstractController
 
 
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatadmin/youtube_remise_des prix", name="secretariatadmin_youtube_remise_des_prix")
-     *
-     */
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatadmin/youtube_remise_des prix", name:"secretariatadmin_youtube_remise_des_prix")]
     public function youtube_remise_des_prix(Request $request): RedirectResponse|Response
 
     {

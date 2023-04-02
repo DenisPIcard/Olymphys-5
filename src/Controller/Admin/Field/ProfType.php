@@ -33,7 +33,7 @@ class ProfType extends AbstractType
             ->add('cadeau', ChoiceType::class, [
                 'choices' => $qb->leftJoin('entity.prof1', 'p')
                     ->where('p.rneId = rne')
-                    ->setParameter('rne', $equipe->getRneId())
+                    ->setParameter('rne', $equipe->getUaiId())
 
 
             ]);

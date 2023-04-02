@@ -2,59 +2,38 @@
 
 namespace App\Entity;
 
+use App\Repository\VideosequipesRepository;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-/**
- * Centrescia
- *
- * @ORM\Table(name="videosequipes")
- * @ORM\Entity(repositoryClass="App\Repository\VideosequipesRepository")
- *
- */
+
+ #[ORM\Entity(repositoryClass: VideosequipesRepository::class)]
+
 class Videosequipes
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     *
-     *
-     * @ORM\Column(name="lien", type="string")
-     */
-    private ?string $lien;
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-     * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id",onDelete="CASCADE" )
-     */
+    #[ORM\Column(name:"lien", type:"string", nullable: true)]
+    private ?string $lien = null;
+
+    #[ORM\ManyToOne(targetEntity :Edition::class)]
+    #[ORM\JoinColumn(name: "edition_id", referencedColumnName: "id", nullable: true, onDelete: "CASCADE")]
     private edition $edition;
 
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
-     */
-    private ?Equipesadmin $equipe;
+   #[ORM\ManyToOne(targetEntity: Equipesadmin::class)]
+   #[ORM\JoinColumn(name:"equipe_id",  referencedColumnName:"id",onDelete:"CASCADE" )]
+    private ?Equipesadmin $equipe =null ;
 
-    /**
-     *
-     * @ORM\Column(name="nom", type="string", nullable=true)
-     */
+   #[ORM\Column(length : 255 , nullable:true)]
     private ?string $nom = null;
 
-    /**
-     *
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(nullable:true)]
     private ?DateTime $updatedAt;
 
     public function getId(): ?int

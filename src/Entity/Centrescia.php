@@ -2,39 +2,25 @@
 
 namespace App\Entity;
 
+use App\Repository\CentresciaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 
-/**
- * Centrescia
- *
- * @ORM\Table(name="centrescia")
- * @ORM\Entity(repositoryClass="App\Repository\CentresciaRepository")
- *
- */
+#[ORM\Entity(repositoryClass: CentresciaRepository::class)]
 class Centrescia
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable = true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $centre = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?bool $actif = false;
-    /**
-    * @ORM\Column(type="string", length=255, nullable = true)
-    */
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?int $edition = null;
 
     public function __toString()

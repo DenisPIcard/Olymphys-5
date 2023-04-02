@@ -2,103 +2,69 @@
 
 namespace App\Entity;
 
+use App\Repository\UaiRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\RneRepository")
- */
-class Rne
+#[ORM\Entity(repositoryClass: UaiRepository::class)]
+class Uai
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=10, unique=true)
-     */
-    private ?string $rne = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $uai = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $commune = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $academie = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $pays = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    
     private ?string $departement = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $appellationOfficielle = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $boitePostale = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $codePostal = null;
 
-    /**
-     * @ORM\Column(type="string", length=11, nullable=true)
-     */
+    #[ORM\Column(length: 11, nullable: true)]
     private ?string $sigle = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $denominationPrincipale = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $acheminement = null;
 
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=1, nullable=true)
-     */
+    #[ORM\Column(type: Types::DECIMAL, precision:10, scale:1, nullable:true)]
     private ?string $coordonneeX = null;
 
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=1, nullable=true)
-     */
+    #[ORM\Column(type: Types::DECIMAL, precision:10, scale:1, nullable:true)]
     private ?string $coordonneeY = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nature = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom;
 
     public function __toString()
     {
-        return $this->rne;
+        return $this->uai;
     }
 
     public function getId(): ?int
@@ -106,14 +72,14 @@ class Rne
         return $this->id;
     }
 
-    public function getRne(): ?string
+    public function getUai(): ?string
     {
-        return $this->rne;
+        return $this->uai;
     }
 
-    public function setRne(string $rne): self
+    public function setUai(string $uai): self
     {
-        $this->rne = $rne;
+        $this->uai = $uai;
 
         return $this;
     }

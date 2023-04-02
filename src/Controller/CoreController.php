@@ -36,78 +36,52 @@ class CoreController extends AbstractController
 
 
     /**
-     * @Route("/", name="core_home")
      * @throws Exception
      */
+    #[Route("/", name:"core_home")]
     public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
     {
 
         $user = $this->getUser();
 
-        $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-        //dd($edition);
+        $repository = $doctrine->getRepository(Edition::class);
+        $edition=$repository->findOneBy([], ['id' => 'desc']);
+
         $this->requestStack->getSession()->set('edition', $edition);
 
         if (null != $user) {
             $datecia = $edition->getConcourscia();
             $dateconnect = new datetime('now');
+            $concours='';
             if ($dateconnect > $datecia) {
-                $concours = 'national';
-            }
-            if ($dateconnect <= $datecia) {
-                $concours = 'interacadémique';
-            }
-            $datelimphotoscia = date_create();
-            $datelimphotoscn = date_create();
-            $datelimdiaporama = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
-            $p = new DateInterval('P7D');
-            $datelimlivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
-
-            $datelivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
-            $datelimlivredoreleve = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
-            date_date_set($datelimphotoscia, $edition->getconcourscia()->format('Y'), $edition->getconcourscia()->format('m'), $edition->getconcourscia()->format('d') + 30);
-            date_date_set($datelimphotoscn, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 30);
-            date_date_set($datelivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 1);
-            date_date_set($datelimdiaporama, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 7);
-            date_date_set($datelimlivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 8);
-            $this->requestStack->getSession()->set('concours', $concours);
-            $this->requestStack->getSession()->set('datelimphotoscia', $datelimphotoscia);
-            $this->requestStack->getSession()->set('datelimphotoscn', $datelimphotoscn);
-            $this->requestStack->getSession()->set('datelivredor', $datelivredor);
-            $this->requestStack->getSession()->set('datelimlivredor', $datelimlivredor);
-            $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
-            $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
-            $this->requestStack->getSession()->set('dateclotureinscription', new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
-            $this->requestStack->getSession()->set('dateouverturesite', new DateTime($this->requestStack->getSession()->get('edition')->getDateouverturesite()->format('Y-m-d H:i:s')));
+                $concours = 'national';}
+            else {
+                $concours = 'interacadémique';}
 
         }
         $this->requestStack->getSession()->set('pageCourante', 1);
         $this->requestStack->getSession()->set('pageFCourante', 1);
+        //pour construire les paginateurs des Actus et de la FAQ
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $tab = $repo->accueil_actus();
-        $listfaq = $repo->listfaq();
-        //dd($listfaq);
+        //Construit le tableau des données à transmettre au template : les actus de l'acceil
         $article = $repo->findOneBy(['choix' => 'accueil']);
-        $tab['listfaq'] = $listfaq;
         $tab['article'] = $article;
-        // dd($tab);
-        if ($this->requestStack->getSession()->get('resetpwd') == true) {
+        // ajoute les articles destinés à l'accueil
 
-            return $this->redirectToRoute('forgotten_password');
+        $listfaq = $repo->listfaq();
+        $tab['listfaq'] = $listfaq;
+        // ajoute la liste de la Foire aux questions
+        // le tout est transmis au template
+        return $this->render('core/odpf-accueil.html.twig', $tab);
 
-        } else {
-            return $this->render('core/odpf-accueil.html.twig', $tab);
-        }
     }
 
-    /**
-     * @Route("/core/pages,{choix}", name="core_pages")
-     */
+    #[Route("/core/pages,{choix}", name:"core_pages")]
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {     /*  if($this->requestStack->getSession()->get('edition') == false){
-                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-                $this->requestStack->getSession()->set('edition', $edition);
-            }*/
+    {
+        // construit les pages
+        // try catch sert à rediriger les internautes vers le départ si la session s'est interrompue
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -124,14 +98,14 @@ class CoreController extends AbstractController
 
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $listfaq = $repo->listfaq();
-        if ($choix == 'les_equipes') {
-            $tab = $OdpfListeEquipes->getArray($choix);
+        if ($choix == 'les_equipes') { // dirige vers le traitement de chaque choix
+            $tab = $OdpfListeEquipes->getArray($choix);//Le service construit la liste
             $tab['listfaq'] = $listfaq;
         } elseif ($choix == 'mecenes' or $choix == 'donateurs') {
             $repo1 = $doctrine->getRepository(OdpfLogos::class);
-            $tab = $repo1->logospartenaires($choix);
+            $tab = $repo1->logospartenaires($choix);// la fonction est dans le repository
             $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
-            $tab['partenaires'] = $repo2->textespartenaires();
+            $tab['partenaires'] = $repo2->textespartenaires();//la fonction est dans le repository
             $tab['listfaq'] = $listfaq;
         } elseif ($choix == 'editions') {
             $editions = $doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
@@ -145,13 +119,12 @@ class CoreController extends AbstractController
                     ->findOneBy(['edition' => $editionaffichee->getEdition()])->getEdition();
             $photosed = $this->doctrine->getRepository(photos::class)->findBy(['editionspassees' => $editionaffichee]);
             count($photosed) != 0 ? $photostest = true : $photostest = false;
-            $tab = $OdpfCreateArray->getArray($choix);
+            $tab = $OdpfCreateArray->getArray($choix);// construit le tableau de résultat à afficher par le template
             $tab['edition_affichee'] = $editionaffichee;
             $tab['editions'] = $editions;
             $tab['choice'] = $choice;
             $tab['listfaq'] = $listfaq;
             $tab['photostest'] = $photostest;
-            // dd($tab);
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 
         } else {
@@ -162,11 +135,10 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    /**
-     * @Route("/core/actus,{tourn}", name="core_actus")
-     */
+    #[Route("/core/actus,{tourn}", name:"core_actus")]
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
+        // construit le tableau des éléments à passer au template pour créer le menu des actus
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -179,20 +151,17 @@ class CoreController extends AbstractController
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
         }
-        if (!$this->requestStack->getSession()->get('edition')) {
-            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-            $this->requestStack->getSession()->set('edition', $edition);
-        }
+
+        // construit la liste des éléments à afficher, et à avoir, pour le menu Actus
         $repo = $doctrine->getRepository(OdpfArticle::class);
 
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
         $tab = $repo->actuspaginees();
-        //dd($tab);
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
         $nbpages = $tab['nbpages'];
         $pageCourante = $this->requestStack->getSession()->get('pageCourante');
-
+        // paginateur
         switch ($tourn) {
             case 'debut':
                 $pageCourante = 1;
@@ -217,16 +186,14 @@ class CoreController extends AbstractController
         $affActus = $actutil[$pageCourante - 1];
 
         $tab['affActus'] = $affActus;
-        //dd($tab);
 
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    /**
-     * @Route("/core/faq,{tourn}", name="core_faq")
-     */
+    #[Route("/core/faq,{tourn}", name:"core_faq")]
     public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
+        // construit le tableau des éléments à passer au template pour créer la page des FAQ
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -242,6 +209,7 @@ class CoreController extends AbstractController
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'faq']);
         $faq = $repo->faq_paginee();
+        // construit la liste des éléments à afficher, et à avoir, pour le meu FAQ
         $listfaq = $repo->listfaq();
         $tab['listfaq'] = $listfaq;
         $nbpages = $faq['nbpages'];
@@ -250,7 +218,7 @@ class CoreController extends AbstractController
         $tab['choix'] = 'faq';
         $tab['titre'] = $faq['titre'];
         $pageFCourante = $this->requestStack->getSession()->get('pageFCourante');
-
+        // paginateur identique à celui des actus. La différence est dans le FCourante
         switch ($tourn) {
             case 'debut':
                 $pageFCourante = 1;
@@ -278,11 +246,10 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    /**
-     * @Route("/core/mentions,{mention}", name="core_mentions")
-     */
+    #[Route("/core/mentions,{mention}", name:"core_mentions")]
     public function mentions(Request $request, ManagerRegistry $doctrine, $mention): Response
     {
+        // construit le tableau des éléments à passer au template pour créer le menu des mentions de bas de page
         try {
             $edition = $this->requestStack->getSession()->get('edition');
             if ($edition === null) {
@@ -316,7 +283,7 @@ class CoreController extends AbstractController
         $tab['edition'] = $edition;
         $tab['article'] = $article;
         $tab['titre'] = 'mentions';
-        //dd($tab);
+
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 

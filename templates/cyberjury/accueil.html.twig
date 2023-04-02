@@ -5,10 +5,6 @@
 
 {% block navigation %}
 
-    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc pl-0">{# <span class="fas fa-user">  </span> #}
-
-        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
-    </button>
     {{ include ('cyberjury/navigation.html.twig') }}
 
 {% endblock %}
@@ -50,7 +46,8 @@
                    title="En savoir plus sur cette équipe"> </a>
                 <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt"
                    title="Les phrases amusantes"> </a>
-
+              {#  <a href="{{ equipes.salleZoom }}" class="fas fa-wifi"
+                   title="Vers la salle Zoom de l'équipe" target="_blank"> </a> #}
             </p>
         {% endif %}
     {% endfor %}

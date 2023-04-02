@@ -2,26 +2,18 @@
 
 namespace App\Entity;
 
+use App\Repository\LiaisonRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Liaison
- *
- * @ORM\Table(name="liaison")
- * @ORM\Entity(repositoryClass="App\Repository\LiaisonRepository")
- */
+#[ORM\Entity(repositoryClass: LiaisonRepository::class)]
 class Liaison
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="liaison", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $liaison = null;
 
 

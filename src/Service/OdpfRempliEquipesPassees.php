@@ -45,11 +45,11 @@ class OdpfRempliEquipesPassees
         }
         $OdpfEquipepassee->setEditionspassees($editionPassee);
         $OdpfEquipepassee->setNumero($equipe->getNumero());
-        if ($equipe->getRneId() != null) {
+        if ($equipe->getUaiId() != null) {
             $equipe->getLettre() !== null ? $OdpfEquipepassee->setLettre($equipe->getLettre()) : $OdpfEquipepassee->setLettre(null);
 
-            $OdpfEquipepassee->setLycee($equipe->getRneId()->getNom());
-            $OdpfEquipepassee->setVille($equipe->getRneId()->getCommune());
+            $OdpfEquipepassee->setLycee($equipe->getUaiId()->getNom());
+            $OdpfEquipepassee->setVille($equipe->getUaiId()->getCommune());
             $OdpfEquipepassee->setAcademie($equipe->getLyceeAcademie());
             $nomsProfs1 = ucfirst($equipe->getPrenomProf1()) . ' ' . strtoupper($equipe->getNomProf1());
             $equipe->getIdProf2() != null ? $nomsProfs = $nomsProfs1 . ', ' . $equipe->getPrenomProf2() . ' ' . $equipe->getNomProf2() : $nomsProfs = $nomsProfs1;

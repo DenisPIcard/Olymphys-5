@@ -4,59 +4,42 @@ namespace App\Entity\Odpf;
 
 use App\Repository\Odpf\OdpfPartenairesRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfPartenairesRepository::class)
- */
+#[ORM\Entity(repositoryClass: OdpfPartenairesRepository::class)]
+
 class OdpfPartenaires
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $choix;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $titre;
+
+    #[ORM\Column(length:255, nullable:true)]
+    private ?string $choix = null;
+
+    #[ORM\Column(length:255, nullable:true)]
+    private ?string $titre=null;
 
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $mecenes;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $donateurs;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $visites;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $cadeaux;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $cia;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
-     */
-    private DateTime $updatedAt;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt = null;
 
     public function getId(): ?int
     {

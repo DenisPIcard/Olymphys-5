@@ -14,7 +14,6 @@ use Exception;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Style\Cell;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -26,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class LivredorController extends AbstractController
 {
@@ -39,11 +39,9 @@ class LivredorController extends AbstractController
     }
 
 
-    /**
-     * @IsGranted("ROLE_PROF")
-     * @Route("/livredor/choix_equipe", name="livredor_choix_equipe")
-     * @return RedirectResponse|Response
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/livredor/choix_equipe", name:"livredor_choix_equipe")]
+
     public function choix_equipe(Request $request, RequestStack $requestStack)
     {
 
@@ -85,11 +83,8 @@ class LivredorController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted("ROLE_PROF")
-     * @Route("/livredor/saisie_texte,{id}", name="livredor_saisie_texte")
-     * @return RedirectResponse|Response
-     */
+    #[IsGranted("ROLE_PROF")]
+    #[Route("/livredor/saisie_texte,{id}", name:"livredor_saisie_texte")]
     public function saisie_texte(Request $request, $id): Response
     {
         $em = $this->doctrine->getManager();
@@ -208,11 +203,8 @@ class LivredorController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     * @Route("/livredor/choix_edition,{action}", name="livredor_choix_edition")
-     * @return RedirectResponse|Response
-     */
+   #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
+   #[Route("/livredor/choix_edition,{action}", name:"livredor_choix_edition")]
     public function choix_edition(Request $request, $action): Response
     {
         $repositoryEdition = $this->doctrine
@@ -238,11 +230,8 @@ class LivredorController extends AbstractController
     }
 
 
-    /**
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     * @Route("/livredor/lire,{choix}", name="livredor_lire")
-     * @return RedirectResponse|Response
-     */
+    #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
+    #[Route("/livredor/lire,{choix}", name:"livredor_lire")]
     public function lire(Request $request, $choix): Response
     {
         $type = explode('-', $choix)[1];
@@ -347,19 +336,15 @@ class LivredorController extends AbstractController
 
     }
 
-    /**
-     * @IsGranted("ROLE_COMITE")
-     * @Route("/livredor/editer,{choix}", name="livredor_editer")
-     *
-     * @throws \PhpOffice\PhpWord\Exception\Exception
-     */
+    #[IsGranted("ROLE_COMITE")]
+    #[Route("/livredor/editer,{choix}", name:"livredor_editer")]
     public function editer(Request $request, $choix)
     {
 
         $idedition = explode('-', $choix)[0];
         $type = explode('-', $choix)[1];
-        $edition = $repositoryEdition = $this->doctrine
-            ->getRepository(OdpfEditionsPassees::class)->findOneById(['id' => $idedition]);
+        $edition =$this->doctrine
+            ->getRepository(Edition::class)->findOneById(['id' => $idedition]);
 
         $phpWord = new  PhpWord();
 
@@ -381,7 +366,7 @@ class LivredorController extends AbstractController
         );
 
         if (($type == 'prof') or ($type == 'comite') or ($type == 'jury')) {
-            $livredor = $this - $this->doctrine
+            $livredor = $this->doctrine
                     ->getRepository(Livredor::class)->createQueryBuilder('l')
                     ->leftJoin('l.user', 'p')
                     ->addOrderBy('p.nom', 'ASC')
@@ -396,6 +381,7 @@ class LivredorController extends AbstractController
                     ->getManager()
                     ->getRepository(Equipesadmin::class);
                 $section->addText('Livre d\'or des professeurs - Edition ' . $edition->getEd() . ' année ' . $edition->getAnnee(), array('bold' => true, 'size' => 14, 'spaceAfter' => 240), 'pStyle');
+                $section->addText('Remplis en ligne du fait de la tenue en distanciel du ' . $edition->getEd() . 'e concours national', array('bold' => true, 'size' => 10, 'spaceAfter' => 240), 'pStyle');
                 $section->addTextBreak(3);
                 if ($livredor != null) {
                     foreach ($livredor as $texte) {
@@ -483,6 +469,7 @@ class LivredorController extends AbstractController
 
             if ($livredor != null) {
                 $section->addText('Livre d\'or des élèves- Edition ' . $edition->getEd() . ' année ' . $edition->getAnnee(), array('bold' => true, 'size' => 14, 'spaceAfter' => 240), 'pStyle');
+
                 $section->addTextBreak(3);
                 foreach ($livredor as $texte) {
 
@@ -511,7 +498,7 @@ class LivredorController extends AbstractController
         }
         $categorie = $type;
         $filesystem = new Filesystem();
-        $fileName = $edition->getEdition() . ' annee ' . $edition->getAnnee() . ' livre d\'or ' . $categorie . '.docx';
+        $fileName = $edition->getEd() . ' annee ' . $edition->getAnnee() . ' livre d\'or ' . $categorie . '.docx';
 
         try {
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');

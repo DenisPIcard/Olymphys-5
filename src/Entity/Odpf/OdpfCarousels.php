@@ -6,44 +6,30 @@ use App\Repository\Odpf\OdpfCarouselsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity(repositoryClass=OdpfCarouselsRepository::class)
- * @Vich\Uploadable
- */
+
+#[ORM\Entity(repositoryClass:OdpfCarouselsRepository::class)]
 class OdpfCarousels
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(nullable: true)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="datetime",nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?\DateTime $updatedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(nullable: true)]
     private \DateTime $createdAt;
 
-    /**
-     * @ORM\Column(type="boolean", length=255, nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?bool $blackbgnd = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist", "remove"})
-     */
+
+    #[ORM\OneToMany(mappedBy: 'carousel', targetEntity: OdpfImagescarousels::class)]
     private ?Collection $images;
 
 

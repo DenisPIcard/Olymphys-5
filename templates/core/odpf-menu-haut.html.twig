@@ -1,13 +1,19 @@
 <div class="row  justify-content-end">
+    {# menu haut des pafes odpf #}
     <nav>
+        {# utilise les fonctions nav de Bootstrap #}
         <ul class="nav flex-column flex-md-row">
             <li class="nav-item dropdown menu_haut">
+                {#  ouvre un menu déroulant #}
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true"
                    aria-expanded="false">Foire aux questions</a>
                 <div class="dropdown-menu">
+                    {# contenu du menu déroulant #}
                     {% for question in listfaq %}
+                        {#  listfaq est passé par la fonction accueil du Controller #}
                         <a class="dropdown-item login py-0"
                            href="{{ path('core_faq',{tourn: 'debut'}) }}">{{ question.titre }}</a>
+                        {# le lien est vers une route, core_faq, du CoreController, pour la fonction faq,  avec une donnée 'début'  #}
                     {% endfor %}
                 </div>
             </li>
@@ -18,38 +24,51 @@
                        aria-haspopup="true" aria-expanded="false">Administration</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item login py-0" href="{{ path('admin') }}">Tableau de bord Concours</a>
+                        {# le chemin admin est la rout de l'Admin Concours (src/Controller/Admin/DahboardController.php) #}
                         <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord Site</a>
+                        {#  odpfadmin est la route de  src/Controller/OdpfAdmin/OdpfDashboardController.php#}
                         <a class="dropdown-item login py-0" href="{{ path('secretariatjury_accueil') }}" role="button">Secrétariat
                             du Jury</a>
+                        {# secretariatjury/accueil est la route vers la fonction accueil du SecretariatJuryController #}
                         <div class="dropdown-divider"></div>
+                        {# saute une ligne #}
                         <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration des frais</a>
+                        {#  comite/frais est la route vers la fonction frais du ComiteController, avec la variable nblig #}
                         <div class="dropdown-divider"></div>
+                        {# saute une ligne #}
                         <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_user') }}"
                            role="button" aria-pressed="true">Ajouter des utilisateurs</a>
-                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_rne') }}"
+                        {# secretariatadmin_charge_user est la route vers la fonction chargeuser du SecretariatadminController #}
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_uai') }}"
                            role="button" aria-pressed="true">Charger le RNE</a>
-                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_equipe_id_rne') }}"
-                           role="button" aria-pressed="true">Mise à jour id_rne</a>
+                        {#  secretariatadmin_charge_uai est la route vers la donction charge_uai deu SecretariatadminController #}
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_equipe_id_uai') }}"
+                           role="button" aria-pressed="true">Mise à jour id_uai</a>
+                        {# secretariatadmin_charge_equipe_id_uai est la route vers la fonction chage_equipe_uai du SecretariatadminController #}
                         <div class="dropdown-divider"></div>
+                        {# saute une ligne #}
                         <a class="dropdown-item login py-0"
                            href=" {{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
                            aria-pressed="true">Déposer des photos des interacadémiques</a>
+                        {# photos_deposephotos est la route vers la fonction deposephotos du PhotosController, avec la variable concours : inter #}
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos',{concours:'cn'}) }}"
-                           role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                         role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                        {# photos_deposephotos est la route vers la fonction deposephotos du PhotosController, avec la variable concours : cn #}
                         <a class="dropdown-item login py-0" href="{{ path('fichiers_choix_centre') }}" role="button">Liste
                             des fichiers CIA</a>
+                        {# fichiers_choix_centre est la route vers la fonction choix_centre du FichersController #}
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" role="button"
                            aria-pressed="true"> Liste des mémoires et résumés CN</a>
+                        {# fichiers_choix_equipe est la route vers la fonction choix_equipe du FichiersController avec ici la variale liste_cn_comite #}
                         <div class="dropdown-divider"></div>
+                        {# saute une ligne #}
                         <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_cree_equipes') }}"
                            role="button" aria-pressed="true">Remplissage de la table Equipes</a>
+                        {# secretariatadmin_cree_equipes est la route vers la fonction cree_equipes du SecretariatadminController #}
                         <a class="dropdown-item login py-0" href="{{ path('secretariatadmin_charge_jures') }}"
                            role="button" aria-pressed="true">Remplissage de la table Jures</a>
-                        <a class="dropdown-item login py-0" href="{{ path('app_recup_odpf') }}" role="button"
-                           aria-pressed="true">Récupérer les fichiers OdpF</a>
-                        <a class="dropdown-item login py-0" href="{{ path('recup_profs_eleves') }}" role="button"
-                           aria-pressed="true">Récupérer les profs et élèves passées</a>
+                        {# secretariatadmin_charge_jures est la route vers la fonction charge_jures du SecretariatadminController #}
 
                     </div>
                 </li>
@@ -80,7 +99,7 @@
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Page Organisateurs</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
+                        <div class="login py-0">Centre de {{app.user.centrecia.centre  }}</div>
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>

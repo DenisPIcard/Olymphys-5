@@ -26,6 +26,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
 
     public function listfaq(): array
     {
+        // construit la liste des questions de la Foire Ayx Questions
         $categorie = 'faq';
         $listfaq = $this->createQueryBuilder('a')
             ->leftJoin('a.categorie', 'c')
@@ -35,6 +36,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->orderBy('a.updatedAt', 'ASC')
             ->getQuery()
             ->getResult();
+        //renvoie la liste des questions, ordonnée par date ascendante
         return ($listfaq);
     }
 
@@ -68,6 +70,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
 
     public function accueil_actus(): array
     {
+        // construit l'affichage des actus en page d'accueil
         $choix = 'actus';
         $affActus = $this->createQueryBuilder('e')
             ->select('e')
@@ -79,11 +82,12 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();
-        //dd($affActus);
+        // liste des 5 dernières actus publiées, classées par date descendante
         for ($i = 0; $i < count($affActus); $i++) {
             $texte = $affActus[$i]->getTexte();
             $chaine = strip_tags($texte, '<a>');
             $texte = $this->couper($chaine, 30);
+            // découpe les 30 premiers mots de l'actu
             $affActus[$i]->setTexte($texte);
         }
 
@@ -93,8 +97,6 @@ class OdpfArticleRepository extends ServiceEntityRepository
 
     public function actuspaginees(): array
     {
-        $categorie = 'Actus';
-
         $titre = 'Actus';
         $choix = 'actus';
         $edition = $this->requestStack->getSession()->get('edition');
@@ -108,7 +110,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->orderBy('e.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
-///dd($listActus);
+
         $limit = 5;
         $totactus = count($listActus);
         $nbpages = intval(ceil($totactus / $limit));

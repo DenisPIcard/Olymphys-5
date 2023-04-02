@@ -1,25 +1,27 @@
-<nav class="navbar navbar-default" style="padding-left: 0">
 
-    {# <div class="container">
-        <div class="ul"> #}
-    <a href="{{ path('cyberjury_accueil') }}" type="button"
-       class="fas fa-home list-group-item list-group-item-action" style="padding-left: 0"> Accueil du Jury</a>
-    <a href="{{ path('cyberjury_tableau_de_bord') }}" type="button"
-       class="fas fa-list list-group-item list-group-item-action" style="padding-left: 0"> Tableau de bord</a>
+<li class="nav-item dropdown menu_haut">
+    <a class="nav-link" href="{{ path('cyberjury_accueil') }}"  role="button" aria-haspopup="true"
+       aria-expanded="false">Accueil du jury</a>
 
-    <button class="far fa-bookmark btn btn-outline btn dropdown-toggle" type="button" id="dropdownMenuButton"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Informations
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        <a class="dropdown-item" href="{{ path('cyberjury_lesprix') }}"> Les Prix</a>
-        <a class="dropdown-item" href="{{ path('cyberjury_lescadeaux') }}"> Les cadeaux</a>
-        <a class="dropdown-item" href="{{ path('cyberjury_palmares') }}"> Le palmarès</a>
+</li>
+<li class="nav-item dropdown menu_haut">
+    <a class="nav-link" href="{{ path('cyberjury_tableau_de_bord') }}"  role="button" aria-haspopup="true"
+       aria-expanded="false">Tableau de bord</a>
+
+</li>
+<li class="nav-item dropdown menu_haut">
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+       aria-expanded="false"> Informations</a>
+    <div class="dropdown-menu ">
+
+        <a class="dropdown-item login py-0" href="{{ path('cyberjury_lesprix') }}">Les prix</a>
+        <a class="dropdown-item login py-0" href="{{ path('cyberjury_lescadeaux') }}"> Les cadeaux</a>
+        <a class="dropdown-item login py-0" href="{{ path('cyberjury_palmares') }}"> Le palmarès</a>
     </div>
-    <a href="{{ path('logout') }}" type="button"
-       class="fas fa-procedures list-group-item list-group-item-action" style="height: max-content;padding-left: 0">
-        Déconnexion</a>
-    {#  </div>
-    </div> #}
+</li>
+{#  <li class="nav-item dropdown menu_haut">
+    <a class="nav-link" href="#"  aria-haspopup="true"
+       aria-expanded="false"> {{ app.user.prenomNom }}</a>
+</li>
+#}
 
-</nav>

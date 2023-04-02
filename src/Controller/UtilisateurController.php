@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
-use App\Entity\Rne;
+use App\Entity\Uai;
 use App\Entity\User;
 use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
@@ -18,8 +18,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class UtilisateurController extends AbstractController
@@ -40,9 +39,7 @@ class UtilisateurController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @Route("/profile_show", name="profile_show")
-     */
+    #[Route("/profile_show", name:"profile_show")]
     public function profileShow(): Response
     {
         $user = $this->getUser();
@@ -51,13 +48,7 @@ class UtilisateurController extends AbstractController
         ));
     }
 
-    /**
-     * Edit the user.
-     *
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @Route("profile_edit", name="profile_edit")
-     */
+    #[Route("profile_edit", name:"profile_edit")]
     public function profileEdit(Request $request, ManagerRegistry $doctrine)
     {
         $user = $this->getUser();
@@ -84,13 +75,7 @@ class UtilisateurController extends AbstractController
         ));
     }
 
-    /**
-     *
-     *
-     *
-     * @Route("/Utilisateur/inscrire_equipe,{idequipe}", name="inscrire_equipe")
-     * @throws TransportExceptionInterface
-     */
+    #[Route("/Utilisateur/inscrire_equipe,{idequipe}", name:"inscrire_equipe")]
     public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe)
     {
 
@@ -106,33 +91,27 @@ class UtilisateurController extends AbstractController
             }
             if ($idequipe == 'x') {
                 if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
-
-                    $request->getSession()
-                        ->getFlashBag()
-                        ->add('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
-
-
-                    return $this->redirectToRoute('core_home');
-
-
+                    $this->requestStack->getSession()
+                        ->set('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
+                    return $this->redirectToRoute('fichiers_choix_equipe',array('choix'=>'liste_prof'));
                 }
             }
 
             $em = $doctrine->getManager();
             $repositoryEquipesadmin = $doctrine->getRepository(Equipesadmin::class);
             $repositoryEleves = $doctrine->getRepository(Elevesinter::class);
-            $repositoryRne = $doctrine->getRepository(Rne::class);
+            $repositoryUai = $doctrine->getRepository(Uai::class);
             $repositoryEdition = $doctrine->getRepository(Edition::class);
 
 
-            $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
+            $uai_objet = $repositoryUai->findOneBy(['uai' => $this->getUser()->getUai()]);
             if ($this->isGranted('ROLE_PROF')) {
                 $edition = $session->get('edition');
                 $idEdition = $edition->getId();
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
                 if ($idequipe == 'x') {
                     $equipe = new Equipesadmin();
-                    $form1 = $this->createForm(InscrireEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne()]);
+                    $form1 = $this->createForm(InscrireEquipeType::class, $equipe, ['uai' => $this->getUser()->getUai()]);
                     $modif = false;
                     $eleves = [];
                 } else {
@@ -175,7 +154,7 @@ class UtilisateurController extends AbstractController
                     if ($session->get('supr_eleve') == null) {
                         $elevesaff = $repositoryEleves->findBy(['equipe' => $equipe]);
                     }
-                    $form1 = $this->createForm(ModifEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne(), 'eleves' => $elevesaff]);
+                    $form1 = $this->createForm(ModifEquipeType::class, $equipe, ['uai' => $this->getUser()->getUai(), 'eleves' => $elevesaff]);
                     $modif = true;
                 }
 
@@ -185,7 +164,7 @@ class UtilisateurController extends AbstractController
                     $oldEquipe = $session->get('oldequipe');
                     $oldListeEleves = $session->get('oldlisteEleves');
 
-                    $repositoryRne = $em->getRepository(Rne::class);
+                    $repositoryUai = $em->getRepository(Uai::class);
                     $repositoryEleves = $em->getRepository(Elevesinter::class);
                     if ($session->get('supr_eleve') !== null) {
                         $eleves_supr = $session->get('supr_eleve');
@@ -227,7 +206,7 @@ class UtilisateurController extends AbstractController
                             $equipe->setNumero($numero);
                         }
                     }
-                    $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
+                    $uai_objet = $repositoryUai->findOneBy(['uai' => $this->getUser()->getUai()]);
 
                     $equipe->setPrenomprof1($form1->get('idProf1')->getData()->getPrenom());
                     $equipe->setNomprof1($form1->get('idProf1')->getData()->getNom());
@@ -242,12 +221,12 @@ class UtilisateurController extends AbstractController
                     if ($modif == false) {
                         $equipe->setSelectionnee(false);
                     }
-                    $equipe->setRne($this->getUser()->getRne());
-                    $equipe->setRneid($rne_objet);
-                    $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
-                    $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
-                    $equipe->setLyceeAcademie($rne_objet->getAcademie());
-                    $equipe->setLyceeLocalite($rne_objet->getAcheminement());
+                    $equipe->setUai($this->getUser()->getUai());
+                    $equipe->setUaiId($uai_objet);
+                    $equipe->setDenominationLycee($uai_objet->getDenominationPrincipale());
+                    $equipe->setNomLycee($uai_objet->getnom());
+                    $equipe->setLyceeAcademie($uai_objet->getAcademie());
+                    $equipe->setLyceeLocalite($uai_objet->getCommune());
                     $nbeleves = $equipe->getNbeleves();
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
@@ -269,7 +248,7 @@ class UtilisateurController extends AbstractController
                                     ->getFlashBag()
                                     ->add('alert', 'Les données d\'un élève doivent être toutes complétées !');
 
-                                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
+                                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'uaiObj' => $uai_objet));
                             }
                             $eleve[$i]->setPrenom($form1->get('prenomeleve' . $i)->getData());
                             $eleve[$i]->setNom(strtoupper($form1->get('nomeleve' . $i)->getData()));
@@ -309,14 +288,14 @@ class UtilisateurController extends AbstractController
                             $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
                         }
                         catch(TransportExceptionInterface $e) {
-
+                                dd($e);
                         }
 
 
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
                     }
                 }
-                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
+                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'uaiObj' => $uai_objet));
 
             } else {
                 return $this->redirectToRoute('core_home');
@@ -330,12 +309,8 @@ class UtilisateurController extends AbstractController
 
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/Utilisateur/supr_eleve,{eleve}", name="supr_eleve")
-     */
+    #[IsGranted('ROLE_PROF')]
+    #[Route("/Utilisateur/supr_eleve,{eleve}", name:"supr_eleve")]
     public function supr_eleve($eleveId)
     {
 
@@ -481,13 +456,8 @@ class UtilisateurController extends AbstractController
         return $checkchange;
     }
 
-    /**
-     *
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/Utilisateur/pre_supr_eleve", name="pre_supr_eleve")
-     */
-
+    #[IsGranted('ROLE_PROF')]
+    #[Route("/Utilisateur/pre_supr_eleve", name:"pre_supr_eleve")]
     public function pre_supr_eleve(Request $request, ManagerRegistry $doctrine): RedirectResponse
     {
         $session = $this->requestStack->getSession();

@@ -14,8 +14,7 @@
     </div>
 
     <div class="col-1">
-        {{ form_label(form.cadeau.attribue, 'Attribué') }}
-        {{ form_row(form.cadeau.attribue) }}
+
     </div>
 
     {# Génération manuelle et éclatée : #}
@@ -70,7 +69,7 @@
     <div>
         {# Pour le bouton, pas de label ni d'erreur, on affiche juste le widget #}
         {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-success'}}) }}
-
+        {{ form_widget(form.Effacer, {'attr': {'class': 'btn btn-success'}}) }}
     </div>
 
     {# Génération automatique des champs pas encore écrits.

@@ -61,7 +61,7 @@
                 {% endif %}
                 {% if attrib==0 %}
                      Non encore déposé
-                        {% if  app.user.roles|filter(v => v =='ROLE_JURY')!=[] and app.session.get('concours')=='national' and i<3%}
+                        {% if  app.user.roles|filter(v => v =='ROLE_JURY')!=[] and app.session.get('concours')=='national' and i<5%}
                             <a  href="{{ path('voir_fichier_inter',{ 'typefichier' : type_fichier[i] , 'idequipe': equipe.id}) }}">Voir le fichier  des interacadémique</a>
                         {% endif %}
                 {% endif %}
@@ -72,7 +72,7 @@
                         {%  if is_granted('ROLE_PROF')%}<!-- le prof , le comité, les organisateurs CIA sont habilités à déposer des fichiers -->
                                 {%  if i<3  %}
                                     {%  if (app.user.roles|filter(v => v =='ROLE_PROF')!=[])  %}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
-                                        {% if (app.session.get('concours')=='interacadémique') and (date()<= app.session.get('edition').datelimcia)%}
+                                        {% if (app.session.get('concours')=='interacadémique') and (date()<= app.session.get('edition').datelimcia) and (date()>=app.session.get('edition').dateouverturesite)%}
                                              {%  if attrib==1 %}
                                                 <button type="button" id="{{fichieraffiche.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichieraffiche.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
                                              {% endif %}

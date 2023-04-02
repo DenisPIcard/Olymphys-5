@@ -4,53 +4,34 @@ namespace App\Entity;
 
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Repository\LivredorRepository;
+use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * livredor
- * @ORM\Table(name="livredor")
- * @ORM\Entity(repositoryClass=LivredorRepository::class)
- */
+#[ORM\Entity(repositoryClass:LivredorRepository::class)]
 class Livredor
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
 
-    /**
-     * @ORM\Column(type="text", length=1000,nullable=true)
-     */
+    #[ORM\Column(type : 'text', nullable: true)]
     private ?string $texte = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Odpf\OdpfEditionsPassees")
-     * @ORM\JoinColumn(name="editionspassees_id",  referencedColumnName="id", nullable=true)
-     */
+    #[ORM\ManyToOne]
     private ?OdpfEditionsPassees $editionspassees = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $categorie = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true,)
-     */
-    private user $user;
+    #[ORM\ManyToOne]
+    private User $user;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Equipesadmin::class, cascade={"remove"})
-     */
-    private Equipesadmin $equipe;
+    #[ORM\OneToOne(targetEntity:Equipesadmin::class, cascade:["remove"])]
+       private Equipesadmin $equipe;
 
     public function getId(): ?int
     {

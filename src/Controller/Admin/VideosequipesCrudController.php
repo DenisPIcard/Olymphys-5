@@ -6,6 +6,7 @@ use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 use App\Entity\Edition;
 use App\Entity\Fichiersequipes;
 use App\Entity\Videosequipes;
+use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -101,6 +102,9 @@ class VideosequipesCrudController extends AbstractCrudController
         if ($context->getRequest()->query->get('filters') == null) {
 
             $edition = $session->get('edition');
+            if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
+                $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            }
 
         } else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
