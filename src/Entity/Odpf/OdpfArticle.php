@@ -42,7 +42,7 @@ class OdpfArticle
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre_objectifs;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type : Types::TEXT, nullable: true)]
     private ?string $texte_objectifs;
 
     #[ORM\ManyToOne]

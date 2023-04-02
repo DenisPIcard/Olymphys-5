@@ -121,6 +121,7 @@ class OdpfEditionspasseesController extends AbstractController
             $academie = ', académie de ' . $equipe->getAcademie() . '.';
         }
         //test du répertoire de travail
+
         if(explode(':',$_SERVER['SERVER_NAME'])[0]=='localhost'){
             $texte= '<a href="/odpf/editionspassees/editions?sel=' . $equipe->getEditionspassees()->getId() . '">Retour</a>';
         }
@@ -168,8 +169,13 @@ class OdpfEditionspasseesController extends AbstractController
 
                 array_key_last($listeFichiers) == $i ? $virgule = '' : $virgule = ', ';
                 if ($fichier->getNomfichier() != null) {
-
-                    $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
+                    if(explode(':',$_SERVER['SERVER_NAME'])[0]=='localhost'){
+                        $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
+                    }
+                    else{
+                        $texte = $texte . '<a href="/../public/odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
+                    }
+                    //$texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
                 }
             }
             $i += 1;
