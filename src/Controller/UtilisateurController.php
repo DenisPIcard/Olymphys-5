@@ -49,7 +49,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route("profile_edit", name:"profile_edit")]
-    public function profileEdit(Request $request, ManagerRegistry $doctrine)
+    public function profileEdit(Request $request, ManagerRegistry $doctrine): RedirectResponse|Response
     {
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
@@ -76,7 +76,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route("/Utilisateur/inscrire_equipe,{idequipe}", name:"inscrire_equipe")]
-    public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe)
+    public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe): RedirectResponse|Response
     {
 
         if (null != $this->getUser()) {
@@ -187,7 +187,7 @@ class UtilisateurController extends AbstractController
 
                     }
 
-                    if ($modif == false) {
+                    if (!$modif) {
                         $e = null;
                         try {
                             $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
@@ -265,7 +265,7 @@ class UtilisateurController extends AbstractController
                     $em->persist($equipe);
                     $em->flush();
                     $checkChange = '';
-                    if ($modif == true) {
+                    if ($modif) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
                     }
@@ -311,7 +311,7 @@ class UtilisateurController extends AbstractController
 
     #[IsGranted('ROLE_PROF')]
     #[Route("/Utilisateur/supr_eleve,{eleve}", name:"supr_eleve")]
-    public function supr_eleve($eleveId)
+    public function supr_eleve($eleveId): void
     {
 
         $em = $this->doctrine->getManager();

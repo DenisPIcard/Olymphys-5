@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserRegistrationFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username', TextType::class, ['required' => true, 'label' => 'Votre pseudo'])
@@ -36,7 +36,7 @@ class UserRegistrationFormType extends AbstractType
                 'first_options' => array('label' => 'Mot de passe'),
                 'second_options' => array('label' => 'Confirmer le mot de passe'),))
             //->add('nom',TextType::class)
-            ->add('rne', TextType::class, ['required' => true,
+            ->add('uai', TextType::class, ['required' => true,
                 'label' => 'Le code UAI de votre établissement, de la forme 0123456A)'])
             ->add('adresse', TextType::class, ['required' => true, 'label' => 'Votre adresse (numéro +rue)'])
             ->add('ville', TextType::class, ['required' => true, 'label' => 'Votre ville'])
@@ -61,7 +61,7 @@ class UserRegistrationFormType extends AbstractType
             });
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,

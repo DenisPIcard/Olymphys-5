@@ -26,6 +26,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class OdpfArticleCrudController extends AbstractCrudController
 {
@@ -64,9 +66,9 @@ class OdpfArticleCrudController extends AbstractCrudController
         $panel1 = FormField::addPanel('Données');
         $panel2 = FormField::addPanel('Autre');
         $titre = TextField::new('titre')->setSortable(true);
+        $categorie = AssociationField::new('categorie')->setSortable(true);
         $choix = TextField::new('choix')->setSortable(true);
         $texte = AdminCKEditorField::new('texte');
-        $categorie = AssociationField::new('categorie')->setSortable(true);
         $alt_image = TextField::new('alt_image');
         $descr_image = AdminCKEditorField::new('descr_image');
         $titre_objectifs = TextField::new('titre_objectifs');
@@ -103,7 +105,12 @@ class OdpfArticleCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
         return $actions;
     }
-   public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters) //le tri selon les éditions ne fonctionne pas bien
             ->leftJoin('entity.categorie', 'eq');

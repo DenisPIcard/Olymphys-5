@@ -1,5 +1,8 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
+parameters:
+  env(HTTP_METHOD_OVERRIDE): 'true'
 framework:
+  http_method_override: '%env(bool:HTTP_METHOD_OVERRIDE)%'
   secret: '%env(APP_SECRET)%'
   #csrf_protection: ~
   #http_method_override: true
