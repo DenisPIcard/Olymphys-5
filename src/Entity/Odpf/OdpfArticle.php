@@ -15,17 +15,17 @@ class OdpfArticle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length : 255, nullable: true)]
-    private ?string $choix=null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $choix = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $titre=null;
+    private ?string $titre = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $soustitre=null;
+    private ?string $soustitre = null;
 
     #[ORM\ManyToOne]
-    private ?OdpfCategorie $categorie=null;
+    private ?OdpfCategorie $categorie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image;
@@ -36,20 +36,20 @@ class OdpfArticle
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $descr_image;
 
-    #[ORM\Column(type: Types::TEXT,  nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $texte;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre_objectifs;
 
-    #[ORM\Column(type : Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $texte_objectifs;
 
     #[ORM\ManyToOne]
-    private ?OdpfCarousels $carousel=null;
+    private ?OdpfCarousels $carousel = null;
 
-    #[ORM\Column(nullable: false)]
-    private DateTime $createdAt;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $createdAt;
 
     #[ORM\Column(nullable: true)]
     private ?DateTime $updatedAt;

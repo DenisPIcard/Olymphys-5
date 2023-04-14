@@ -13,19 +13,18 @@ use phpDocumentor\Reflection\Types\Nullable;
 
 
 #[ORM\Entity(repositoryClass: EquipesadminRepository::class)]
-
 class Equipesadmin
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id=null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 1, nullable: true)]
     private ?string $lettre = null;
 
 
-    #[ORM\Column(type : Types::SMALLINT, nullable: true)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $numero;
 
 
@@ -33,19 +32,19 @@ class Equipesadmin
     private ?bool $selectionnee;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $titreProjet=null;
+    private ?string $titreProjet = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nomLycee=null;
+    private ?string $nomLycee = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $denominationLycee=null;
+    private ?string $denominationLycee = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $lyceeLocalite=null;
+    private ?string $lyceeLocalite = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $lyceeAcademie=null;
+    private ?string $lyceeAcademie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $prenomProf1 = null;
@@ -60,10 +59,10 @@ class Equipesadmin
     private ?string $nomProf2 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $uai=null;
+    private ?string $uai = null;
 
     #[ORM\ManyToOne]
-    private ?Uai $uaiId =null;
+    private ?Uai $uaiId = null;
 
     #[ORM\ManyToOne]
     private ?Centrescia $centre;
@@ -81,11 +80,11 @@ class Equipesadmin
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $partenaire = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?DateTime $createdAt = null;
 
 
-    #[ORM\ManyToOne(targetEntity: User::class )]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $idProf1;
 
     #[ORM\ManyToOne]
@@ -94,10 +93,10 @@ class Equipesadmin
     #[ORM\Column(nullable: true)]
     protected ?bool $inscrite = true;
 
-    #[ORM\Column(type: Types::INTEGER,nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $nbeleves = null;
 
-    #[ORM\ManyToMany(targetEntity : Professeurs::class, mappedBy: 'equipes' )]
+    #[ORM\ManyToMany(targetEntity: Professeurs::class, mappedBy: 'equipes')]
     private ?Collection $equipesstring;
 
     #[ORM\ManyToOne]
@@ -114,7 +113,7 @@ class Equipesadmin
     {
         $this->equipesstring = new ArrayCollection();
         $this->idProf2 = null;
-        $this->selectionnee=false;
+        $this->selectionnee = false;
     }
 
     public function __toString(): string
@@ -122,7 +121,7 @@ class Equipesadmin
         $ed = $this->getEdition()->getEd();
 
         if ($this->getLettre() != null) {
-            return $ed . '-' . $this->numero.'-'.$this->lettre . '-' . $this->titreProjet;
+            return $ed . '-' . $this->numero . '-' . $this->lettre . '-' . $this->titreProjet;
         } else {
             return $ed . '-' . $this->numero . '-' . $this->titreProjet;
         }
@@ -177,7 +176,7 @@ class Equipesadmin
     {
         $nomcentre = '';
 
-        $this->getLettre() === null ? $Numero = $this->getNumero() : $Numero = $this->numero.'-'.$this->getLettre();
+        $this->getLettre() === null ? $Numero = $this->getNumero() : $Numero = $this->numero . '-' . $this->getLettre();
         $edition = $this->getEdition();
         if ($centre = $this->getCentre()) {
             $nomcentre = $this->getCentre()->getCentre() . '-';
@@ -197,12 +196,12 @@ class Equipesadmin
         if ($this->getSelectionnee() == '1') {
 
             $lettre = $this->getLettre();
-            if($lettre===null){
-                $lettre=$this->numero;
+            if ($lettre === null) {
+                $lettre = $this->numero;
             }
 
             $nom_equipe = $this->getTitreProjet();
-            $infoequipe = $edition->getEd().'-'.$lettre . ' - ' . $nom_equipe;
+            $infoequipe = $edition->getEd() . '-' . $lettre . ' - ' . $nom_equipe;
             if ($this->getUaiId()) {
                 $infoequipe = $infoequipe . '-' . $this->getUaiId()->getCommune();
             }
@@ -211,7 +210,7 @@ class Equipesadmin
             return $infoequipe;
 
         }
-        return $this-> $edition->getEd().'-'.$this->titreProjet;
+        return $this->$edition->getEd() . '-' . $this->titreProjet;
     }
 
 
@@ -384,7 +383,7 @@ class Equipesadmin
 
     public function getEdition(): ?Edition
     {
-        return  $this->edition;
+        return $this->edition;
     }
 
     public function setEdition(?Edition $edition): self
@@ -480,7 +479,6 @@ class Equipesadmin
     }
 
 
-
     public function getInscrite(): ?bool
     {
         return $this->inscrite;
@@ -491,9 +489,9 @@ class Equipesadmin
         $this->inscrite = $inscrite;
 
 
-
         return $this;
     }
+
     public function getRetiree(): ?bool
     {
         return $this->retiree;

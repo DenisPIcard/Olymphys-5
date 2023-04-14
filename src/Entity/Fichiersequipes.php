@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass:FichiersequipesRepository::class)]
+#[ORM\Entity(repositoryClass: FichiersequipesRepository::class)]
 #[Vich\Uploadable]
 class Fichiersequipes //extends BaseMedia
 {
@@ -22,7 +22,7 @@ class Fichiersequipes //extends BaseMedia
     private ?int $id = null;
 
 
-    #[ORM\ManyToOne(cascade : ['remove'])]
+    #[ORM\ManyToOne(cascade: ['remove'])]
     private ?Equipesadmin $equipe = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -37,12 +37,15 @@ class Fichiersequipes //extends BaseMedia
 
     #[ORM\Column(nullable: true)]
     private ?bool $national = false;
-
+    #[ORM\Column(nullable: true)]//nonpublie : 0, publie = 1; les memoires,annexes, résumés, présentations nationalespubliables seront validés à la fin du concours national
+        //et transférés dans le répertoire publie, les autres fichiers :  CIA, autorisation, fiches sécurité sont par défaut non publiables
+    private ?bool $publie = false;
 
     #[ORM\Column(nullable: true)]
     private ?DateTime $updatedAt = null;
 
     #[ORM\OneToOne(inversedBy: 'autorisationphotos', cascade: ['persist'])]
+    #[ORM\Column(name: 'prof_id', nullable: true)]
     private ?User $prof = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -53,7 +56,7 @@ class Fichiersequipes //extends BaseMedia
 
 
     #[ORM\OneToOne(inversedBy: 'autorisationphotos', cascade: ['persist'])]
-    private ?Elevesinter $eleve=null;
+    private ?Elevesinter $eleve = null;
 
 
     public function getFichierFile(): ?File
@@ -61,6 +64,7 @@ class Fichiersequipes //extends BaseMedia
 
         return $this->fichierFile;
     }
+
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
      * of 'UploadedFile' is injected into this setter to trigger the update. If this
@@ -132,7 +136,6 @@ class Fichiersequipes //extends BaseMedia
             $nom_equipe = $slugger->slug($nom_equipe)->toString();
 
 
-
         }
         if ($this->getTypefichier() == 0) {
             $fileName = $edition . '-eq-' . $libel_equipe . '-memoire-' . $nom_equipe;
@@ -165,7 +168,7 @@ class Fichiersequipes //extends BaseMedia
             }
             $slugger = new AsciiSlugger();
             $fileName = $slugger->slug($edition . '-eq-' . $libel_equipe . '-autorisation photos-' . $nom . '-' . uniqid())->toString();
-           }
+        }
         if ($this->getTypefichier() == 7) {
 
 
@@ -211,6 +214,16 @@ class Fichiersequipes //extends BaseMedia
         return $this;
     }
 
+    public function getPublie(): ?bool
+    {
+        return $this->publie;
+    }
+
+    public function setPublie(?bool $publie)
+    {
+        $this->publie = $publie;
+        return $this;
+    }
 
     public function getTypefichier(): ?int
     {
@@ -266,18 +279,19 @@ class Fichiersequipes //extends BaseMedia
     public function directoryName(): string
     {
         $path = $this->edition->getEd() . '/fichiers';
+        $this->publie == 0 ? $acces = 'prive/' : $acces = 'publie/';
         if (($this->getTypefichier() == 0) or ($this->getTypefichier() == 1)) {
-            $path = $path . '/memoires/';
+            $path = $path . '/memoires/' . $acces;
         }
 
         if ($this->getTypefichier() == 2) {
-            $path = $path . '/resumes/';
+            $path = $path . '/resumes/' . $acces;
         }
         if (($this->getTypefichier() == 4) or ($this->getTypefichier() == 8)) {
             $path = $path . '/fichessecur/';
         }
         if ($this->getTypefichier() == 3) {
-            $path = $path . '/presentation/';
+            $path = $path . '/presentation/' . $acces;
         }
 
         if ($this->getTypefichier() == 5) {

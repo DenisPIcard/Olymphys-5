@@ -100,6 +100,7 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
     }
+
     public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
     {
         $this->creer_edition_passee($context);
@@ -215,14 +216,19 @@ class AdminsiteCrudController extends AbstractCrudController
                 $this->em->persist($OdpfEquipepassee);
                 $this->em->flush();
             }
-            /* transfert des fichiers, provisoire, pour la transition d'olymphys vers opdf*/
-            $listeFichiers = $repositoryFichiersequipes->findBy(['equipe' => $equipe]);
+            /* transfert des memoires, resumés et presentations du répertoire prive vers le répertoire publie*/
+            $listeFichiers = $repositoryFichiersequipes->createQueryBuilder(Fichiersequipes::class)
+                ->where('equipe =:equipe')
+                ->andWhere('typefichier <:value')
+                ->setParameter('equipe', $equipe)
+                ->setParameter('value', 4)
+                ->getQuery()->getResult();
 
             if ($listeFichiers) {
                 foreach ($listeFichiers as $fichier) {
-                    if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()])) {
+                    if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/publie')) {
                         //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-                        $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()]);
+                        $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/publie');
 
                     }
                     $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier(), 'national' => $fichier->getNational()]);
@@ -235,11 +241,13 @@ class AdminsiteCrudController extends AbstractCrudController
                     $odpfFichier->setNational($fichier->getNational());
                     $odpfFichier->setEditionspassees($editionPassee);
                     //dd($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier());
-                    if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier())) {
+                    if ($fichier->getPublie() === true) {
+                        if (file_exists($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/prive/' . $$fichier->getFichier())) {
 
-                        $filesystem->copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier(),
-                            $this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier());
+                            $filesystem->copy($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/publie/' . $$fichier->getFichier(),
+                                $this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/publie/' . $fichier->getFichier());
 
+                        }
                     }
                     $odpfFichier->setNomFichier($fichier->getFichier());
                     $odpfFichier->setUpdatedAt(new DateTime('now'));
@@ -298,13 +306,12 @@ class AdminsiteCrudController extends AbstractCrudController
         $article = $this->doctrine->getRepository(OdpfArticle::class)->findOneBy(['choix' => 'edition' . $editionPassee->getEdition()]);
 
 
-            $createArticle = new CreatePageEdPassee($this->em);
-            $article = $createArticle->create($editionPassee);
+        $createArticle = new CreatePageEdPassee($this->em);
+        $article = $createArticle->create($editionPassee);
 
 
-            $this->em->persist($article);
-            $this->em->flush();
-
+        $this->em->persist($article);
+        $this->em->flush();
 
 
         return $this->redirectToRoute('odpfadmin');

@@ -7,6 +7,7 @@ use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Repository\Odpf\OdpfFichierspassesRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -14,32 +15,31 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
-#[ORM\Entity(repositoryClass:OdpfFichierspassesRepository::class)]
-
+#[ORM\Entity(repositoryClass: OdpfFichierspassesRepository::class)]
 class OdpfFichierspasses
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id=null;
+    private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity:OdpfEditionsPassees::class)]
-    private ?OdpfEditionsPassees $editionspassees=null;
+    #[ORM\ManyToOne(targetEntity: OdpfEditionsPassees::class)]
+    private ?OdpfEditionsPassees $editionspassees = null;
 
-    #[ORM\ManyToOne(targetEntity:OdpfEquipesPassees::class, cascade:['remove', ])]
-    private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee=null;
-
-    #[ORM\Column(nullable:true)]
-    private ?int $typefichier;
-
-    #[ORM\Column(length:255, nullable:true)]
-    private ?string $nomfichier=null;
-
-    #[Vich\UploadableField(mapping:"odpfFichierspasses", fileNameProperty:"nomfichier")]
-     private ?File $fichierFile = null;
+    #[ORM\ManyToOne(targetEntity: OdpfEquipesPassees::class, cascade: ['remove',])]
+    private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTime $updatedAt=null;
+    private ?int $typefichier;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomfichier = null;
+
+    #[Vich\UploadableField(mapping: "odpfFichierspasses", fileNameProperty: "nomfichier")]
+    private ?File $fichierFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt = null;
 
     public function __construct()
     {
@@ -48,11 +48,14 @@ class OdpfFichierspasses
 
     }
 
-    #[ORM\Column(length:255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nomautorisation;
 
-    #[ORM\Column(nullable :true)]
+    #[ORM\Column(nullable: true)]
     private ?bool $national;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $publie;
 
     public function getId(): ?int
     {
@@ -167,6 +170,19 @@ class OdpfFichierspasses
         return $this;
     }
 
+    public function getPublie(): ?bool
+    {
+        return $this->publie;
+    }
+
+    public function setPublie(?bool $publie): self
+    {
+
+        $this->publie = $publie;
+
+        return $this;
+    }
+
     public function directoryName(): string
     {
         $path = $this->editionspassees->getEdition() . '/fichiers';
@@ -247,6 +263,30 @@ class OdpfFichierspasses
         }
 
         return $fileName;
+    }
+
+    public function moveFile(): self
+    {
+        $filesystem = new Filesystem();
+        $pathTypeFichier = ['memoires', 'memoires', 'resumes', 'presentation', 'fichessecur', 'diaporamas', 'autorisations', 'questionnaires', 'fichessecur'];
+
+        if ($this->getPublie() === true) {
+            if (!file_exists('/odpf/odpf-archives/' . $this->getEditionspassees()->getEdition() . '/fichiers/' . $pathTypeFichier[$this->getTypefichier() <= 1 ? 0 : $this->getTypefichier()] . '/publie/' . $this->getNomFichier())) {
+
+                $filesystem->rename('/odpf/odpf-archives/' . $this->getEditionspassees()->getEdition() . '/fichiers/' . $pathTypeFichier[$this->getTypefichier() <= 1 ? 0 : $this->getTypefichier()] . '/prive/' . $this->getNomFichier(),
+                    '/odpf/odpf-archives/' . $this->getEditionspassees()->getEdition() . '/fichiers/' . $pathTypeFichier[$this->getTypefichier() <= 1 ? 0 : $this->getTypefichier()] . '/publie/' . $this->getNomFichier());
+
+            }
+        }
+        if ($this->getPublie() === false) {
+            if (!file_exists('/odpf/odpf-archives/' . $this->getEditionspassees()->getEdition() . '/fichiers/' . $pathTypeFichier[$this->getTypefichier() <= 1 ? 0 : $this->getTypefichier()] . '/prive/' . $this->getNomFichier())) {
+
+                $filesystem->rename('/odpf/odpf-archives/' . $this->getEditionspassees()->getEdition() . '/fichiers/' . $pathTypeFichier[$this->getTypefichier() <= 1 ? 0 : $this->getTypefichier()] . '/publie/' . $this->getNomFichier(),
+                    '/odpf/odpf-archives/' . $this->getEditionspassees()->getEdition() . '/fichiers/' . $pathTypeFichier[$this->getTypefichier() <= 1 ? 0 : $this->getTypefichier()] . '/pprive/' . $this->getNomFichier());
+
+            }
+        }
+        return $this;
     }
 
 }

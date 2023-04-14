@@ -8,6 +8,7 @@ use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -21,6 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -28,6 +30,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Form\Type\VichFileType;
@@ -101,11 +104,11 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
         if (isset($_REQUEST['filters'])) {
 
-            if(isset($_REQUEST['filters']['editionspassees'])) {
+            if (isset($_REQUEST['filters']['editionspassees'])) {
                 $qb->andWhere('f.editionspassees =:edition')
                     ->setParameter('edition', $this->doctrine->getRepository(OdpfEditionspassees::class)->findOneBy(['id' => $_REQUEST['filters']['editionspassees']]));
             }
-            if(isset($_REQUEST['filters']['equipespassees'])) {
+            if (isset($_REQUEST['filters']['equipespassees'])) {
                 $qb->andWhere('f.equipepassee =:equipe')
                     ->setParameter('equipe', $this->doctrine->getRepository(OdpfEquipespassees::class)->findOneBy(['id' => $_REQUEST['filters']['equipespassees']]));
             }
@@ -118,19 +121,28 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
 
     {
-        $repositoryEdition = $this->doctrine->getRepository(OdpfEquipesPassees::class);
-        $numtypefichier = $_REQUEST['typefichier'];
 
+        $repositoryEdition = $this->doctrine->getRepository(OdpfEquipesPassees::class);
+        if ($_REQUEST['crudAction'] == 'edit') {
+            $fichier = $this->doctrine->getRepository(OdpfFichierspasses::class)->find(['id' => $_REQUEST['entityId']]);
+            $numtypefichier = $fichier->getTypefichier();
+
+        } else {
+            $numtypefichier = $_REQUEST['typefichier'];
+        }
+        if ($numtypefichier == 1) {
+            $numtypefichier = 0;
+        }
         if ($pageName == Crud::PAGE_NEW) {
 
-            $panel1 = FormField::addPanel('<p style= "color :red" > Déposer un nouveau ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '  </p> ');
-            $numtypefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+            $panel1 = FormField::addPanel('<p style= "color :red" > Déposer un nouveau ' . $this->getParameter('type_fichier_lit')[$numtypefichier] . '  </p> ');
+
 
         }
         if ($pageName == Crud::PAGE_EDIT) {
 
-            $panel1 = FormField::addPanel('<p style= "color:red" > Editer le fichier ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '  </p> ');
-            $numtypefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);//La valeur du paramètre du dashController est perdue lors de l'affichage de l'index
+            $panel1 = FormField::addPanel('<p style= "color:red" > Editer le fichier ' . $this->getParameter('type_fichier_lit')[$numtypefichier] . '  </p> ');
+
 
         }
 
@@ -149,42 +161,32 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
             ->setFormTypeOption('allow_delete', false);//sinon la case à cocher delete s'affiche
         //$numtypefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
         switch ($numtypefichier) {
+            case 7:
+            case 2:
+            case 3:
+            case 5:
             case 0 :
                 $article = 'le';
                 break;
+            case 6:
             case 1 :
                 $article = 'l\'';
-                break;
-            case 2 :
-                $article = 'le';
-                break;
-            case 3 :
-                $article = 'le';
                 break;
             case 4 :
                 $article = 'la';
                 break;
-            case 5 :
-                $article = 'le';
-                break;
-            case 6 :
-                $article = 'l\'';
-                break;
-            case 7 :
-                $article = 'le';
-                break;
         }
 
-        $panel2 = FormField::addPanel('<p style=" color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$_REQUEST['typefichier']] . '</p> ');
+        $panel2 = FormField::addPanel('<p style=" color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$numtypefichier] . '</p> ');
         $id = IntegerField::new('id', 'ID');
-        $fichier = TextField::new('nomfichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
+        $fichier = TextField::new('nomfichier');//->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
+        $publie = BooleanField::new('publie');
 
-
-        $typefichier = IntegerField::new('typefichier');
+        //$typefichier = IntegerField::new('typefichier');
 
         if ($pageName == Crud::PAGE_INDEX) {
             $context = $this->adminContextProvider->getContext();
-            $context->getRequest()->query->set('typefichier', $_REQUEST['typefichier']);
+            $context->getRequest()->query->set('typefichier', $numtypefichier);
         }
         $annexe = ChoiceField::new('typefichier', 'Mémoire ou annexe')
             ->setChoices(['Memoire' => 0, 'Annexe' => 1])
@@ -217,11 +219,11 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
 
-            return [$editionEd, $equipeTitreprojet, $fichier, $updatedat];
+            return [$editionEd, $equipeTitreprojet, $fichier, $publie, $updatedat];
 
         }
         if (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $fichier, $typefichier, $updatedAt, $edition, $equipe];
+            return [$edition, $equipe, $fichier, $publie, $updatedAt];
         }
         if (Crud::PAGE_NEW === $pageName) {
 
@@ -277,14 +279,23 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         return $typeFichier;
     }
 
-   #[Route("/Admin/FichiersequipesCrud/telechargerUnFichierOdpf", name:"telechargerUnFichierOdpf")]
+    #[Route("/Admin/FichiersequipesCrud/telechargerUnFichierOdpf", name: "telechargerUnFichierOdpf")]
     public function telechargerUnFichierOdpf(AdminContext $context)
     {
+
         $idFichier = $_REQUEST['routeParams']['idEntity'];
         $fichier = $this->doctrine->getRepository(OdpfFichierspasses::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEditionspassees();
         $typefichier = $fichier->getTypefichier();
-        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier();
+        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier];
+        if ($typefichier == 1) {
+            $chemintypefichier = $this->getParameter('type_fichier')[0];
+        }
+        if ($typefichier < 4) {
+            $fichier->getPublie() == true ? $acces = $this->getParameter('fichier_acces')[1] : $acces = $this->getParameter('fichier_acces')[0];
+            $chemintypefichier = $chemintypefichier . '/' . $acces . '/';
+        }
+        $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEdition() . '/fichiers/' . $chemintypefichier . $fichier->getNomfichier();
         header('Content-Description: File Transfer');
         header('Content-Disposition: attachment; filename=' . $fichier->getNomfichier());
         header('Content-Transfer-Encoding: binary');

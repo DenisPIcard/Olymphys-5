@@ -13,6 +13,7 @@ parameters:
   app.path.thumbtmp: '%kernel.project_dir%/public/upload/images/tmp'
   type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaire','fichessecur' ]
   type_fichier_lit: [ 'mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité(présentation)','diaporama(pour les cia)','autorisation','questionnairen','fichesecurité(exposition)' ]
+  fichier_acces: [ 'prive','publie' ]
   app.path.fichiers: '%kernel.project_dir%/public/fichiers'
   #à changer en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
   app.path.fichiers.site: /../public/odpf/odpf-archives
@@ -77,7 +78,7 @@ services:
         # this is the only required option for the lifecycle listener tag
         event: 'postUpdate'
 
-          # listeners can define their priority in case multiple subscribers or listeners are associated
+        # listeners can define their priority in case multiple subscribers or listeners are associated
         # to the same event (default priority = 0; higher numbers = listener is run earlier)
         priority: 500
 
@@ -89,7 +90,7 @@ services:
         # this is the only required option for the lifecycle listener tag
         event: 'postPersist'
 
-          # listeners can define their priority in case multiple subscribers or listeners are associated
+        # listeners can define their priority in case multiple subscribers or listeners are associated
         # to the same event (default priority = 0; higher numbers = listener is run earlier)
         priority: 500
 
@@ -99,12 +100,13 @@ services:
         # this is the only required option for the lifecycle listener tag
         event: 'postUpdate'
 
-          # listeners can define their priority in case multiple subscribers or listeners are associated
+        # listeners can define their priority in case multiple subscribers or listeners are associated
         # to the same event (default priority = 0; higher numbers = listener is run earlier)
         priority: 500
 
         # you can also restrict listeners to a specific Doctrine connection
         connection: 'default'
+
 
 
 

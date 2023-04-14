@@ -15,12 +15,15 @@
 {% block titre3 %}
     <div class="text-center"> Les photos de la {{ edition.edition }}<sup>e</sup> édition</div></br>
     {% if liste_equipes|length ==1 %}
-        <div class="color" style="color:blue">Equipe {{ liste_equipes[0].numero }}
+        <div class="color" style="color:blue">
+            {% if  liste_equipes[0].numero <100 %}
+                Equipe {{ liste_equipes[0].numero }}:
+                {% endif %}
             {% if  liste_equipes[0].lettre!=null %}
-                ({{ liste_equipes[0].lettre }})
+                ({{ liste_equipes[0].lettre }}) :
             {% endif %}
 
-            : {{ liste_equipes[0].Titreprojet }} </div>
+             {{ liste_equipes[0].Titreprojet }} </div>
     {% elseif liste_equipes|length >1 %}
         <div class="color" style="color:blue">Edition {{ edition.edition }}  </div>
     {% endif %}
