@@ -93,7 +93,7 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
         yield MenuItem::linkToCrud('Documents du site', 'fas fa-book', OdpfDocuments::class);
         yield MenuItem::linkToCrud('Logos du site', 'fa-solid fa-icons', OdpfLogos::class);
-        yield MenuItem::linkToCrud('OdpfCarousels', 'fa-solid fa-clapperboard', OdpfCarousels::class);
+        yield MenuItem::linkToCrud('Carrousels', 'fa-solid fa-clapperboard', OdpfCarousels::class);
         yield MenuItem::linkToCrud('Partenaires', 'fa-solid fa-list', OdpfPartenaires::class);
         yield MenuItem::subMenu('Les éditions passées', 'fa-solid fa-book-bookmark')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::linktoRoute('Aller à l\'admin du concours', 'fa-solid fa-marker', 'admin');
