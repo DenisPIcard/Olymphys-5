@@ -79,13 +79,13 @@ class OdpfArticleCrudController extends AbstractCrudController
         //$updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ')->setSortable(true);
         $publie = BooleanField::new('publie', 'publié');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedAt];
+            return [$titre, $choix, $categorie, $texte, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
+            return [$titre, $choix, $categorie, $texte, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $publie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$titre, $choix, $categorie, $texte, $publie, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$tab1, $titre, $publie, $panel1, $choix, $texte, $categorie, $panel2, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$tab1, $titre, $publie, $panel1, $choix,  $categorie, $texte, $panel2, $titre_objectifs, $texte_objectifs, $carousel];
         }
 
 
@@ -102,7 +102,8 @@ class OdpfArticleCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_NEW, Action::INDEX)
-            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
+            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
         return $actions;
     }
 

@@ -1,14 +1,18 @@
 <div class="container-fluid cont-accueil">
-
+    {# cont-acceuil (')odpf-acceuil.css l.14) défint les padding et marging) #}
 
     <div id="carousel" class="carousel slide " data-ride="carousel">
+        {# class carousel précise la position (relative) du carousel #}
         <div class="d-flex align-items-center flex-column">
             <div class="p-2 ">
+                {# définit un padding de 0,5 rem #}
                 <div class="carousel-inner black" style="width:338px !important; height:239px !important ;">
+                    {# carousel-inner est un css de Bootstrap, black est défini dans fonds.css en l.7 #}
                     {% set i = 1 %}
+
                     {% if article is defined and article.carousel!=null %}
                         {% for image in article.carousel.images %}
-
+                            {# boucle de défilement des images #}
                             {% if i==1 %}
 
                                 <div class="carousel-item active" data-interval="5000">
@@ -51,6 +55,7 @@
                     {% endif %}
 
                     <div class="carousel-control"></div>
+                    {# ces contrôles (flèches) viennet de Bootstrap #}
                     <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
                         {# <span class="carousel-control-prev-icon" aria-hidden="false"></span> #}
                         <img src="{{ asset('odpf/odpf-images/diapo-arwl-37x37.png') }}" style="align-self: flex-end; "/>
