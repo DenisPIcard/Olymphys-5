@@ -22,7 +22,7 @@ class Fichiersequipes //extends BaseMedia
     private ?int $id = null;
 
 
-    #[ORM\ManyToOne(cascade: ['remove'])]
+    #[ORM\ManyToOne]
     private ?Equipesadmin $equipe = null;
 
     #[ORM\Column(length: 255, nullable: true)]

@@ -65,6 +65,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $this->setPassword($entity);
     }
 
+
     /**
      * @param User $entity
      */

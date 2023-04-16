@@ -26,7 +26,7 @@ class OdpfFichierspasses
     #[ORM\ManyToOne(targetEntity: OdpfEditionsPassees::class)]
     private ?OdpfEditionsPassees $editionspassees = null;
 
-    #[ORM\ManyToOne(targetEntity: OdpfEquipesPassees::class, cascade: ['remove',])]
+    #[ORM\ManyToOne]
     private ?\App\Entity\Odpf\OdpfEquipesPassees $equipepassee = null;
 
     #[ORM\Column(nullable: true)]
@@ -188,14 +188,17 @@ class OdpfFichierspasses
         $path = $this->editionspassees->getEdition() . '/fichiers';
         if (($this->getTypefichier() == 0) or ($this->getTypefichier() == 1)) {
             $path = $path . '/memoires/';
+            $this->publie == true ? $path = $path . 'publie/' : $path = $path . 'prive/';
         }
 
         if ($this->getTypefichier() == 2) {
             $path = $path . '/resumes/';
+            $this->publie == true ? $path = $path . 'publie/' : $path = $path . 'prive/';
         }
 
         if ($this->getTypefichier() == 3) {
             $path = $path . '/presentation/';
+            $this->publie == true ? $path = $path . 'publie/' : $path = $path . 'prive/';
         }
 
 

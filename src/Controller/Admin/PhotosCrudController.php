@@ -72,17 +72,17 @@ class PhotosCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-        if ($concours===null){
-            $concours=$this->requestStack->getSession()->get('concours');
+        if ($concours === null) {
+            $concours = $this->requestStack->getSession()->get('concours');
 
         }
-        if ($concours!==null){
-            $this->requestStack->getSession()->set('concours',$concours);
+        if ($concours !== null) {
+            $this->requestStack->getSession()->set('concours', $concours);
         }
-        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
-        $edition= $this->requestStack->getSession()->get('edition');
-        if(new Datetime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
-            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $edition = $this->requestStack->getSession()->get('edition');
+        if (new Datetime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
         }
 
 
@@ -106,7 +106,7 @@ class PhotosCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-        $urlIndex=$this->generateUrl('admin',['crudAction'=>'index','crudController'=>'photosCrudController','concours'=>$concours]);
+        $urlIndex = $this->generateUrl('admin', ['crudAction' => 'index', 'crudController' => 'photosCrudController', 'concours' => $concours]);
         $attribEditionPassee = Action::new('attribEditionsPassees', 'Attribuer les éditions passéées', 'fa fa-file-download')
             ->linkToRoute('attribEditionsPassees')->createAsGlobalAction();
         return $actions
@@ -120,7 +120,7 @@ class PhotosCrudController extends AbstractCrudController
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer une photo')->setHtmlAttributes(['concours' => $this->requestStack->getCurrentRequest()->query->get('concours')]);
             })
-            ->update(Crud::PAGE_EDIT,Action::INDEX,function (Action $action){
+            ->update(Crud::PAGE_EDIT, Action::INDEX, function (Action $action) {
                 return $action->setLabel('Retour à la liste')->setHtmlAttributes(['concours' => $this->requestStack->getCurrentRequest()->query->get('concours')]);
             })
             ->add(Crud::PAGE_INDEX, $attribEditionPassee)
@@ -156,17 +156,17 @@ class PhotosCrudController extends AbstractCrudController
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        $edition=$this->requestStack->getSession()->get('edition');
-        if(new DateTime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
-            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        $edition = $this->requestStack->getSession()->get('edition');
+        if (new DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         //dd($_REQUEST);
-        if ($concours===null){
-            $concours=$this->requestStack->getSession()->get('concours');
+        if ($concours === null) {
+            $concours = $this->requestStack->getSession()->get('concours');
 
         }
-        if ($concours!==null){
-            $this->requestStack->getSession()->set('concours',$concours);
+        if ($concours !== null) {
+            $this->requestStack->getSession()->set('concours', $concours);
         }
         //dd($this->requestStack->getSession()->get('concours'));
         /*if($_REQUEST['crudAction']=='index') {
@@ -192,18 +192,18 @@ class PhotosCrudController extends AbstractCrudController
         */
         $concours == 'national' ? $tag = 1 : $tag = 0;
 
-        $listeEquipes= $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-                              ->andWhere('e.edition =:edition')
-                              ->setParameter('edition', $edition)
-                              ->addOrderBy('e.numero', 'ASC')
-                              ->addOrderBy('e.lettre', 'ASC')
-                              ->getQuery()->getResult()  ;
+        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $edition)
+            ->addOrderBy('e.numero', 'ASC')
+            ->addOrderBy('e.lettre', 'ASC')
+            ->getQuery()->getResult();
         $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer pour la ' . $this->requestStack->getSession()->get('edition')->getEd() . '<sup>e</sup> édition</p> ');
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['class' => Equipesadmin::class,
-                                  'choices'=>$listeEquipes,
+                'choices' => $listeEquipes,
 
-                                    ])->setSortable(true);
+            ])->setSortable(true);
 
         $edition = AssociationField::new('edition')->setSortable(true);
         $editionpassee = AssociationField::new('editionspassees', 'Edition')->setSortable(true);
@@ -253,8 +253,8 @@ class PhotosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
-           //$this->requestStack->getSession()->set('concours', $concours);
-            return [$panel1, $equipe, $imageFile, $coment, $national, $coment,$edition];
+            //$this->requestStack->getSession()->set('concours', $concours);
+            return [$panel1, $equipe, $imageFile, $coment, $national, $coment, $edition];
 
         } elseif (Crud::PAGE_EDIT === $pageName) {
             //$this->requestStack->getSession()->set('concours', $concours);
@@ -266,16 +266,15 @@ class PhotosCrudController extends AbstractCrudController
 
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         if (null == $concours) {
             $concours = $this->requestStack->getSession()->get('concours');
-            }
+        }
 
 
-
-        $edition= $this->requestStack->getSession()->get('edition');
-        if(new DateTime('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
-            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        $edition = $this->requestStack->getSession()->get('edition');
+        if (new DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
         }
 
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -295,40 +294,39 @@ class PhotosCrudController extends AbstractCrudController
 
         $qb->leftJoin('entity.equipe', 'e');
 
-        if (isset($_REQUEST['sort'])){
+        if (isset($_REQUEST['sort'])) {
             $qb->resetDQLPart('orderBy');
-            $sort=$_REQUEST['sort'];
-            if (key($sort)=='equipe.lettre'){
+            $sort = $_REQUEST['sort'];
+            if (key($sort) == 'equipe.lettre') {
                 $qb->addOrderBy('e.lettre', $sort['equipe.lettre']);
             }
-            if (key($sort)=='equipe.numero'){
+            if (key($sort) == 'equipe.numero') {
                 $qb->addOrderBy('e.numero', $sort['equipe.numero']);
             }
-            if (key($sort)=='equipe.centre'){
+            if (key($sort) == 'equipe.centre') {
 
-                $qb->leftJoin('e.centre','c')
-                   ->addOrderBy('c.centre', $sort['equipe.centre']);
+                $qb->leftJoin('e.centre', 'c')
+                    ->addOrderBy('c.centre', $sort['equipe.centre']);
             }
-            if (key($sort)=='equipe.titreProjet'){
+            if (key($sort) == 'equipe.titreProjet') {
                 $qb->addOrderBy('e.titreProjet', $sort['equipe.titreProjet']);
             }
-            if (key($sort)=='updatedAt'){
+            if (key($sort) == 'updatedAt') {
                 $qb->addOrderBy('entity.updatedAt', $sort['updatedAt']);
             }
-        }
-        else{
+        } else {
             if ($concours == 'interacademique') {
                 $qb->addOrderBy('e.numero', 'ASC');
             }
             if ($concours == 'national') {
-                $qb ->addOrderBy('e.lettre', 'ASC')
+                $qb->addOrderBy('e.lettre', 'ASC')
                     ->addOrderBy('e.numero', 'ASC');
             }
         }
         return $qb;
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance):void
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
 
         $edition = $entityInstance->getEquipe()->getEdition();
@@ -346,12 +344,12 @@ class PhotosCrudController extends AbstractCrudController
         $entityInstance->setEquipepassee($equipepassee);
 
         $file = $entityInstance->getPhotoFile();
-        $typeImage= $file->guessExtension();//Les .HEIC donnent jpg
-        $originalFilename=$file->getClientOriginalName();
+        $typeImage = $file->guessExtension();//Les .HEIC donnent jpg
+        $originalFilename = $file->getClientOriginalName();
         $parsedName = explode('.', $originalFilename);
         $ext = end($parsedName);// détecte les .JPG et .HEIC
-        $nameExtLess=explode('.'.$ext, $originalFilename)[0];
-        if (($typeImage!='jpg') or ($ext != 'jpg')) {// dans ce cas on change la compression du fichier en jpg.
+        $nameExtLess = explode('.' . $ext, $originalFilename)[0];
+        if (($typeImage != 'jpg') or ($ext != 'jpg')) {// dans ce cas on change la compression du fichier en jpg.
             // création du fichier temporaire pour la transformation en jpg
 
             $entityInstance->setPhoto($originalFilename);//Pour que le fonction setImageTYpe ait une valeur dans le champ photo
@@ -364,19 +362,19 @@ class PhotosCrudController extends AbstractCrudController
 
             }
             $nameExtLess = $parsedName[0];
-            $imax=count($parsedName );
-            for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
-                $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
+            $imax = count($parsedName);
+            for ($i = 1; $i <= $imax - 2; $i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                $nameExtLess = $nameExtLess . '.' . $parsedName[$i];
             }
-            $this->setImageType($entityInstance, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
-            if (isset($_REQUEST['erreur'])){
+            $this->setImageType($entityInstance, $nameExtLess, 'temp/');//appelle de la fonction de transformation de la compression
+            if (isset($_REQUEST['erreur'])) {
 
-                unlink('temp/'. $originalFilename);
+                unlink('temp/' . $originalFilename);
 
             }
-            if (!isset($_REQUEST['erreur'])){
-                $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg', filesize('temp/'.$nameExtLess.'.jpg'), null, true);
-                unlink('temp/'. $originalFilename);
+            if (!isset($_REQUEST['erreur'])) {
+                $file = new UploadedFile('temp/' . $nameExtLess . '.jpg', $nameExtLess . '.jpg', filesize('temp/' . $nameExtLess . '.jpg'), null, true);
+                unlink('temp/' . $originalFilename);
                 $entityInstance->setPhotoFile($file);//pour que vichUploader n'intervienne pas sinon erreur
             }
         }
@@ -389,11 +387,9 @@ class PhotosCrudController extends AbstractCrudController
     }
 
 
-
-
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        if($entityInstance->getEquipe()->getNumero()>=100){
+        if ($entityInstance->getEquipe()->getNumero() >= 100) {
             $entityInstance->setNational(true);
         }
         if ($entityInstance->getPhotoFile() !== null) //on dépose une nouvelle photo
@@ -401,12 +397,12 @@ class PhotosCrudController extends AbstractCrudController
             $name = $entityInstance->getPhoto();
             $pathFile = 'odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/';
             $file = $entityInstance->getPhotoFile();
-            $typeImage= $file->guessExtension();//Les .HEIC donnent jpg
-            $originalFilename=$file->getClientOriginalName();
+            $typeImage = $file->guessExtension();//Les .HEIC donnent jpg
+            $originalFilename = $file->getClientOriginalName();
             $parsedName = explode('.', $originalFilename);
             $ext = end($parsedName);// détecte les .JPG et .HEIC
-            $nameExtLess=explode('.'.$ext, $originalFilename)[0];
-            if (($typeImage!='jpg') or ($ext != 'jpg')) {// dans ce cas on change la compression du fichier en jpg.
+            $nameExtLess = explode('.' . $ext, $originalFilename)[0];
+            if (($typeImage != 'jpg') or ($ext != 'jpg')) {// dans ce cas on change la compression du fichier en jpg.
                 // création du fichier temporaire pour la transformation en jpg
 
                 $entityInstance->setPhoto($originalFilename);//Pour que le fonction setImageTYpe ait une valeur dans le champ photo
@@ -419,32 +415,31 @@ class PhotosCrudController extends AbstractCrudController
 
                 }
                 $nameExtLess = $parsedName[0];
-                $imax=count($parsedName );
-                for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
-                    $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
+                $imax = count($parsedName);
+                for ($i = 1; $i <= $imax - 2; $i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                    $nameExtLess = $nameExtLess . '.' . $parsedName[$i];
                 }
-                $this->setImageType($entityInstance, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
-                if (isset($_REQUEST['erreur'])){
+                $this->setImageType($entityInstance, $nameExtLess, 'temp/');//appelle de la fonction de transformation de la compression
+                if (isset($_REQUEST['erreur'])) {
 
-                    unlink('temp/'. $originalFilename);
+                    unlink('temp/' . $originalFilename);
 
                 }
-                if (!isset($_REQUEST['erreur'])){
-                    $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg', filesize('temp/'.$nameExtLess.'.jpg'), null, true);
-                    unlink('temp/'. $originalFilename);
+                if (!isset($_REQUEST['erreur'])) {
+                    $file = new UploadedFile('temp/' . $nameExtLess . '.jpg', $nameExtLess . '.jpg', filesize('temp/' . $nameExtLess . '.jpg'), null, true);
+                    unlink('temp/' . $originalFilename);
                     $entityInstance->setPhotoFile($file);//pour que vichUploader n'intervienne pas sinon erreur
                 }
 
                 parent::updateEntity($entityManager, $entityInstance);
 
-            }
-            else{
-                if (file_exists($pathFile.'thumbs/' . $name)) {//suppression de l'ancien fichier thumb
-                    unlink($pathFile.'thumbs/' . $name);
+            } else {
+                if (file_exists($pathFile . 'thumbs/' . $name)) {//suppression de l'ancien fichier thumb
+                    unlink($pathFile . 'thumbs/' . $name);
 
                 }
-                if (file_exists($pathFile. $name)) {//suppression de l'ancien fichier
-                    unlink($pathFile. $name);
+                if (file_exists($pathFile . $name)) {//suppression de l'ancien fichier
+                    unlink($pathFile . $name);
 
                 }
                 parent::updateEntity($entityManager, $entityInstance);
@@ -453,19 +448,18 @@ class PhotosCrudController extends AbstractCrudController
         }
 
 
-
         if ($entityInstance->getPhotoFile() === null) //on veut modifier l'équipe attribuée à la photo sans modifier la photo
 
-       {  //Il faut donc modifier le nom de la  photos déposée et de sa vignette "à la main"
+        {  //Il faut donc modifier le nom de la  photos déposée et de sa vignette "à la main"
             $equipe = $entityInstance->getEquipe();
             $name = $entityInstance->getPhoto();
-            $parseOldName=explode('-',$name);
-            $endName=end($parseOldName);
+            $parseOldName = explode('-', $name);
+            $endName = end($parseOldName);
             $slugger = new AsciiSlugger();
             $ed = $entityInstance->getEditionspassees()->getEdition();
             $equipepassee = $entityInstance->getEquipepassee();
             $equipe = $entityInstance->getEquipe();
-            $nlleEquipepassee=$this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees'=>$equipepassee->getEditionspassees(),'numero'=>$equipe->getNumero()]);//il faut réattribué la bonne équipepassee à la photo
+            $nlleEquipepassee = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees' => $equipepassee->getEditionspassees(), 'numero' => $equipe->getNumero()]);//il faut réattribué la bonne équipepassee à la photo
             $entityInstance->setEquipepassee($nlleEquipepassee);
             $centre = ' ';
             $lettre_equipe = '';
@@ -481,7 +475,7 @@ class PhotosCrudController extends AbstractCrudController
             $nom_equipe = $equipepassee->getTitreProjet();
             $nom_equipe = $slugger->slug($nom_equipe)->toString();
             if ($entityInstance->getNational() == FALSE) {
-                $newFileName = $slugger->slug($ed . '-' . $centre .'-'.$numero_equipe . '-' . $nom_equipe . '.' . $endName);
+                $newFileName = $slugger->slug($ed . '-' . $centre . '-' . $numero_equipe . '-' . $nom_equipe . '.' . $endName);
             }
             if ($entityInstance->getNational() == TRUE) {
                 $equipepassee->getLettre() === null ? $idEquipe = $equipepassee->getNumero() : $idEquipe = $equipepassee->getLettre();
@@ -510,12 +504,13 @@ class PhotosCrudController extends AbstractCrudController
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $name = $entityInstance->getPhoto();
-        if(file_exists('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
-            unlink('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+        if (file_exists('odf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name)) {
+            unlink('odpf/odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
         }
         parent::deleteEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
-    public function setImageType($image,$nameExtLess,$path)
+
+    public function setImageType($image, $nameExtLess, $path)
     {
         try {
             $imageOrig = new Imagick($path . $image->getPhoto());
@@ -523,16 +518,16 @@ class PhotosCrudController extends AbstractCrudController
             $imageOrig->setImageCompression(Imagick::COMPRESSION_JPEG);
             $fileNameParts = explode('.', $image->getPhoto());
             $imageOrig->writeImage($path . $nameExtLess . '.jpg');
+        } catch (\Exception $e) {
+
+
+            $_REQUEST['erreur'] = 'yes';
+
         }
-        catch(\Exception $e){
-
-
-            $_REQUEST['erreur']='yes';
-
-              }
 
     }
-    public function NamePhotos($photo)  : string  // renomme le fichier dans le cas d'un persist
+
+    public function NamePhotos($photo): string  // renomme le fichier dans le cas d'un persist
     {
         $slugger = new AsciiSlugger();
         $ed = $photo->getEditionspassees()->getEdition();

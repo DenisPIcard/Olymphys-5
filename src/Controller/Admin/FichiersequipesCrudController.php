@@ -40,6 +40,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -62,8 +63,9 @@ class FichiersequipesCrudController extends AbstractCrudController
     private ParameterBagInterface $parameterBag;
     private EntityManagerInterface $em;
     private ManagerRegistry $doctrine;
+    private AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
@@ -72,6 +74,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $this->parameterBag = $parameterBag;
         $this->em = $entitymanager;
         $this->doctrine = $doctrine;
+        $this->adminUrlGenerator = $adminUrlGenerator;
 
     }
 
@@ -452,7 +455,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
         $equipe = AssociationField::new('equipe')
-            ->setFormTypeOptions(['data_class' => null,
+            ->setFormTypeOptions([
                 'choices' => $listeEquipes]);
         $fichierFile = Field::new('fichierFile', 'fichier')//Le champ de chargement du fichier
         ->setFormType(VichFileType::class)
@@ -493,7 +496,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $panel2 = FormField::addPanel('<p style="color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$_REQUEST['typefichier']] . '</p> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
-        $publie = BooleanField::new('publie');
+        $publie = BooleanField::new('publie')->renderAsSwitch(false);//le basculement du bouton ne permet pas le transfert des fichiers du dossier prive vars le dossier publie et inversement, l'update complet est nécessaire
         $typefichier = IntegerField::new('typefichier');
         if ($pageName == Crud::PAGE_INDEX) {
             $context = $this->adminContextProvider->getContext();
@@ -548,7 +551,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             if ($numtypefichier == 6) {
                 return [$editionEd, $equipelibel, $fichier, $updatedat];
             } else {
-                return [$editionEd, $equipeNumero, $equipeLettre, $equipeTitreProjet, $fichier, $publie, $updatedat];
+                return [$editionEd, $equipeNumero, $equipeLettre, $equipeTitreProjet, $publie, $fichier, $updatedat]; //Le basculement du bouton publie ne tranfert pas le fichier, il faut appeler update
             }
         }
         if (Crud::PAGE_DETAIL === $pageName) {
@@ -561,7 +564,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 return [$panel1, $equipe, $fichierFile, $publie, $annexe];
             }
             if (($numtypefichier == 2) or ($numtypefichier == 3) or ($numtypefichier == 4) or ($numtypefichier == 5)) {
-                return [$panel1, $equipe, $fichierFile, $publie];
+                return [$panel1, $equipelibel, $fichierFile, $publie];
             }
             if ($numtypefichier == 6) {
 
@@ -569,13 +572,13 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
         }
         if (Crud::PAGE_EDIT === $pageName) {
-            if ($_REQUEST['typefichier'] == 0) {
+            if ($numtypefichier == 0) {
                 return [$panel1, $equipe, $fichier, $fichierFile, $annexe, $publie];
             }
-            if (($_REQUEST['typefichier'] == 2) or ($_REQUEST['typefichier'] == 3) or ($_REQUEST['typefichier'] == 4) or ($_REQUEST['typefichier'] == 5)) {
+            if (($numtypefichier == 2) or ($numtypefichier == 3) or ($numtypefichier == 4) or ($numtypefichier == 5)) {
                 return [$panel1, $equipe, $publie, $fichierFile];
             }
-            if ($_REQUEST['typefichier'] == 6) {
+            if ($numtypefichier == 6) {
 
                 return [$panel1, $equipe, $eleve, $prof, $fichierFile];
             }
@@ -690,6 +693,8 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
         //$validator = new valid_fichiers($this->validator, );
+
+
         $session = $this->requestStack->getSession();
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();
@@ -719,8 +724,10 @@ class FichiersequipesCrudController extends AbstractCrudController
         if (null !== $oldfichier) {
 
             $oldfichier->setFichierFile($entityInstance->getFichierFile());
-
-            parent::persistEntity($entityManager, $oldfichier);
+            if (($entityInstance->getTypefichier() < 4) and ($entityInstance->getNational() == true)) {
+                $this->fichierspublies($entityInstance);
+            }
+            parent::updateEntity($entityManager, $oldfichier);
         } else {
             if ($this->requestStack->getSession()->get('concours') == 0) {
                 $entityInstance->setNational(0);
@@ -729,8 +736,12 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $entityInstance->setNational(1);
             }
 
-            parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
         }
+        if (($entityInstance->getTypefichier() < 4) and ($entityInstance->getNational() == true)) {
+            $this->fichierspublies($entityInstance);
+            parent::updateEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+        }
+
     }
 
 
@@ -798,6 +809,10 @@ class FichiersequipesCrudController extends AbstractCrudController
 
 
                 }
+                if (($entityInstance->getTypefichier() < 4) and ($entityInstance->getNational() == true)) {
+                    $this->fichierspublies($entityInstance);
+                }
+
             }
             if ($typefichier == 6) {
 
@@ -840,11 +855,10 @@ class FichiersequipesCrudController extends AbstractCrudController
                 }
 
 
-                parent::persistEntity($entityManager, $entityInstance);
-
             }
 
         }
+        parent::persistEntity($entityManager, $entityInstance);
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
@@ -876,5 +890,27 @@ class FichiersequipesCrudController extends AbstractCrudController
         parent::deleteEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
 
+    public function fichierspublies($fichier)
+    {
+        $publie = $fichier->getPublie();
+        $fichierName = $fichier->getFichier();
+        $fichier->getTypefichier() == 1 ? $numtypeFichier = 0 : $numtypeFichier = $fichier->getTypefichier();
+        //dd('opdf/odpf-archives/' . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier()] . '/prive/' . $fichierName);
+        $path = $this->getParameter('app.path.odpf_archives') . '/';
+        if ($publie == true) {
+            if (!file_exists($path . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$numtypeFichier] . '/publie/' . $fichierName)) {
+                rename($path . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$numtypeFichier] . '/prive/' . $fichierName, $path . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$numtypeFichier] . '/publie/' . $fichierName);
+            }
+
+        }
+        if (($publie == false) or ($publie == null)) {
+
+            if (!file_exists($path . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$numtypeFichier] . '/prive/' . $fichierName)) {
+                rename($path . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$numtypeFichier] . '/publie/' . $fichierName, $path . $fichier->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$numtypeFichier] . '/prive/' . $fichierName);
+            }
+
+        }
+
+    }
 
 }

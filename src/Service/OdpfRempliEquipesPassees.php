@@ -106,7 +106,9 @@ class OdpfRempliEquipesPassees
             $odpfFichier->setNomautorisation($fichier->getNomautorisation());
 
         }
-
+        if ($fichier->getTypefichier() < 4) {
+            $odpfFichier->setPublie($fichier->getPublie());
+        }
         $odpfFichier->setEditionspassees($editionPassee);
         $odpfFichier->setNomFichier($fichier->getFichier());
         $odpfFichier->setFichierFile($fichier->getFichierFile());
