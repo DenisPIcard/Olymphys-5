@@ -43,7 +43,7 @@
                             <div class="fichiernondepose"><b>{{ eleve.nom }} {{ eleve.prenom }} </b></div>
                         </div>
                         <div class="col-8">
-
+                            <div class="fichiernondepose">Fichier non déposé</div>
                         </div>
                         <div class="col-1">
                             {% if is_granted('ROLE_PROF') %}
@@ -120,7 +120,9 @@
                         <div class="col-2">
                             <div class="fichiernondepose"><b>{{ prof.nom }} {{ prof.prenom }}</b></div>
                         </div>
-                        <div class="col-8"></div>
+                        <div class="col-8">
+                            <div class="fichiernondepose">Fichier non déposé</div>
+                        </div>
                         {% if is_granted('ROLE_PROF') %}
                             <div class="col-1">
                                 {% set attrib=0 %}
