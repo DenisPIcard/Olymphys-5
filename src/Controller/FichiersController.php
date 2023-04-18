@@ -59,7 +59,7 @@ class FichiersController extends AbstractController
 
 
     #[Isgranted('ROLE_ORGACIA')]
-    #[Route("/fichiers/choix_centre", name:"fichiers_choix_centre")]
+    #[Route("/fichiers/choix_centre", name: "fichiers_choix_centre")]
     public function choix_centre(Request $request)
     {
         $session = $this->requestStack->getSession();
@@ -100,8 +100,7 @@ class FichiersController extends AbstractController
     }
 
     #[Isgranted('ROLE_PROF')]
-    #[Route("/fichiers/choix_equipe, {choix}", name:"fichiers_choix_equipe")]
-
+    #[Route("/fichiers/choix_equipe, {choix}", name: "fichiers_choix_equipe")]
     public function choix_equipe(Request $request, $choix)
     {
 
@@ -113,13 +112,13 @@ class FichiersController extends AbstractController
         $repositoryDocequipes = $this->doctrine
             ->getRepository(Docequipes::class);
         $editionN = $session->get('edition');
-        $editionN1=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
+        $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $editionN->getEd() - 1]);
         $docequipes = $repositoryDocequipes->findAll();
 
-        $dateconnect = new datetime('now');
+        $dateconnect = new \Datetime('now');
         $dateciaN1 = $editionN1->getConcourscia();
-        $dateOuvertureSite=$editionN->getDateouverturesite();
-        $dateconnect > $dateciaN1 and $dateconnect<$dateOuvertureSite? $phase = 'national' : $phase = 'interacadémique';
+        $dateOuvertureSite = $editionN->getDateouverturesite();
+        $dateconnect > $dateciaN1 and $dateconnect < $dateOuvertureSite ? $phase = 'national' : $phase = 'interacadémique';
         $user = $this->getUser();
         $roles = $user->getRoles();
         $jure = null;
@@ -131,7 +130,7 @@ class FichiersController extends AbstractController
             $phase = 'interacadémique';
         }
         if (in_array('ROLE_PROF', $user->getRoles())) {
-            if ( $user->getUaiId()) {
+            if ($user->getUaiId()) {
                 $uai_objet = $this->doctrine->getRepository(Uai::class)->find(['id' => $user->getUaiId()]);
             }
         }
@@ -145,30 +144,33 @@ class FichiersController extends AbstractController
 
         if ($liste_equipes == null) {
 
-            if(new DateTime('now')>= $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+            if (new DateTime('now') >= $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
 
-
-               $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
-               $request->getSession()->set('info', 'Pas encore d\'équipe ' . $message . ' pour la ' . $editionN->getEd() . 'e edition');
+                if (new DateTime('now') < $editionN->getConcourscia()) {
+                    $choix == 'liste_cn_comite' ? $message = 'Attendre le concours interacadémique' : $message = 'Les équipes n\'ont pas encore été réparties dans les centres';
+                }
+                // $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+                $request->getSession()->set('info', $message . ' de la ' . $editionN->getEd() . 'e edition');
             }
 
         }
         $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
-                'liste_equipes' => $liste_equipes,
-                'user' => $user,
-                'phase' => $phase,
-                'choix' => $choix,
-                'jure' => $jure,
-                'doc_equipes' => $docequipes,
-                'uaiObj' => $uai_objet,
-                'centre' => $centre));
-            return new Response($content);
+            'liste_equipes' => $liste_equipes,
+            'user' => $user,
+            'phase' => $phase,
+            'choix' => $choix,
+            'jure' => $jure,
+            'doc_equipes' => $docequipes,
+            'uaiObj' => $uai_objet,
+            'centre' => $centre));
+
+        return new Response($content);
 
     }
 
-   #[Isgranted('ROLE_PROF')]
-   #[Route("/fichiers/charge_fichiers, {infos}", name:"fichiers_charge_fichiers")]
-   public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, ValidatorInterface $validator)
+    #[Isgranted('ROLE_PROF')]
+    #[Route("/fichiers/charge_fichiers, {infos}", name: "fichiers_charge_fichiers")]
+    public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, ValidatorInterface $validator)
     {
         $session = $this->requestStack->getSession();
         $repositoryFichiersequipes = $this->doctrine
@@ -316,7 +318,7 @@ class FichiersController extends AbstractController
             }
             $em = $this->doctrine->getManager();
             $edition = $this->requestStack->getSession()->get('edition');
-            $edition = $repositoryEdition->findOneBy(['id'=>$edition->getId()]);
+            $edition = $repositoryEdition->findOneBy(['id' => $edition->getId()]);
             if ($num_type_fichier == 6) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
@@ -638,7 +640,7 @@ class FichiersController extends AbstractController
 
 
     #[Isgranted('ROLE_PROF')]
-    #[Route("/fichiers/mon_espace", name:"mon_espace")]
+    #[Route("/fichiers/mon_espace", name: "mon_espace")]
     public function mon_espace(Request $request)
     {
 
@@ -684,7 +686,7 @@ class FichiersController extends AbstractController
 
 
     #[Isgranted('ROLE_PROF')]
-    #[Route("/fichiers/afficher_liste_fichiers_prof/,{infos}", name:"fichiers_afficher_liste_fichiers_prof")]
+    #[Route("/fichiers/afficher_liste_fichiers_prof/,{infos}", name: "fichiers_afficher_liste_fichiers_prof")]
     public function afficher_liste_fichiers_prof(Request $request, $infos): Response
     {
         $session = $this->requestStack->getSession();
@@ -703,88 +705,64 @@ class FichiersController extends AbstractController
             ->getRepository(Elevesinter::class);
 
         $Infos = explode('-', $infos);
-
         $id_equipe = $Infos[0];
         if ($id_equipe == 'prof') {
             $id_equipe = $Infos[4];
         }
         $concours = $Infos[1];
         $choix = $Infos[2];
-
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
-        if(date('now')<$edition->getDateouverturesite()){
-            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        if (new \Datetime('now') < $edition->getDateouverturesite()) {
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         $equipe_choisie = $repositoryEquipesadmin->find(['id' => $id_equipe]);
         $centre = $equipe_choisie->getCentre();
-
-
         $qbInit = $repositoryFichiersequipes->createQueryBuilder('t')//Les fichiers sans les autorisations photos
         ->LeftJoin('t.equipe', 'e')
             ->Where('e.id=:id_equipe')
-            ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $edition)
             ->setParameter('id_equipe', $id_equipe);
 
         if ($concours == 'interacadémique') {
             $qbComit = $qbInit
-                ->andWhere('t.national =:national')
-                ->andWhere('t.typefichier in (0,1,2,4,5,7)')
-                ->setParameter('national', FALSE);
-
-
+                ->andWhere('t.national = 0')
+                ->andWhere('t.typefichier in (0,1,2,4,5,7)');;
         }
         if ($concours == 'national') {
             $qbComit = $qbInit
-                ->andWhere('t.national =:national')
+                ->andWhere('t.national = 1')
                 ->andWhere('t.typefichier in (0,1,2,3,7,8)')
-                ->setParameter('national', TRUE)
                 ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');
-
         }
-
-
         $qbJuryNat = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama fiche sécurité
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
             ->andWhere('t.typefichier in (0,1,2,3,4,8)')
             ->andWhere('t.national =:national')
             ->setParameter('national', TRUE);
-
         $listeEleves = $repositoryElevesinter->findByEquipe(['equipe' => $equipe_choisie]);
         $liste_prof[1] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf1()]);
         if (null != $equipe_choisie->getIdProf2()) {
             $liste_prof[2] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf2()]);
         }
-
-
         $roles = $this->getUser()->getRoles();
         //$role = $roles[0];
         if ((in_array('ROLE_COMITE', $roles)) or (in_array('ROLE_PROF', $roles)) or (in_array('ROLE_ORGACIA', $roles)) or (in_array('ROLE_SUPER_ADMIN', $roles)) or (in_array('ROLE_JURY', $roles))) {
-
             $liste_fichiers = $qbComit->getQuery()->getResult();
-
-
-            $autorisations = $repositoryFichiersequipes->createQueryBuilder('t')//Les fichiers sans les autorisations photos
-            ->andWhere('t.typefichier =:type')
-                ->andWhere('t.edition =:edition')
+            $autorisations = $repositoryFichiersequipes->createQueryBuilder('a')//Les autorisations photos
+            ->andWhere('a.typefichier =:type')
+                ->andWhere('a.edition =:edition')
                 ->setParameters(['edition' => $edition, 'type' => 6])
                 ->getQuery()->getResult();
 
         }
-
         if (in_array('ROLE_JURYCIA', $roles)) {
             $qbInit->andWhere('t.typefichier in (0,1,2,4,5)');
-
             $liste_fichiers = $qbInit->getQuery()->getResult();
-
-
             $autorisations = [];
         }
         if (in_array('ROLE_JURY', $roles)) {
             $liste_fichiers = $qbJuryNat->getQuery()->getResult();
-
         }
         $qb = $repositoryVideosequipes->createQueryBuilder('v')
             ->LeftJoin('v.equipe', 'e')
@@ -803,19 +781,14 @@ class FichiersController extends AbstractController
         if (!isset($liste_fichiers)) {
             $liste_fichiers = [];
         }
-
-
-        return  $this->render('adminfichiers\espace_prof.html.twig', array('listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
-                    'equipe' => $equipe_choisie, 'centre' => $equipe_choisie->getCentre(), 'concours' => $concours, 'edition' => $edition, 'choix' => $choix,
-                    'liste_prof' => $liste_prof, 'listeEleves' => $listeEleves, 'liste_fichiers' => $liste_fichiers)
-            );
-
-
-
+        return $this->render('adminfichiers\espace_prof.html.twig', array('listevideos' => $listevideos, 'liste_autorisations' => $autorisations,
+                'equipe' => $equipe_choisie, 'centre' => $equipe_choisie->getCentre(), 'concours' => $concours, 'edition' => $edition, 'choix' => $choix,
+                'liste_prof' => $liste_prof, 'listeEleves' => $listeEleves, 'liste_fichiers' => $liste_fichiers)
+        );
     }
 
     #[IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")]
-    #[Route("/fichiers/choixedition,{num_type_fichier}", name:"fichiers_choixedition")]
+    #[Route("/fichiers/choixedition,{num_type_fichier}", name: "fichiers_choixedition")]
     public function choixedition(Request $request, $num_type_fichier): Response
     {
         $repositoryEdition = $this->doctrine
@@ -830,9 +803,8 @@ class FichiersController extends AbstractController
     }
 
 
-
     #[IsGranted("ROLE_JURY")]
-    #[Route("/fichiers/voir_fichier_inter,{typefichier}, {idequipe}", name:"voir_fichier_inter")]
+    #[Route("/fichiers/voir_fichier_inter,{typefichier}, {idequipe}", name: "voir_fichier_inter")]
     public function voir_fichier_interacademique(Request $request, $typefichier, $idequipe)
     {//pour le jurynational avant que les équipes n'aient déposé leur fichiers cn
 
@@ -874,7 +846,7 @@ class FichiersController extends AbstractController
 
 
     #[IsGranted("ROLE_COMITE")]
-    #[Route("/fichiers/charge_autorisations", name:"fichiers_charge_autorisations")]
+    #[Route("/fichiers/charge_autorisations", name: "fichiers_charge_autorisations")]
     public function charge_autorisation(Request $request)
     {
         $repositoryFichiersequipes = $this->doctrine
@@ -928,7 +900,7 @@ class FichiersController extends AbstractController
     }
 
     #[IsGranted("ROLE_PROF")]
-    #[Route("/fichiers/telechargerUnFichierProf,{idFichier}", name:"telecharger_un_fichier_prof")]
+    #[Route("/fichiers/telechargerUnFichierProf,{idFichier}", name: "telecharger_un_fichier_prof")]
     public function telechargerUnFichierProf($idFichier)
     {
 
@@ -936,7 +908,7 @@ class FichiersController extends AbstractController
         $edition = $fichier->getEdition();
         $typefichier = $fichier->getTypefichier();
 
-        $typefichier == 1 ? $path = $this->getParameter('type_fichier')[0] : $path = $this->getParameter('type_fichier')[$typefichier];
+        $typefichier < 4 ? $path = $this->getParameter('type_fichier')[$typefichier == 1 ? 0 : $typefichier] . '/' . $this->getParameter('fichier_acces')[$fichier->getPublie()] : $path = $this->getParameter('type_fichier')[$typefichier];
         $file = 'odpf/odpf-archives/' . $edition->getEd() . '/fichiers/' . $path . '/' . $fichier->getFichier();
 
         $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
@@ -961,7 +933,7 @@ class FichiersController extends AbstractController
     }
 
     #[IsGranted("ROLE_PROF")]
-    #[Route("/fichiers/telechargerZip,{equipeId},{concours}", name:"telecharger_un_fichier_zip")]
+    #[Route("/fichiers/telechargerZip,{equipeId},{concours}", name: "telecharger_un_fichier_zip")]
     public function telechargerZip($equipeId, $concours)
     {
         $equipe_choisie = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
@@ -990,9 +962,10 @@ class FichiersController extends AbstractController
 
             foreach ($liste_fichiers as $fichier) {
                 if ($fichier) {
-                    if ($fichier->getTypefichier() == 1) {
+                    $typefichier = $fichier->getTypefichier();
+                    if ($typefichier < 4) {
 
-                        $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[0] . '/' . $fichier->getFichier();
+                        $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier == 1 ? 0 : $typefichier] . '/' . $this->getParameter('fichier_acces')[$fichier->getPublie()] . '/' . $fichier->getFichier();
                     } else {
                         $fichierName = $this->getParameter('app.path.odpf_archives') . '/' . $equipe_choisie->getEdition()->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier()] . '/' . $fichier->getFichier();
                     }

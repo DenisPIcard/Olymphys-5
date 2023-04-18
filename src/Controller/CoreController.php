@@ -38,26 +38,27 @@ class CoreController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route("/", name:"core_home")]
+    #[Route("/", name: "core_home")]
     public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
     {
 
         $user = $this->getUser();
 
         $repository = $doctrine->getRepository(Edition::class);
-        $edition=$repository->findOneBy([], ['id' => 'desc']);
-
+        $edition = $repository->findOneBy([], ['id' => 'desc']);
+        $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         $this->requestStack->getSession()->set('edition', $edition);
-
+        $this->requestStack->getSession()->set('editionN1', $editionN1);
         if (null != $user) {
             $datecia = $edition->getConcourscia();
             $dateconnect = new datetime('now');
-            $concours='';
+            $concours = '';
             if ($dateconnect > $datecia) {
-                $concours = 'national';}
-            else {
-                $concours = 'interacadémique';}
-
+                $concours = 'national';
+            } else {
+                $concours = 'interacadémique';
+            }
+            $this->requestStack->getSession()->set('concours', $concours);
         }
         $this->requestStack->getSession()->set('pageCourante', 1);
         $this->requestStack->getSession()->set('pageFCourante', 1);
@@ -77,7 +78,7 @@ class CoreController extends AbstractController
 
     }
 
-    #[Route("/core/pages,{choix}", name:"core_pages")]
+    #[Route("/core/pages,{choix}", name: "core_pages")]
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
     {
         // construit les pages
@@ -135,7 +136,7 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    #[Route("/core/actus,{tourn}", name:"core_actus")]
+    #[Route("/core/actus,{tourn}", name: "core_actus")]
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
         // construit le tableau des éléments à passer au template pour créer le menu des actus
@@ -190,7 +191,7 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    #[Route("/core/faq,{tourn}", name:"core_faq")]
+    #[Route("/core/faq,{tourn}", name: "core_faq")]
     public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
         // construit le tableau des éléments à passer au template pour créer la page des FAQ
@@ -246,7 +247,7 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-    #[Route("/core/mentions,{mention}", name:"core_mentions")]
+    #[Route("/core/mentions,{mention}", name: "core_mentions")]
     public function mentions(Request $request, ManagerRegistry $doctrine, $mention): Response
     {
         // construit le tableau des éléments à passer au template pour créer le menu des mentions de bas de page

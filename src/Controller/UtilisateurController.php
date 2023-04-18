@@ -39,7 +39,7 @@ class UtilisateurController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    #[Route("/profile_show", name:"profile_show")]
+    #[Route("/profile_show", name: "profile_show")]
     public function profileShow(): Response
     {
         $user = $this->getUser();
@@ -48,7 +48,7 @@ class UtilisateurController extends AbstractController
         ));
     }
 
-    #[Route("profile_edit", name:"profile_edit")]
+    #[Route("profile_edit", name: "profile_edit")]
     public function profileEdit(Request $request, ManagerRegistry $doctrine): RedirectResponse|Response
     {
         $user = $this->getUser();
@@ -75,7 +75,7 @@ class UtilisateurController extends AbstractController
         ));
     }
 
-    #[Route("/Utilisateur/inscrire_equipe,{idequipe}", name:"inscrire_equipe")]
+    #[Route("/Utilisateur/inscrire_equipe,{idequipe}", name: "inscrire_equipe")]
     public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe): RedirectResponse|Response
     {
 
@@ -93,7 +93,7 @@ class UtilisateurController extends AbstractController
                 if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
                     $this->requestStack->getSession()
                         ->set('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
-                    return $this->redirectToRoute('fichiers_choix_equipe',array('choix'=>'liste_prof'));
+                    return $this->redirectToRoute('fichiers_choix_equipe', array('choix' => 'liste_prof'));
                 }
             }
 
@@ -188,17 +188,17 @@ class UtilisateurController extends AbstractController
                     }
 
                     if (!$modif) {
-                        $e = null;
+                        $e = null;//iniatilaisation de l'erreur
                         try {
                             $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
                                 ->select('e, MAX(e.numero) AS max_numero')
                                 ->andWhere('e.edition = :edition')
                                 ->setParameter('edition', $edition)
                                 ->getQuery()->getSingleResult();
-                        } catch (NoResultException|NonUniqueResultException $e) {
+                        } catch (\Exception $e) {//une erreur est générée lors de l'inscription de la première équipe car l'ensemble des équipe est nul
                         }
 
-                        if (($e) and ($modif == false)) {
+                        if (($e) and ($modif == false)) {//Pour la première équipe qui s'inscrit l'erreur $e n'est pas nulle.
                             $numero = 1;
                             $equipe->setNumero($numero);
                         } elseif ($modif == false) {
@@ -286,9 +286,8 @@ class UtilisateurController extends AbstractController
                     if (($modif == true) and ($checkChange != [])) {
                         try {
                             $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
-                        }
-                        catch(TransportExceptionInterface $e) {
-                                dd($e);
+                        } catch (TransportExceptionInterface $e) {
+                            dd($e);
                         }
 
 
@@ -310,7 +309,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[IsGranted('ROLE_PROF')]
-    #[Route("/Utilisateur/supr_eleve,{eleve}", name:"supr_eleve")]
+    #[Route("/Utilisateur/supr_eleve,{eleve}", name: "supr_eleve")]
     public function supr_eleve($eleveId): void
     {
 
@@ -394,11 +393,11 @@ class UtilisateurController extends AbstractController
         if ($partenaire != $oldPartenaire) {
             $checkchange['partenaire'] = 'Partenaire';
         }
-        $oldInscrite=$oldEquipe->getInscrite();
-        $inscrite=$equipe->getInscrite();
+        $oldInscrite = $oldEquipe->getInscrite();
+        $inscrite = $equipe->getInscrite();
 
         if ($inscrite != $oldInscrite) {
-            $inscrite==false?$checkchange['inscrite'] = 'NON':$checkchange['inscrite'] = 'OUI';
+            $inscrite == false ? $checkchange['inscrite'] = 'NON' : $checkchange['inscrite'] = 'OUI';
 
         }
         $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
@@ -457,7 +456,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[IsGranted('ROLE_PROF')]
-    #[Route("/Utilisateur/pre_supr_eleve", name:"pre_supr_eleve")]
+    #[Route("/Utilisateur/pre_supr_eleve", name: "pre_supr_eleve")]
     public function pre_supr_eleve(Request $request, ManagerRegistry $doctrine): RedirectResponse
     {
         $session = $this->requestStack->getSession();
@@ -472,7 +471,6 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute('inscrire_equipe', array('idequipe' => $equipe->getId()));
 
     }
-
 
 
 }

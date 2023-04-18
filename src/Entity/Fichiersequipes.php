@@ -45,7 +45,6 @@ class Fichiersequipes //extends BaseMedia
     private ?DateTime $updatedAt = null;
 
     #[ORM\OneToOne(inversedBy: 'autorisationphotos', cascade: ['persist'])]
-    #[ORM\Column(name: 'prof_id', nullable: true)]
     private ?User $prof = null;
 
     #[ORM\Column(length: 255, nullable: true)]
