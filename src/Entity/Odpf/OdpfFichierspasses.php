@@ -268,7 +268,7 @@ class OdpfFichierspasses
         return $fileName;
     }
 
-    public function moveFile(): self
+    public function moveFile(): self//permet  de transférer les fichiers publiables vers le dossier publie après le concours national
     {
         $filesystem = new Filesystem();
         $pathTypeFichier = ['memoires', 'memoires', 'resumes', 'presentation', 'fichessecur', 'diaporamas', 'autorisations', 'questionnaires', 'fichessecur'];
