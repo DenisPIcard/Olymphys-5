@@ -170,7 +170,7 @@ class OdpfEditionspasseesController extends AbstractController
                 array_key_last($listeFichiers) == $i ? $virgule = '' : $virgule = ', ';
                 if ($fichier->getNomfichier() != null) {
                     if (explode(':', $_SERVER['SERVER_NAME'])[0] == 'localhost') {
-                        $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . '/' . $publie . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
+                        $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $publie . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
                     } else {
                         $texte = $texte . '<a href="/../public/odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $publie . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
                     }
