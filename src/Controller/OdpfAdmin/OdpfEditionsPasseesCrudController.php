@@ -111,7 +111,8 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
-            ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste');
+            ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');;
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
