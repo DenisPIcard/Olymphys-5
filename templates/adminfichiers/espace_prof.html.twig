@@ -11,8 +11,9 @@
 {% endblock %}
 
 {% block titre3 %}
+
     <div class="text-center">
-        {{ edition.ed }}<sup>e</sup> édition :
+        {{ app.session.get('edition').ed }}<sup>e</sup> édition :
         {% if concours =='interacadémique' %}
             Concours interacadémique <br>
             {% if centre != null %}

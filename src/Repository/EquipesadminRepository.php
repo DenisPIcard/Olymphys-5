@@ -9,6 +9,7 @@ use App\Entity\Edition;
 use App\Entity\Equipesadmin;
 use App\Entity\Orgacia;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,28 +31,27 @@ class EquipesadminRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Equipesadmin::class);
         $this->requestStack = $requestStack;
-        $this->doctrine=$registry;
+        $this->doctrine = $registry;
     }
 
 
     public function getEquipeInter(Centrescia $centre): array
     {
-        $edition=$this->requestStack->getSession()->get('edition');
+        $edition = $this->requestStack->getSession()->get('edition');
         return $this->createQueryBuilder('e')->select('e')
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $edition)
             ->andwhere('e.centre =:centre')
-            ->setParameter('centre',$centre)   // on n'affiche que les vraies équipes, pas jury, ambiance, remise des prix qui sont là pour l'affichage des photos
+            ->setParameter('centre', $centre)   // on n'affiche que les vraies équipes, pas jury, ambiance, remise des prix qui sont là pour l'affichage des photos
             ->orderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
 
     }
 
 
-
-    public function getEquipeNat() : array
+    public function getEquipeNat(): array
     {
-        $edition=$this->requestStack->getSession()->get('edition');
+        $edition = $this->requestStack->getSession()->get('edition');
         return $this->createQueryBuilder('e')->select('e')
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $edition)
@@ -63,14 +63,14 @@ class EquipesadminRepository extends ServiceEntityRepository
 
     }
 
-    public function getEquipesProf(User $user): Array
+    public function getEquipesProf(User $user): array
     {
-        $edition=$this->requestStack->getSession()->get('edition');
+        $edition = $this->requestStack->getSession()->get('edition');
         return $this->createQueryBuilder('e')->select('e')
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $edition)
             ->andWhere('e.idProf1 = user or e.idProf2 = user')
-            ->setParameter('user',$user)
+            ->setParameter('user', $user)
             ->orderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
 
@@ -96,7 +96,7 @@ class EquipesadminRepository extends ServiceEntityRepository
     public function getEquipes_prof_cn(User $prof, Edition $edition): array
     {
         $entityManager = $this->getEntityManager();
-        $edition=$this->requestStack->getSession()->get('edition');
+        $edition = $this->requestStack->getSession()->get('edition');
 
         $query = $entityManager->createQuery(
             'SELECT e
@@ -129,34 +129,43 @@ class EquipesadminRepository extends ServiceEntityRepository
         }
         return $numeros;
     }
-    public function getListeEquipe($user,$concours,$choix,$centre)
+
+    public function getListeEquipe($user, $concours, $choix, $centre)
     {
         $em = $this->getEntityManager();
-        $editionN=$this->requestStack->getSession()->get('edition');
-        $editionN1= $this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$editionN->getEd()-1]);
-        $concours == 'interacadémique'?$selectionnee=false:$selectionnee=true;
+        $editionN = $this->requestStack->getSession()->get('edition');
+        $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $editionN->getEd() - 1]);
+        $concours == 'interacadémique' ? $selectionnee = false : $selectionnee = true;
+        if (new DateTime('now') > $editionN->getDateOuvertureSite()) {
+            $edition = $editionN;
+        } else {
+            $edition = $editionN1;
+
+        }
         $qb = $em->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-                       ->andWhere('e.edition =:editionN or e.edition=:editionN1');
-        $concours == 'interacadémique'?$qb->orderBy('e.numero', 'ASC'):$qb->orderBy('e.lettre', 'ASC');
+            ->andWhere('e.edition =:edition');
 
-        if (in_array('ROLE_PROF',$user->getRoles()) and (!in_array('ROLE_JURY',$user->getRoles()))) {// à cause du juré qui est prof et juré selon les années
-            $qb ->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
+
+        $concours == 'interacadémique' ? $qb->orderBy('e.numero', 'ASC') : $qb->orderBy('e.lettre', 'ASC');
+
+        if (in_array('ROLE_PROF', $user->getRoles()) and (!in_array('ROLE_JURY', $user->getRoles()))) {// à cause du juré qui est prof et juré selon les années
+            $qb->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
                 ->andWhere('e.selectionnee = :selectionnee')
-                ->setParameters(['editionN' => $editionN,'editionN1'=>$editionN1, 'prof' => $user, 'selectionnee' => $selectionnee]);
-            $listeEquipes= $qb->getQuery()->getResult();
+                ->setParameters(['edition' => $edition, 'prof' => $user, 'selectionnee' => $selectionnee]);
+            $listeEquipes = $qb->getQuery()->getResult();
         }
-        if ( (in_array('ROLE_JURY',$user->getRoles())) or (in_array('ROLE_JURYCIA',$user->getRoles())) or (in_array('ROLE_COMITE',$user->getRoles())) or (in_array('ROLE_ORGACIA',$user->getRoles()))or(in_array('ROLE_SUPER_ADMIN',$user->getRoles()))){
-            if ($centre!=null) {
-                $listeEquipes=$this->getEquipeInter($centre);
+        if ((in_array('ROLE_JURY', $user->getRoles())) or (in_array('ROLE_JURYCIA', $user->getRoles())) or (in_array('ROLE_COMITE', $user->getRoles())) or (in_array('ROLE_ORGACIA', $user->getRoles())) or (in_array('ROLE_SUPER_ADMIN', $user->getRoles()))) {
+            if ($centre != null) {
+                $listeEquipes = $this->getEquipeInter($centre);
             }
-            if ($choix=='liste_cn_comite') {
-                $qb ->andWhere('e.numero <:valeur')
+            if ($choix == 'liste_cn_comite') {
+                $qb->andWhere('e.numero <:valeur')
                     ->andWhere('e.selectionnee = 1')
-                    ->setParameters(['editionN' => $editionN, 'editionN1'=>$editionN1, 'valeur' => 100]);
-                $listeEquipes= $qb->getQuery()->getResult();
+                    ->setParameters(['edition' => $edition, 'valeur' => 100]);
+                $listeEquipes = $qb->getQuery()->getResult();
             }
 
         }
-       return $listeEquipes;
+        return $listeEquipes;
     }
 }

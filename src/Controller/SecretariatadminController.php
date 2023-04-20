@@ -54,7 +54,7 @@ class SecretariatadminController extends AbstractController
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/charge_uai", name:"secretariatadmin_charge_uai")]
+    #[Route("/secretariatadmin/charge_uai", name: "secretariatadmin_charge_uai")]
     public function charge_uai(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier des élèves '];
@@ -129,7 +129,7 @@ class SecretariatadminController extends AbstractController
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/charge_user", name:"secretariatadmin_charge_user")]
+    #[Route("/secretariatadmin/charge_user", name: "secretariatadmin_charge_user")]
     public function charge_user(Request $request): RedirectResponse|Response
     {
         $defaultData = ['message' => 'Charger le fichier '];
@@ -215,7 +215,7 @@ class SecretariatadminController extends AbstractController
 
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/cree_equipes", name:"secretariatadmin_cree_equipes")]
+    #[Route("/secretariatadmin/cree_equipes", name: "secretariatadmin_cree_equipes")]
     public function cree_equipes(Request $request): RedirectResponse|Response
     {
         $session = $this->requestStack->getSession();
@@ -274,7 +274,7 @@ class SecretariatadminController extends AbstractController
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/charge_jures", name:"secretariatadmin_charge_jures")]
+    #[Route("/secretariatadmin/charge_jures", name: "secretariatadmin_charge_jures")]
     public function charge_jures(Request $request): RedirectResponse|Response
     {
 
@@ -306,7 +306,7 @@ class SecretariatadminController extends AbstractController
 
             $repositoryUser = $this->doctrine->getManager()
                 ->getRepository(User::class);
-            $message ='';
+            $message = '';
 
             for ($row = 2; $row <= $highestRow; ++$row) {
                 $jure = new jures();
@@ -333,7 +333,7 @@ class SecretariatadminController extends AbstractController
                         }
                     }
                 }
-                if(count($user)!=0)  {
+                if (count($user) != 0) {
 
                     $jure->setIduser($user[0]);
                     $colonne = 4;
@@ -350,8 +350,8 @@ class SecretariatadminController extends AbstractController
                     $em->persist($jure);
                     $em->flush();
                 }
-                if(count($user)==0)  {
-                    $message=$message.$nom.' ne correspond pas à un user existant et n\'a pu être enregistré';
+                if (count($user) == 0) {
+                    $message = $message . $nom . ' ne correspond pas à un user existant et n\'a pu être enregistré';
                 }
 
             }
@@ -366,7 +366,7 @@ class SecretariatadminController extends AbstractController
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/charge_equipe_id_uai", name:"secretariatadmin_charge_equipe_id_uai")]
+    #[Route("/secretariatadmin/charge_equipe_id_uai", name: "secretariatadmin_charge_equipe_id_uai")]
     public function charge_equipe_id_uai(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
@@ -394,7 +394,7 @@ class SecretariatadminController extends AbstractController
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/set_editon_equipe", name:"secretariatadmin_set_editon_equipe")]
+    #[Route("/secretariatadmin/set_editon_equipe", name: "secretariatadmin_set_editon_equipe")]
     public function set_edition_equipe(Request $request): RedirectResponse
     {
         $repositoryEquipes = $this->doctrine
@@ -430,7 +430,7 @@ class SecretariatadminController extends AbstractController
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/modif_equipe,{idequipe}", name:"modif_equipe")]
+    #[Route("/secretariatadmin/modif_equipe,{idequipe}", name: "modif_equipe")]
     public function modif_equipe(Request $request, $idequipe): RedirectResponse|Response
     {
         $em = $this->doctrine->getManager();
@@ -517,9 +517,8 @@ class SecretariatadminController extends AbstractController
     }
 
 
-
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/youtube_remise_des prix", name:"secretariatadmin_youtube_remise_des_prix")]
+    #[Route("/secretariatadmin/youtube_remise_des prix", name: "secretariatadmin_youtube_remise_des_prix")]
     public function youtube_remise_des_prix(Request $request): RedirectResponse|Response
 
     {
@@ -556,6 +555,4 @@ class SecretariatadminController extends AbstractController
         return $this->render('core/lien_video.html.twig', array('form' => $Form->createView()));
 
     }
-
-
 }

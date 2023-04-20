@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Fichiersequipes;
+use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Photos;
 use App\Entity\User;
 use DateTime;
@@ -31,8 +32,9 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         return [
             BeforeEntityPersistedEvent::class => ['addUser'],
             BeforeEntityUpdatedEvent::class => ['updateUser'], //surtout utile lors d'un reset de mot passe plutôt qu'un réel update, car l'update va de nouveau encrypter le mot de passe DEJA encrypté ...
-            AfterEntityPersistedEvent::class => ['createthumb'],
-            AfterEntityUpdatedEvent::class => ['createthumbupdate']
+            AfterEntityPersistedEvent::class => ['traitement'],
+            AfterEntityUpdatedEvent::class => ['updateEntity']
+
         ];
     }
 
@@ -63,13 +65,14 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $this->setPassword($entity);
     }
 
+
     /**
      * @param User $entity
      */
     public function setPassword(User $entity): void
     {
 
-        if (!($entity instanceof User)) {
+        if ($entity instanceof User) {
             return;
         }
         $pass = $entity->getPassword();
@@ -88,33 +91,44 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $this->entityManager->flush();
     }
 
-    /**
-     * @throws \ImagickException
-     */
-    public function createthumb(AfterEntityPersistedEvent $event)
+    public function Traitement(AfterEntityPersistedEvent $event)
     {
         $entity = $event->getEntityInstance();
 
-        if (!($entity instanceof Photos)) {
-            return;
+        if ($entity instanceof Photos) {
+            $entity->createThumbs();
+        }
+        if ($entity instanceof OdpfFichierspasses) {
+
+            if ($entity->getTypefichier() < 4) {
+
+                $entity->moveFile();
+
+            }
         }
 
-        $entity->createThumbs();
-
-
+        return;
     }
 
     /**
      * @throws \ImagickException
      */
-    public function createthumbupdate(AfterEntityUpdatedEvent $event)
+    public function updateEntity(AfterEntityUpdatedEvent $event): void
     {
         $entity = $event->getEntityInstance();
 
-        if (!($entity instanceof Photos)) {
-            return;
+        if ($entity instanceof Photos) {
+            $entity->createThumbs();
         }
-        $entity->createThumbs();
+        /*if ($entity instanceof OdpfFichierspasses) {
+
+            if ($entity->getTypefichier() < 4) {
+
+                $entity->moveFile();
+                return;
+            }
+        }*/
+        return;
 
 
     }
@@ -137,6 +151,6 @@ class EasyAdminSubscriber implements EventSubscriberInterface
 
         }
 
-
     }
+
 }

@@ -14,6 +14,7 @@ use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfLogos;
 
 use App\Entity\Odpf\OdpfPartenaires;
+use App\Entity\Odpf\OdpfVideosequipes;
 use App\Entity\Photos;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -81,8 +82,11 @@ class OdpfDashboardController extends AbstractDashboardController
                 ->setQueryParameter('typefichier', 6),
 
             MenuItem::linkToCrud('Les  photos', 'fas fa-images', Photos::class)
-                ->setController(OdpfPhotosCrudController::class)
-                 ];
+                ->setController(OdpfPhotosCrudController::class),
+            MenuItem::linkToCrud('Les  vidéos', 'fas fa-images', OdpfVideosequipes::class)
+                ->setController(OdpfVideosEquipesCrudController::class),
+
+        ];
 
         yield MenuItem::linktoDashboard('Tableau de bord', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);

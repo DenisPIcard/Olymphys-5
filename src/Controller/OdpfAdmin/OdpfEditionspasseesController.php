@@ -30,7 +30,7 @@ class OdpfEditionspasseesController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-   #[Route("/odpf/editionspassees/equipe,{id}", name:"odpf_editionspassees_equipe")]
+    #[Route("/odpf/editionspassees/equipe,{id}", name: "odpf_editionspassees_equipe")]
     public function equipe($id, OdpfCreateArray $createArray): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
@@ -49,6 +49,7 @@ class OdpfEditionspasseesController extends AbstractController
             ->andWhere('eq.selectionnee = 1')
             ->andWhere('f.equipepassee =:equipe')
             ->andWhere('f.national = 1')
+            ->andWhere('f.publie = 1')
             ->setParameter('equipe', $equipe)
             ->getQuery()->getResult();
 
@@ -69,7 +70,7 @@ class OdpfEditionspasseesController extends AbstractController
         return $this->render('core/odpf-editions-passees-equipe.html.twig', $tab);
     }
 
-    #[Route("/odpf/editionspassees/editions", name:"odpf_editionspassees_editions")]
+    #[Route("/odpf/editionspassees/editions", name: "odpf_editionspassees_editions")]
     public function editions(OdpfCreateArray $createArray): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
@@ -122,15 +123,14 @@ class OdpfEditionspasseesController extends AbstractController
         }
         //test du répertoire de travail
 
-        if(explode(':',$_SERVER['SERVER_NAME'])[0]=='localhost'){
-            $texte= '<a href="/odpf/editionspassees/editions?sel=' . $equipe->getEditionspassees()->getId() . '">Retour</a>';
-        }
-        else{
-            $texte='<a href="/../public/index.php/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>';
+        if (explode(':', $_SERVER['SERVER_NAME'])[0] == 'localhost') {
+            $texte = '<a href="/odpf/editionspassees/editions?sel=' . $equipe->getEditionspassees()->getId() . '">Retour</a>';
+        } else {
+            $texte = '<a href="/../public/index.php/odpf/editionspassees/editions?sel=' . $equipe->getEditionspassees()->getId() . '">Retour</a>';
         }
         //sur le site : <a href="/../public/index.php/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
 
-        $texte = $texte.'
+        $texte = $texte . '
                          
                 <table>
                 <thead>
@@ -166,14 +166,13 @@ class OdpfEditionspasseesController extends AbstractController
             if (in_array($fichier->getTypefichier(), [0, 1, 2, 3])) {
 
                 $fichier->getTypefichier() == 1 ? $typefichier = 0 : $typefichier = $fichier->getTypefichier();
-
+                $fichier->getPublie() == 1 ? $publie = 'publie/' : $publie = 'prive/';
                 array_key_last($listeFichiers) == $i ? $virgule = '' : $virgule = ', ';
                 if ($fichier->getNomfichier() != null) {
-                    if(explode(':',$_SERVER['SERVER_NAME'])[0]=='localhost'){
-                        $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
-                    }
-                    else{
-                        $texte = $texte . '<a href="/../public/odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
+                    if (explode(':', $_SERVER['SERVER_NAME'])[0] == 'localhost') {
+                        $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $publie . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
+                    } else {
+                        $texte = $texte . '<a href="/../public/odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $publie . $fichier->getNomfichier() . '" target="_blank">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
                     }
                     //$texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>' . $virgule;
                 }
@@ -185,17 +184,17 @@ class OdpfEditionspasseesController extends AbstractController
 
         if ($videos != null) {
             $textevideo = '<div class="table">';
-            $i=1;
+            $i = 1;
             foreach ($videos as $video) {
-               /*$lien = preg_replace(
-                    "/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
-                    "<iframe  width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/$2\" allowfullscreen; frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe>",
-                    $video->getLien()
-                );*/
-                $lien = '<a href="'.$video->getLien().'" target="_blank"> Vidéo '.$i.'</a><br>';
+                /*$lien = preg_replace(
+                     "/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+                     "<iframe  width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/$2\" allowfullscreen; frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe>",
+                     $video->getLien()
+                 );*/
+                $lien = '<a href="' . $video->getLien() . '" target="_blank"> Vidéo ' . $i . '</a><br>';
 
-                $textevideo = $textevideo . '<tr><td>'.$lien.' </td></tr>';
-            $i=$i+1;
+                $textevideo = $textevideo . '<tr><td>' . $lien . ' </td></tr>';
+                $i = $i + 1;
             }
 
             $textevideo = $textevideo . '</div>';
