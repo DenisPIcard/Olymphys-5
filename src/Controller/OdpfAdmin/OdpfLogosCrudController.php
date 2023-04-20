@@ -50,7 +50,8 @@ class OdpfLogosCrudController extends AbstractCrudController
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
-            ->add(Crud::PAGE_NEW, Action::INDEX);
+            ->add(Crud::PAGE_NEW, Action::INDEX)
+            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');;
     }
 
     public function configureFields(string $pageName): iterable
