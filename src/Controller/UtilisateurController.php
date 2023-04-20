@@ -6,7 +6,6 @@ use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Entity\Uai;
-use App\Entity\User;
 use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
@@ -14,10 +13,7 @@ use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
 use App\Service\OdpfRempliEquipesPassees;
 use datetime;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
-use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -187,24 +183,22 @@ class UtilisateurController extends AbstractController
 
                     }
 
-                    if (!$modif) {
-                        $e = null;//iniatilaisation de l'erreur
-                        try {
-                            $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
-                                ->select('e, MAX(e.numero) AS max_numero')
-                                ->andWhere('e.edition = :edition')
-                                ->setParameter('edition', $edition)
-                                ->getQuery()->getSingleResult();
-                        } catch (\Exception $e) {//une erreur est générée lors de l'inscription de la première équipe car l'ensemble des équipe est nul
-                        }
-
-                        if (($e) and ($modif == false)) {//Pour la première équipe qui s'inscrit l'erreur $e n'est pas nulle.
+                    if ($modif == false) {
+                        $listeEquipes = $repositoryEquipesadmin->findBy(['edition' => $edition]);
+                        if (count($listeEquipes) == 0) {//Pour la première équipe qui s'inscrit
                             $numero = 1;
                             $equipe->setNumero($numero);
-                        } elseif ($modif == false) {
-                            $numero = intval($lastEquipe['max_numero']) + 1;
+                        } else {
+                            $i = 0;
+                            foreach ($listeEquipes as $equipelist) {
+                                $numero[$i] = $equipelist->getNumero();
+                                $i = $i + 1;
+                            }
+                            $maxNumero = max($numero);
+                            $numero = $maxNumero + 1;
                             $equipe->setNumero($numero);
                         }
+
                     }
                     $uai_objet = $repositoryUai->findOneBy(['uai' => $this->getUser()->getUai()]);
 
@@ -262,16 +256,17 @@ class UtilisateurController extends AbstractController
                         }
                     }
                     $equipe->setNbEleves($nbeleves);
-                    $em->persist($equipe);
-                    $em->flush();
+                    $this->doctrine->getManager()->persist($equipe);
+                    $this->doctrine->getManager()->flush();
                     $checkChange = '';
-                    if ($modif) {
+                    if ($modif == true) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
-                    }
 
-                    $maj_profsequipes = new Maj_profsequipes($doctrine);
-                    $maj_profsequipes->maj_profsequipes($equipe);
+
+                        $maj_profsequipes = new Maj_profsequipes($doctrine);
+                        $maj_profsequipes->maj_profsequipes($equipe);
+                    }
                     $rempliOdpfEquipesPassees = new OdpfRempliEquipesPassees($doctrine);
                     $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($equipe);
 

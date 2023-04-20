@@ -141,19 +141,20 @@ class FichiersController extends AbstractController
         }
 
         $liste_equipes = $repositoryEquipesadmin->getListeEquipe($user, $phase, $choix, $centre);
+        /*
+               if ($liste_equipes == null) {
 
-        if ($liste_equipes == null) {
+                 /*  if (new DateTime('now') >= $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
 
-            if (new DateTime('now') >= $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+                       if (new DateTime('now') < $editionN->getConcourscia()) {
+                           $choix != 'liste_cn_comite' ? $message = 'Attendre le concours interacadémique' : $message = 'Les équipes n\'ont pas encore été réparties dans les centres';
 
-                if (new DateTime('now') < $editionN->getConcourscia()) {
-                    $choix == 'liste_cn_comite' ? $message = 'Attendre le concours interacadémique' : $message = 'Les équipes n\'ont pas encore été réparties dans les centres';
-                }
-                // $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
-                $request->getSession()->set('info', $message . ' de la ' . $editionN->getEd() . 'e edition');
-            }
+                           // $phase == 'interacadémique' ? $message = 'inscrite' : $message = 'selectionnée';
+                           $request->getSession()->set('info', $message . ' de la ' . $editionN->getEd() . 'e edition');
+                       }
+                   }
 
-        }
+        }*/
         $content = $this->renderView('adminfichiers\choix_equipe.html.twig', array(
             'liste_equipes' => $liste_equipes,
             'user' => $user,

@@ -100,16 +100,15 @@ class Mailer
             // ->from($user->getEmail())
             ->subject('Envoi de frais')
             ->htmlTemplate('email/envoi_des_frais.html.twig')
-            ->attach(fopen($fichier,'r'))
+            ->attach(fopen($fichier, 'r'))
             ->context([
                 'user' => $user,
-            ])
-
-        ;
+            ]);
 
         $this->mailer->send($email);
         return $email;
     }
+
     /**
      * @throws TransportExceptionInterface
      */
@@ -126,20 +125,21 @@ class Mailer
                 ->html('Bonjour<br>
                             Nous confirmons que ' . $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
                     '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a inscrit une nouvelle équipe denommée : ' . $equipe->getTitreProjet() .
-                    '<br> <br>Le comité national des Olympiades de Physique');
+                    '<br>Veuillez prendre connaissance de la fiche sécurité disponible dans votre espace pour vérifier que les expériences de votre projet sont conformes aux exigences de sécurité imposées dans un établissement scolaire
+                     <br>Le comité national des Olympiades de Physique');
         }
         if ($modif) {
             $changetext = '';
             if ($checkChange != null) {
-                if(isset($checkChange['inscrite'])){
-                    if($checkChange['inscrite']=='NON'){
-                        $changetext='<h1>Desinscription de l\'équipe !</h1><br>';
-                        $checkChange['inscrite']= $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
-                    '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a désinscrit l\'équipe denommée : ' . $equipe->getTitreProjet();
+                if (isset($checkChange['inscrite'])) {
+                    if ($checkChange['inscrite'] == 'NON') {
+                        $changetext = '<h1>Desinscription de l\'équipe !</h1><br>';
+                        $checkChange['inscrite'] = $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
+                            '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a désinscrit l\'équipe denommée : ' . $equipe->getTitreProjet();
                     }
-                    if($checkChange['inscrite']=='OUI'){
-                        $changetext='<h1>Réinscription de l\'équipe !</h1><br>';
-                        $checkChange['inscrite']= $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
+                    if ($checkChange['inscrite'] == 'OUI') {
+                        $changetext = '<h1>Réinscription de l\'équipe !</h1><br>';
+                        $checkChange['inscrite'] = $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
                             '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a réinscrit l\'équipe denommée : ' . $equipe->getTitreProjet();
 
                     }
@@ -147,7 +147,7 @@ class Mailer
                 }
                 foreach ($checkChange as $change) {
 
-                        $changetext .= ' - ' . $change . '<br>';
+                    $changetext .= ' - ' . $change . '<br>';
 
                 }
             }
