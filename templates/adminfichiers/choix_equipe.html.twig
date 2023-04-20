@@ -21,19 +21,20 @@
             {% endif %}
             {% if phase=='interacadémique' %}
 
-                    <br>Liste des équipes du centre de {{ centre }}
+                <br>Liste des équipes du centre de {{ centre }}
 
             {% endif %}
         {% endif %}
         {% if phase=='national' %}
 
-                <br>Voir les fichiers d'une équipe
+            <br>Voir les fichiers d'une équipe
 
         {% endif %}
 
         {% if app.user.roles|filter(v => v =='ROLE_PROF') %}
             {% if choix=='liste_prof' %}
                 <br>Les  équipes de l'établissement
+
             {% endif %}
         {% endif %}
 
@@ -57,72 +58,78 @@
             {% endif %}
 
 
-                {% for equipe in liste_equipes %}
-                    <div class="row">
-                        <div class="col">
-                            <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }}
-                            {% if is_granted('ROLE_PROF' ) %}
-                                <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
-                            {% endif %}
-                            {% if equipe.inscrite== false %}
-                                <div class="inscritered"><i>(Equipe non inscrite)</i></div>
-                            {% endif %}
-                            <hr>
-                            {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
-                        </div>
+            {% for equipe in liste_equipes %}
+                <div class="row">
+                    <div class="col">
+                        <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }}
+                        {% if is_granted('ROLE_PROF' ) %}
+                            <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
+                        {% endif %}
+                        {% if equipe.inscrite== false %}
+                            <div class="inscritered"><i>(Equipe non inscrite)</i></div>
+                        {% endif %}
+                        <hr>
+                        {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
+                    </div>
 
-                        <div class="col">
-
-
-                                <a class="btn btn-primary"
-                                   href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
-                                    cette équipe</a>
+                    <div class="col">
 
 
-                        </div>
+                        <a class="btn btn-primary"
+                           href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
+                            cette équipe</a>
+
 
                     </div>
-                    <hr>
-                {% endfor %}
+
+                </div>
+                <hr>
+            {% endfor %}
 
         {% endif %}
         {% if   phase =='national' %}
             {% set concours='cn' %}
-
-                {% for equipe in liste_equipes %}
-                    <div class="row">
-                        <div class="col">
-                            {% if   equipe.lettre!=null %} <b> {{ equipe.lettre }}</b>  {% else %}
-                                <b>{{ equipe.numero }}</b>{% endif %}
-                            - {{ equipe.titreProjet }}
-                            {% if is_granted('ROLE_PROF') %}
-                                <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
-                            {% endif %}
-
-                        </div>
-
-                        <div class="col">
-
-                            {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
-                            {% if (choix=='liste_prof') or (choix=='liste_cn_comite') %}
-                                <a class="btn btn-primary"
-                                   href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
-                                    cette équipe</a>
-                            {% endif %}
-
-
-                        </div>
+            {% if date()<app.session.get('edition').dateouverturesite and date()>app.session.get('editionN1').concourscn and liste_equipes!=null %}
+                <div class="row">
+                    <div class="col">
+                        <p style="color:red; text-align: center">Equipes de la précédente édition</p>
+                    </div>
+                </div>
+            {% endif %}
+            {% for equipe in liste_equipes %}
+                <div class="row">
+                    <div class="col">
+                        {% if   equipe.lettre!=null %} <b> {{ equipe.lettre }}</b>  {% else %}
+                            <b>{{ equipe.numero }}</b>{% endif %}
+                        - {{ equipe.titreProjet }}
+                        {% if is_granted('ROLE_PROF') %}
+                            <h8><i> (Lycee {{ equipe.uaiId.nom }}, {{ equipe.uaiId.commune }})</i></h8>
+                        {% endif %}
 
                     </div>
-                    <hr>
-                {% endfor %}
+
+                    <div class="col">
+
+                        {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
+                        {% if (choix=='liste_prof') or (choix=='liste_cn_comite') %}
+                            <a class="btn btn-primary"
+                               href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">Choisir
+                                cette équipe</a>
+                        {% endif %}
+
+
+                    </div>
+
+                </div>
+                <hr>
+            {% endfor %}
 
         {% endif %}
     </div>
     {% if app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
         <div class="table">
             <tr>
-                <td> {% if date()< app.session.get('edition').dateclotureinscription and date()>=app.session.get('dateouverturesite')%}
+                <td> {% if date()< app.session.get('edition').dateclotureinscription and date()>=app.session.get('edition').dateouverturesite %}
                         <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}"
                            title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
                     {% endif %}
@@ -132,7 +139,7 @@
             <tr>
                 <td>
                     {% if liste_equipes!=null %}
-                         {% if  date()<= app.session.get('edition').concourscn and date()>app.session.get('edition').dateouverturesite%}
+                        {% if  date()<= app.session.get('edition').concourscn and date()>app.session.get('edition').dateouverturesite %}
                             <a type="button" class="btn btn-warning"
                                href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
                                aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
@@ -143,22 +150,29 @@
                         {% endif %}
                         {% if ((date()> app.session.get('edition').concourscia) and (date()< app.session.get('edition').concourscn)) %}
                             <a type="button" class="btn btn-warning"
-                               href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
-                               title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
+                               href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button"
+                               aria-pressed="true"
+                               title="Déposer des photos du concours national">Déposer des photos des équipes du
+                                concours national</a>
                             <a type="button" class="btn btn-info"
                                href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
-                               role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
+                               role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer
+                                les
                                 photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
 
                         {% endif %}
-                        {%if date()>app.session.get('editionN1').concourscn and date()<app.session.get('edition').dateouverturesite  %}
-                        <a type="button" class="btn btn-warning"
-                           href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true"
-                           title="Déposer des photos du concours national">Déposer des photos des équipes du concours national</a>
-                        <a type="button" class="btn btn-info"
-                           href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('editionN1').id~'-prof-1'}) }}"
-                           role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les
-                            photos des épreuves nationales de la {{ app.session.get('editionN1').ed }}<sup>e</sup></a>
+                        {% if date()>app.session.get('editionN1').concourscn and date()<app.session.get('edition').dateouverturesite %}
+                            <a type="button" class="btn btn-warning"
+                               href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button"
+                               aria-pressed="true"
+                               title="Déposer des photos du concours national">Déposer des photos des équipes du
+                                concours national</a>
+                            <a type="button" class="btn btn-info"
+                               href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('editionN1').id~'-prof-1'}) }}"
+                               role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer
+                                les
+                                photos des épreuves nationales de la {{ app.session.get('editionN1').ed }}
+                                <sup>e</sup></a>
                         {% endif %}
 
 
@@ -225,7 +239,7 @@
     {% endif %}
     {% if app.session.get('info')!='' %}
         {{ include('modales/modale_info.html.twig') }}
-       {% endif %}
+    {% endif %}
     {{ app.session.set('info','') }}
 
 

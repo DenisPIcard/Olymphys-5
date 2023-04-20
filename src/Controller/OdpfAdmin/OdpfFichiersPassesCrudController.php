@@ -360,7 +360,7 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
     }
 
-    #[Route("/Admin/FichiersequipesCrud/setPublie", name: 'setPublie')]//fonction outil qui disparaîtra très vite dès après sa première utilisation sur le site
+    #[Route("/Admin/FichiersPassesCrud/setPublie", name: 'setPublie')]//fonction outil qui disparaîtra très vite dès après sa première utilisation sur le site
     public function setPublie()
     {
         $listeFichiersPublies = $this->doctrine->getRepository(OdpfFichierspasses::class)

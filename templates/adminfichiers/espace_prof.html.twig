@@ -13,7 +13,13 @@
 {% block titre3 %}
 
     <div class="text-center">
-        {{ app.session.get('edition').ed }}<sup>e</sup> édition :
+        {% if date()<app.session.get('edition').dateouverturesite and date()>app.session.get('editionN1').concourscn %}
+            <div style="color :grey ">Equipe de la précédente {{ app.session.get('editionN1').ed }}<sup>e</sup> édition
+                :
+            </div>
+        {% else %}
+            {{ app.session.get('edition').ed }}<sup>e</sup> édition :
+        {% endif %}
         {% if concours =='interacadémique' %}
             Concours interacadémique <br>
             {% if centre != null %}
@@ -23,7 +29,14 @@
         {% if concours =='national' %}
             Concours national<br>
         {% endif %}
-        <h4> Equipe "{{ equipe.titreProjet }}" du lycée {{ equipe.uaiId.nom }} de {{ equipe.uaiId.commune }}</h4>
+        {% if date()<app.session.get('edition').dateouverturesite and date()>app.session.get('editionN1').concourscn %}
+            <h4>
+                <div style="color:#7c7c7c"> Equipe "{{ equipe.titreProjet }}" du lycée {{ equipe.uaiId.nom }}
+                    de {{ equipe.uaiId.commune }}</div>
+            </h4>
+        {% else %}
+            <h4> Equipe "{{ equipe.titreProjet }}" du lycée {{ equipe.uaiId.nom }} de {{ equipe.uaiId.commune }}</h4>
+        {% endif %}
         <br>
     </div>
 
@@ -84,9 +97,12 @@
         {% if app.user.roles|filter(v => v =='ROLE_PROF') %}
             <div class="row">
                 <div class="col">
+                    {% if date()<app.session.get('edition').dateouverturesite and date()>app.session.get('editionN1').concourscn %}
 
-                    <a href="{{ path('inscrire_equipe', {'idequipe': equipe.id} ) }}" type="button"
-                       class="btn btn-primary">Modifier </a>
+                    {% else %}
+                        <a href="{{ path('inscrire_equipe', {'idequipe': equipe.id} ) }}" type="button"
+                           class="btn btn-primary">Modifier </a>
+                    {% endif %}
                 </div>
                 <div class="col">
                     {% if is_granted('ROLE_PROF') %}

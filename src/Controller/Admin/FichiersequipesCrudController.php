@@ -12,6 +12,7 @@ use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
+use App\Entity\Odpf\OdpfFichierspasses;
 use App\Service\OdpfRempliEquipesPassees;
 use App\Service\valid_fichiers;
 use DateTime;
@@ -242,6 +243,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             $typefichier = $this->requestStack->getSession()->get('typefichier');
 
         }
+
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
             ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId])
             ->createAsGlobalAction();
@@ -271,9 +273,6 @@ class FichiersequipesCrudController extends AbstractCrudController
                 return $action->setLabel('Nouveau fichier')->setHtmlAttributes(['typefichier' => $this->requestStack->getCurrentRequest()->getSession()->get('typefichier')]);
             })
             ->add(Crud::PAGE_INDEX, $telechargerUnFichier)
-            //->add(Crud::PAGE_INDEX, $newFichier)
-
-            //->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
 
 
@@ -443,16 +442,16 @@ class FichiersequipesCrudController extends AbstractCrudController
             $numtypefichier = $this->requestStack->getSession()->get('typefichier');
 
         }
-        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-            ->select()->andWhere('e.edition =:edition')
-            ->andWhere('e.selectionnee =:selectionnee ')
-            ->andWhere('e.numero <:value')
+        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('eq')
+            ->select()->andWhere('eq.edition =:edition')
+            ->andWhere('eq.selectionnee =:selectionnee ')
+            ->andWhere('eq.numero <:value')
             ->setParameter('value', 100)
             ->setParameter('edition', $edition)
             ->setParameter('selectionnee', $this->requestStack->getSession()->get('concours'))
-            ->addOrderBy('e.edition', 'DESC')
-            ->addOrderBy('e.lettre', 'ASC')
-            ->addOrderBy('e.numero', 'ASC')
+            ->addOrderBy('eq.edition', 'DESC')
+            ->addOrderBy('eq.lettre', 'ASC')
+            ->addOrderBy('eq.numero', 'ASC')
             ->getQuery()->getResult();
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions([
@@ -645,10 +644,10 @@ class FichiersequipesCrudController extends AbstractCrudController
 
 
         }
-        $qb->leftJoin('entity.equipe', 'e');
+        $qb->leftJoin('entity.equipe', 'eq');
         if ((($typefichier == 4) or ($typefichier == 8)) and ($concours == 1)) {//affiche uniquement les fiches sécurité expo et oral des équipes sélectionnées pour le choix du concours national
 
-            $qb->andWhere('e.selectionnee = TRUE')
+            $qb->andWhere('eq.selectionnee = TRUE')
                 ->orWhere('entity.typefichier =:value')
                 ->setParameter('value', 8);;
         } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours
@@ -661,27 +660,27 @@ class FichiersequipesCrudController extends AbstractCrudController
             $qb->resetDQLPart('orderBy');
             $sort = $_REQUEST['sort'];
             if (key($sort) == 'equipe.lettre') {
-                $qb->addOrderBy('e.lettre', $sort['equipe.lettre']);
+                $qb->addOrderBy('eq.lettre', $sort['equipe.lettre']);
             }
             if (key($sort) == 'equipe.numero') {
-                $qb->addOrderBy('e.numero', $sort['equipe.numero']);
+                $qb->addOrderBy('eq.numero', $sort['equipe.numero']);
             }
             if (key($sort) == 'fichier') {
                 $qb->addOrderBy('entity.fichier', $sort['fichier']);
             }
 
             if (key($sort) == 'equipe.titreProjet') {
-                $qb->addOrderBy('e.titreProjet', $sort['equipe.titreProjet']);
+                $qb->addOrderBy('eq.titreProjet', $sort['equipe.titreProjet']);
             }
             if (key($sort) == 'updatedat') {
                 $qb->addOrderBy('entity.updatedAt', $sort['updatedat']);
             }
         } else {
             if ($concours == 0) {
-                $qb->addOrderBy('e.numero', 'ASC');
+                $qb->addOrderBy('eq.numero', 'ASC');
             }
             if ($concours == 1) {
-                $qb->addOrderBy('e.lettre', 'ASC');
+                $qb->addOrderBy('eq.lettre', 'ASC');
             }
 
 
@@ -912,5 +911,6 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
     }
+
 
 }
