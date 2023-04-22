@@ -274,7 +274,7 @@ class UtilisateurController extends AbstractController
                     $session->set('supr_eleve', null);
 
                     if ($modif == false) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                        $mailer->sendConfirmeInscriptionEquipe($equipe, $user, $modif, $checkChange);
 
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }

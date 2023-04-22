@@ -112,21 +112,26 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, UserInterface $user, $modif, $checkChange): Email
+    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, $user, $modif, $checkChange): Email
     {
+
         if (!$modif) {
-            $email = (new Email())
+            $email = (new TemplatedEmail())
                 ->from('info@olymphys.fr')
                 ->to('webmestre2@olymphys.fr') //'webmestre2@olymphys.fr', 'Denis'
                 ->cc($user->getEmail())
                 ->addCc('webmestre3@olymphys.fr')
                 ->addCc('emma.gosse@orange.fr')
+                ->htmlTemplate('email/confirme_inscription.html.twig')
                 ->subject('Inscription de l\'équipe  ' . $equipe->getNumero() . ' par ' . $user->getPrenomNom())
-                ->html('Bonjour<br>
-                            Nous confirmons que ' . $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
-                    '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a inscrit une nouvelle équipe denommée : ' . $equipe->getTitreProjet() .
-                    '<br>Veuillez prendre connaissance de la fiche sécurité disponible dans votre espace pour vérifier que les expériences de votre projet sont conformes aux exigences de sécurité imposées dans un établissement scolaire
-                     <br>Le comité national des Olympiades de Physique');
+                ->context(['equipe' => $equipe, 'userNom' => $user->getPrenomNom(), 'userMail' => $user->getEmail()]);
+            /* ->attachFromPath('docequipes/30-fiche matériel-sécurité.doc');
+         ->html('Bonjour<br>
+                     Nous confirmons que ' . $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
+             '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a inscrit une nouvelle équipe denommée : ' . $equipe->getTitreProjet() .
+             '<br>Veuillez prendre connaissance de la fiche sécurité disponible dans votre espace pour vérifier que les expériences de votre projet sont conformes aux exigences de sécurité imposées dans un établissement scolaire
+              <br>Le comité national des Olympiades de Physique');
+         */
         }
         if ($modif) {
             $changetext = '';
