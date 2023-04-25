@@ -57,12 +57,12 @@ class OdpfListeEquipes
             ->getResult();
         foreach ($listEquipes as $equipe) {
             $numero = $equipe->getNumero();
-            $rne = $equipe->getUai();
-            $lycee[$numero] = $repositoryUai->findBy(['rne'=>$rne]);
+            $uai = $equipe->getUai();
+            $lycee[$numero] = $repositoryUai->findBy(['uai' => $uai]);
             $idprof1 = $equipe->getIdProf1();
-            $prof1[$numero] = $repositoryUser->findBy(['id'=>$idprof1]);
+            $prof1[$numero] = $repositoryUser->findBy(['id' => $idprof1]);
             $idprof2 = $equipe->getIdProf2();
-            $prof2[$numero] = $repositoryUser->findBy(['id'=>$idprof2]);
+            $prof2[$numero] = $repositoryUser->findBy(['id' => $idprof2]);
 
         }
         //dd($listEquipes);
@@ -100,7 +100,6 @@ class OdpfListeEquipes
             ];
         }
     }
-
 
 
 }

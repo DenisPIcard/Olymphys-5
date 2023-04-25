@@ -1,27 +1,97 @@
 {# email/confirm_fichier.html.twig #}
-{% apply inky_to_html %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Un fichier a été déposé</title>
-</head>
-<body>
-<p>
-    Bonjour Webmestre, <br>
-    {{ user=  app.session.get('user') }}
-    {{ user.nom }}  {{ user.prenom }} de l'équipe {{ equipe.numero }} a déposé
-    {% if typefichier=='memoire' %} le mémoire
-    {% endif %}
-    {% if typefichier=='annexe' %} l'annexe
-    {% endif %}
-    {% if typefichier=='resume' %} le résumé
-    {% endif %}
-    {% if typefichier=='fiche_secur' %} la fiche sécurité
-    {% endif %}
-    : <br>{{ fichier }} .
+{% apply inline_css %}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+            font-family: Helvetica, Arial, sans-serif;
+        }
 
-    <br>
-</p>
-</body>
-</html>
+        h1 {
+            background-color: #264459;
+            color: #ffffff;
+            padding: 30px 0 50px 0;
+            font-weight: normal;
+        }
+
+        hr {
+            border: none;
+            border-top: 3px solid #264459;
+            margin: 20px;
+        }
+
+        .container {
+            background-color: #fefefe;
+            width: 580px;
+            margin: 0 auto;
+        }
+
+        .bottom {
+            background-color: #efefee;
+        }
+
+        .block {
+            margin: 0;
+            padding: 10px 20px 20px 20px;
+        }
+
+        {#  .logo {
+             width: 100%;
+        }#}
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #264459;
+            color: #fefefe;
+            border: 1px solid #fff;
+            border-radius: 3px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+    <div class="body">
+        <div class="container">
+            <div class="header text-left">
+                <a href="{{ url('core_home') }}">
+                    <img src="{{ email.image('@images/logo.png') }}" class="logo" width="50"
+                         alt="Logo Odpf">
+                </a>
+            </div>
+            <div class="content">
+                Bonjour Webmestre, <br>
+                {{ set user =  app.session.get('user') }}
+                {{ user.nom }}  {{ user.prenom }} de l'équipe {{ equipe.numero }} a déposé
+                {% if typefichier=='mémoire' %} le mémoire
+                {% elseif typefichier=='annexe' %} l'annexe
+                {% elseif  typefichier=='résume' %} le résumé
+                {% elseif  typefichier=='fiche securité(présentation)' %} la fiche sécurité de l'exposé
+                {% elseif  typefichier=='autorisations' %} une autorisation photo
+                {% elseif typefichier=='diaporama(cn)' %} la présentation
+                {% elseif typefichier=='diaporama(cia)' %} le diaporama des cia
+                {% elseif typefichier=='questionnaire' %} le questionnaire des cia
+                {% elseif typefichier=='fiche sécurité(exposition)' %} la fiche sécurité de l'exposition publique
+                {% endif %}
+                .
+                <br>
+                <br>
+                <div class="footer">
+                    <p class="block">
+                        À bientôt,<br><br>
+                        L'équipe d'<em>Olymphys</em>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endapply %}

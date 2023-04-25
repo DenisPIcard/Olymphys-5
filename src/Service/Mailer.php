@@ -74,14 +74,16 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendConfirmFile(Equipesadmin $equipe, $type_fichier): Email
+    public function sendConfirmFile($equipe, $type_fichier): TemplatedEmail
     {
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
             ->to('webmestre2@olymphys.fr')//'webmestre2@olymphys.fr', 'Denis'
             ->addCc('webmestre3@olymphys.fr')
+            ->htmlTemplate('email/confirm_fichier.html.twig')
             ->subject('Depot du fichier ' . $type_fichier . 'de l\'équipe ' . $equipe->getInfoequipe())
-            ->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier);
+            //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
+            ->context(['equipe' => $equipe, 'typeFichier' => $type_fichier]);
 
         $this->mailer->send($email);
         return $email;

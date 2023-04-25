@@ -17,6 +17,7 @@ use App\Entity\Uai;
 use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Form\ToutfichiersType;
+use App\Service\Mailer;
 use App\Service\valid_fichiers;
 use datetime;
 use Doctrine\ORM\NonUniqueResultException;
@@ -40,6 +41,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Twig\Environment;
 use ZipArchive;
 
 class FichiersController extends AbstractController
@@ -171,7 +173,7 @@ class FichiersController extends AbstractController
 
     #[Isgranted('ROLE_PROF')]
     #[Route("/fichiers/charge_fichiers, {infos}", name: "fichiers_charge_fichiers")]
-    public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, ValidatorInterface $validator)
+    public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, Mailer $mailler, ValidatorInterface $validator)
     {
         $session = $this->requestStack->getSession();
         $repositoryFichiersequipes = $this->doctrine
@@ -444,14 +446,14 @@ class FichiersController extends AbstractController
             }
             try {
                 if ($equipe->getRetiree() != true) {
-
                     $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+                    //$mailler->sendConfirmFile($equipe, $type_fichier);
                 } else {
                     if (($type_fichier == 'mémoire') or ($type_fichier == 'annexe')) {
 
                         $this->MailAvertissement($mailer, $type_fichier, $equipe);
                     } else {
-                        $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+                        $mailler->sendConfirmFile($equipe, $type_fichier);
 
                     }
 
@@ -610,13 +612,14 @@ class FichiersController extends AbstractController
             ->to('webmestre2@olymphys.fr')
             ->addCc('webmestre3@olymphys.fr');
 
-        if ($type_fichier == 'autorisation') {
+        if ($type_fichier == 'autorisations') {
             $email->addCc('gilles.pauliat@institutoptique.fr');
         }
         $email->subject('Depot du ' . $type_fichier . ' de ' . $info_equipe)
             ->text($info_equipe . ' a déposé un fichier : ' . $type_fichier . '.');
 
         $mailer->send($email);
+
 
     }
 
