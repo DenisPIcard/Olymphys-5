@@ -12,7 +12,7 @@ parameters:
   app.path.tempdirectory: '%kernel.project_dir%/public/temp'
   app.path.thumbtmp: '%kernel.project_dir%/public/upload/images/tmp'
   type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaire','fichessecur' ]
-  type_fichier_lit: [ 'mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité(présentation)','diaporama(pour les cia)','autorisation','questionnairen','fichesecurité(exposition)' ]
+  type_fichier_lit: [ 'mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité(présentation)','diaporama(pour les cia)','autorisation','questionnaire','fichesecurité(exposition)' ]
   fichier_acces: [ 'prive','publie' ]
   app.path.fichiers: '%kernel.project_dir%/public/fichiers'
   #à changer en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé

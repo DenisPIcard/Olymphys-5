@@ -69,18 +69,18 @@
             </div>
             <div class="content">
                 Bonjour Webmestre, <br>
-                {{ set user =  app.session.get('user') }}
-                {{ user.nom }}  {{ user.prenom }} de l'équipe {{ equipe.numero }} a déposé
-                {% if typefichier=='mémoire' %} le mémoire
-                {% elseif typefichier=='annexe' %} l'annexe
-                {% elseif  typefichier=='résume' %} le résumé
-                {% elseif  typefichier=='fiche securité(présentation)' %} la fiche sécurité de l'exposé
-                {% elseif  typefichier=='autorisations' %} une autorisation photo
-                {% elseif typefichier=='diaporama(cn)' %} la présentation
-                {% elseif typefichier=='diaporama(cia)' %} le diaporama des cia
-                {% elseif typefichier=='questionnaire' %} le questionnaire des cia
-                {% elseif typefichier=='fiche sécurité(exposition)' %} la fiche sécurité de l'exposition publique
-                {% endif %}
+                <br>
+                <br>
+                {{ userNom }} de l'équipe {{ equipe.numero }}({{ equipe.titreProjet }}) a déposé
+                {% if typeFichier=='mémoire' %} le mémoire {% endif %}
+                {% if typeFichier=='annexe' %} l'annexe {% endif %}
+                {% if  typeFichier=='résume' %} le résumé {% endif %}
+                {% if  typeFichier=='fiche securité' %} la fiche sécurité de l'exposé {% endif %}
+                {% if  typeFichier=='autorisations' %} une autorisation photo {% endif %}
+                {% if typeFichier=='diaporama(cn)' %} la présentation {% endif %}
+                {% if typeFichier=='diaporama(cia)' %} le diaporama des cia {% endif %}
+                {% if typeFichier=='questionnaire' %} le questionnaire des cia {% endif %}
+                {% if typeFichier=='fiche sécurité(exposition)' %} la fiche sécurité de l'exposition publique {% endif %}
                 .
                 <br>
                 <br>

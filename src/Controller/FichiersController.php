@@ -173,7 +173,7 @@ class FichiersController extends AbstractController
 
     #[Isgranted('ROLE_PROF')]
     #[Route("/fichiers/charge_fichiers, {infos}", name: "fichiers_charge_fichiers")]
-    public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, Mailer $mailler, ValidatorInterface $validator)
+    public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, Mailer $service_mailer_, ValidatorInterface $validator)
     {
         $session = $this->requestStack->getSession();
         $repositoryFichiersequipes = $this->doctrine
@@ -446,14 +446,16 @@ class FichiersController extends AbstractController
             }
             try {
                 if ($equipe->getRetiree() != true) {
-                    $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
-                    //$mailler->sendConfirmFile($equipe, $type_fichier);
+
+                    //$this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+                    $service_mailer_->sendConfirmFile($equipe, $type_fichier, $this->getUser());
                 } else {
                     if (($type_fichier == 'mémoire') or ($type_fichier == 'annexe')) {
 
                         $this->MailAvertissement($mailer, $type_fichier, $equipe);
                     } else {
-                        $mailler->sendConfirmFile($equipe, $type_fichier);
+                        //$this->MailConfirmation($mailer, $type_fichier, $info_equipe);
+                        $service_mailer_->sendConfirmFile($equipe, $type_fichier, $this->getUser());
 
                     }
 
