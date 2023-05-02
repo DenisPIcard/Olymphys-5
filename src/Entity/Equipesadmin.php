@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Cia\JuresCia;
+use App\Entity\Cia\NotesCia;
 use App\Repository\EquipesadminRepository;
 use DateTime;
 use Doctrine\Common\Collections\Collection;
@@ -81,7 +83,7 @@ class Equipesadmin
     private ?string $partenaire = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTime $createdAt = null;
+    private ?DateTime $createdAt;
 
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -109,11 +111,16 @@ class Equipesadmin
     private ?string $description = null;
 
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $nbNotes = null;
+
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
         $this->idProf2 = null;
         $this->selectionnee = false;
+        $this->juresCia = new ArrayCollection();
+        $this->notess = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -553,4 +560,15 @@ class Equipesadmin
     }
 
 
+    public function getNbNotes(): ?int
+    {
+        return $this->nbNotes;
+    }
+
+    public function setNbNotes(?int $nbNotes): self
+    {
+        $this->nbNotes = $nbNotes;
+
+        return $this;
+    }
 }

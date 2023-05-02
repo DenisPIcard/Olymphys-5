@@ -14,7 +14,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: OdpfLogosRepository::class)]
-
 class OdpfLogos
 {
     #[ORM\Id]
@@ -26,15 +25,15 @@ class OdpfLogos
     private ?string $nom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $lien=null;
+    private ?string $lien = null;
 
-    #[ORM\Column(nullable:true)]
-    private ?DateTime $updatedAt=null;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt = null;
 
-    #[ORM\Column(nullable:true)]
-    private ?DateTime $createdAt=null;
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $createdAt = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private ?bool $en_service = true;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -43,11 +42,11 @@ class OdpfLogos
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[Vich\UploadableField(mapping:"odpfLogos", fileNameProperty:"image")]
+    #[Vich\UploadableField(mapping: "odpfLogos", fileNameProperty: "image")]
     private ?File $imageFile = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type= null;
+    private ?string $type = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $choix = null;
@@ -96,7 +95,7 @@ class OdpfLogos
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): self
+    public function setCreatedAt(?DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 

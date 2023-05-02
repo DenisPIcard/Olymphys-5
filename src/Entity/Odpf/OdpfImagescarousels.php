@@ -22,19 +22,19 @@ class OdpfImagescarousels
     private ?string $name = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTime $updatedAt= null;
+    private ?DateTime $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTime $createdAt = null;
+    private ?DateTime $createdAt;
 
     #[ORM\Column(nullable: true)]
-    private ?string $coment= null;
+    private ?string $coment = null;
 
-   #[Vich\UploadableField(mapping:"odpfImagescarousels", fileNameProperty:"name")]
+    #[Vich\UploadableField(mapping: "odpfImagescarousels", fileNameProperty: "name")]
     private ?File $imageFile = null;
 
 
-    #[ORM\ManyToOne(targetEntity:OdpfCarousels::class,inversedBy: 'images')]
+    #[ORM\ManyToOne(targetEntity: OdpfCarousels::class, inversedBy: 'images')]
     private ?Odpfcarousels $carousel;
 
     #[ORM\Column(nullable: true)]
@@ -87,7 +87,7 @@ class OdpfImagescarousels
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): self
+    public function setCreatedAt(?DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 

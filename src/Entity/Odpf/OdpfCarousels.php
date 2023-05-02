@@ -3,12 +3,13 @@
 namespace App\Entity\Odpf;
 
 use App\Repository\Odpf\OdpfCarouselsRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
-#[ORM\Entity(repositoryClass:OdpfCarouselsRepository::class)]
+#[ORM\Entity(repositoryClass: OdpfCarouselsRepository::class)]
 class OdpfCarousels
 {
     #[ORM\Id]
@@ -20,10 +21,10 @@ class OdpfCarousels
     private ?string $name = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTime $updatedAt;
+    private ?DateTime $updatedAt;
 
     #[ORM\Column(nullable: true)]
-    private \DateTime $createdAt;
+    private ?DateTime $createdAt;
 
     #[ORM\Column(nullable: true)]
     private ?bool $blackbgnd = null;
@@ -43,7 +44,7 @@ class OdpfCarousels
     public function __construct()
     {
         $this->images = new ArrayCollection();
-        $this->createdAt = new \DateTime('now');
+        $this->createdAt = new DateTime('now');
         $this->blackbgnd = false;
     }
 
@@ -76,24 +77,24 @@ class OdpfCarousels
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(?DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
