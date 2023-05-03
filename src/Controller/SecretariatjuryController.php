@@ -31,6 +31,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -670,7 +671,7 @@ class SecretariatjuryController extends AbstractController
                 $em->persist($cadeau);
                 $em->flush();
 
-                if ($cadeau->getEquipe())===null {
+                if ($cadeau->getEquipe() === null) {
                     $equipe->setCadeau(NULL);
                 }
 

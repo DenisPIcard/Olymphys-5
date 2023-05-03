@@ -341,54 +341,37 @@ class SecretariatjuryCiaController extends AbstractController
         $em->flush();
 
 
-        $content = $this->renderView('secretariatjury/classement_definitif.html.twig',
+        $content = $this->renderView('secretariatjuryCia/classement_definitif.html.twig',
             array('classement' => $classement,)
         );
         return new Response($content);
 
     }
 
-    #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/mise_a_zero", name: "secretariatjuryCia_mise_a_zero")]
-    public function RaZ(): Response
-    {
-        $em = $this->doctrine->getManager();
-        $repositoryEquipes = $em->getRepository(Equipesadmin::class);
-
-
-        $ListeEquipes = $repositoryEquipes->findAll();
-
-        foreach ($ListeEquipes as $equipe) {
-            $equipe->setPrix(null);
-            $em->persist($equipe);
-        }
-
-
-        $em->flush();
-        $content = $this->renderView('secretariatjury/RaZ.html.twig');
-        return new Response($content);
-    }
 
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/secretariatjuryCia/creeJure", name: "secretariatjuryCia_CreeJure")]
     public function creeJure(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer): Response    //Creation du juré par l'organisateur cia
     {
         $orgacia = $this->getUser();
+        dd($orgacia);
         $slugger = new AsciiSlugger();
         $repositoryUser = $this->doctrine->getRepository(User::class);
-        $form = $this->createForm('jurecia')
+        $jureCia = new JuresCia();
+        $form = $this->createFormBuilder($jureCia)
             ->add('email', EmailType::class)
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
+            ->add('nomJure', TextType::class)
+            ->add('prenomJure', TextType::class)
             ->add('valider', SubmitType::class)
-            ->add('annuler', SubmitType::class);
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('valider')->isClicked()) {
-                $jureCia = new JuresCia();
+
                 $email = $form->get('email')->getData();
-                $nom = $form->get('nom')->getData();
-                $prenom = $form->get('prenom')->getData();
-                $user = $repositoryUser->findBy(['email' => $email]);
+                $nom = $form->get('nomJure')->getData();
+                $prenom = $form->get('prenomJure')->getData();
+                $user = $repositoryUser->findOneBy(['email' => $email]);
                 if ($user === null) {
                     $user = new User();
                     $user->setNom($nom);
@@ -397,21 +380,24 @@ class SecretariatjuryCiaController extends AbstractController
                     $user->setPassword($passwordEncoder->hashPassword($user, $prenom));
                     $this->doctrine->getManager()->persist($user);
                     $this->doctrine->getManager()->flush();
+                    dump('OK1');
                     //Envoie d'un mail au Juré pour l'informer de ces identifiants
                 }
+
                 $jureCia->setIduser($user);
-                $jureCia->setNomJure($nom);
-                $jureCia->setPrenomJure($prenom);
-                $jureCia->setCentrecia($user->getCentrecia());
+                //$jureCia->setNomJure($nom);
+                //$jureCia->setPrenomJure($prenom);
+                $jureCia->setCentrecia($orgacia->getCentrecia());
                 $jureCia->setInitialesJure(strtoupper($slugger->slug($prenom[0]) . $slugger->slug($nom[0])));
+
                 $this->doctrine->getManager()->persist($jureCia);
                 $this->doctrine->getManager()->flush();
-                return $this->render('cyberJuryCia/accueil.html.twig');
+                return $this->redirectToRoute('cyberjuryCia_accueil');
             }
-            return $this->render('cyberJuryCia/accueil.html.twig');
+            return $this->render('cyberjuryCia/accueil.html.twig');
         }
 
-        return $this->render('cyberJuryCia/creejure.html.twig', ['form' => $form->createView()]);
+        return $this->render('cyberjuryCia/creejure.html.twig', ['form' => $form->createView()]);
 
 
     }

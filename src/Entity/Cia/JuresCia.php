@@ -5,10 +5,9 @@ namespace App\Entity\Cia;
 use App\Entity\Centrescia;
 use App\Entity\Equipesadmin;
 use App\Entity\User;
-use App\Repository\JuresCiaRepository;
+use App\Repository\Cia\JuresCiaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -40,6 +39,9 @@ class JuresCia
 
     #[ORM\ManyToOne]
     private ?Centrescia $centrecia = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
 
     /**
      * Constructor
@@ -205,6 +207,18 @@ class JuresCia
     public function setCentrecia(?Centrescia $centrecia): self
     {
         $this->centrecia = $centrecia;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

@@ -4,11 +4,11 @@ namespace App\Entity\Cia;
 
 use App\Entity\Coefficients;
 use App\Entity\Equipesadmin;
-use App\Repository\NotesRepository;
+use App\Repository\NotesCiaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: NotesRepository::class)]
+#[ORM\Entity(repositoryClass: NotesCiaRepository::class)]
 class NotesCia
 {
     #[ORM\Id]

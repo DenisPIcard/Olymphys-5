@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Cia;
 
 
 use App\Entity\Cia\JuresCia;
