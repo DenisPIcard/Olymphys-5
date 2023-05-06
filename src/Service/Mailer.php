@@ -176,5 +176,23 @@ class Mailer
 
     }
 
+    public function sendInscriptionJure($user, $jure)
+    {
+        $email = (new TemplatedEmail())
+            ->from('info@olymphys.fr')
+            ->to($jure->getEmail())//Pour prévenir le juré de son inscription
+            ->addCc('info@olymphys.fr')
+            ->addCc($user->getEmail())
+            ->htmlTemplate('email/confirm_jure.html.twig')
+            ->subject('Inscription d\'un nouveau juré')
+            //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
+            ->context(['user' => $user, 'userNom' => $user->getPrenomNom(), 'jure' => $jure->getPrenomNom()]);
+
+        $this->mailer->send($email);
+        return $email;
+
+
+    }
+
 
 }

@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\Cia\JuresCiaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -42,6 +43,9 @@ class JuresCia
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]//Tableau contenant l'Id des  équipes pour lesquelles le jurés est rapporteur
+    private ?array $rapporteur = [];
 
     /**
      * Constructor
@@ -219,6 +223,18 @@ class JuresCia
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getRapporteur(): ?array
+    {
+        return $this->rapporteur;
+    }
+
+    public function setRapporteur(?array $rapporteur): self
+    {
+        $this->rapporteur = $rapporteur;
 
         return $this;
     }
