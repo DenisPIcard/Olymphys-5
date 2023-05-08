@@ -80,14 +80,16 @@ class JuryCiaController extends AbstractController
         $progression = array();
         $memoires = array();
         $listeEquipes = $repositoryEquipes->createQueryBuilder('e')
-            ->addOrderBy('e.ordre', 'ASC')
+            ->where('e.edition =:edition')
+            ->setParameter('edition', $edition)
+            ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
         foreach ($listeEquipes as $equipe) {
 
             foreach ($equipes as $equipejure) {
 
                 if ($equipejure == $equipe) {
-
+                    $key = $equipe->getNumero();
                     $id = $equipe->getId();
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id);
                     $progression[$key] = (!is_null($note)) ? 1 : 0;
@@ -98,7 +100,7 @@ class JuryCiaController extends AbstractController
                             ->setParameter('edition', $edition)
                             ->andWhere('m.typefichier = 0')
                             ->andWhere('m.equipe =:equipe')
-                            ->setParameter('equipe', $equipe->getEquipeinter())
+                            ->setParameter('equipe', $equipe)
                             ->getQuery()->getSingleResult();
                     } catch (Exception $e) {
                         $memoires[$key] = null;
@@ -107,7 +109,7 @@ class JuryCiaController extends AbstractController
             }
         }
 
-        $content = $this->renderView('cyberjury/accueil.html.twig',
+        $content = $this->renderView('cyberjuryCia/accueil_jury.html.twig',
             array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
         );
 
@@ -198,19 +200,19 @@ class JuryCiaController extends AbstractController
 
 
     #[IsGranted('ROLE_JURYCIA')]
-    #[Route("/evaluer_une_equipe_cia/{id}", name: "cyberjury_evaluer_une_equipe_cia", requirements: ["id_equipe" => "\d{1}|\d{2}"])]
+    #[Route("/evaluer_une_equipe_cia/{id}", name: "cyberjuryCia_evaluer_une_equipe", requirements: ["id_equipe" => "\d{1}|\d{2}"])]
     public function evaluer_une_equipe_cia(Request $request, Equipesadmin $equipe, $id): RedirectResponse|Response
     {
         $user = $this->getUser();
         $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
-        $repositoryEquipes = $this->doctrine
+        $repositoryNotes = $this->doctrine
             ->getManager()
-            ->getRepository(Equipes::class);
+            ->getRepository(NotesCia::class);
 
         $numero = $equipe->getNumero();
 
 
-        $attrib = $jure->getAttributions();
+        $attrib = $jure->getRapporteur();
 
         $em = $this->doctrine->getManager();
 
@@ -244,7 +246,7 @@ class JuryCiaController extends AbstractController
             $notes->setJure($jure);
             $progression = 0;
             $nllNote = true;
-            if ($attrib[$numero] == 1) {
+            if (in_array($equipe->getNumero(), $attrib)) {
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
                 $flag = 1;
             } else {
@@ -258,7 +260,7 @@ class JuryCiaController extends AbstractController
                 ->EquipeDejaNotee($jure, $id);
             $progression = 1;
             $nllNote = false;
-            if ($attrib[$numero] == 1) {
+            if (in_array($equipe->getNumero(), $attrib)) {
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
                 $flag = 1;
             } else {
@@ -275,7 +277,11 @@ class JuryCiaController extends AbstractController
             $total = $notes->getPoints();
             $notes->setTotal($total);
             if ($nllNote) {
-                $nbNotes = count($equipe->getNotess());
+                $notesequipe = $repositoryNotes->createQueryBuilder('n')
+                    ->where('n.equipe =:equipe')
+                    ->setParameter('equipe', $equipe)
+                    ->getQuery()->getResult();
+                $nbNotes = count($notesequipe);
 
                 $equipe->setNbNotes($nbNotes + 1);
                 $em->persist($equipe);

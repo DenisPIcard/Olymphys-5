@@ -91,7 +91,7 @@ class NotesType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'cyberjury_notes';
+        return 'cyberjuryCia_notes';
     }
 
 
