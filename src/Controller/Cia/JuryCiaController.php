@@ -55,16 +55,16 @@ class JuryCiaController extends AbstractController
             ->getRepository(JuresCia::class);
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+
         if ($jure === null) {
-            $request->getSession()
-                ->getFlashBag()->add('info', 'Vous avez été déconnecté');
+            $request->getSession()->set('info', 'Vous avez été déconnecté');
             return $this->redirectToRoute('core_home');
         }
 
 
         $id_jure = $jure->getId();
 
-        $attrib = $jure->getAttributions();
+        $equipes = $jure->getEquipes();
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
@@ -84,9 +84,9 @@ class JuryCiaController extends AbstractController
             ->getQuery()->getResult();
         foreach ($listeEquipes as $equipe) {
 
-            foreach ($attrib as $key => $value) {
+            foreach ($equipes as $equipejure) {
 
-                if ($equipe->getEquipeinter()->getNumero() == $key) {
+                if ($equipejure == $equipe) {
 
                     $id = $equipe->getId();
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id);

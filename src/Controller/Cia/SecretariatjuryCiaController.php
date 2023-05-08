@@ -17,6 +17,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -379,12 +380,14 @@ class SecretariatjuryCiaController extends AbstractController
                     $user->setNom($nom);
                     $user->setPrenom($prenom);
                     $user->setEmail($email);
+                    $user->setRoles(['ROLE_JURYCIA']);
+                    $user->getCentrecia($orgacia->getCentrecia());
                     $user->setUsername($slugger->slug($prenom[0]) . '_' . $slugger->slug($nom));
                     $user->setPassword($passwordEncoder->hashPassword($user, $prenom));
                     $this->doctrine->getManager()->persist($user);
                     $this->doctrine->getManager()->flush();
-                    $mailer->sendInscriptionJure($this->getUser(), $user);
-                    //Envoi d'un mail au Juré pour l'informer de ces identifiants
+                    $mailer->sendInscriptionUserJure($orgacia, $user, $prenom);
+
                 }
 
                 $jureCia->setIduser($user);
@@ -392,16 +395,18 @@ class SecretariatjuryCiaController extends AbstractController
                 //$jureCia->setPrenomJure($prenom);
                 $jureCia->setCentrecia($orgacia->getCentrecia());
                 if (str_contains($slugger->slug($prenom), '-')) {
-                    $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0] . explode('-', $slugger->slug($prenom))[1] . $slugger->slug($nom[0]));
+                    $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
                 } elseif (str_contains($slugger->slug($prenom), '_')) {
-                    $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0] . explode('-', $slugger->slug($prenom))[1] . $slugger->slug($nom[0]));
+                    $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
                 } else {
                     $initiales = strtoupper($slugger->slug($prenom[0]) . $slugger->slug($nom[0]));
                 }
+
                 $jureCia->setInitialesJure($initiales);
 
                 $this->doctrine->getManager()->persist($jureCia);
                 $this->doctrine->getManager()->flush();
+
                 return $this->redirectToRoute('cyberjuryCia_accueil');
             }
             return $this->render('cyberjuryCia/accueil.html.twig');
@@ -490,4 +495,80 @@ class SecretariatjuryCiaController extends AbstractController
 
     }
 
+    #[IsGranted('ROLE_ORGACIA')]
+    #[Route("/secretariatjuryCia/tableauexcel_repartition", name: "secretariatjuryCia_tableau excel_repartition")]
+    public function tableauexcel_repartition()
+    {
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()]);
+        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->where('e.centre =:centre')
+            ->andWhere('e.edition =:edition')
+            ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->getQuery()->getResult();
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("CIA-" . $this->getUser()->getCentrecia() . "-Tableau destiné aux organisateurs")
+            ->setSubject("Tableau destiné aux organisateurds")
+            ->setDescription("Office 2007 XLSX répartition des jurés")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V'] as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+        $ligne = 1;
+
+        $sheet
+            ->setCellValue('A' . $ligne, 'Prénom juré')
+            ->setCellValue('B' . $ligne, 'Nom juré')
+            ->setCellValue('C' . $ligne, 'Initiales');
+
+        $lettres = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'L', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        $i = 0;
+        foreach ($listeEquipes as $equipe) {
+
+            $sheet->setCellValue($lettres[$i] . $ligne, $equipe->getNumero());
+            $i = $i + 1;
+        }
+
+        $ligne += 1;
+        $styleArray = ['strikethrough' => 'on'];
+
+        foreach ($listejures as $jure) {
+            $equipesjure = $jure->getEquipes();
+            $sheet->setCellValue('A' . $ligne, $jure->getPrenomJure());
+            $sheet->setCellValue('B' . $ligne, $jure->getNomJure());
+            $sheet->setCellValue('C' . $ligne, $jure->getInitialesJure());
+            $i = 0;
+            foreach ($listeEquipes as $equipe) {
+                $sheet->setCellValue($lettres[$i] . $ligne, '*');
+                foreach ($equipesjure as $equipejure) {
+                    if ($equipejure == $equipe) {
+                        $sheet->setCellValue($lettres[$i] . $ligne, 'E');
+                        if (in_array($equipe->getNumero(), $jure->getRapporteur())) {
+                            $sheet->setCellValue($lettres[$i] . $ligne, 'R');
+                        }
+                    }
+                }
+                $i += 1;
+            }
+            $ligne += 1;
+        }
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $this->getUser()->getCentrecia() . '-répartition des jurés.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+        ob_end_clean();
+        $writer->save('php://output');
+
+    }
 }
