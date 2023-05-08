@@ -23,16 +23,16 @@ class JuresCia
     #[ORM\OneToOne]
     private ?User $iduser;
 
-    #[ORM\Column(length: 255, nullable: true, name: 'prenomJure')]
+    #[ORM\Column(name: 'prenomJure', length: 255, nullable: true)]
     private ?string $prenomJure = null;
 
-    #[ORM\Column(length: 255, nullable: true, name: 'nomJure')]
+    #[ORM\Column(name: 'nomJure', length: 255, nullable: true)]
     private ?string $nomJure = null;
 
-    #[ORM\Column(length: 3, nullable: true, name: 'initialesJure')]
+    #[ORM\Column(name: 'initialesJure', length: 3, nullable: true)]
     private ?string $initialesJure = null;
 
-    #[ORM\OneToMany(targetEntity: NotesCia::class, mappedBy: "jure")]
+    #[ORM\OneToMany(mappedBy: "jure", targetEntity: NotesCia::class)]
     private ?Collection $notesj;
 
     #[ORM\ManyToMany(targetEntity: equipesadmin::class, inversedBy: 'juresCia')]
@@ -65,7 +65,7 @@ class JuresCia
     /**
      * Get initialesJure
      *
-     * @return string
+     * @return string|null
      */
     public function getInitialesJure(): ?string
     {
@@ -92,7 +92,7 @@ class JuresCia
      *
      * @param NotesCia $notesj
      *
-     * @return JuresCia
+     * @return JuresCia|null
      */
     public function addNotesj(NotesCia $notesj): ?JuresCia
     {
@@ -107,9 +107,9 @@ class JuresCia
     /**
      * Get notesj
      *
-     * @return Collection
+     * @return ArrayCollection|Collection|null
      */
-    public function getNotesj()
+    public function getNotesj(): ArrayCollection|Collection|null
     {
         return $this->notesj;
     }
@@ -122,7 +122,7 @@ class JuresCia
     /**
      * Get nomJure
      *
-     * @return string
+     * @return string|null
      */
     public function getNomJure(): ?string
     {
@@ -132,7 +132,7 @@ class JuresCia
     /**
      * Set nomJure
      *
-     * @param string $nomJure
+     * @param string|null $nomJure
      *
      * @return JuresCia
      */
@@ -146,7 +146,7 @@ class JuresCia
     /**
      * Get prenomJure
      *
-     * @return string
+     * @return string|null
      */
     public function getPrenomJure(): ?string
     {
@@ -156,7 +156,7 @@ class JuresCia
     /**
      * Set prenomJure
      *
-     * @param string $prenomJure
+     * @param string|null $prenomJure
      *
      * @return JuresCia
      */

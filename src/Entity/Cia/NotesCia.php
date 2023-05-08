@@ -4,7 +4,7 @@ namespace App\Entity\Cia;
 
 use App\Entity\Coefficients;
 use App\Entity\Equipesadmin;
-use App\Repository\NotesCiaRepository;
+use App\Repository\Cia\NotesCiaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,7 +28,7 @@ class NotesCia
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $origin = 0;
 
-    #[ORM\Column(type: Types::SMALLINT, name: 'Wgroupe')]
+    #[ORM\Column(name: 'Wgroupe', type: Types::SMALLINT)]
     private ?int $wgroupe = 0;
 
     #[ORM\Column(type: Types::SMALLINT)]

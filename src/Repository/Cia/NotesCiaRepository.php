@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class NotesCiaRepository extends EntityRepository
 {
-    public function get_rangs($jure_id)
+    public function get_rangs($jure_id): array
     {
         $queryBuilder = $this->createQueryBuilder('n');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
 
