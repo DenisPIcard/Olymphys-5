@@ -1,0 +1,43 @@
+{% extends "base1.html.twig" %}
+{% block title %} Accueil Jury {% endblock %}
+
+
+
+{% block navigation %}
+
+    {{ include ('cyberjuryCia/navigation.html.twig') }}
+
+{% endblock %}
+{% block titre3 %} Mes équipes {% endblock %}
+
+{% block body %}
+    <div class="small">Dans l'ordre de passage</div>
+    {% for equipes in listeEquipes %}
+        {% if equipes.numero in progression|keys %}
+
+            {% set numero = equipes.numero %}
+            <p>
+                <a
+                        {% if (progression[numero]) %}  class="btn btn-outline-primary btn-lg"
+                        {% else %}class ="btn btn-primary btn-lg"
+                        {% endif %}
+                        href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': equipes.id} ) }}">{{ equipes.numero }}</a>
+                {{ equipes.titreProjet }}
+
+                {% for key,mem in memoires %}
+                    {% if key == numero %}
+                        {% if mem!=null %}
+                            <a href="{{ asset('/odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/memoires/'~ mem.fichier) }}"
+                               class="fas fa-book-reader"
+                               title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ path('cyberjuryCia_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                   title="En savoir plus sur cette équipe"> </a>
+
+            </p>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
