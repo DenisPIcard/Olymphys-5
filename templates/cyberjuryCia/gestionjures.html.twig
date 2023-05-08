@@ -1,0 +1,87 @@
+{% extends 'base1.html.twig' %}
+{% block navigation %}
+
+    {{ include ("cyberjuryCia/navigation.html.twig") }}
+{% endblock %}
+{% block titre3 %}
+    Gestion des jurés et de leur répartition
+{% endblock %}
+{% block body %}
+    <div style="width: 300px;background-color: #99f6e4">
+        vide : n'examine pas l'équipe<br>
+        E : examine l'équipe sans être rapporteur<br>
+        R : est rapporteur de l'équipe<br>
+    </div>
+    <div class="row">
+        <div class="col-1">
+            Prenom
+        </div>
+        <div class="col-1">
+            Nom
+        </div>
+        <div class="col-1">
+            Initiales
+        </div>
+        {% for equipe in listeEquipes %}
+            <div class="col-1">
+                {{ equipe.numero }}
+            </div>
+        {% endfor %}
+        <div>
+        </div>
+
+    </div>
+    {% for jure in listejures %}
+        {% set attribs = jure.rapporteur %}
+
+        <form id="form{{ jure.id }}">
+            <div class="form-row">
+                <input type="hidden" name="jure" id="{{ jure.id }}" value="{{ jure.id }}">
+                <div class="col-1">
+                    <label for="prenom{{ jure.id }}"></label>
+                    <input type="text" value="{{ jure.prenomJure }}" id="prenom{{ jure.id }}"
+                           name="prenom" style="width: 100px">
+
+                </div>
+                <div class="col-1">
+                    <label for="nom-{{ jure.id }}"></label>
+                    <input type="text" value="{{ jure.nomJure }}" id="nom{{ jure.id }}" name="nom"
+                           style="width:100px">
+                </div>
+                <div class="col-1">
+                    <label for="initiales{{ jure.id }}"></label>
+                    <input type="text" value="{{ jure.initialesJure }}" id="initiales{{ jure.id }}"
+                           name="initiales" style="width: 50px">
+                </div>
+                {% for equipe in listeEquipes %}
+                    {% if equipe not in jure.equipes %}
+                        {% set selected=['selected','',''] %}
+                    {% endif %}
+                    {% if equipe  in jure.equipes %}
+                        {% if equipe.numero  not in attribs %}
+                            {% set selected =['','selected',''] %}
+                        {% endif %}
+                        {% if equipe.numero  in attribs %}
+                            {% set selected =['','','selected'] %}
+                        {% endif %}
+                    {% endif %}
+                    <div class="col-1">
+                        <select id="equipe-{{ equipe.id }}" name="equipe-{{ equipe.id }}" style="width: 50px">
+
+                            <option {{ selected[0] }}></option>
+                            <option {{ selected[1] }}>E</option>
+                            <option {{ selected[2] }}>R</option>
+
+                        </select>
+                    </div>
+                {% endfor %}
+                <div class="col">
+                    <input class="btn btn-primary" type="submit" name="Valider" id="{{ jure.id }}">
+                </div>
+
+            </div>
+        </form>
+    {% endfor %}
+
+
+{% endblock %}

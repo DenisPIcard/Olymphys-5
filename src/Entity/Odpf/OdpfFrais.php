@@ -9,7 +9,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OdpfFraisRepository::class)]
-
 class OdpfFrais
 {
     #[ORM\Id]
@@ -20,12 +19,11 @@ class OdpfFrais
     #[ORM\OneToOne]
     private ?User $iduser;
 
-    #[ORM\Column(type : Types::DATETIME_MUTABLE)]
-    private DateTime $createdAt;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?DateTime $createdAt;
 
-    #[ORM\Column(type : Types::DATETIME_MUTABLE)]
-    private DateTime $dateFrais;
-
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?DateTime $dateFrais;
 
 
     public function getId(): ?int
@@ -51,7 +49,7 @@ class OdpfFrais
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): self
+    public function setCreatedAt(?DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -63,7 +61,7 @@ class OdpfFrais
         return $this->dateFrais;
     }
 
-    public function dateFrais(DateTime $dateFrais): self
+    public function dateFrais(?DateTime $dateFrais): self
     {
         $this->dateFrais = $dateFrais;
 

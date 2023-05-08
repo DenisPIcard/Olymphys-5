@@ -31,9 +31,9 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -652,7 +652,6 @@ class SecretariatjuryController extends AbstractController
                 $em = $this->doctrine->getManager();
                 $em->persist($equipe);
                 $cadeau = $equipe->getCadeau();
-                $cadeau->setEquipe($equipe);
                 $em->persist($cadeau);
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
@@ -1313,7 +1312,7 @@ class SecretariatjuryController extends AbstractController
                 $prix_nom = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
                 $prix->setPrix($prix_nom);
                 $equipe = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-                $prix->setAttribue($equipe);
+                $prix->setEquipe($equipe);
                 $voix = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
                 $prix->setVoix($voix);
                 $intervenant = $worksheet->getCellByColumnAndRow(6, $row)->getValue();

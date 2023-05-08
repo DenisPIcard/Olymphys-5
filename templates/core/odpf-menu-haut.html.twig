@@ -26,13 +26,14 @@
                         <a class="dropdown-item login py-0" href="{{ path('admin') }}">Tableau de bord Concours</a>
                         {# le chemin admin est la rout de l'Admin Concours (src/Controller/Admin/DahboardController.php) #}
                         <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord Site</a>
-                        {#  odpfadmin est la route de  src/Controller/OdpfAdmin/OdpfDashboardController.php#}
+                        {#  odpfadmin est la route de  src/Controller/OdpfAdmin/OdpfDashboardController.php #}
                         <a class="dropdown-item login py-0" href="{{ path('secretariatjury_accueil') }}" role="button">Secrétariat
                             du Jury</a>
                         {# secretariatjury/accueil est la route vers la fonction accueil du SecretariatJuryController #}
                         <div class="dropdown-divider"></div>
                         {# saute une ligne #}
-                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration des frais</a>
+                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration
+                            des frais</a>
                         {#  comite/frais est la route vers la fonction frais du ComiteController, avec la variable nblig #}
                         <div class="dropdown-divider"></div>
                         {# saute une ligne #}
@@ -52,7 +53,7 @@
                            aria-pressed="true">Déposer des photos des interacadémiques</a>
                         {# photos_deposephotos est la route vers la fonction deposephotos du PhotosController, avec la variable concours : inter #}
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos',{concours:'cn'}) }}"
-                         role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+                           role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
                         {# photos_deposephotos est la route vers la fonction deposephotos du PhotosController, avec la variable concours : cn #}
                         <a class="dropdown-item login py-0" href="{{ path('fichiers_choix_centre') }}" role="button">Liste
                             des fichiers CIA</a>
@@ -81,7 +82,8 @@
                            aria-pressed="true">Gérer les équipes et leurs documents</a>
                         <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord du Site</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration des frais</a>
+                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration
+                            des frais</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
                            role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
@@ -99,12 +101,14 @@
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Page Organisateurs</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <div class="login py-0">Centre de {{app.user.centrecia.centre  }}</div>
+                        <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
                            role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
+                        <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_accueil') }}"
+                           role="button" aria-pressed="true">Gestion du jury du cia</a>
                     </div>
                 </li>
             {% elseif is_granted('ROLE_JURYCIA') %}
@@ -126,9 +130,11 @@
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix : 'liste_cn_comite'}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>
-                        <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les équipes</a>
+                        <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les
+                            équipes</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration des frais</a>
+                        <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration
+                            des frais</a>
 
                     </div>
                 </li>
@@ -143,25 +149,25 @@
                 </li>
             {% endif %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                <li class="nav-item dropdown menu_haut">
+            <li class="nav-item dropdown menu_haut">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="false">{{ app.user.prenomNom }}</a>
                 <div class="dropdown-menu">
 
                     <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir mon profil</a>
-                   {#  profile_show est une route de l'UtilisateurController#}
+                    {#  profile_show est une route de l'UtilisateurController #}
                 </div>
-            {% endif %}
+                {% endif %}
 
             </li>
             <li class="nav-item dropdown menurouge">
                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <a class="nav-link" href="{{ path('logout') }}" aria-haspopup="true"
-                        aria-expanded="false">Déconnexion</a>
+                       aria-expanded="false">Déconnexion</a>
 
                 {% else %}
-                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">Connexion</a>
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">Connexion</a>
                     <div class="dropdown-menu login" aria-labelledby="dropdownMenu3">
                         <a class="dropdown-item login py-0" href="{{ path('login') }}">Connectez
                             vous si vous avez un compte</a>
