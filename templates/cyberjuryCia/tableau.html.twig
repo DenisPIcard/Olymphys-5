@@ -64,7 +64,7 @@
                     <td>{{ equipes.repq * coef.repquestions }}</td>
                     <td>{{ equipes.origin * coef.origin }}</td>
                     <td>{{ equipes.wgroupe * coef.wgroupe }} </td>
-                    <td class="text-success">{{ equipes.total }} </td>
+                    <td class="text-success">{{ equipes.points }} </td>
                     {% if equipes.ecrit %}
                         <td> {{ equipes.ecrit * coef.ecrit }} </td>
                     {% else %}
@@ -80,7 +80,8 @@
                         {% endif %}
 
 
-                        <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                        <a href="{{ path('cyberjuryCia_infos_equipe', {'id': equipes.id} ) }}"
+                           class="fas fa-info-circle"
                            title="En savoir plus sur cette équipe"> </a>
 
                     </td>

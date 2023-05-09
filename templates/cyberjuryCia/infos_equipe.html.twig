@@ -1,0 +1,45 @@
+{% extends "base1.html.twig" %}
+{% block title %} En savoir plus sur cette équipe {% endblock %}
+
+{% block titre3 %}
+    <a {% if (progression) %} class="btn btn-outline-success btn-lg" {% else %} class="btn btn-primary btn-lg" {% endif %}
+            href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': id_equipe } ) }}">{{ equipe.numero }}</a>
+    {{ equipe.titreProjet }}
+
+    {% if memoires!=null %}
+        <a href="/odpf/odpf-archives/{{ equipe..edition.ed }}/fichiers/memoires/{{ memoires[0].fichier }}"
+           class="fas fa-book-reader"
+           title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+    {% endif %}
+
+{% endblock %}
+
+{% block navigation %}
+
+    {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+{% endblock %}
+{% block body %}
+    <div class="well">
+        <ul>
+
+            <li> L'établissement : {{ equipe.nomLycee|title }}, ville
+                : {{ equipe.lyceeLocalite|title }}
+                , académie : {{ equipe.lyceeAcademie|title }} </li>
+            <li> Les enseignants : {{ equipe.prenomProf1|title }}  {{ equipe.nomProf1|title }},
+
+                {% if   equipe.nomProf2 != null %}
+                    {{ equipe.prenomProf2|title }} {{ equipe.nomProf2|title }},
+
+                {% endif %}
+            </li>
+            <li> Les élèves :
+                <ul>
+                    {% for eleve in listEleves %}
+                        <li> {{ eleve.prenom|title }}  {{ eleve.nom|title }}({{ eleve.genre }}), en classe
+                            de {{ eleve.classe }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

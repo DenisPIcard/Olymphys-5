@@ -156,8 +156,7 @@ class NotesCia
             + $this->getOral() * $this->coefficients->getOral()
             + $this->getRepquestions() * $this->coefficients->getRepquestions()//
             + $this->getOrigin() * $this->coefficients->getOrigin()//
-            + $this->getWgroupe() * $this->coefficients->getWgroupe()
-            + $this->getEcrit() * $this->coefficients->getEcrit();
+            + $this->getWgroupe() * $this->coefficients->getWgroupe();
     }
 
     public function getTotalPoints(): float|int //Calcul le total pour un juré avec l'écrit

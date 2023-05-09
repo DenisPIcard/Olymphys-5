@@ -695,6 +695,7 @@ class FichiersController extends AbstractController
     #[Route("/fichiers/afficher_liste_fichiers_prof/,{infos}", name: "fichiers_afficher_liste_fichiers_prof")]
     public function afficher_liste_fichiers_prof(Request $request, $infos): Response
     {
+
         $session = $this->requestStack->getSession();
         $session->set('oldlisteEleves', null);
         $session->set('supr_eleve', null);
@@ -763,6 +764,7 @@ class FichiersController extends AbstractController
 
         }
         if (in_array('ROLE_JURYCIA', $roles)) {
+            
             $qbInit->andWhere('t.typefichier in (0,1,2,4,5)');
             $liste_fichiers = $qbInit->getQuery()->getResult();
             $autorisations = [];

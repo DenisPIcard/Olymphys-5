@@ -182,7 +182,7 @@ class JuryCiaController extends AbstractController
         }
 
 
-        $content = $this->renderView('cyberjury/infos.html.twig',
+        $content = $this->renderView('cyberjuryCia/infos_equipe.html.twig',
             array(
                 'equipe' => $equipe,
                 'mailprof1' => $mailprof1,
@@ -356,7 +356,7 @@ class JuryCiaController extends AbstractController
             $listEquipes[$j]['origin'] = $notes->getOrigin();
             $listEquipes[$j]['wgroupe'] = $notes->getWgroupe();
             $listEquipes[$j]['ecrit'] = $notes->getEcrit();
-            $listEquipes[$j]['total'] = $notes->getTotalPoints();
+            $listEquipes[$j]['points'] = $notes->getPoints();
 
             $memoires[$j] = $repositoryMemoires->createQueryBuilder('m')
                 ->andWhere('m.equipe =:equipe')
