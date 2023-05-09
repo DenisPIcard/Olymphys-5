@@ -1,0 +1,95 @@
+{% extends "base1.html.twig" %}
+{% block title %} Tableau de bord {% endblock %}
+
+{% block titre3 %} Classement provisoire de mes équipes {% endblock %}
+{% block navigation %}
+
+
+    {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+
+{% endblock %}
+
+{% block body %}
+
+    {% if ordre[critere] == 'DESC' %}
+        {% set ordre=ordre|merge({(critere) : 'ASC'}) %}
+    {% elseif ordre[critere] == 'ASC' %}
+        {% set ordre=ordre|merge({(critere) : 'DESC'}) %}
+    {% endif %}
+
+    <div class="table-responsive-lg">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Rang</th>
+                <th>Éq.</th>
+                <th>Projet</th>
+                <th title="Qualité de l'expérience"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'EXP','sens':ordre['EXP']}) }}">EXP<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Démarche scientifique"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'DEM','sens':ordre['DEM']}) }}">DEM<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Présentation orale"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'ORA','sens':ordre['ORA']}) }}">ORA<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Réponses aux questions"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'REP','sens':ordre['REP']}) }}">REP<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Originalité"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'ORI','sens':ordre['ORI']}) }}">ORI<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Travail d'équipe"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'TRE','sens':ordre['TRE']}) }}">TRE<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Total des points"><a
+                            href="{{ path('cyberjuryCia_tableau_de_bord',{'critere':'TOT','sens':ordre['TOT']}) }}">TOT<i
+                                class="fas fa-sort"></i></a></th>
+                <th title="Le mémoire">MEM</th>
+                <th>Liens</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for equipes in listEquipes %}
+                <tr>
+                    <th>{{ rangs[equipes.id] }} </th>
+                    <td><a href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': equipes.id} ) }}"
+                           class="btn btn-primary btn-lg">
+                            {{ equipes.lettre }} </a></td>
+                    <td>{{ equipes.titre }} </td>
+                    <td>{{ equipes.exper * coef.exper }}</td>
+                    <td>{{ equipes.demarche * coef.demarche }}</td>
+                    <td>{{ equipes.oral * coef.oral }}</td>
+                    <td>{{ equipes.repq * coef.repquestions }}</td>
+                    <td>{{ equipes.origin * coef.origin }}</td>
+                    <td>{{ equipes.wgroupe * coef.wgroupe }} </td>
+                    <td class="text-success">{{ equipes.total }} </td>
+                    {% if equipes.ecrit %}
+                        <td> {{ equipes.ecrit * coef.ecrit }} </td>
+                    {% else %}
+                        <td><span class="fas fa-minus-circle"> </span></td>
+                    {% endif %}
+                    <td>
+
+
+                        {% if memoires[loop.index] != null %}
+
+                            <a href="{{ asset('odpf/odpf-archives/'~memoires[loop.index].edition.ed~'/fichiers/memoires/'~memoires[loop.index].fichier) }}"
+                               class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                        {% endif %}
+
+
+                        <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                           title="En savoir plus sur cette équipe"> </a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+
+{% endblock %}

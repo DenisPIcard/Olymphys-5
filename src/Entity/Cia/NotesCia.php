@@ -34,6 +34,9 @@ class NotesCia
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $ecrit = 0;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $repquestions = 0;
+
     #[ORM\ManyToOne(targetEntity: Equipesadmin::class, inversedBy: "notess")]
     private ?Equipesadmin $equipe;
 
@@ -96,6 +99,18 @@ class NotesCia
         return $this->oral;
     }
 
+    public function setRepquestions(int $repquestions): NotesCia
+    {
+        $this->repquestions = $repquestions;
+
+        return $this;
+    }
+
+    public function getRepquestions(): ?int
+    {
+        return $this->repquestions;
+    }
+
     public function setOrigin(int $origin): NotesCia
     {
         $this->origin = $origin;
@@ -139,8 +154,10 @@ class NotesCia
         return $this->getExper() * $this->coefficients->getExper()
             + $this->getDemarche() * $this->coefficients->getDemarche()
             + $this->getOral() * $this->coefficients->getOral()
-            + $this->getOrigin() * $this->coefficients->getOrigin()
-            + $this->getWgroupe() * $this->coefficients->getWgroupe();
+            + $this->getRepquestions() * $this->coefficients->getRepquestions()//
+            + $this->getOrigin() * $this->coefficients->getOrigin()//
+            + $this->getWgroupe() * $this->coefficients->getWgroupe()
+            + $this->getEcrit() * $this->coefficients->getEcrit();
     }
 
     public function getTotalPoints(): float|int //Calcul le total pour un juré avec l'écrit
@@ -148,6 +165,7 @@ class NotesCia
         return $this->getExper() * $this->coefficients->getExper()
             + $this->getDemarche() * $this->coefficients->getDemarche()
             + $this->getOral() * $this->coefficients->getOral()//
+            + $this->getRepquestions() * $this->coefficients->getRepquestions()//
             + $this->getOrigin() * $this->coefficients->getOrigin()//
             + $this->getWgroupe() * $this->coefficients->getWgroupe()
             + $this->getEcrit() * $this->coefficients->getEcrit();

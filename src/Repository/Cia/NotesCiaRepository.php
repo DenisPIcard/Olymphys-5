@@ -23,7 +23,7 @@ class NotesCiaRepository extends EntityRepository
         $queryBuilder
             ->where('n.jure=:jure_id')
             ->setParameter('jure_id', $jure_id)
-            ->orderBy('n.exper*10 + n.demarche*10 + n.oral*12.5 + n.origin*12.5 + n.wgroupe*5', 'DESC');
+            ->orderBy('n.exper*15 + n.demarche*10 + n.oral*10 + n.origin*15 + n.wgroupe*5+n.repquestions*10', 'DESC');
 
         // on récupère la query
         $query = $queryBuilder->getQuery();

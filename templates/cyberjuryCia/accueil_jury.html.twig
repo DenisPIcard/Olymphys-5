@@ -5,13 +5,13 @@
 
 {% block navigation %}
 
-    {{ include ('cyberjuryCia/navigation.html.twig') }}
+    {{ include ('cyberjuryCia/navigationJury.html.twig') }}
 
 {% endblock %}
 {% block titre3 %} Mes équipes {% endblock %}
 
 {% block body %}
-    <div class="small">Dans l'ordre de passage</div>
+   
     {% for equipes in listeEquipes %}
         {% if equipes.numero in progression|keys %}
 

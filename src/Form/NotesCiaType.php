@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Cia\NotesCia;
 use App\Entity\Notes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -9,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NotesType extends AbstractType
+class NotesCiaType extends AbstractType
 {
 
     /**
@@ -33,6 +34,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('oral', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('origin', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('ecrit', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
@@ -44,6 +46,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('oral', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('origin', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('Enregistrer', SubmitType::class);
@@ -55,6 +58,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix,))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix,))
                     ->add('oral', ChoiceType::class, array('choices' => $choix,))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix,))
                     ->add('origin', ChoiceType::class, array('choices' => $choix,))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix,))
                     ->add('ecrit', ChoiceType::class, array('choices' => $choix,))
@@ -65,6 +69,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix,))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix,))
                     ->add('oral', ChoiceType::class, array('choices' => $choix,))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix,))
                     ->add('origin', ChoiceType::class, array('choices' => $choix,))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix,))
                     ->add('Enregistrer', SubmitType::class);
@@ -80,7 +85,7 @@ class NotesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\Notes',
+            'data_class' => NotesCia::class,
             'EST_PasEncoreNotee' => true,
             'EST_Lecteur' => true,
         ));
@@ -91,7 +96,7 @@ class NotesType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'cyberjury_notes';
+        return 'cyberjuryCia_notes';
     }
 
 

@@ -13,6 +13,7 @@ use App\Entity\Fichiersequipes;
 use App\Entity\Jures;
 use App\Entity\Notes;
 use App\Entity\User;
+use App\Form\NotesCiaType;
 use App\Form\NotesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -247,25 +248,25 @@ class JuryCiaController extends AbstractController
             $progression = 0;
             $nllNote = true;
             if (in_array($equipe->getNumero(), $attrib)) {
-                $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
                 $flag = 1;
             } else {
                 $notes->setEcrit(0);
-                $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
+                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
             }
         } else {
             $notes = $this->doctrine
                 ->getManager()
-                ->getRepository(Notes::class)
+                ->getRepository(NotesCia::class)
                 ->EquipeDejaNotee($jure, $id);
             $progression = 1;
             $nllNote = false;
             if (in_array($equipe->getNumero(), $attrib)) {
-                $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
+                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
                 $flag = 1;
             } else {
                 $notes->setEcrit('0');
-                $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
+                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
             }
         }
         $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
@@ -291,11 +292,11 @@ class JuryCiaController extends AbstractController
 
             //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
             // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
-            return $this->redirectToroute('cyberjury_tableau_de_bord');
+            return $this->redirectToroute('cyberjuryCia_tableau_de_bord', array('critere' => 'TOT', 'sens' => 'DESC'));
         }
 
 
-        $content = $this->renderView('cyberjury/evaluer.html.twig',
+        $content = $this->renderView('cyberjuryCia/evaluerCia.html.twig',
             array(
                 'equipe' => $equipe,
                 'form' => $form->createView(),
@@ -310,7 +311,7 @@ class JuryCiaController extends AbstractController
     }
 
     #[IsGranted('ROLE_JURYCIA')]
-    #[Route("/tableau_de_bord_cia,{critere},{sens}", name: "cyberjury_tableau_de_bord_cia")]
+    #[Route("/cyberjuryCia/tableau_de_bord,{critere},{sens}", name: "cyberjuryCia_tableau_de_bord")]
     public function tableau($critere, $sens): Response
     {
         $user = $this->getUser();
@@ -322,19 +323,20 @@ class JuryCiaController extends AbstractController
             'ORI' => 'DESC',
             'TRE' => 'DESC',
             'ORA' => 'DESC',
+            'REP' => 'DESC',
             'TOT' => 'DESC');
         $ordre[$critere] = $sens;
         $MonClassement = $this->classement($critere, $sens, $id_jure)->getQuery()->getResult();
 
-        $repositoryEquipes = $this->doctrine
+        $repositorycoef = $this->doctrine
             ->getManager()
-            ->getRepository(Equipes::class);
+            ->getRepository(Coefficients::class);
         $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository(Fichiersequipes::class);
         $repositoryNotes = $this->doctrine
             ->getManager()
-            ->getRepository(Notes::class);
+            ->getRepository(NotesCia::class);
 
         $rangs = $repositoryNotes->get_rangs($id_jure);
 
@@ -342,24 +344,23 @@ class JuryCiaController extends AbstractController
         $listEquipes = array();
         $j = 1;
         foreach ($MonClassement as $notes) {
-            $id = $notes->getEquipe();
-            $equipe = $repositoryEquipes->find($id);
-
+            $equipe = $notes->getEquipe();
             $listEquipes[$j]['id'] = $equipe->getId();
-            $listEquipes[$j]['infoequipe'] = $equipe->getEquipeinter();
-            $listEquipes[$j]['lettre'] = $equipe->getEquipeinter()->getLettre();
-            $listEquipes[$j]['titre'] = $equipe->getEquipeinter()->getTitreProjet();
+            $listEquipes[$j]['infoequipe'] = $equipe;
+            $listEquipes[$j]['lettre'] = $equipe->getNumero();
+            $listEquipes[$j]['titre'] = $equipe->getTitreProjet();
             $listEquipes[$j]['exper'] = $notes->getExper();
             $listEquipes[$j]['demarche'] = $notes->getDemarche();
             $listEquipes[$j]['oral'] = $notes->getOral();
+            $listEquipes[$j]['repq'] = $notes->getRepquestions();
             $listEquipes[$j]['origin'] = $notes->getOrigin();
             $listEquipes[$j]['wgroupe'] = $notes->getWgroupe();
             $listEquipes[$j]['ecrit'] = $notes->getEcrit();
-            $listEquipes[$j]['points'] = $notes->getPoints();
-            $listEquipes[$j]['total'] = $notes->getTotal();
+            $listEquipes[$j]['total'] = $notes->getTotalPoints();
+
             $memoires[$j] = $repositoryMemoires->createQueryBuilder('m')
                 ->andWhere('m.equipe =:equipe')
-                ->setParameter('equipe', $equipe->getEquipeinter())
+                ->setParameter('equipe', $equipe)
                 ->andWhere('m.national =:valeur')
                 ->setParameter('valeur', 1)
                 ->andWhere('m.typefichier =:typefichier')
@@ -369,9 +370,10 @@ class JuryCiaController extends AbstractController
             $j++;
 
         }
-
-        $content = $this->renderView('cyberjury/tableau.html.twig',
-            array('listEquipes' => $listEquipes, 'jure' => $jure, 'memoires' => $memoires, 'ordre' => $ordre, 'critere' => $critere, 'rangs' => $rangs)
+        $coefs = $repositorycoef->findAll();
+        $coef = $coefs[0];
+        $content = $this->renderView('cyberjuryCia/tableau.html.twig',
+            array('listEquipes' => $listEquipes, 'jure' => $jure, 'coef' => $coef, 'memoires' => $memoires, 'ordre' => $ordre, 'critere' => $critere, 'rangs' => $rangs)
         );
         return new Response($content);
     }
@@ -396,6 +398,9 @@ class JuryCiaController extends AbstractController
                 break;
             case('ORA') :
                 $queryBuilder->orderBy('n.oral', $sens);
+                break;
+            case('REP') :
+                $queryBuilder->orderBy('n.repquestions', $sens);
                 break;
             case('DEM') :
                 $queryBuilder->orderBy('n.demarche', $sens);
