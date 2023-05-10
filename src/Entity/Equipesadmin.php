@@ -110,10 +110,6 @@ class Equipesadmin
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $nbNotes = null;
-
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
@@ -559,16 +555,4 @@ class Equipesadmin
         return $this;
     }
 
-
-    public function getNbNotes(): ?int
-    {
-        return $this->nbNotes;
-    }
-
-    public function setNbNotes(?int $nbNotes): self
-    {
-        $this->nbNotes = $nbNotes;
-
-        return $this;
-    }
 }

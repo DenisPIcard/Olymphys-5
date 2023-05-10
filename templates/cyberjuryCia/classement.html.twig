@@ -1,0 +1,45 @@
+{% extends "base1.html.twig" %}
+{% block title %} Classement des équipes {% endblock %}
+
+{% block titre3 %} Classement des équipes {% endblock %}
+
+{% block navigation %}
+    {{ include ("cyberjuryCia/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Rang</th>
+                <th>Éq.</th>
+                <th>Projet</th>
+                <th title="points">Points</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key,  point in points %}
+                <tr>
+                    <th>{{ loop.index }}  </th>
+                    {% for equipe in equipes %}
+                        {% if equipe.id == key %}
+                            <td>
+                                <button type="button" class="btn btn-primary btn-lg">{{ equipe.numero }}</button>
+                            </td>
+
+                            <td> {{ equipe.titreProjet }} </td>
+                            <td>{{ point }} </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

@@ -127,7 +127,7 @@ class SecretariatjuryCiaController extends AbstractController
         $listJures = $repositoryJures->findAll();
 
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
-        $listEquipes = $repositoryEquipes->findAll();
+        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $this->getUser()->getCentrecia()]);
 
         $nbre_equipes = 0;
         $progression = [];
@@ -135,14 +135,15 @@ class SecretariatjuryCiaController extends AbstractController
         foreach ($listEquipes as $equipe) {
             $nbre_equipes = $nbre_equipes + 1;
             $id_equipe = $equipe->getId();
-            $lettre = $equipe->getEquipeinter()->getLettre();
+            $lettre = $equipe->getNumero();
             $nbre_jures = 0;
             foreach ($listJures as $jure) {
                 $id_jure = $jure->getId();
                 $nbre_jures += 1;
                 //vérifie l'attribution du juré ! 0 si assiste, 1 si lecteur sinon Null
-                $method = 'get' . ucfirst($lettre);
-                $statut = $jure->$method();
+                $statut = $repositoryJures->getAttribution($jure, $equipe);
+                //$method = 'get' . ucfirst($lettre);
+                //$statut = $jure->$method();
                 //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher
                 if (is_null($statut)) {
                     $progression[$nbre_equipes][$nbre_jures] = 'ras';
@@ -157,7 +158,7 @@ class SecretariatjuryCiaController extends AbstractController
             }
         }
 
-        $content = $this->renderView('secretariatjury/vueglobale.html.twig', array(
+        $content = $this->renderView('cyberjuryCia/vueglobale.html.twig', array(
             'listJures' => $listJures,
             'listEquipes' => $listEquipes,
             'progression' => $progression,
@@ -176,178 +177,43 @@ class SecretariatjuryCiaController extends AbstractController
         $em = $this->doctrine->getManager();
 
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
-
+        $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
         $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
-        $listEquipes = $repositoryEquipes->findAll();
+        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $this->getUser()->getCentrecia()]);
+        $points = [];
 
         foreach ($listEquipes as $equipe) {
-            $listesNotes = $equipe->getNotess();
-            $nbre_notes = count($equipe->getNotess());//a la place de $equipe->getNbNotes();
-
-            $nbre_notes_ecrit = 0;
-            $points_ecrit = 0;
-            $points = 0;
-
-            if ($nbre_notes == 0) {
-                $equipe->setTotal(0);
-                $em->persist($equipe);
-                $em->flush();
-            } else {
-                foreach ($listesNotes as $note) {
-                    $points = $points + $note->getPoints();
-
-                    $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;
-                    $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();
-
+            $listesNotes = $repositoryNotes->getNotess($equipe);
+            $nbre_notes = count($listesNotes);//a la place de $equipe->getNbNotes();
+            $points[$equipe->getId()] = 0;
+            $nb_notes_ecrit = 0;
+            $total_ecrit = 0;
+            foreach ($listesNotes as $note) {
+                $points[$equipe->getId()] = $points[$equipe->getId()] + $note->getPoints();
+                if ($note->getEcrit() != null) {
+                    $nb_notes_ecrit = $nb_notes_ecrit + 1;
+                    $total_ecrit = $total_ecrit + $note->getEcrit();
                 }
-                $nbNotes = count($equipe->getNotess());//met à jour le nb de notes et le total lors des essais
-                $equipe->setNbNotes($nbNotes);
-                $equipe->setTotal($points / $nbre_notes);
-                $em->persist($equipe);
-                $em->flush();
+            }
+            if ($nbre_notes != 0) {
+                if ($nb_notes_ecrit != 0) {
+                    $points[$equipe->getId()] = intval($points[$equipe->getId()] / $nbre_notes + ($total_ecrit / $nb_notes_ecrit));
+                } else {
+                    $points[$equipe->getId()] = intval($points[$equipe->getId()] / $nbre_notes);
+                }
+            } else {
+                $points[$equipe->getId()] = 0;
             }
 
         }
+        arsort($points);
 
-        $nbre_equipes = 0;
-        $qb = $repositoryEquipes->createQueryBuilder('e');
-        $qb->select('COUNT(e)');
-        try {
-            $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException) {
-        }
-
-        $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
-
-
-        $i = 1;
-        foreach ($classement as $equipe) {
-            $equipe->setRang($i);
-            $em->persist($equipe);
-            $i = $i + 1;
-
-        }
-
-        $em->flush();
         //dd($classement);
-        $content = $this->renderView('secretariatjury/classement.html.twig',
-            array('classement' => $classement)
+        $content = $this->renderView('cyberjuryCia/classement.html.twig',
+            array('points' => $points, 'equipes' => $listEquipes)
         );
         return new Response($content);
-    }
-
-
-    #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/approche", name: "secretariatjuryCia_approche")]
-    public function approche(Request $request): Response
-    {
-        $em = $this->doctrine->getManager();
-
-        $repositoryEquipes = $em->getRepository(Equipesadmin::class);
-        $nbre_equipes = 0;
-
-        $qb = $repositoryEquipes->createQueryBuilder('e');
-        $qb->select('COUNT(e)');
-        try {
-            $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
-        }
-
-        $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
-        /*$classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
-                                        ->orderBy('e.couleur','ASC')
-                                        ->leftJoin('e.equipeinter','eq')
-                                        ->addOrderBy('e.total','DESC')
-                                        ->getQuery()->getResult();
-*/
-        foreach (range('A', 'Z') as $lettre) {
-
-            if ($request->query->get($lettre) != null) {
-
-                $couleur = $request->query->get($lettre);
-                $idequipe = $request->query->get('idEquipe');
-
-                $equipe = $repositoryEquipes->findOneBy(['id' => $idequipe]);
-                /*  switch ($couleur){
-                      case 1: $newclassement='1er';
-                              break;
-                      case 2: $newclassement='2ème';
-                              break;
-                      case 3: $newclassement='3ème';
-                              break;
-
-
-                  }
-                */
-                $equipe->setCouleur($couleur);
-                //$equipe->setClassement($newclassement);
-                $em->persist($equipe);
-                $em->flush();
-                /*$classement=$repositoryEquipes->createQueryBuilder('e')->select('e')
-                    ->orderBy('e.couleur','ASC')
-                    ->leftJoin('e.equipeinter','eq')
-                    ->addOrderBy('e.total','DESC')
-                    ->getQuery()->getResult();
-                */
-                //$couleur>$couleurini?$monte=true:$monte=false;
-                //$repositoryEquipes->echange_rang($equipe,$monte);
-            }
-
-        }
-
-        $content = $this->renderView('secretariatjury/approche.html.twig',
-            array('classement' => $classement,
-            )
-        );
-
-        return new Response($content);
-    }
-
-    #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/classement_definitif", name: "secretariatjuryCia_classement_definitif")]
-    public function classementdefinitif(): Response
-    {
-        $em = $this->doctrine->getManager();
-
-        $repositoryEquipes = $em->getRepository(Equipesadmin::class);
-        $qb = $repositoryEquipes->createQueryBuilder('e')
-            ->orderBy('e.couleur', 'ASC')
-            ->leftJoin('e.equipeinter', 'i')
-            ->addSelect('i')
-            ->addOrderBy('i.lettre', 'ASC');
-
-        $classement = $qb->getQuery()->getResult();
-
-        $class = null;
-        $i = 0;
-        foreach ($classement as $equipe) {
-            $i += 1;
-            $couleur = $equipe->getCouleur();
-            switch ($couleur) {
-                case 1 :
-                    $class = '1er';
-                    break;
-                case 2 :
-                    $class = '2ème';
-                    break;
-                case 3 :
-                    $class = '3ème';
-                    break;
-
-            }
-            $equipe->setClassement($class);
-            $equipe->setRang($i);
-            $em->persist($equipe);
-        }
-        $em->flush();
-
-
-        $content = $this->renderView('secretariatjuryCia/classement_definitif.html.twig',
-            array('classement' => $classement,)
-        );
-        return new Response($content);
-
     }
 
 

@@ -4,6 +4,7 @@
 namespace App\Repository\Cia;
 
 
+use App\Entity\Cia\NotesCia;
 use App\Entity\Notes;
 use Doctrine\ORM\EntityRepository;
 
@@ -60,6 +61,19 @@ class NotesCiaRepository extends EntityRepository
 
         // on retourne ces résultats
         return $results;
+
+    }
+
+    public function getNotess($equipe)
+    {
+
+        $notes = $this->createQueryBuilder('n')
+            ->where('n.equipe =:equipe')
+            ->setParameter('equipe', $equipe)
+            ->getQuery()->getResult();
+
+        return $notes;
+
 
     }
 

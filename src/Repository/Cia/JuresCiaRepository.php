@@ -40,6 +40,21 @@ class JuresCiaRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAttribution($jure, $equipe)
+    {
+        $statut = null;
+        $equipes = $jure->getEquipes();
+        foreach ($equipes as $equipejure)
+            if ($equipe == $equipejure) {
+                if (in_array($equipe->getNumero(), $jure->getRapporteur())) {
+
+                    $statut = 1;
+                } else {
+                    $statut = 0;
+                }
+            }
+        return $statut;
+    }
 //    /**
 //     * @return JuresCia[] Returns an array of JuresCia objects
 //     */
