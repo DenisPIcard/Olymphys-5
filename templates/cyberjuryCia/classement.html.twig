@@ -1,10 +1,16 @@
 {% extends "base1.html.twig" %}
 {% block title %} Classement des équipes {% endblock %}
 
-{% block titre3 %} Classement des équipes {% endblock %}
+{% block titre3 %} Classement des équipes de {{ centre }}<br>
+    <div class="smallsize"> Points obtenus par les équipes, tenant compte du mémoire</div>
+{% endblock %}
 
 {% block navigation %}
-    {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% if is_granted('ROLE_ORGACIA') %}
+        {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% elseif is_granted('ROLE_JURYCIA') %}
+        {{ include ("cyberjuryCia/navigationJury.html.twig") }}
+    {% endif %}
 {% endblock %}
 
 {% block body %}

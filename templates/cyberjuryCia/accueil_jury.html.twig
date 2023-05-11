@@ -8,10 +8,12 @@
     {{ include ('cyberjuryCia/navigationJury.html.twig') }}
 
 {% endblock %}
-{% block titre3 %} Mes équipes {% endblock %}
+{% block titre3 %} Mes équipes <br>
+    <div class="smallsize"> Liste des équipes que je dois examiner</div>
+{% endblock %}
 
 {% block body %}
-   
+
     {% for equipes in listeEquipes %}
         {% if equipes.numero in progression|keys %}
 

@@ -326,7 +326,7 @@ class JuryCiaController extends AbstractController
             'REP' => 'DESC',
             'TOT' => 'DESC');
         $ordre[$critere] = $sens;
-        $MonClassement = $this->classement($critere, $sens, $id_jure)->getQuery()->getResult();
+        $MonClassement = $this->tri($critere, $sens, $id_jure)->getQuery()->getResult();
 
         $repositorycoef = $this->doctrine
             ->getManager()
@@ -379,7 +379,7 @@ class JuryCiaController extends AbstractController
     }
 
 
-    public function classement($critere, $sens, $id_jure): QueryBuilder
+    public function tri($critere, $sens, $id_jure): QueryBuilder
     {
         $repositoryNotes = $this->doctrine
             ->getManager()

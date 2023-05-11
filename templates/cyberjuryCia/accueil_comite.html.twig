@@ -1,0 +1,31 @@
+{% extends "base1.html.twig" %}
+{% block title %} Accueil Comité CIA {% endblock %}
+
+
+
+{% block navigation %}
+
+    {{ include ('cyberjuryCia/navigation_comite.html.twig') }}
+
+{% endblock %}
+
+{% block titre3 %} Cyber Jury des Cia <br>
+    Choix du centre de concours interacadémique
+{% endblock %}
+{% block body %}
+    <table>
+        {% for centre in centres %}
+            <tr>
+                <td>
+                    <a href="{{ path('secretariatjuryCia_accueil',{'centre': centre}) }}" type="button"
+                       class="btn btn-primary">{{ centre.centre }}</a>
+                </td>
+
+
+            </tr>
+
+
+
+        {% endfor %}
+    </table>
+{% endblock %}

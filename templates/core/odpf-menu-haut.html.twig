@@ -32,6 +32,12 @@
                         {# secretariatjury/accueil est la route vers la fonction accueil du SecretariatJuryController #}
                         <div class="dropdown-divider"></div>
                         {# saute une ligne #}
+                        {# secretariatjuryCia/accueil_comite est la route vers la fonction accueil pour le comite du SecretariatJuryCiaController #}
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('secretariatjuryCia_accueil_comite') }}"
+                           role="button" aria-pressed="true">Accéder aux cyberjurys des CIA</a>
+                        <div class="dropdown-divider"></div>
+                        {# saute une ligne #}
                         <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration
                             des frais</a>
                         {#  comite/frais est la route vers la fonction frais du ComiteController, avec la variable nblig #}
@@ -85,6 +91,9 @@
                         <a class="dropdown-item login py-0" href="{{ path('comite_frais') }}" role="button">Déclaration
                             des frais</a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('secretariatjuryCia_accueil_comite') }}"
+                           role="button" aria-pressed="true">Accéder aux cyberjurys des CIA</a>
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
                            role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos',{concours:'cn'}) }}"
@@ -107,7 +116,8 @@
                            aria-pressed="true">Les équipes et leurs documents</a>
                         <a class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'inter'}) }}"
                            role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
-                        <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_accueil') }}"
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('secretariatjuryCia_accueil',{'centre':app.user.centrecia}) }}"
                            role="button" aria-pressed="true">Gestion du jury du cia</a>
                     </div>
                 </li>

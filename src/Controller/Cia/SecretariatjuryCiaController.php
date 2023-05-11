@@ -3,6 +3,7 @@
 namespace App\Controller\Cia;
 
 
+use App\Entity\Centrescia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
@@ -43,10 +44,23 @@ class SecretariatjuryCiaController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
+    #[IsGranted('ROLE_COMITE')]
+    #[Route("/Cia/SecretariatjuryCia/accueil_comite", name: "secretariatjuryCia_accueil_comite")]
+    public function accueil_comite(): Response
+    {
+        $listeCentres = $this->doctrine->getRepository(Centrescia::class)->findBy(['actif' => true]);
+
+        $content = $this->renderView('cyberjuryCia/accueil_comite.html.twig',
+            array('centres' => $listeCentres));
+
+        return new Response($content);
+
+
+    }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/Cia/SecretariatjuryCia/accueil", name: "secretariatjuryCia_accueil")]
-    public function accueil(): Response
+    #[Route("/Cia/SecretariatjuryCia/accueil,{centre}", name: "secretariatjuryCia_accueil")]
+    public function accueil($centre): Response
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
@@ -62,7 +76,7 @@ class SecretariatjuryCiaController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->andWhere('e.numero <:numero')
             ->andWhere('e.centre =:centre')
-            ->setParameters(['edition' => $edition, 'numero' => 100, 'centre' => $this->getUser()->getCentrecia()])
+            ->setParameters(['edition' => $edition, 'numero' => 100, 'centre' => $centre])
             ->orderBy('e.numero', 'ASC')
             ->getQuery()
             ->getResult();
@@ -80,54 +94,25 @@ class SecretariatjuryCiaController extends AbstractController
         $session = $this->requestStack->getSession();
         $session->set('tableau', $tableau);
         $content = $this->renderView('cyberjuryCia/accueil.html.twig',
-            array(''));
+            array('centre' => $centre));
 
         return new Response($content);
     }
 
-    #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/accueilOrgaCia", name: "secretariatjuryCia_accueilOrgaCia")]
-    public function accueilPresident(): Response  // Le président de jury peut gérer le classement des équipes
-    {
-        $tableau = $this->requestStack->getSession()->get('tableau');
-        $listEquipes = $tableau[0];
-        $lesEleves = $tableau[1];
-        $lycee = $tableau[2];
-        $repositoryUser = $this->doctrine
-            ->getManager()
-            ->getRepository(User::class);
-        $prof1 = [];
-        $prof2 = [];
-        foreach ($listEquipes as $equipe) {
-            $lettre = $equipe->getLettre();
-            $idprof1 = $equipe->getIdProf1();
-            $prof1[$lettre] = $repositoryUser->findBy(['id' => $idprof1]);
-            $idprof2 = $equipe->getIdProf2();
-            $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
-        }
-
-        $content = $this->renderView('secretariatjuryCia/accueil_jury.html.twig',
-            array('listEquipes' => $listEquipes,
-                'lesEleves' => $lesEleves,
-                'prof1' => $prof1,
-                'prof2' => $prof2,
-                'lycee' => $lycee));
-
-        return new Response($content);
-    }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/vueglobale", name: "secretariatjuryCia_vueglobale")]
-    public function vueglobale(): Response
+    #[Route("/secretariatjuryCia/vueglobale,{centre}", name: "secretariatjuryCia_vueglobale")]
+    public function vueglobale($centre): Response
     {
+
         $em = $this->doctrine->getManager();
         $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
-
+        $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
         $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
         $listJures = $repositoryJures->findAll();
-
+        $centrecia = $repositoryCentres->findOneBy(['centre' => $centre]);
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
-        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $this->getUser()->getCentrecia()]);
+        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centrecia]);
 
         $nbre_equipes = 0;
         $progression = [];
@@ -135,7 +120,6 @@ class SecretariatjuryCiaController extends AbstractController
         foreach ($listEquipes as $equipe) {
             $nbre_equipes = $nbre_equipes + 1;
             $id_equipe = $equipe->getId();
-            $lettre = $equipe->getNumero();
             $nbre_jures = 0;
             foreach ($listJures as $jure) {
                 $id_jure = $jure->getId();
@@ -164,23 +148,24 @@ class SecretariatjuryCiaController extends AbstractController
             'progression' => $progression,
             'nbre_equipes' => $nbre_equipes,
             'nbre_jures' => $nbre_jures,
+            'centre' => $centre
         ));
 
         return new Response($content);
     }
 
-    #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/classement", name: "secretariatjuryCia_classement")]
-    public function classement(): Response
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/secretariatjuryCia/classement,{centre}", name: "secretariatjuryCia_classement")]
+    public function classement($centre): Response
     {
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
-
+        $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
         $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
-
-        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $this->getUser()->getCentrecia()]);
+        $centrecia = $repositoryCentres->findOneBy(['centre' => $centre]);
+        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centrecia]);
         $points = [];
 
         foreach ($listEquipes as $equipe) {
@@ -209,9 +194,8 @@ class SecretariatjuryCiaController extends AbstractController
         }
         arsort($points);
 
-        //dd($classement);
         $content = $this->renderView('cyberjuryCia/classement.html.twig',
-            array('points' => $points, 'equipes' => $listEquipes)
+            array('points' => $points, 'equipes' => $listEquipes, 'centre' => $centrecia->getCentre())
         );
         return new Response($content);
     }

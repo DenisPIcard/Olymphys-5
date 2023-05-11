@@ -4,7 +4,7 @@
 {% endblock %}
 {% block title %} Vue globale  {% endblock %}
 
-{% block titre3 %} Vue Globale
+{% block titre3 %} Vue Globale de {{ centre }}
     <div class="smallsize">Ne tient pas compte des points du mémoire</div> {% endblock %}
 
 {% block navigation %}
@@ -25,36 +25,36 @@
             </thead>
             <tbody>
 
+            {% if nbre_equipes!=0 %}
+                {% for e in 1..nbre_equipes %}
+                    {% set numligne = loop.index %} {# loop.index va de 1 à nb equipes ; numero de ligne #}
+                    <tr>
+                        <th>{{ listEquipes[numligne-1].numero }}</th>
 
-            {% for e in 1..nbre_equipes %}
-                {% set numligne = loop.index %} {# loop.index va de 1 à nb equipes ; numero de ligne #}
-                <tr>
-                    <th>{{ listEquipes[numligne-1].numero }}</th>
+                        {% for j in 1..nbre_jures %} {# loop.index va de 1 à nb jurés; numero de colonne #}
 
-                    {% for j in 1..nbre_jures %} {# loop.index va de 1 à nb jurés; numero de colonne #}
+                            <td>
+                                {% if progression[numligne][loop.index]=='ras' %}
 
-                        <td>
-                            {% if progression[numligne][loop.index]=='ras' %}
+                                {% elseif  progression[numligne][loop.index] == 0 %}
 
-                            {% elseif  progression[numligne][loop.index] == 0 %}
+                                    {% set index = loop.index-1 %}
+                                    <a href="#"
+                                       title="equipe : {{ listEquipes[numligne-1].numero }}, juré : {{ listJures[index].initialesJure }}">
+                                        <i class="fas fa-asterisk"></i>
+                                    </a>
 
-                                {% set index = loop.index-1 %}
-                                <a href="#"
-                                   title="equipe : {{ listEquipes[numligne-1].numero }}, juré : {{ listJures[index].initialesJure }}">
-                                    <i class="fas fa-asterisk"></i>
-                                </a>
+                                {% else %}
+                                    {{ progression[numligne][loop.index] }}
 
-                            {% else %}
-                                {{ progression[numligne][loop.index] }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
 
-                            {% endif %}
-                        </td>
-                    {% endfor %}
+                    </tr>
 
-                </tr>
-
-            {% endfor %}
-
+                {% endfor %}
+            {% endif %}
             </tbody>
         </table>
     </div>
