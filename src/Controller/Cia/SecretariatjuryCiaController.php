@@ -102,7 +102,7 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/secretariatjuryCia/vueglobale,{centre}", name: "secretariatjuryCia_vueglobale")]
-    public function vueglobale($centre): Response
+    public function vueglobale($centre): Response  //Donne le total des points obtenus par chaque équipe pour chacun des jurés
     {
 
         $em = $this->doctrine->getManager();
@@ -124,18 +124,15 @@ class SecretariatjuryCiaController extends AbstractController
             foreach ($listJures as $jure) {
                 $id_jure = $jure->getId();
                 $nbre_jures += 1;
-                //vérifie l'attribution du juré ! 0 si assiste, 1 si lecteur sinon Null
-                $statut = $repositoryJures->getAttribution($jure, $equipe);
-                //$method = 'get' . ucfirst($lettre);
-                //$statut = $jure->$method();
-                //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher
-                if (is_null($statut)) {
+                $statut = $repositoryJures->getAttribution($jure, $equipe);//vérifie l'attribution du juré ! 0 si assiste, 1 si lecteur sinon Null
+                //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher(mémoire compris) :
+                if (is_null($statut)) { //Si le juré n'a pas à évaluer l'équipe le statut est null
                     $progression[$nbre_equipes][$nbre_jures] = 'ras';
 
-                } elseif ($statut == 1) {
+                } elseif ($statut == 1) {// le juré évalue le mémoire(il est rapporteur)
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();
-                } else {
+                } else { // Le juré n'évalue pas le mémoire, il est semble examinateur
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getPoints();
                 }
