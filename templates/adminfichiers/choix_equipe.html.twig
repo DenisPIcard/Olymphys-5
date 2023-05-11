@@ -223,12 +223,17 @@
         {% endif %}
     {% endif %}
     {% if centre is defined %}
-        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] or app.user.roles|filter(v => v =='ROLE_COMITE')!=[] %}
+        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[] %}
             <div style="text-align:center">
                 <a href="{{ path('fichiers_choix_centre') }}">Retour à la liste des centres</a>
 
             </div>
-        {% else %}
+        {% elseif  app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
+            <div style="text-align:center">
+                <a href="{{ path('cyberjuryCia_accueil') }}">Cyberjury</a>
+
+            </div>
+        {% elseif  app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             <div style="text-align:center">
                 <a href="{{ path('core_home') }}">Retour à l'accueil</a>
 
