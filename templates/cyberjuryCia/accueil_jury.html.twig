@@ -35,7 +35,8 @@
                         {% endif %}
                     {% endif %}
                 {% endfor %}
-                <a href="{{ path('cyberjuryCia_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipes.id~'-interacadémique-'~app.user.centrecia} ) }}"
+                   class="fas fa-info-circle"
                    title="En savoir plus sur cette équipe"> </a>
 
             </p>

@@ -155,6 +155,7 @@ class EquipesadminRepository extends ServiceEntityRepository
             $listeEquipes = $qb->getQuery()->getResult();
         }
         if ((in_array('ROLE_JURY', $user->getRoles())) or (in_array('ROLE_JURYCIA', $user->getRoles())) or (in_array('ROLE_COMITE', $user->getRoles())) or (in_array('ROLE_ORGACIA', $user->getRoles())) or (in_array('ROLE_SUPER_ADMIN', $user->getRoles()))) {
+            
             if ($centre != null) {
                 $listeEquipes = $this->getEquipeInter($centre);
             }

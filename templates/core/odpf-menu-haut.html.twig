@@ -128,7 +128,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                         <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
                         <a class="dropdown-item login py-0"
-                           href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button"
+                           href="{{ path('fichiers_choix_equipe',{choix : app.user.centrecia}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>
                         <a class="dropdown-item login py-0"
                            href="{{ path('cyberjuryCia_accueil') }}" role="button"
