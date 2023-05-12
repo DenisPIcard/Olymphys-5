@@ -29,7 +29,7 @@ class JuresCia
     #[ORM\Column(name: 'nomJure', length: 255, nullable: true)]
     private ?string $nomJure = null;
 
-    #[ORM\Column(name: 'initialesJure', length: 3, nullable: true)]
+    #[ORM\Column(name: 'initialesJure', length: 4, nullable: true)]
     private ?string $initialesJure = null;
 
     #[ORM\OneToMany(mappedBy: "jure", targetEntity: NotesCia::class)]

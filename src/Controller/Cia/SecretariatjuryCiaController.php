@@ -224,16 +224,27 @@ class SecretariatjuryCiaController extends AbstractController
                 $user = $repositoryUser->findOneBy(['email' => $email]);
                 if ($user === null) {
                     $user = new User();
-                    $user->setNom($nom);
-                    $user->setPrenom($prenom);
-                    $user->setEmail($email);
-                    $user->setRoles(['ROLE_JURYCIA']);
-                    $user->getCentrecia($orgacia->getCentrecia());
-                    $user->setUsername($slugger->slug($prenom[0]) . '_' . $slugger->slug($nom));
-                    $user->setPassword($passwordEncoder->hashPassword($user, $prenom));
-                    $this->doctrine->getManager()->persist($user);
-                    $this->doctrine->getManager()->flush();
-                    $mailer->sendInscriptionUserJure($orgacia, $user, $prenom);
+                    try {
+                        $user->setNom($nom);
+                        $user->setPrenom($prenom);
+                        $user->setEmail($email);
+                        $user->setRoles(['ROLE_JURYCIA']);
+                        $user->setCentrecia($orgacia->getCentrecia());
+                        $username = $slugger->slug($prenom[0]) . '_' . $slugger->slug($nom);
+                        $i = 1;
+                        while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques
+                            $username = $username . $i;
+                            $i = +1;
+                        }
+                        $user->setUsername($username);
+                        $user->setPassword($passwordEncoder->hashPassword($user, $prenom));
+                        $this->doctrine->getManager()->persist($user);
+                        $this->doctrine->getManager()->flush();
+                        $mailer->sendInscriptionUserJure($orgacia, $user, $prenom);
+                    } catch (\Exception $e) {
+                        $texte = 'Une erreur est survenue lors de l\'inscription de ce jure :' . $e;
+                        $this->requestStack->getSession()->set('info', $texte);
+                    }
 
                 }
                 $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
@@ -274,7 +285,7 @@ class SecretariatjuryCiaController extends AbstractController
     #[Route("/secretariatjuryCia/gestionjures", name: "secretariatjuryCia_gestionjures")]
     public function gestionjures(Request $request)
     {
-       
+
         $idJure = $request->get('jure');
         // dd($request);
         if ($request->query->get('jureID') !== null) {//la fenêtre modale de confirmation de suppresion du juré a été validée, elle renvoie l'id du juré
