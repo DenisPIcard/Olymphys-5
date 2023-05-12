@@ -13,7 +13,6 @@
         <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_vueglobale',{'centre' : centre}) }}">Vue
             Globale</a>
         {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
-            <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_CreeJure') }}">Inscrire un juré</a>
             <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_gestionjures') }}"
                role="button" aria-pressed="true">Gestion des jurés</a>
         {% endif %}

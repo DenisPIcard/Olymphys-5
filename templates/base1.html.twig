@@ -172,94 +172,112 @@ Layout de départ des utils du site #}
     </footer>
 </div>
 
-    {% block javascripts %}
-        <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
-                integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
-                crossorigin="anonymous"></script>
+{% block javascripts %}
+    <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+            integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+            crossorigin="anonymous"></script>
 
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $("#form1").on('change', function () {
-                    $("#form1").submit();
-                });
+    <script type="text/javascript">  <!-- permet la soumission du formulaire form1 sans passer par un bouton submit -->
+
+        $(document).ready(function () {
+
+            $("#form1").on('change', function () {
+                $("#form1").submit();
             });
-        </script>
-        <script type="text/javascript">
-            {# permet la construction de fenêtres modales #}
-            $(document).ready(function () {
-                $('#modalinfo').modal();
-                $('#modalinfo').modal('open');
-            });
-        </script>
-        <script type="text/javascript">
-            slides = document.getElementsByClassName("containercarousel");
-            imgs = document.getElementsByClassName("img-fluid");
-            modal = document.getElementsByClassName("modal-gal");
-            modalImg = document.getElementsByClassName("modal-content-gal");
-            modalCap = document.getElementsByClassName("modal-caption-gal");
+        });
 
-            function modalShow(j) {
-                var img = document.getElementById("photo".concat(j));
-                var cap = document.getElementById("caption".concat(j));
-                modalhref = document.getElementById("enregistrer-image");
-                modalImg[0].src = img.src.replace('/thumbs/', '/');
-                modalImg[0].style.height = "250px";
-                if (cap != null) {
-                    modalCap[0].innerHTML = cap.innerHTML;
-                }
-                modalhref.href = modalImg[0].src;
-                let array = modalImg[0].src.split('/');
-                length = array.length;
-                let file = array[length - 1];
-                file = file.split('%20').join('_');
-                modalhref.download = file;
-                modal[0].style.display = "block";
+    </script>
 
+    <script type="text/javascript">
+        {# permet la construction de fenêtres modales d'information #}
+        $(document).ready(function () {
+
+            $('#modalinfo').modal();
+            $('#modalinfo').modal('open');
+        });
+
+
+    </script>
+    <script type="text/javascript">
+        slides = document.getElementsByClassName("containercarousel");
+        imgs = document.getElementsByClassName("img-fluid");
+        modal = document.getElementsByClassName("modal-gal");
+        modalImg = document.getElementsByClassName("modal-content-gal");
+        modalCap = document.getElementsByClassName("modal-caption-gal");
+
+        function modalShow(j) {
+            var img = document.getElementById("photo".concat(j));
+            var cap = document.getElementById("caption".concat(j));
+            modalhref = document.getElementById("enregistrer-image");
+            modalImg[0].src = img.src.replace('/thumbs/', '/');
+            modalImg[0].style.height = "250px";
+            if (cap != null) {
+                modalCap[0].innerHTML = cap.innerHTML;
             }
+            modalhref.href = modalImg[0].src;
+            let array = modalImg[0].src.split('/');
+            length = array.length;
+            let file = array[length - 1];
+            file = file.split('%20').join('_');
+            modalhref.download = file;
+            modal[0].style.display = "block";
 
-            span = document.getElementsByClassName("close")[0];
-            span.onclick = function () {
-                modal[0].style.display = "none";
+        }
+
+        span = document.getElementsByClassName("close")[0];
+        span.onclick = function () {
+            modal[0].style.display = "none";
+        }
+
+        function modalClose() {
+            modalImg[0].style.display = "none";
+        }
+
+        $('#carousel').carousel({
+            interval: 5000
+        })
+
+        $('.carousel .carousel-item').each(function () {
+            var minPerSlide = 4;
+            var next = $(this).next();
+            if (!next.length) {
+                next = $(this).siblings(':first');
             }
+            next.children(':first-child').clone().appendTo($(this));
 
-            function modalClose() {
-                modalImg[0].style.display = "none";
-            }
-
-            $('#carousel').carousel({
-                interval: 5000
-            })
-
-            $('.carousel .carousel-item').each(function () {
-                var minPerSlide = 4;
-                var next = $(this).next();
+            for (var i = 0; i < minPerSlide; i++) {
+                next = next.next();
                 if (!next.length) {
                     next = $(this).siblings(':first');
                 }
+
                 next.children(':first-child').clone().appendTo($(this));
-
-                for (var i = 0; i < minPerSlide; i++) {
-                    next = next.next();
-                    if (!next.length) {
-                        next = $(this).siblings(':first');
-                    }
-
-                    next.children(':first-child').clone().appendTo($(this));
-                }
-            });
+            }
+        });
 
 
-        </script>
+    </script>
+    <script type="text/javascript">//modal de confirmation de la suppression d'un juré
+        $('#modalconfirmjure').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('idjure');
+            console.log(recipient)// Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('Attention')
+            modal.find('.modal-body input').val(recipient)
+        });
+    </script>
 
-
-    {% endblock %}
+{% endblock %}
 
 </body>
 </html>

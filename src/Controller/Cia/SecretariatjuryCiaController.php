@@ -204,7 +204,7 @@ class SecretariatjuryCiaController extends AbstractController
     {
 
         $orgacia = $this->getUser();
-
+        $this->requestStack->getSession()->set('info', '');
         $slugger = new AsciiSlugger();
         $repositoryUser = $this->doctrine->getRepository(User::class);
         $jureCia = new JuresCia();
@@ -236,25 +236,31 @@ class SecretariatjuryCiaController extends AbstractController
                     $mailer->sendInscriptionUserJure($orgacia, $user, $prenom);
 
                 }
+                $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
+                if ($jure === null) {
 
-                $jureCia->setIduser($user);
-                //$jureCia->setNomJure($nom);
-                //$jureCia->setPrenomJure($prenom);
-                $jureCia->setCentrecia($orgacia->getCentrecia());
-                if (str_contains($slugger->slug($prenom), '-')) {
-                    $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
-                } elseif (str_contains($slugger->slug($prenom), '_')) {
-                    $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
+                    $jureCia->setIduser($user);
+                    //$jureCia->setNomJure($nom);
+                    //$jureCia->setPrenomJure($prenom);
+                    $jureCia->setCentrecia($orgacia->getCentrecia());
+                    if (str_contains($slugger->slug($prenom), '-')) {
+                        $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
+                    } elseif (str_contains($slugger->slug($prenom), '_')) {
+                        $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
+                    } else {
+                        $initiales = strtoupper($slugger->slug($prenom[0]) . $slugger->slug($nom[0]));
+                    }
+
+                    $jureCia->setInitialesJure($initiales);
+                    $this->doctrine->getManager()->persist($jureCia);
+                    $this->doctrine->getManager()->flush();
                 } else {
-                    $initiales = strtoupper($slugger->slug($prenom[0]) . $slugger->slug($nom[0]));
+                    $texte = 'Ce juré existe déjà !';
+                    $this->requestStack->getSession()->set('info', $texte);
+
                 }
 
-                $jureCia->setInitialesJure($initiales);
-
-                $this->doctrine->getManager()->persist($jureCia);
-                $this->doctrine->getManager()->flush();
-
-                return $this->redirectToRoute('cyberjuryCia_accueil');
+                return $this->redirectToRoute('secretariatjuryCia_gestionjures');
             }
             return $this->render('cyberjuryCia/accueil.html.twig');
         }
@@ -268,6 +274,26 @@ class SecretariatjuryCiaController extends AbstractController
     #[Route("/secretariatjuryCia/gestionjures", name: "secretariatjuryCia_gestionjures")]
     public function gestionjures(Request $request)
     {
+       
+        $idJure = $request->get('jure');
+        // dd($request);
+        if ($request->query->get('jureID') !== null) {//la fenêtre modale de confirmation de suppresion du juré a été validée, elle renvoie l'id du juré
+
+            $idJure = $request->query->get('jureID');
+            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $notes = $jure->getNotesj();
+            if ($notes !== null) {
+                foreach ($notes as $note) {
+                    $jure->removeNote($note);
+                    $this->doctrine->getManager()->remove($note);
+                }
+            }
+
+            $this->doctrine->getManager()->remove($jure);
+            $this->doctrine->getManager()->flush();
+            $idJure = null;//Le formulaire est envoyé dès le clic sur un des input
+
+        }
 
         $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()]);
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
@@ -275,14 +301,11 @@ class SecretariatjuryCiaController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
-        $idJure = $request->query->get('jure');
-        $nom = $request->query->get('nom');
-        $prenom = $request->query->get('prenom');
-        $initiales = $request->query->get('initiales');
-        $attribs = [];
-        $i = 0;
 
         if ($idJure !== null) {
+            $nom = $request->get('nom');
+            $prenom = $request->get('prenom');
+            $initiales = $request->get('initiales');
             $jureModifie = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['id' => $idJure]);
             $jureModifie->setNomJure($nom);
             $jureModifie->setPrenomJure($prenom);
@@ -290,7 +313,7 @@ class SecretariatjuryCiaController extends AbstractController
 
             foreach ($listeEquipes as $equipe) {
 
-                $attribs = $request->query->get('equipe-' . $equipe->getId());
+                $attribs = $request->get('equipe-' . $equipe->getId());
 
                 if ($attribs != '') {
                     $jureModifie->addEquipe($equipe);
@@ -310,7 +333,7 @@ class SecretariatjuryCiaController extends AbstractController
                         $rapporteur = $jureModifie->getRapporteur();
                         if ($rapporteur !== null) {
                             if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
-                                unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);
+                                unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
                             }
                             $jureModifie->setRapporteur($rapporteur);
                         }
@@ -336,9 +359,9 @@ class SecretariatjuryCiaController extends AbstractController
                 $this->doctrine->getManager()->flush();
             }
 
-
         }
-        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes));
+
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $this->getUser()->getCentrecia()));
 
     }
 

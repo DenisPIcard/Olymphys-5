@@ -239,5 +239,11 @@ class JuresCia
         return $this;
     }
 
+    public function removeNote(NotesCia $note): self
+    {
+        $this->equipes->removeElement($note);
+
+        return $this;
+    }
 
 }

@@ -1,0 +1,29 @@
+<div class="modal fade" id="modalconfirmjure" tabindex="-1"
+     role="dialog">{# pour confirmer la suppression du jure #}
+    <div class="modal-dialog" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalconfirmjureLabel">Confirmation de la suppression de ce jure </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="alert hidden" role="alert" id="modalAlert"></div>
+                <form name="confirm_form" id="confirm_form"
+                      action="{{ path('secretariatjuryCia_gestionjures') }}">
+                    <input type="hidden" id="jureID" name="jureID" value="recipient-name"/>
+                    <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
+                    <p>Voulez-vous effacer ce juré ? Ses notes seront effacées .<h6 id="modal_body"></h6> </p>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+            </div>
+
+        </div>
+    </div>
+</div>

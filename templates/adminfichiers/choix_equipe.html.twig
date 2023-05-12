@@ -12,7 +12,7 @@
             {% endif %}
             <br> membre du jury
         {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
-            {{ user.prenom }} {{ user.nom }}<br>
+            {{ app.user.prenom }} {{ app.user.nom }}<br>
             Lycée {{ uaiObj.nom }} de {{ uaiObj.commune }}
         {% endif %}
         {% if app.user.roles|filter(v => v =='ROLE_PROF')==[] %}
