@@ -41,8 +41,13 @@ class JuresCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
+        $equipes = $this->doctrine->getRepository(Equipes::class)->findAll();
+        $lettres = [];
+        foreach ($equipes as $equipe) {
+            $lettres[$equipe->getEquipeinter()->getLettre()] = $equipe->getEquipeinter()->getLettre();
+        }
+        $this->requestStack->getSession()->set('lettres', $lettres);//variable globale utilisée par l'index_jures.html.twig pour les entêtes des colonnes
         return $crud
-            //->setSearchFields(['id', 'prenomJure', 'nomJure', 'initialesJure', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w'])
             ->setPaginatorPageSize(30)
             ->overrideTemplates(['crud/index' => 'bundles/EasyAdminBundle/index_jures.html.twig']);
     }
