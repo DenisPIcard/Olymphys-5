@@ -43,62 +43,27 @@ class JuresCrudController extends AbstractCrudController
     {
         return $crud
             //->setSearchFields(['id', 'prenomJure', 'nomJure', 'initialesJure', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w'])
-            ->setPaginatorPageSize(30);
+            ->setPaginatorPageSize(30)
+            ->overrideTemplates(['crud/index' => 'bundles/EasyAdminBundle/index_jures.html.twig']);
     }
 
-    /* public function configureFields(string $pageName): iterable
-     {
-         $nomJure = TextField::new('nomJure');
-         $prenomJure = TextField::new('prenomJure');
-
-         $x = IntegerField::new('x');
-         $y = IntegerField::new('y');
-         $id = IntegerField::new('id', 'ID');
-         $initialesJure = TextField::new('initialesJure');
-         $a = IntegerField::new('a');
-         $b = IntegerField::new('b');
-         $c = IntegerField::new('c');
-         $d = IntegerField::new('d');
-         $e = IntegerField::new('e');
-         $f = IntegerField::new('f');
-         $g = IntegerField::new('g');
-         $h = IntegerField::new('h');
-         $i = IntegerField::new('i');
-         $j = IntegerField::new('j');
-         $k = IntegerField::new('k');
-         $l = IntegerField::new('l');
-         $m = IntegerField::new('m');
-         $n = IntegerField::new('n');
-         $o = IntegerField::new('o');
-         $p = IntegerField::new('p');
-         $q = IntegerField::new('q');
-         $r = IntegerField::new('r');
-         $s = IntegerField::new('s');
-         $t = IntegerField::new('t');
-         $u = IntegerField::new('u');
-         $v = IntegerField::new('v');
-         $w = IntegerField::new('w');
-         $iduser = AssociationField::new('iduser');
-         $notesj = AssociationField::new('notesj');
-         $nom = Field::new('nom');
-
-         if (Crud::PAGE_INDEX === $pageName) {
-             return [$nom, $initialesJure, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w, $x, $y];
-         } elseif (Crud::PAGE_DETAIL === $pageName) {
-             return [$id, $prenomJure, $nomJure, $initialesJure, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w, $iduser, $notesj];
-         } elseif (Crud::PAGE_NEW === $pageName) {
-             return [$nomJure, $prenomJure, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w, $x, $y];
-         } elseif (Crud::PAGE_EDIT === $pageName) {
-             return [$nomJure, $prenomJure, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w, $x, $y];
-         }
-     }*/
     public function configureFields(string $pageName): iterable
     {
         $role = 'ROLE_JURY';
-        $listeUser = $this->doctrine->getRepository(User::class)->createQueryBuilder('j')
-            ->select('j')
-            ->where('j.roles LIKE :roles')
+        $listeJures = $this->doctrine->getRepository(Jures::class)->findAll();
+        $userJures = [];
+        $i = 0;
+        foreach ($listeJures as $jure) {
+            $userJures[$i] = $jure->getIduser()->getId();
+            $i += 1;
+        }
+
+        $qb = $this->doctrine->getRepository(User::class)->createQueryBuilder('j');
+        $listeUser = $qb->select('j')//liste id des user qui ne sont pas déjà jurés(pour la création d'un nouveau juré)
+        ->where('j.roles LIKE :roles')
             ->setParameter('roles', '%"' . $role . '"%')
+            ->andWhere('j.id NOT IN ( :user)')
+            ->setParameter('user', $userJures)
             ->getQuery()->getResult();
         if ($pageName == 'edit') {
             $idJure = $_REQUEST['entityId'];
@@ -106,14 +71,14 @@ class JuresCrudController extends AbstractCrudController
 
 
         }
-        $equipesNat = $this->doctrine->getRepository(Equipes::class)->findAll();
+        $equipesNat = $this->doctrine->getRepository(Equipes::class)->findAll();//toutes les équipes du CN
 
         $nomJure = TextField::new('nomJure');
         $prenomJure = TextField::new('prenomJure');
         $id = IntegerField::new('id', 'ID');
         $initialesJure = TextField::new('initialesJure');
         $label = '';
-        foreach ($equipesNat as $equipe) {
+        foreach ($equipesNat as $equipe) {//Création des entête des équipes du tableau index
             $lettre = $equipe->getEquipeinter()->getlettre();
             $label = $label . '<b>' . str_replace(' ', '&nbsp;', str_pad($lettre, 9, ' ', STR_PAD_RIGHT)) . '</b>';
         }
@@ -138,6 +103,7 @@ class JuresCrudController extends AbstractCrudController
 
             return $attribution;
         })->onlyOnIndex();
+        $lesAttributions = CollectionField::new('attributions');
         //$lesAttributions = CollectionField::new('attributions');
         if (($pageName == 'edit') or ($pageName == 'new')) {
             $lesAttributions = CollectionField::new('attributions')->setEntryType(CustomAttributionsType::class)
@@ -149,7 +115,7 @@ class JuresCrudController extends AbstractCrudController
         $notesj = AssociationField::new('notesj');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$nomJure, $initialesJure, $attributions];
+            return [$nomJure, $initialesJure, $lesAttributions];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $prenomJure, $nomJure, $initialesJure, $attributions, $iduser, $notesj];
         } elseif (Crud::PAGE_NEW === $pageName) {
