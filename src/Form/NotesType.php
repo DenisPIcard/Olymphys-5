@@ -33,6 +33,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('oral', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('origin', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('ecrit', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
@@ -44,6 +45,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('oral', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
+                    ->add('repquestionse', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('origin', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('Enregistrer', SubmitType::class);
@@ -55,6 +57,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix,))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix,))
                     ->add('oral', ChoiceType::class, array('choices' => $choix,))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('origin', ChoiceType::class, array('choices' => $choix,))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix,))
                     ->add('ecrit', ChoiceType::class, array('choices' => $choix,))
@@ -65,6 +68,7 @@ class NotesType extends AbstractType
                     ->add('exper', ChoiceType::class, array('choices' => $choix,))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix,))
                     ->add('oral', ChoiceType::class, array('choices' => $choix,))
+                    ->add('repquestions', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
                     ->add('origin', ChoiceType::class, array('choices' => $choix,))
                     ->add('Wgroupe', ChoiceType::class, array('choices' => $choix,))
                     ->add('Enregistrer', SubmitType::class);

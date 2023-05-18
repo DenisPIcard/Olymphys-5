@@ -26,25 +26,28 @@ class Notes
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $origin = 0;
 
-    #[ORM\Column(type: Types::SMALLINT, name:'Wgroupe')]
+    #[ORM\Column(type: Types::SMALLINT, name: 'Wgroupe')]
     private ?int $wgroupe = 0;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $ecrit = 0;
 
-   #[ORM\ManyToOne(targetEntity : Equipes::class, inversedBy:"notess")]
+    #[ORM\ManyToOne(targetEntity: Equipes::class, inversedBy: "notess")]
     private Equipes $equipe;
 
-    #[ORM\ManyToOne(targetEntity : Jures::class, inversedBy:"notesj")]
+    #[ORM\ManyToOne(targetEntity: Jures::class, inversedBy: "notesj")]
     private Jures $jure;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $repquestions = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $total = 0;
 
-    #[ORM\ManyToOne(targetEntity: Coefficients::class) ]
-    #[ORM\JoinColumn(name:"coefficients_id",  referencedColumnName:"id",onDelete:"CASCADE" )]
+    #[ORM\ManyToOne(targetEntity: Coefficients::class)]
+    #[ORM\JoinColumn(name: "coefficients_id", referencedColumnName: "id", onDelete: "CASCADE")]
     private ?Coefficients $coefficients;
+
 
     const NE_PAS_NOTER = 0; // pour les écrits....
     const INSUFFISANT = 1;
@@ -138,6 +141,7 @@ class Notes
             + $this->getDemarche() * $this->coefficients->getDemarche()
             + $this->getOral() * $this->coefficients->getOral()
             + $this->getOrigin() * $this->coefficients->getOrigin()
+            + $this->getRepquestions() * $this->coefficients->getRepquestions()
             + $this->getWgroupe() * $this->coefficients->getWgroupe();
     }
 
@@ -148,6 +152,7 @@ class Notes
             + $this->getOral() * $this->coefficients->getOral()//
             + $this->getOrigin() * $this->coefficients->getOrigin()//
             + $this->getWgroupe() * $this->coefficients->getWgroupe()
+            + $this->getRepquestions() * $this->coefficients->getRepquestions()
             + $this->getEcrit() * $this->coefficients->getEcrit();
 
     }
@@ -197,6 +202,18 @@ class Notes
     public function setCoefficients(?coefficients $coefficients): self
     {
         $this->coefficients = $coefficients;
+
+        return $this;
+    }
+
+    public function getRepquestions(): ?int
+    {
+        return $this->repquestions;
+    }
+
+    public function setRepquestions(?int $repquestions): self
+    {
+        $this->repquestions = $repquestions;
 
         return $this;
     }

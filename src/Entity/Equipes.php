@@ -61,15 +61,23 @@ class Equipes
     #[ORM\OneToMany(mappedBy: 'equipe', targetEntity: Phrases::class)]
     private ?Collection $phrases;
 
-    public function __toString() :string
+    #[ORM\ManyToMany(targetEntity: Jures::class, mappedBy: 'Equipes')]
+    private Collection $jures;
+
+    #[ORM\OneToOne(mappedBy: 'equipe', cascade: ['persist', 'remove'])]
+    private ?Attributions $attribution = null;
+
+    public function __toString(): string
     {
-        return $this->getEquipeinter()->getLettre().' - '.$this->getEquipeinter()->getTitreProjet();
+        return $this->getEquipeinter()->getLettre() . ' - ' . $this->getEquipeinter()->getTitreProjet();
 
     }
+
     public function __construct()
     {
         $this->notess = new ArrayCollection();
         $this->phrases = new ArrayCollection();
+        $this->jures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -193,18 +201,18 @@ class Equipes
     }
 
     public function setCadeau(?Cadeaux $cadeau): self
-        {
-            if ($cadeau === null && $this->cadeau !== null) {
+    {
+        if ($cadeau === null && $this->cadeau !== null) {
             $this->cadeau->setEquipe(null);
-            }
+        }
 
         // set the owning side of the relation if necessary
-            if ($cadeau !== null && $cadeau->getEquipe() !== $this) {
-                $cadeau->setEquipe($this);
-            }
-            $this->cadeau = $cadeau;
+        if ($cadeau !== null && $cadeau->getEquipe() !== $this) {
+            $cadeau->setEquipe($this);
+        }
+        $this->cadeau = $cadeau;
 
-            return $this;
+        return $this;
     }
 
     public function getPrix(): ?Prix
@@ -213,10 +221,10 @@ class Equipes
     }
 
     public function setPrix(?Prix $prix): self
-    {   
+    {
         if ($prix === null && $this->prix !== null) {
-        $this->prix->setEquipe(null);
-    }
+            $this->prix->setEquipe(null);
+        }
 
         // set the owning side of the relation if necessary
         if ($prix !== null && $prix->getEquipe() !== $this) {
@@ -311,5 +319,72 @@ class Equipes
         return $this;
     }
 
+    public function getAttrib($jure): ?int
+    {
+
+        $jures = $this->getJures();
+        $attribs = [];
+        $attrib = null;
+        if ($jure instanceof $jures) {
+            $attribs = $jure->getAttributions();
+            $attrib = 0;
+            if (in_array($this->id, $attribs)) {
+
+                $attrib = 1;
+            }
+        }
+        return $attrib;
+
+
+    }
+
+    /**
+     * @return Collection<int, Jures>
+     */
+    public function getJures(): Collection
+    {
+        return $this->jures;
+    }
+
+    public function addJure(Jures $jure): self
+    {
+        if (!$this->jures->contains($jure)) {
+            $this->jures->add($jure);
+            $jure->addEquipesnat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJure(Jures $jure): self
+    {
+        if ($this->jures->removeElement($jure)) {
+            $jure->removeEquipesnat($this);
+        }
+
+        return $this;
+    }
+
+    public function getAttribution(): ?Attributions
+    {
+        return $this->attribution;
+    }
+
+    public function setAttribution(?Attributions $attribution): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($attribution === null && $this->attribution !== null) {
+            $this->attribution->setEquipe(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($attribution !== null && $attribution->getEquipe() !== $this) {
+            $attribution->setEquipe($this);
+        }
+
+        $this->attribution = $attribution;
+
+        return $this;
+    }
 
 }

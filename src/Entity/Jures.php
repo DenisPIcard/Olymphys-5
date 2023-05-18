@@ -116,6 +116,9 @@ class Jures
     #[ORM\OneToMany(targetEntity: Phrases::class, mappedBy: "jure")]
     private ?Collection $phrases;
 
+    #[ORM\ManyToMany(targetEntity: Attributions::class, inversedBy: 'jure', cascade: ['persist', 'remove'])]
+    private ?Collection $attributions;
+
 
     /**
      * Constructor
@@ -124,6 +127,9 @@ class Jures
     {
         $this->notesj = new ArrayCollection();
         $this->phrases = new ArrayCollection();
+        $this->attributions = new ArrayCollection();
+        $this->Equipesnat = new ArrayCollection();
+
 
     }
 
@@ -744,30 +750,6 @@ class Jures
         return $this;
     }
 
-    public function getAttributions(): ?array
-    {
-        $attribution = array();
-
-        foreach (range('A', 'Z') as $i) {
-            // On récupère le nom du getter correspondant à l'attribut.
-            $method = 'get' . ucfirst($i);
-
-
-            // Si le getter correspondant existe.
-            if (method_exists($this, $method)) {
-                // On appelle le setter.
-                $statut = $this->$method();
-                if ($statut == 1) {
-                    $attribution[$i] = 1;
-                } elseif (is_int($statut)) {
-                    $attribution[$i] = 0;
-                }
-            }
-
-        }
-        return $attribution;
-
-    }
 
     /**
      * Add notesj
@@ -887,6 +869,30 @@ class Jures
                 $phrase->setJure(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Attributions>
+     */
+    public function getAttributions(): ?Collection
+    {
+        return $this->attributions;
+    }
+
+    public function addAttribution(Attributions $attribution): self
+    {
+        if (!$this->attributions->contains($attribution)) {
+            $this->attributions->add($attribution);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribution(Attributions $attribution): self
+    {
+        $this->attributions->removeElement($attribution);
 
         return $this;
     }

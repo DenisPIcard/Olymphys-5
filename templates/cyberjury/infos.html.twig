@@ -7,13 +7,14 @@
     {{ equipe.equipeinter.titreProjet }}
 
     {% if memoires!=null %}
-        <a href="/odpf/odpf-archives/{{ equipe.equipeinter.edition.ed}}/fichiers/memoires/{{ memoires[0].fichier }}" class="fas fa-book-reader"
+        <a href="{{ path('telecharger_un_fichier_prof',{'idFichier': memoires[0].id}) }}"
+           class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
     {% endif %}
 
     <a href="{{ path('cyberjury_phrases_amusantes', {'id':id_equipe } ) }}" class="fas fa-pencil-alt"
        title="Les phrases amusantes"> </a>
-    <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipe.equipeinter.id~'-'~'-national-'~'liste_cn_comite'} ) }}"
+    <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipe.equipeinter.id~'-'~'national-'~'liste_cn_comite'} ) }}"
        class="far fa-address-card"
        title="Tous les fichiers de l'équipe(diaporama)"> </a>
 {% endblock %}
@@ -23,27 +24,27 @@
     {{ include ('cyberjury/navigation.html.twig') }}
 {% endblock %}
 {% block body %}
-<div class="well">
-    <ul>
+    <div class="well">
+        <ul>
 
-        <li> L'établissement : {{ equipe.equipeinter.nomLycee|title }}, ville
-            : {{ equipe.equipeinter.lyceeLocalite|title }}
-            , académie : {{ equipe.equipeinter.lyceeAcademie|title }} </li>
-        <li> Les enseignants : {{ equipe.equipeinter.prenomProf1|title }}  {{ equipe.equipeinter.nomProf1|title }},
+            <li> L'établissement : {{ equipe.equipeinter.nomLycee|title }}, ville
+                : {{ equipe.equipeinter.lyceeLocalite|title }}
+                , académie : {{ equipe.equipeinter.lyceeAcademie|title }} </li>
+            <li> Les enseignants : {{ equipe.equipeinter.prenomProf1|title }}  {{ equipe.equipeinter.nomProf1|title }},
 
-            {% if   equipe.equipeinter.nomProf2 != null %}
-                {{ equipe.equipeinter.prenomProf2|title }} {{ equipe.equipeinter.nomProf2|title }},
+                {% if   equipe.equipeinter.nomProf2 != null %}
+                    {{ equipe.equipeinter.prenomProf2|title }} {{ equipe.equipeinter.nomProf2|title }},
 
-            {% endif %}
-        </li>
-        <li> Les élèves :
-            <ul>
-                {% for eleve in listEleves %}
-                    <li> {{ eleve.prenom|title }}  {{ eleve.nom|title }}({{ eleve.genre }}), en classe
-                        de {{ eleve.classe }}</li>
-                {% endfor %}
-            </ul>
-        </li>
-    </ul>
-</div>
+                {% endif %}
+            </li>
+            <li> Les élèves :
+                <ul>
+                    {% for eleve in listEleves %}
+                        <li> {{ eleve.prenom|title }}  {{ eleve.nom|title }}({{ eleve.genre }}), en classe
+                            de {{ eleve.classe }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
 {% endblock %}

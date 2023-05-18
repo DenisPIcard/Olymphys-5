@@ -717,6 +717,7 @@ class FichiersController extends AbstractController
             $id_equipe = $Infos[4];
         }
         $concours = $Infos[1];
+        
         $choix = $Infos[2];
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
@@ -764,7 +765,7 @@ class FichiersController extends AbstractController
 
         }
         if (in_array('ROLE_JURYCIA', $roles)) {
-            
+
             $qbInit->andWhere('t.typefichier in (0,1,2,4,5)');
             $liste_fichiers = $qbInit->getQuery()->getResult();
             $autorisations = [];

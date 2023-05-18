@@ -6,7 +6,8 @@
 
         {{ equipe.equipeinter.lettre }} </span>  {{ equipe.equipeinter.titreProjet }}
     {% if memoire!=null %}
-        <a href="{{ asset('odpf/odpf-archives/'~equipe.equipeinter.edition.ed~'/fichiers/memoires/'~ memoire.fichier) }}" class="fas fa-book-reader"
+        <a href="{{ path('telecharger_un_fichier_prof',{'idFichier': memoire.id}) }}"
+           class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
     {% endif %}
 
@@ -15,7 +16,7 @@
 
     <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="fas fa-pencil-alt"
        title="Les phrases amusantes"> </a>
-    <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipe.equipeinter.id~'-'~'-national-'~'liste_cn_comite'} ) }}"
+    <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipe.equipeinter.id~'-'~'national-'~'liste_cn_comite'} ) }}"
        class="far fa-address-card"
        title="Tous les fichiers de l'équipe(diaporama)"> </a>
 

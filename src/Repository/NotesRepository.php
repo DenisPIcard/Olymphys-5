@@ -23,7 +23,7 @@ class NotesRepository extends EntityRepository
         $queryBuilder
             ->where('n.jure=:jure_id')
             ->setParameter('jure_id', $jure_id)
-            ->orderBy('n.exper*10 + n.demarche*10 + n.oral*12.5 + n.origin*12.5 + n.wgroupe*5', 'DESC');
+            ->orderBy('n.exper*15 + n.demarche*10 + n.oral*10 + n.origin*15 + n.wgroupe*5 + n.ecrit*15 + n.repquestions*10', 'DESC');
 
         // on récupère la query
         $query = $queryBuilder->getQuery();
@@ -31,11 +31,11 @@ class NotesRepository extends EntityRepository
         // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
         // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
         $results = $query->getResult();
-        $i=1;
-        foreach($results as $result) {
+        $i = 1;
+        foreach ($results as $result) {
             $id = $result->getEquipe()->getId();
             $rangs[$id] = $i;
-            $i=$i+1;
+            $i = $i + 1;
         }
         return $rangs;
     }
