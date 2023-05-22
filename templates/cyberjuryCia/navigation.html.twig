@@ -16,6 +16,8 @@
             <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_gestionjures') }}"
                role="button" aria-pressed="true">Gestion des jurés</a>
         {% endif %}
+        <a class="dropdown-item login py-0" href="{{ path('cyberjuryCia_gerer_conseils_equipe',{'centre' : centre}) }}">Voir
+            les conseils du jury</a>
     </div>
 </li>
 <li class="nav-item dropdown menu_haut">

@@ -1,0 +1,22 @@
+{% extends "base1.html.twig" %}
+{% block title %} Conseils du jury {% endblock %}
+
+{% block titre3 %}
+    Rédaction d'un conseil pour l'équipe :<br>
+    <a class="btn btn-primary btn-lg"
+       href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': equipe.id} ) }}"
+       title="Rédiger mon conseil à donner à cette équipe"> {{ equipe.numero }} </a>
+    {{ equipe.titreProjet }}
+
+    <a href="{{ path('cyberjuryCia_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
+       title="En savoir plus sur cette équipe"> </a>
+
+{% endblock %}
+
+{% block navigation %}
+    {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+{% endblock %}
+{% block body %}
+
+    {{ include ("cyberjuryCia/form-conseils.html.twig") }}
+{% endblock %}

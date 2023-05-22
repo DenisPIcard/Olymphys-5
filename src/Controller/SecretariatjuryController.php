@@ -154,13 +154,12 @@ class SecretariatjuryController extends AbstractController
                 $id_jure = $jure->getId();
                 $nbre_jures += 1;
                 //vérifie l'attribution du juré ! 0 si assiste, 1 si lecteur sinon Null
-                $method = 'get' . ucfirst($lettre);
-                $statut = $jure->$method();
+                $attrib = $repositoryJures->getAttribution($jure);;
                 //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher
-                if (is_null($statut)) {
+                if (!isset($attrib[$lettre])) {
                     $progression[$nbre_equipes][$nbre_jures] = 'ras';
 
-                } elseif ($statut == 1) {
+                } elseif ($attrib[$lettre] == 1) {
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();
                 } else {

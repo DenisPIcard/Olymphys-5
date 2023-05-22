@@ -2,7 +2,9 @@
 {% block title %} Classement des équipes {% endblock %}
 
 {% block titre3 %} Classement des équipes de {{ centre }}<br>
-    <div class="smallsize"> Points obtenus par les équipes, tenant compte du mémoire</div>
+    <div class="smallsize" title="Ce total regroupe tous les jurés ayant examiné l'équipe"> Total des points obtenus par
+        les équipes, tenant compte du mémoire
+    </div>
 {% endblock %}
 
 {% block navigation %}
@@ -24,22 +26,53 @@
                 <th>Éq.</th>
                 <th>Projet</th>
                 <th title="points">Points</th>
+                <th title="modifier le classement" colspan="2" style="text-align: center">Ajuster le classement</th>
+                <th>Conseils-Remarques</th>
             </tr>
             </thead>
             <tbody>
-            {% for key,  point in points %}
+            {% for rang in rangs %}
                 <tr>
-                    <th>{{ loop.index }}  </th>
-                    {% for equipe in equipes %}
-                        {% if equipe.id == key %}
-                            <td>
-                                <button type="button" class="btn btn-primary btn-lg">{{ equipe.numero }}</button>
-                            </td>
+                    <th>{{ rang.rang }}  </th>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-lg">{{ rang.equipe.numero }}</button>
+                    </td>
 
-                            <td> {{ equipe.titreProjet }} </td>
-                            <td>{{ point }} </td>
-                        {% endif %}
-                    {% endfor %}
+                    <td> {{ rang.equipe.titreProjet }} </td>
+                    <td>{{ rang.points }} </td>
+                    {% if loop.first %}
+                        <td style="text-align: center"><a
+                                    href="#"><i
+                                        class="fas fa-arrow-circle-up fa-lg"
+                                        title="Remonter cette équipe"></i></a>
+                        </td>
+                    {% else %}
+                        <td style="text-align: center"><a
+                                    href="{{ path('cyberjuryCia_modif_rang_equipe_cia',{'idRang':rang.id,'sens':'up'}) }}"><i
+                                        class="fas fa-arrow-circle-up fa-lg"
+                                        title="Remonter cette équipe"></i></a>
+                        </td>
+                    {% endif %}
+                    {% if loop.last %}
+                        <td style="text-align: center"><a
+                                    href="#"><i
+                                        class="fas fa-arrow-circle-down fa-lg"
+                                        title="Redescendre cette équipe"></i></a>
+                        </td>
+
+                    {% else %}
+                        <td style="text-align: center"><a
+                                    href="{{ path('cyberjuryCia_modif_rang_equipe_cia',{'idRang':rang.id,'sens':'down'}) }}"><i
+                                        class="fas fa-arrow-circle-down fa-lg"
+                                        title="Redescendre cette équipe"></i></a>
+                        </td>
+                    {% endif %}
+                    <td>
+                        <a href="{{ path('cyberjuryCia_rediger_conseils_equipe', {'idEquipe': rang.equipe.id,'page':'classement'} ) }}"
+                           class="fas fa-pencil-alt"
+                           title="Conseils et remarques"> </a>
+                    </td>
+
                 </tr>
             {% endfor %}
 

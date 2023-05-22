@@ -3,18 +3,19 @@
 namespace App\Controller\Cia;
 
 
+use App\Entity\Centrescia;
+use App\Entity\Cia\ConseilsjuryCia;
 use App\Entity\Cia\JuresCia;
 use App\Entity\Cia\NotesCia;
+use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Elevesinter;
-use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
-use App\Entity\Jures;
 use App\Entity\Notes;
 use App\Entity\User;
+use App\Form\ConseilJuryCiaType;
 use App\Form\NotesCiaType;
-use App\Form\NotesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -83,6 +84,8 @@ class JuryCiaController extends AbstractController
         $listeEquipes = $repositoryEquipes->createQueryBuilder('e')
             ->where('e.edition =:edition')
             ->setParameter('edition', $edition)
+            ->andWhere('e.centre =:centre')
+            ->setParameter('centre', $this->getUser()->getCentrecia())
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
         foreach ($listeEquipes as $equipe) {
@@ -282,14 +285,12 @@ class JuryCiaController extends AbstractController
                     ->where('n.equipe =:equipe')
                     ->setParameter('equipe', $equipe)
                     ->getQuery()->getResult();
-                $nbNotes = count($notesequipe);
 
-                $equipe->setNbNotes($nbNotes + 1);
-                $em->persist($equipe);
             }
             $em->persist($notes);
             $em->flush();
-
+            $repo = $this->doctrine->getRepository(RangsCia::class);
+            $points = $repo->classement($this->getUser()->getCentreCia());
             //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
             // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
             return $this->redirectToroute('cyberjuryCia_tableau_de_bord', array('critere' => 'TOT', 'sens' => 'DESC'));
@@ -417,4 +418,93 @@ class JuryCiaController extends AbstractController
         return $queryBuilder;
     }
 
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/cyberjuryCia/rediger_conseils_equipe,{idEquipe},{page}", name: "cyberjuryCia_rediger_conseils_equipe")]
+    public function rediger_conseils_jury(Request $request, $idEquipe, $page)
+    {
+        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
+        $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()]);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
+        $equipe = $repositoryEquipes->find($idEquipe);
+        $repositoryConseils = $this->doctrine->getRepository(ConseilsjuryCia::class);
+        $conseil = $repositoryConseils->findOneBy(['equipe' => $equipe]);
+
+        if ($conseil === null) {
+            $conseil = new ConseilsjuryCia();
+            //$conseil->setJure($jure);
+            $conseil->setEquipe($equipe);
+        }
+        $form = $this->createForm(ConseilJuryCiaType::class, $conseil);
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $this->doctrine->getManager()->persist($conseil);
+            $this->doctrine->getManager()->flush();
+            if ($page == 'evaluation') {
+                return $this->redirectToRoute('cyberjuryCia_evaluer_une_equipe', ['id' => $equipe->getId()]);
+            }
+            if ($page == 'classement') {
+                return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $this->getUser()->getCentrecia()]);
+            }
+        }
+        return $this->render('cyberjuryCia/conseils_jury_cia.html.twig', array('equipe' => $equipe, 'form' => $form->createView(),));
+    }
+
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/cyberjuryCia/gerer_conseils_equipe,{centre}", name: "cyberjuryCia_gerer_conseils_equipe")]
+    public function gerer_conseils_jury(Request $request, $centre)
+    {
+        $edition = $this->requestStack->getSession()->get('edition');
+        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
+        $equipes = $repositoryEquipes->findBy(['centre' => $centre, 'edition' => $edition]);
+        $repositoryConseils = $this->doctrine->getRepository(ConseilsjuryCia::class);
+        $conseils = $repositoryConseils->createQueryBuilder('c')
+            ->select()
+            ->leftJoin('c.equipe', 'eq')
+            ->andWhere('eq.edition =:edition')
+            ->andWhere('eq.centre =:centre')
+            ->setParameters(['edition' => $edition, 'centre' => $centre])
+            ->getQuery()->getResult();
+
+        return $this->render('cyberjuryCia/gestion_conseils_jury_cia.html.twig', array('equipes' => $equipes, 'conseils' => $conseils, 'centre' => $centre));
+    }
+
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/cia/JuryCia/modif_rang_equipe_cia, {idRang},{sens}", name: "cyberjuryCia_modif_rang_equipe_cia", requirements: ["equipe" => "\d{1}|\d{2}"])]
+    public function modif_rang_equipe_cia(Request $request, $idRang, $sens): Response
+    {
+        $rangEquipe = $this->doctrine->getRepository(RangsCia::class)->find($idRang);
+
+        if ($sens == 'up') {
+            $rangEquipeUp = $this->doctrine->getRepository(RangsCia::class)->createQueryBuilder('r')
+                ->leftJoin('r.equipe', 'eq')
+                ->where('eq.centre =:centre')
+                ->andWhere('r.rang =:rang')
+                ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'rang' => $rangEquipe->getRang() - 1])
+                ->getQuery()->getOneOrNullResult();
+
+            $nouveauRang = $rangEquipe->getRang() - 1;
+            $rangEquipeUp->setRang($rangEquipe->getRang());
+            $rangEquipe->setRang($nouveauRang);
+            $this->doctrine->getManager()->persist($rangEquipeUp);
+            $this->doctrine->getManager()->persist($rangEquipe);
+            $this->doctrine->getManager()->flush();
+        }
+        if ($sens == 'down') {
+            $rangEquipeDown = $this->doctrine->getRepository(RangsCia::class)->createQueryBuilder('e')
+                ->leftJoin('e.equipe', 'eq')
+                ->where('eq.centre =:centre')
+                ->andWhere('e.rang =:rang')
+                ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'rang' => $rangEquipe->getRang() + 1])
+                ->getQuery()->getOneOrNullResult();
+            $nouveauRang = $rangEquipe->getRang() + 1;
+            $rangEquipeDown->setRang($rangEquipe->getRang());
+            $rangEquipe->setRang($nouveauRang);
+            $this->doctrine->getManager()->persist($rangEquipeDown);
+            $this->doctrine->getManager()->persist($rangEquipe);
+            $this->doctrine->getManager()->flush();
+        }
+
+        return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $this->getUser()->getCentrecia()]);
+
+    }
 }

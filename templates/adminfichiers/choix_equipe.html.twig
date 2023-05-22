@@ -223,7 +223,12 @@
         {% endif %}
     {% endif %}
     {% if centre is defined %}
-        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] or app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[] %}
+        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
+            <div style="text-align:center">
+                <a href="{{ path('secretariatjuryCia_accueil',{'centre':app.user.centrecia}) }}">Cyberjury</a>
+
+            </div>
+        {% elseif  app.user.roles|filter(v => v =='ROLE_COMITE')!=[] or app.user.roles|filter(v => v =='ROLE_SUPER_ADMIN')!=[] %}
             <div style="text-align:center">
                 <a href="{{ path('fichiers_choix_centre') }}">Retour à la liste des centres</a>
 

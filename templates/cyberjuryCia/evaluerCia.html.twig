@@ -10,7 +10,9 @@
            class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
     {% endif %}
-
+    <a href="{{ path('cyberjuryCia_rediger_conseils_equipe', {'idEquipe': equipe.id,'page':'evaluation'} ) }}"
+       class="fas fa-pencil-alt"
+       title="Conseils et remarques"> </a>
     <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
        title="En savoir plus sur cette équipe"> </a>
 

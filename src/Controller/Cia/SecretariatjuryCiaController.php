@@ -4,6 +4,7 @@ namespace App\Controller\Cia;
 
 
 use App\Entity\Centrescia;
+use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
@@ -108,9 +109,14 @@ class SecretariatjuryCiaController extends AbstractController
         $em = $this->doctrine->getManager();
         $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
         $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
-        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
-        $listJures = $repositoryJures->findAll();
         $centrecia = $repositoryCentres->findOneBy(['centre' => $centre]);
+        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
+        $listJures = $repositoryJures->createQueryBuilder('j')
+            ->leftJoin('j.iduser', 'u')
+            ->where('u.centrecia =:centre')
+            ->setParameter('centre', $centrecia)
+            ->getQuery()->getResult();
+
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centrecia]);
 
@@ -132,7 +138,7 @@ class SecretariatjuryCiaController extends AbstractController
                 } elseif ($statut == 1) {// le juré évalue le mémoire(il est rapporteur)
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();
-                } else { // Le juré n'évalue pas le mémoire, il est semble examinateur
+                } else { // Le juré n'évalue pas le mémoire, il est simple examinateur
                     $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
                     $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getPoints();
                 }
@@ -155,44 +161,24 @@ class SecretariatjuryCiaController extends AbstractController
     #[Route("/secretariatjuryCia/classement,{centre}", name: "secretariatjuryCia_classement")]
     public function classement($centre): Response
     {
+
         // affiche les équipes dans l'ordre de la note brute
-        $em = $this->doctrine->getManager();
+        $edition = $this->requestStack->getSession()->get('edition');
         $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
-        $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
-        $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+        $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);
         $centrecia = $repositoryCentres->findOneBy(['centre' => $centre]);
-        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centrecia]);
-        $points = [];
+        $listEquipes = $repositoryEquipes->findBy(['edition' => $edition, 'centre' => $centre]);
 
-        foreach ($listEquipes as $equipe) {
-            $listesNotes = $repositoryNotes->getNotess($equipe);
-            $nbre_notes = count($listesNotes);//a la place de $equipe->getNbNotes();
-            $points[$equipe->getId()] = 0;
-            $nb_notes_ecrit = 0;
-            $total_ecrit = 0;
-            foreach ($listesNotes as $note) {
-                $points[$equipe->getId()] = $points[$equipe->getId()] + $note->getPoints();
-                if ($note->getEcrit() != null) {
-                    $nb_notes_ecrit = $nb_notes_ecrit + 1;
-                    $total_ecrit = $total_ecrit + $note->getEcrit();
-                }
-            }
-            if ($nbre_notes != 0) {
-                if ($nb_notes_ecrit != 0) {
-                    $points[$equipe->getId()] = intval($points[$equipe->getId()] / $nbre_notes + ($total_ecrit / $nb_notes_ecrit));
-                } else {
-                    $points[$equipe->getId()] = intval($points[$equipe->getId()] / $nbre_notes);
-                }
-            } else {
-                $points[$equipe->getId()] = 0;
-            }
-
-        }
-        arsort($points);
-
+        $rangs = $repositoryRangs->createQueryBuilder('r')
+            ->leftJoin('r.equipe', 'eq')
+            ->where('eq.edition =:edition')
+            ->andWhere('eq.centre =:centre')
+            ->setParameters(['edition' => $edition, 'centre' => $centrecia])
+            ->addOrderBy('r.rang', 'ASC')
+            ->getQuery()->getResult();
         $content = $this->renderView('cyberjuryCia/classement.html.twig',
-            array('points' => $points, 'equipes' => $listEquipes, 'centre' => $centrecia->getCentre())
+            array('rangs' => $rangs, 'equipes' => $listEquipes, 'centre' => $centrecia->getCentre())
         );
         return new Response($content);
     }
@@ -391,7 +377,7 @@ class SecretariatjuryCiaController extends AbstractController
             ->setCreator("Olymphys")
             ->setLastModifiedBy("Olymphys")
             ->setTitle("CIA-" . $this->getUser()->getCentrecia() . "-Tableau destiné aux organisateurs")
-            ->setSubject("Tableau destiné aux organisateurds")
+            ->setSubject("Tableau destiné aux organisateurs")
             ->setDescription("Office 2007 XLSX répartition des jurés")
             ->setKeywords("Office 2007 XLSX")
             ->setCategory("Test result file");

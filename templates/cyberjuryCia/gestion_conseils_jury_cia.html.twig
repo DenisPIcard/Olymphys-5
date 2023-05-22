@@ -1,0 +1,50 @@
+{% extends "base1.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+{% block title %} Conseils aux équipes {% endblock %}
+
+{% block titre3 %} Conseils destinés aux équipes de {{ centre.centre }}
+    <div class="smallsize"></div> {% endblock %}
+
+{% block navigation %}
+    {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
+        {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% elseif app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
+        {{ include ("cyberjuryCia/navigationJury.html.twig") }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            {% for equipe in equipes %}
+                <tr>
+                    <th>
+                        <button type="button" class="btn btn-primary btn-lg">{{ equipe.numero }}</button>
+                    </th>
+                    <th>
+                        {{ equipe.titreProjet }}
+                    </th>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    {% for conseil in conseils %}
+                        {% if conseil.equipe == equipe %}
+                            <td>
+                                {{ conseil.texte|raw }}
+                            </td>
+                            <td>
+                                <a href="" type="button" class="btn btn-outline-primary"> Modifier</a>
+                            </td>
+                            <td>
+                                <a href="" type="button" class="btn btn-outline-danger"> Envoyer à l'équipe</a>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

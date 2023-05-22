@@ -10,9 +10,16 @@
 
 </li>
 <li class="nav-item dropdown menu_haut">
-    <a class="nav-link" href="{{ path('secretariatjuryCia_classement',{'centre':app.user.centrecia}) }}" role="button"
-       aria-haspopup="true"
-       aria-expanded="false">Classement de toute les équipes</a>
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
+       aria-haspopup="true" aria-expanded="false">Délibération du jury de {{ app.user.centrecia }}</a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item login py-0"
+           href="{{ path('secretariatjuryCia_classement',{'centre':app.user.centrecia}) }}">Classement de toute les
+            équipes</a>
+        <a class="dropdown-item login py-0"
+           href="{{ path('cyberjuryCia_gerer_conseils_equipe',{'centre' : app.user.centrecia}) }}">Voir
+            les conseils du jury</a>
+    </div>
 </li>
 {#  <li class="nav-item dropdown menu_haut">
     <a class="nav-link" href="#"  aria-haspopup="true"
