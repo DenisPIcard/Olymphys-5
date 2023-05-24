@@ -364,7 +364,7 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/secretariatjuryCia/tableauexcel_repartition", name: "secretariatjuryCia_tableau excel_repartition")]
-    public function tableauexcel_repartition()
+    public function tableauexcel_repartition(): void
     {
         $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()]);
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')

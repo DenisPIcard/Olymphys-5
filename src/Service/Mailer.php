@@ -17,7 +17,7 @@ use Twig\Environment;
 
 class Mailer
 {
-    private $requestStack;
+    private RequestStack $requestStack;
     private MailerInterface $mailer;
     private $twig;
 
@@ -41,7 +41,7 @@ class Mailer
             ->htmlTemplate('email/nouvel_utilisateur.html.twig')
             ->context([
                 'user' => $user,
-                'rne' => $rne_obj
+                'uai' => $rne_obj
             ]);
         $this->mailer->send($email);
         return $email;
@@ -126,7 +126,7 @@ class Mailer
                 ->addCc('emma.gosse@orange.fr')
                 ->htmlTemplate('email/confirme_inscription.html.twig')
                 ->subject('Inscription de l\'équipe  ' . $equipe->getNumero() . ' par ' . $user->getPrenomNom())
-                ->context(['equipe' => $equipe, 'userNom' => $user->getPrenomNom(), 'userMail' => $user->getEmail()]);//la valeur de la variable user ne passe pas dans le template, sécurité ? D'où les strings Nom et email
+                ->context(['equipe' => $equipe, 'userNom' => $user->getPrenomNom(), 'userMail' => $user->getEmail()]);//la valeur de la variable user ne passe pas dans le template, sécurité ? D'où les strings Nom et images
             /* ->attachFromPath('docequipes/30-fiche matériel-sécurité.doc');
          ->html('Bonjour<br>
                      Nous confirmons que ' . $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
@@ -140,7 +140,7 @@ class Mailer
             if ($checkChange != null) {
                 if (isset($checkChange['inscrite'])) {
                     if ($checkChange['inscrite'] == 'NON') {
-                        $changetext = '<h1>Desinscription de l\'équipe !</h1><br>';
+                        $changetext = '<h1>Désinscription de l\'équipe !</h1><br>';
                         $checkChange['inscrite'] = $equipe->getIdProf1()->getPrenomNom() . '(<a href="' . $user->getEmail() . '">' . $user->getEmail() .
                             '</a>) du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a désinscrit l\'équipe denommée : ' . $equipe->getTitreProjet();
                     }
@@ -176,7 +176,10 @@ class Mailer
 
     }
 
-    public function sendInscriptionUserJure($orgacia, $jure, $pwd)
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendInscriptionUserJure($orgacia, $jure, $pwd): TemplatedEmail
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')

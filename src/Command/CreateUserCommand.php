@@ -39,7 +39,7 @@ class CreateUserCommand extends Command
             ->setDescription('Create a user.')
             ->setDefinition(array(
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
-                new InputArgument('email', InputArgument::REQUIRED, 'The email'),
+                new InputArgument('images', InputArgument::REQUIRED, 'The images'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
             ));
     }
@@ -55,7 +55,7 @@ class CreateUserCommand extends Command
 
         $username = $input->getArgument('username');
 
-        $email = $input->getArgument('email');
+        $email = $input->getArgument('images');
 
         $password = $input->getArgument('password');
         $password = $this->passwordEncoder->hashPassword($user, $password);
@@ -90,9 +90,9 @@ class CreateUserCommand extends Command
             $questions['username'] = $question;
         }
 
-        if (!$input->getArgument('email')) {
-            $question = new Question('Please choose an email:');
-            $questions['email'] = $question;
+        if (!$input->getArgument('images')) {
+            $question = new Question('Please choose an images:');
+            $questions['images'] = $question;
         }
 
         if (!$input->getArgument('password')) {
