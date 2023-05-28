@@ -15,7 +15,7 @@ class Elevesinter
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type : Types::INTEGER, nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $numsite = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -30,13 +30,13 @@ class Elevesinter
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $classe = null;
 
-    #[ORM\ManyToOne]
-    private ?Equipesadmin $equipe=null;
+    #[ORM\ManyToOne(targetEntity: Equipesadmin::class)]
+    private ?Equipesadmin $equipe;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $courriel = null;
 
-    #[ORM\OneToOne(targetEntity: Fichiersequipes::class, mappedBy: 'eleve', cascade : ['persist', 'remove'] )]
+    #[ORM\OneToOne(targetEntity: Fichiersequipes::class, mappedBy: 'eleve', cascade: ['persist', 'remove'])]
     private ?Fichiersequipes $autorisationphotos;
 
     public function __toString()

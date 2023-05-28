@@ -89,7 +89,7 @@ class Equipesadmin
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $idProf1;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $idProf2;
 
     #[ORM\Column(nullable: true)]

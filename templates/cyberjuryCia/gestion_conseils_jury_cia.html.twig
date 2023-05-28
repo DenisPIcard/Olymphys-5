@@ -44,7 +44,9 @@
                                    class="fas fa-pencil-alt" title="modifier"> </a>
                             </td>
                             <td>
-                                <a class="fas fa-envelope" href="" title="Envoyer à l'équipe"> </a>
+                                <a class="fas fa-envelope"
+                                   href="{{ path('secretariatjuryCia_envoi_mail_conseils',{'idEquipe':conseil.equipe.id}) }}"
+                                   title="Envoyer à l'équipe"> </a>
                             </td>
                         {% endif %}
                     {% endfor %}
