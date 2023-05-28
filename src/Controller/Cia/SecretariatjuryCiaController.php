@@ -472,7 +472,11 @@ class SecretariatjuryCiaController extends AbstractController
         $prof1 = $equipe->getIdProf1();
         $prof2 = $equipe->getIdProf2();
         $conseil = $this->doctrine->getRepository(ConseilsjuryCia::class)->findOneBy(['equipe' => $equipe]);
+
+
         $mailer->sendConseil($conseil, $prof1, $prof2);
 
+
+        return $this->redirectToRoute('cyberjuryCia_gerer_conseils_equipe', ['centre' => $equipe->getCentre()->getCentre()]);
     }
 }
