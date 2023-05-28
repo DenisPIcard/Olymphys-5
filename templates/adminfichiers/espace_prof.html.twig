@@ -41,10 +41,12 @@
     </div>
 {% endblock %}
 {% block navigation %}
-    {% if is_granted('ROLE_ORGACIA') %}
+    {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
         {{ include ("cyberjuryCia/navigation.html.twig") }}
-    {% elseif is_granted('ROLE_JURYCIA') %}
+    {% elseif app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
         {{ include ("cyberjuryCia/navigationJury.html.twig") }}
+
+    
     {% endif %}
 {% endblock %}
 {% block body %}

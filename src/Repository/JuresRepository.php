@@ -69,7 +69,6 @@ class JuresRepository extends ServiceEntityRepository
         return $attribution;
 
     }
-
 }
 
 

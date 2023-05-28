@@ -47,6 +47,9 @@ class JuresCia
     #[ORM\Column(type: Types::JSON, nullable: true)]//Tableau contenant l'Id des  équipes pour lesquelles le jurés est rapporteur
     private ?array $rapporteur = [];
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $numJury = 1;
+
     /**
      * Constructor
      */
@@ -242,6 +245,18 @@ class JuresCia
     public function removeNote(NotesCia $note): self
     {
         $this->equipes->removeElement($note);
+
+        return $this;
+    }
+
+    public function getNumJury(): ?int
+    {
+        return $this->numJury;
+    }
+
+    public function setNumJury(?int $numJury): self
+    {
+        $this->numJury = $numJury;
 
         return $this;
     }

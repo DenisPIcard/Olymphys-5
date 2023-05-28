@@ -57,12 +57,9 @@ class RangsCiaRepository extends ServiceEntityRepository
     {
         // affiche les équipes dans l'ordre de la note brute
 
-        $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
+
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
-        $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);
-        $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
-
         $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centre]);
         $points = [];
 
@@ -110,28 +107,38 @@ class RangsCiaRepository extends ServiceEntityRepository
         return $points;
 
     }
-//    /**
-//     * @return RangsCia[] Returns an array of RangsCia objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?RangsCia
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function classementSousJury($equipes)
+    {
+        $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
+        $points = [];
+
+        foreach ($equipes as $equipe) {
+            $listesNotes = $repositoryNotes->getNotess($equipe);
+            $nbre_notes = count($listesNotes);//a la place de $equipe->getNbNotes();
+            $points[$equipe->getId()] = 0;
+            $nb_notes_ecrit = 0;
+            $total_ecrit = 0;
+            foreach ($listesNotes as $note) {
+                $points[$equipe->getId()] = $points[$equipe->getId()] + $note->getPoints();
+                if ($note->getEcrit() != null) {
+                    $nb_notes_ecrit = $nb_notes_ecrit + 1;
+                    $total_ecrit = $total_ecrit + $note->getEcrit();
+                }
+            }
+            if ($nbre_notes != 0) {
+                if ($nb_notes_ecrit != 0) {
+                    $points[$equipe->getId()] = intval($points[$equipe->getId()] / $nbre_notes + ($total_ecrit / $nb_notes_ecrit));
+                } else {
+                    $points[$equipe->getId()] = intval($points[$equipe->getId()] / $nbre_notes);
+                }
+            } else {
+                $points[$equipe->getId()] = 0;
+            }
+
+        }
+        arsort($points);
+        return $points;
+    }
+
 }

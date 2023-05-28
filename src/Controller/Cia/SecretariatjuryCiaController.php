@@ -4,6 +4,7 @@ namespace App\Controller\Cia;
 
 
 use App\Entity\Centrescia;
+use App\Entity\Cia\ConseilsjuryCia;
 use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
@@ -183,9 +184,30 @@ class SecretariatjuryCiaController extends AbstractController
         return new Response($content);
     }
 
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/secretariatjuryCia/classementSousJury,{centre}", name: "secretariatjuryCia_classementSousJury")]
+    public function classementSousJury($centre): Response
+    {
+
+        // affiche les équipes dans l'ordre de la note brute
+        $edition = $this->requestStack->getSession()->get('edition');
+        $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
+        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
+        $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);
+        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
+        $numJury = $repositoryJures->findOneBy(['iduser' => $this->getUser()])->getNumJury();
+        $centrecia = $repositoryCentres->findOneBy(['centre' => $centre]);
+        $equipesSousJury = $repositoryJures->getEquipesSousJury($centrecia, $numJury);
+        $rangs = $repositoryRangs->classementSousJury($equipesSousJury);
+
+        $content = $this->renderView('cyberjuryCia/classement_sous_jury.html.twig',
+            array('rangs' => $rangs, 'equipes' => $equipesSousJury, 'centre' => $centrecia->getCentre())
+        );
+        return new Response($content);
+    }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/creeJure", name: "secretariatjuryCia_CreeJure")]
+    #[Route("/secretariatjuryCia/creeJure", name: "secretariatjuryCia_creeJure")]
     public function creeJure(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer): Response    //Creation du juré par l'organisateur cia
     {
 
@@ -300,14 +322,17 @@ class SecretariatjuryCiaController extends AbstractController
             ->getQuery()->getResult();
 
         if ($idJure !== null) {
+
             $nom = $request->get('nom');
             $prenom = $request->get('prenom');
             $initiales = $request->get('initiales');
+            $numJury = $request->get('numJury' . $idJure);
+
             $jureModifie = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['id' => $idJure]);
             $jureModifie->setNomJure($nom);
             $jureModifie->setPrenomJure($prenom);
             $jureModifie->setInitialesJure($initiales);
-
+            $jureModifie->setNumJury($numJury);
             foreach ($listeEquipes as $equipe) {
 
                 $attribs = $request->get('equipe-' . $equipe->getId());
@@ -363,7 +388,7 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/tableauexcel_repartition", name: "secretariatjuryCia_tableau excel_repartition")]
+    #[Route("/secretariatjuryCia/tableauexcel_repartition", name: "secretariatjuryCia_tableauexcel_repartition")]
     public function tableauexcel_repartition(): void
     {
         $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()]);
@@ -436,6 +461,18 @@ class SecretariatjuryCiaController extends AbstractController
         // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
         ob_end_clean();
         $writer->save('php://output');
+
+    }
+
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/secretariatjuryCia/envoi_mail_conseils,{idEquipe}", name: "secretariatjuryCia_envoi_mail_conseils")]
+    public function envoi_mail_conseils($idEquipe, Mailer $mailer)
+    {
+        $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idEquipe);
+        $prof1 = $equipe->getIdProf1();
+        $prof2 = $equipe->getIdProf2();
+        $conseil = $this->doctrine->getRepository(ConseilsjuryCia::class)->findOneBy(['equipe' => $equipe]);
+        $mailer->sendConseil($conseil, $prof1, $prof2);
 
     }
 }

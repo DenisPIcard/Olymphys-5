@@ -18,13 +18,13 @@
                 </a>
             </th>
             <th>
-                <a href="{{ path('secretariatjuryCia_tableau excel_repartition') }}"
+                <a href="{{ path('secretariatjuryCia_tableauexcel_repartition') }}"
                    title="Obtenir un tableau excel de la répartition ">
                     <i class="fas fa-file-excel fa-2x"></i>
                 </a>
             </th>
             <th>
-                <a href="{{ path('secretariatjuryCia_CreeJure') }}"
+                <a href="{{ path('secretariatjuryCia_creeJure') }}"
                    title="Inscrire un nouveau juré">
                     <i class="fas fa-plus-square fa-2x"></i>
                 </a>
@@ -50,6 +50,7 @@
             <th scope="col">Prenom</th>
             <th scope="col">Nom</th>
             <th scope="col">Initiales</th>
+            <th scope="col" title="Peut rester vide si un seul jury">N° Jury</th>
             {% for equipe in listeEquipes %}
                 <th scope="col">{{ equipe.numero }}</th>
             {% endfor %}
@@ -84,6 +85,25 @@
                         <label for="initiales{{ jure.id }}"></label>
                         <input type="text" value="{{ jure.initialesJure }}" id="initiales{{ jure.id }}"
                                name="initiales" style="width: 50px">
+                    </td>
+                    <td>
+
+                        {% if jure.numJury ==null %}
+                            {% set selectedNum = ['selected','',''] %}
+                        {% elseif jure.numJury == 1 %}
+                            {% set selectedNum = ['selected','',''] %}
+                        {% elseif  jure.numJury == 2 %}
+                            {% set selectedNum = ['','selected',''] %}
+                        {% elseif jure.numJury == 3 %}
+                            {% set selectedNum= ['','','selected'] %}
+                        {% endif %}
+                        <label for="numJury{{ jure.id }}"></label>
+                        <select id="numJury{{ jure.id }}"
+                                name="numJury{{ jure.id }}" style="width: 50px">
+                            <option {{ selectedNum[0] }}>1</option>
+                            <option {{ selectedNum[1] }}>2</option>
+                            <option {{ selectedNum[2] }}>3</option>
+                        </select>
                     </td>
                     {% for equipe in listeEquipes %}
                         {% if equipe not in jure.equipes %}

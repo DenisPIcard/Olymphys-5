@@ -55,28 +55,38 @@ class JuresCiaRepository extends ServiceEntityRepository
             }
         return $statut;
     }
-//    /**
-//     * @return JuresCia[] Returns an array of JuresCia objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('j')
-//            ->andWhere('j.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('j.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?JuresCia
-//    {
-//        return $this->createQueryBuilder('j')
-//            ->andWhere('j.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getEquipesSousJury($centrecia, $numSousJury)
+    {
+        $listJures = $this->findBy(['centrecia' => $centrecia, 'numJury' => $numSousJury]);
+
+        $equipes = [];
+        $i = 0;
+        foreach ($listJures as $jure) {
+            $equipesjure = $jure->getEquipes();
+
+            if ($equipes == []) {
+                foreach ($equipesjure as $equipejure) {
+                    $equipes[$i] = $equipejure;
+                    $i = $i + 1;
+                }
+            }
+            if ($equipes != []) {
+                foreach ($equipesjure as $equipejure) {
+                    $test = false;
+                    foreach ($equipes as $equipe) {
+                        if ($equipe == $equipejure) {
+                            $test = true;
+                        }
+                    }
+                    if ($test == false) {
+                        $equipes[$i] = $equipejure;
+                        $i = $i + 1;
+                    }
+                }
+            }
+        }
+        return $equipes;
+
+    }
 }

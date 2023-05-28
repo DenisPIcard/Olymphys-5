@@ -114,7 +114,7 @@ class JuryCiaController extends AbstractController
         }
 
         $content = $this->renderView('cyberjuryCia/accueil_jury.html.twig',
-            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
+            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires, 'page' => 'accueil')
         );
 
 
@@ -444,6 +444,9 @@ class JuryCiaController extends AbstractController
             if ($page == 'classement') {
                 return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $this->getUser()->getCentrecia()]);
             }
+            if ($page == 'gestionconseils') {
+                return $this->redirectToRoute('cyberjuryCia_gerer_conseils_equipe', ['centre' => $this->getUser()->getCentrecia()]);
+            }
         }
         return $this->render('cyberjuryCia/conseils_jury_cia.html.twig', array('equipe' => $equipe, 'form' => $form->createView(),));
     }
@@ -473,13 +476,13 @@ class JuryCiaController extends AbstractController
     public function modif_rang_equipe_cia(Request $request, $idRang, $sens): Response
     {
         $rangEquipe = $this->doctrine->getRepository(RangsCia::class)->find($idRang);
-
+        $equipe = $rangEquipe->getEquipe();
         if ($sens == 'up') {
             $rangEquipeUp = $this->doctrine->getRepository(RangsCia::class)->createQueryBuilder('r')
                 ->leftJoin('r.equipe', 'eq')
                 ->where('eq.centre =:centre')
                 ->andWhere('r.rang =:rang')
-                ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'rang' => $rangEquipe->getRang() - 1])
+                ->setParameters(['centre' => $equipe->getCentre(), 'rang' => $rangEquipe->getRang() - 1])
                 ->getQuery()->getOneOrNullResult();
 
             $nouveauRang = $rangEquipe->getRang() - 1;
@@ -494,7 +497,7 @@ class JuryCiaController extends AbstractController
                 ->leftJoin('e.equipe', 'eq')
                 ->where('eq.centre =:centre')
                 ->andWhere('e.rang =:rang')
-                ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'rang' => $rangEquipe->getRang() + 1])
+                ->setParameters(['centre' => $equipe->getCentre(), 'rang' => $rangEquipe->getRang() + 1])
                 ->getQuery()->getOneOrNullResult();
             $nouveauRang = $rangEquipe->getRang() + 1;
             $rangEquipeDown->setRang($rangEquipe->getRang());
@@ -504,7 +507,7 @@ class JuryCiaController extends AbstractController
             $this->doctrine->getManager()->flush();
         }
 
-        return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $this->getUser()->getCentrecia()]);
+        return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $equipe->getCentre()]);
 
     }
 }

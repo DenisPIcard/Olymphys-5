@@ -27,7 +27,9 @@
                 <th>Projet</th>
                 <th title="points">Points</th>
                 <th title="modifier le classement" colspan="2" style="text-align: center">Ajuster le classement</th>
-                <th>Conseils-Remarques</th>
+                {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
+                    <th>Conseils-Remarques</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -67,11 +69,13 @@
                                         title="Redescendre cette équipe"></i></a>
                         </td>
                     {% endif %}
-                    <td>
-                        <a href="{{ path('cyberjuryCia_rediger_conseils_equipe', {'idEquipe': rang.equipe.id,'page':'classement'} ) }}"
-                           class="fas fa-pencil-alt"
-                           title="Conseils et remarques"> </a>
-                    </td>
+                    {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
+                        <td>
+                            <a href="{{ path('cyberjuryCia_rediger_conseils_equipe', {'idEquipe': rang.equipe.id,'page':'classement'} ) }}"
+                               class="fas fa-pencil-alt"
+                               title="Conseils et remarques"> </a>
+                        </td>
+                    {% endif %}
 
                 </tr>
             {% endfor %}

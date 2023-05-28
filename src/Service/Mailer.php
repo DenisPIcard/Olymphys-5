@@ -196,5 +196,26 @@ class Mailer
 
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendConseil($conseil, $prof1, User $prof2 = null): TemplatedEmail
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('info@olymphys.fr'))
+            ->to($prof1->getEmail());
+        if ($prof2 !== null) {
+            $email->cc($prof2->getEmail());
+        }
+        $email->subject('Conseils du jury Cia à votre équipe')
+            ->htmlTemplate('email/conseilCia.html.twig')
+            ->context([
+                'conseil' => $conseil->getTexte(),
+
+            ]);
+        $this->mailer->send($email);
+        return $email;
+    }
+
 
 }

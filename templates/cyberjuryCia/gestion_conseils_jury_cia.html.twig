@@ -12,7 +12,11 @@
         {{ include ("cyberjuryCia/navigation.html.twig") }}
     {% elseif app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
         {{ include ("cyberjuryCia/navigationJury.html.twig") }}
+    {% elseif  app.user.roles|filter(v => v =='ROLE_COMITE')!=[] %}
+        {{ include ("cyberjuryCia/navigation.html.twig") }}
     {% endif %}
+
+
 {% endblock %}
 
 {% block body %}
@@ -36,10 +40,11 @@
                                 {{ conseil.texte|raw }}
                             </td>
                             <td>
-                                <a href="" type="button" class="btn btn-outline-primary"> Modifier</a>
+                                <a href="{{ path("cyberjuryCia_rediger_conseils_equipe",{'idEquipe':equipe.id,'page':'gestionconseils'} ) }}"
+                                   class="fas fa-pencil-alt" title="modifier"> </a>
                             </td>
                             <td>
-                                <a href="" type="button" class="btn btn-outline-danger"> Envoyer à l'équipe</a>
+                                <a class="fas fa-envelope" href="" title="Envoyer à l'équipe"> </a>
                             </td>
                         {% endif %}
                     {% endfor %}
