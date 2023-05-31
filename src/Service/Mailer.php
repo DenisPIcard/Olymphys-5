@@ -32,7 +32,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendMessage(User $user, Uai $rne_obj): TemplatedEmail
+    public function sendMessage(User $user, Uai $uai_obj): TemplatedEmail
     {
         $email = (new TemplatedEmail())
             ->from(new Address('info@olymphys.fr'))
@@ -41,7 +41,7 @@ class Mailer
             ->htmlTemplate('email/nouvel_utilisateur.html.twig')
             ->context([
                 'user' => $user,
-                'rne' => $rne_obj
+                'uai' => $uai_obj
             ]);
         $this->mailer->send($email);
         return $email;
