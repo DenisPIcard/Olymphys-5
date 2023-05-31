@@ -51,7 +51,6 @@ class SecretariatjuryCiaController extends AbstractController
     public function accueil_comite(): Response
     {
         $listeCentres = $this->doctrine->getRepository(Centrescia::class)->findBy(['actif' => true]);
-
         $content = $this->renderView('cyberjuryCia/accueil_comite.html.twig',
             array('centres' => $listeCentres));
 
@@ -73,6 +72,7 @@ class SecretariatjuryCiaController extends AbstractController
         $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
         $repositoryUai = $this->doctrine->getRepository(Uai::class);
+        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -96,7 +96,7 @@ class SecretariatjuryCiaController extends AbstractController
         $session = $this->requestStack->getSession();
         $session->set('tableau', $tableau);
         $content = $this->renderView('cyberjuryCia/accueil.html.twig',
-            array('centre' => $centre));
+            array('centre' => $centre, 'equipes' => $listEquipes));
 
         return new Response($content);
     }
@@ -239,6 +239,7 @@ class SecretariatjuryCiaController extends AbstractController
                         $user->setRoles(['ROLE_JURYCIA']);
                         $user->setCentrecia($orgacia->getCentrecia());
                         $username = $slugger->slug($prenom[0]) . '_' . $slugger->slug($nom);
+                        $prenom = $slugger->slug($prenom);
                         $i = 1;
                         while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques
                             $username = $username . $i;

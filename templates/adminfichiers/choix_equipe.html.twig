@@ -1,7 +1,11 @@
 {% extends "base1.html.twig" %}
 {% block title %} Mon espace{% endblock %}
 
-
+{% block navigation %}
+    {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
+        {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% endif %}
+{% endblock %}
 
 {% block titre3 %}
     <div class="text-center">Concours {{ phase }}<br>
@@ -251,35 +255,5 @@
         {{ include('modales/modale_info.html.twig') }}
     {% endif %}
     {{ app.session.set('info','') }}
-
-
-
-
-    {% block javascripts %}
-        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-                crossorigin="anonymous">
-
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-                crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-                integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-                crossorigin="anonymous"></script>
-        <script>
-
-            bsCustomFileInput.init()
-        </script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('#modalinfo').modal();
-                $('#modalinfo').modal('open');
-            });
-        </script>
-
-    {% endblock %}
-
 
 {% endblock %}

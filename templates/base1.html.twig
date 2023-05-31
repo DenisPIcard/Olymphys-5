@@ -91,7 +91,8 @@ Layout de départ des utils du site #}
         </div>
 
         <div class="logo">
-            <a href="{{ path('core_home') }}"><img src="{{ asset('odpf/odpf-images/Phicompletblanc.png') }}" alt="logo des OdpF"
+            <a href="{{ path('core_home') }}"><img src="{{ asset('odpf/odpf-images/Phicompletblanc.png') }}"
+                                                   alt="logo des OdpF"
                                                    width="300"/></a>
 
         </div>
@@ -276,6 +277,84 @@ Layout de départ des utils du site #}
             modal.find('.modal-body input').val(recipient)
         });
     </script>
+
+    <script type="text/javascript">
+        $('#modalconfirm').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('idvideo');
+            console.log(recipient)// Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('Attention')
+            modal.find('.modal-body input').val(recipient)
+        });
+    </script>
+
+    <script type="text/javascript">{#  pour les fichiers #}
+        $('#modalfichier').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('idfichier');
+            console.log(recipient)// Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('Attention')
+            modal.find('.modal-body input').val(recipient)
+        });
+    </script>
+    <script type="text/javascript">{# pour les vidéos #}
+        /* must apply only after HTML has loaded */
+        $(document).ready(function () {
+            $("#confirm_form").on("submit", function (e) {
+                var formURL = $(this).attr("action");
+                $.ajax({
+                    url: formURL,
+                    type: "POST",
+                    data: {
+                        id: $("#myModalID").val()
+                    },
+                    console.log(data),
+
+                    success: function (data) {
+                        alert('successfully submitted')
+                    }
+                });
+                $("#submit_form").on('click', function () {
+                    $("#confirm_form").submit();
+                });
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        /* must apply only after HTML has loaded */
+        $(document).ready(function () {
+            $("#confirm_fichier").on("submit", function (e) {
+                var formURL = $(this).attr("action");
+                console.log(formURL);
+                $.ajax({
+                    url: formURL,
+                    type: "GET",
+                    data: {
+                        id: $("#FichierID").val(),
+                        typefichier: $("#typefichier").val
+                    },
+
+
+                    success: function (data) {
+                        alert('successfully submitted')
+                    };
+                });
+            });
+            $("#submit_form").on('click', function () {
+                $("#confirm_fichier").submit();
+            });
+        });
+
+
+    </script>
+
 
 {% endblock %}
 

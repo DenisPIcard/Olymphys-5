@@ -1,13 +1,27 @@
 {% extends "base1.html.twig" %}
 {% block title %} Accueil {% endblock %}
 
-{% block titre3 %} Secrétariat du jury de {{ centre }}{% endblock %}
+{% block titre3 %} <p>Secrétariat du jury de {{ centre }}</p>
+    <p> Liste des équipes</p>
+
+{% endblock %}
 
 {% block navigation %}
-
-    {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% if is_granted('ROLE_ORGACIA') %}
+        {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% endif %}
 {% endblock %}
 
 {% block body %}
+
+    {% for equipe in equipes %}
+        {% set infos =  equipe.id ~ '-'~'interacadémique'~'-'~'' %}
+        <p>
+            <a class="btn btn-primary btn-lg"
+               href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}">{{ equipe.numero }}</a>
+            {{ equipe.titreProjet }}
+        </p>
+    {% endfor %}
+
 
 {% endblock %}

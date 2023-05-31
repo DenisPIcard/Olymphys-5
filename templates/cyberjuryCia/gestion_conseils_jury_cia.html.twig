@@ -8,12 +8,11 @@
     <div class="smallsize"></div> {% endblock %}
 
 {% block navigation %}
-    {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
+    {% if is_granted('ROLE_ORGACIA') %}
         {{ include ("cyberjuryCia/navigation.html.twig") }}
     {% elseif app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
         {{ include ("cyberjuryCia/navigationJury.html.twig") }}
-    {% elseif  app.user.roles|filter(v => v =='ROLE_COMITE')!=[] %}
-        {{ include ("cyberjuryCia/navigation.html.twig") }}
+    
     {% endif %}
 
 
