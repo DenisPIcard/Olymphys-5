@@ -7,9 +7,10 @@
 {% endblock %}
 
 {% block navigation %}
-    {% if is_granted('ROLE_ORGACIA') %}
-        {{ include ("cyberjuryCia/navigation.html.twig") }}
-    {% endif %}
+
+    {{ include ("cyberjuryCia/navigation.html.twig") }}
+
+
 {% endblock %}
 
 {% block body %}

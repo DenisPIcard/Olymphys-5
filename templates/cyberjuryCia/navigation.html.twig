@@ -6,13 +6,13 @@
         {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_accueil',{'centre':centre}) }}">Accueil</a>
-        {% elseif app.user.roles|filter(v => v =='ROLE_COMITE')!=[] %}
+        {% elseif is_granted('ROLE_COMITE') %}
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_accueil_comite') }}">Accueil</a>
             <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_vueglobale',{'centre' : centre}) }}">Vue
                 Globale</a>
         {% endif %}
-       
+
         {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
             <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_gestionjures') }}"
                role="button" aria-pressed="true">Gestion des jurés</a>
@@ -22,7 +22,7 @@
     </div>
 </li>
 
-{% if app.user.roles|filter(v => v =='ROLE_COMITE')!=[] %}
+{% if  is_granted('ROLE_COMITE') %}
     <li class="nav-item dropdown menu_haut">
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
            aria-haspopup="true" aria-expanded="false">Délibération du jury de {{ centre }}</a>

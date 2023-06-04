@@ -217,5 +217,23 @@ class Mailer
         return $email;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendVerifieMailEleve($eleve): TemplatedEmail
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('info@olymphys.fr'))
+            ->to($eleve->getCourriel());
+
+        $email->subject('Vérification de votre adresse de messagerie')
+            ->htmlTemplate('email/verifieMail.html.twig')
+            ->context([
+                'eleve' => $eleve,
+
+            ]);
+        $this->mailer->send($email);
+        return $email;
+    }
 
 }

@@ -8,8 +8,8 @@ final class SendNewsletterMessage
      * Add whatever properties & methods you need to hold the
      * data for this message class.
      */
-    private $userId;
-    private $newsId;
+    private int $userId;
+    private int $newsId;
 
     public function __construct(int $userId, int $newsId)
     {

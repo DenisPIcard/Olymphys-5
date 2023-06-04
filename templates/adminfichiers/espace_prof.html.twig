@@ -45,8 +45,8 @@
         {{ include ("cyberjuryCia/navigation.html.twig") }}
     {% elseif app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
         {{ include ("cyberjuryCia/navigationJury.html.twig") }}
-    {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
-        {{ include ("core/odpf-menu-haut.html.twig") }}
+        {#  {% elseif app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
+        {{ include ("core/odpf-menu-haut.html.twig") }} #}
 
     {% endif %}
 {% endblock %}

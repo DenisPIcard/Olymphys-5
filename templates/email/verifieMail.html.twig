@@ -1,0 +1,89 @@
+{% apply inline_css %}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        h1 {
+            background-color: #264459;
+            color: #ffffff;
+            padding: 30px 0 50px 0;
+            font-weight: normal;
+        }
+
+        hr {
+            border: none;
+            border-top: 3px solid #264459;
+            margin: 20px;
+        }
+
+        .container {
+            background-color: #fefefe;
+            width: 580px;
+            margin: 0 auto;
+        }
+
+        .bottom {
+            background-color: #efefee;
+        }
+
+        .block {
+            margin: 0;
+            padding: 10px 20px 20px 20px;
+        }
+
+        {#  .logo {
+             width: 100%;
+        }#}
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #264459;
+            color: #fefefe;
+            border: 1px solid #fff;
+            border-radius: 3px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+    <div class="body">
+        <div class="container">
+            <div class="header text-left">
+                <a href="{{ url('core_home') }}">
+                    <img src="{{ email.image('@images/email/logo-phy.png') }}" class="logo" width="50"
+                         alt="Logo Odpf">
+                </a>
+            </div>
+            <div class="content">
+                <p class="block">
+                    Bonjour<br><br>
+                    Félicitation pour votre inscription aux Olympiades de Physique France<br>
+                    Ce mail est envoyé automatiquement lors de l'inscription de votre équipe par votre professeur. Il
+                    nous
+                    permet de vérifier la validité de votre adresse de messagerie.<br>
+                    Nous vous souhaitons une très bonne préparation du concours.
+                </p>
+            </div>
+            <div class="footer">
+                <p class="block">
+                    À bientôt,<br><br>
+                    Le comité national des Olympiades de Physique France.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+{% endapply %}

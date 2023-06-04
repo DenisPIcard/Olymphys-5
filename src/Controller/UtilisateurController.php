@@ -253,6 +253,7 @@ class UtilisateurController extends AbstractController
 
                             $em->persist($eleve[$i]);
 
+                            $mailer->sendVerifieMailEleve($eleve[$i]);
                         }
                     }
                     $equipe->setNbEleves($nbeleves);
@@ -267,6 +268,7 @@ class UtilisateurController extends AbstractController
                         $maj_profsequipes = new Maj_profsequipes($doctrine);
                         $maj_profsequipes->maj_profsequipes($equipe);
                     }
+                    $em->flush();
                     $rempliOdpfEquipesPassees = new OdpfRempliEquipesPassees($doctrine);
                     $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($equipe);
 
@@ -466,6 +468,6 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute('inscrire_equipe', array('idequipe' => $equipe->getId()));
 
     }
-
+    
 
 }
