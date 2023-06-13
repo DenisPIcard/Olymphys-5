@@ -29,6 +29,7 @@ class OdpfCreateArray
 
         try {
             $edition = $this->requestStack->getSession()->get('edition');
+            $edition->getDateclotureinscription() >= new \DateTime('now') ? $ouvertes = 'ouvertes' : $ouvertes = 'closes';
         } catch (Exception $e) {
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
@@ -40,7 +41,13 @@ class OdpfCreateArray
         $article = $repo->findOneBy(['choix' => $choix]);
         $categorie = $article->getCategorie();
         $texte = $article->getTexte();
-
+        if ($choix == 'inscriptions') {
+            //Afin que le lien fonctionne en local pour les essais et sur le serveur
+            explode(':', $_SERVER['HTTP_HOST'])[0] == 'localhost' ? $path = '/Utilisateur/inscrire_equipe,x' : $path = '/public/index.php/Utilisateur/inscrire_equipe,x';
+            //La première ligne de la page les inscriptions est remplie automatiquement selon la date
+            $texte = '<p><span style="color:#ff0000; font-size:12pt"><a href="' . $path . '" target="_blank" title="Inscrire une équipe">Les inscriptions sont ' . $ouvertes . '</a></span><span style="font-size:12pt">.</span></p>'
+                . $texte;
+        }
         $titre = $article->getTitre();
         $titre_objectifs = $article->getTitreObjectifs();
         $texte_objectifs = $article->getTexteObjectifs();

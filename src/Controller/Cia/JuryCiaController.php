@@ -327,7 +327,7 @@ class JuryCiaController extends AbstractController
             'REP' => 'DESC',
             'TOT' => 'DESC');
         $ordre[$critere] = $sens;
-        $MonClassement = $this->tri($critere, $sens, $id_jure)->getQuery()->getResult();
+        $MonClassement = $this->tri($critere, $sens, $id_jure)->getQuery()->getResult();//etablit le classement des équipes selon le critère de tri choisi
 
         $repositorycoef = $this->doctrine
             ->getManager()
