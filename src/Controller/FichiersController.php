@@ -200,7 +200,7 @@ class FichiersController extends AbstractController
         $choix = $info[2];
         $roles = $this->getUser()->getRoles();
         if (in_array('ROLE_PROF', $roles)) {
-            if ($choix == 0 or $choix == 1 or $choix == 2) {//memoire, annexe et résumé doivent être remis avbant la date limite
+            if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 4) {//memoire, annexe et résumé et fiche sécurité doivent être remis avant la date limite
 
                 if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
                     $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
