@@ -35,6 +35,8 @@ class OdpfListeEquipes
         $parrain = $editionpassee->getNomParrain();
         $lienparrain = $editionpassee->getLienparrain();
         $titreparrain = $editionpassee->getTitreParrain();
+        $affiche = '';
+        $afficheHr = '';
         if ($editionpassee->getAffiche() !== null) {
             if (file_exists('odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche())) {
                 $affiche = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $editionpassee->getAffiche();
@@ -43,8 +45,7 @@ class OdpfListeEquipes
                 $afficheHr = 'odpf/odpf-archives/' . $editionpassee->getEdition() . '/affiche/' . $nomAfficheHr;
             }
         }
-        $affiche = '';
-        $afficheHr = '';
+
         $repositoryUser = $this->em->getRepository(User::class);
         $repositoryUai = $this->em->getRepository(Uai::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')

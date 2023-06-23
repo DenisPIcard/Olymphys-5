@@ -26,6 +26,9 @@ class Centrescia
     #[ORM\Column(length: 255, nullable: true)]
     private ?int $edition = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $nbselectionnees = null;
+
 
     public function __toString()
     {
@@ -69,6 +72,18 @@ class Centrescia
     public function setActif(?bool $actif): self
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getNbselectionnees(): ?int
+    {
+        return $this->nbselectionnees;
+    }
+
+    public function setNbselectionnees(?int $nbselectionnees): self
+    {
+        $this->nbselectionnees = $nbselectionnees;
 
         return $this;
     }

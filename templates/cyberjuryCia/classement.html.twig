@@ -1,7 +1,7 @@
 {% extends "base1.html.twig" %}
 {% block title %} Classement des équipes {% endblock %}
 
-{% block titre3 %} Classement des équipes de {{ centre }}<br>
+{% block titre3 %} Classement des équipes de {{ centre.centre }}<br>
     <div class="smallsize" title="Ce total regroupe tous les jurés ayant examiné l'équipe"> Total des points obtenus par
         les équipes, tenant compte du mémoire
     </div>
@@ -36,8 +36,13 @@
             {% for rang in rangs %}
                 <tr>
                     <th>{{ rang.rang }}  </th>
+                    {% if rang.rang <= centre.nbselectionnees %}
+                        {% set couleur= 'btn btn-success btn-lg' %}
+                    {% else %}
+                        {% set couleur= 'btn btn-danger btn-lg' %}
+                    {% endif %}
                     <td>
-                        <button type="button" class="btn btn-primary btn-lg">{{ rang.equipe.numero }}</button>
+                        <button type="button" class="{{ couleur }}">{{ rang.equipe.numero }}</button>
                     </td>
 
                     <td> {{ rang.equipe.titreProjet }} </td>

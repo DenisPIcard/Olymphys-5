@@ -23,6 +23,7 @@ use App\Entity\User;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -179,7 +180,7 @@ class SecretariatjuryCiaController extends AbstractController
             ->addOrderBy('r.rang', 'ASC')
             ->getQuery()->getResult();
         $content = $this->renderView('cyberjuryCia/classement.html.twig',
-            array('rangs' => $rangs, 'equipes' => $listEquipes, 'centre' => $centrecia->getCentre())
+            array('rangs' => $rangs, 'equipes' => $listEquipes, 'centre' => $centrecia)
         );
         return new Response($content);
     }
@@ -217,7 +218,10 @@ class SecretariatjuryCiaController extends AbstractController
         $repositoryUser = $this->doctrine->getRepository(User::class);
         $jureCia = new JuresCia();
         $form = $this->createFormBuilder($jureCia)
-            ->add('email', EmailType::class)
+            ->add('email', RepeatedType::class, [
+                'first_options' => ['label' => 'Email'],
+                'second_options' => ['label' => 'Saisir de nouveau l\'email'],
+            ])
             ->add('nomJure', TextType::class)
             ->add('prenomJure', TextType::class)
             ->add('valider', SubmitType::class)
@@ -268,12 +272,13 @@ class SecretariatjuryCiaController extends AbstractController
                     } elseif (str_contains($slugger->slug($prenom), '_')) {
                         $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
                     } else {
-                        $initiales = strtoupper($slugger->slug($prenom[0]) . $slugger->slug($nom[0]));
+                        $initiales = strtoupper($slugger->slug($prenom))[0] . strtoupper($slugger->slug($nom))[0];
                     }
 
                     $jureCia->setInitialesJure($initiales);
                     $this->doctrine->getManager()->persist($jureCia);
                     $this->doctrine->getManager()->flush();
+                    $mailer->sendInscriptionJureCia($orgacia, $jureCia, $prenom);
                 } else {
                     $texte = 'Ce juré existe déjà !';
                     $this->requestStack->getSession()->set('info', $texte);

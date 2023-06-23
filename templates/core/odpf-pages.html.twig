@@ -67,7 +67,7 @@
                                                        class="nav-link">Pourquoi participer ?</a></li>
                                                 <li class="nav-item {% if choix == 'les_aides' %} active {% endif %}">
                                                     <a href="{{ path('core_pages' ,{choix:'les_aides'}) }}"
-                                                            class="nav-link">Les aides</a></li>
+                                                       class="nav-link">Les aides</a></li>
                                                 <li class="nav-item {% if choix == 'les_recompenses' %} active {% endif %}">
                                                     <a href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}"
                                                        class="nav-link">Les récompenses</a></li>
@@ -113,27 +113,27 @@
                                     <h2 class="sous-titre">{{ titre|raw }}</h2>
                                     <div class="contenu">
                                         {% if choix == 'le_calendrier' %}
-                                            {% include 'core/odpf-le-calendrier.html.twig' %}{# page spéciale, construite en template #}
-                                        {% elseif choix == 'les_equipes' %}
-                                            {% include 'core/odpf-les-equipes.html.twig' %}{# page spéciale, table #}
-                                        {% elseif choix == 'la_carte_des_equipes' %}
-                                            {{ texte|raw }}{# texte vient de l'OdpfArticle, raw est un filtre twig pour affixher le texte formatté #}
-                                            <p><img src="{{ asset('odpf/odpf-images/31-Carte_France.png') }}" alt="Carte"
+                                        {% include 'core/odpf-le-calendrier.html.twig' %}{# page spéciale, construite en template #}
+                                    {% elseif choix == 'les_equipes' %}
+                                    {% include 'core/odpf-les-equipes.html.twig' %}{# page spéciale, table #}
+                                    {% elseif choix == 'la_carte_des_equipes' %}
+                                    {{ texte|raw }}{# texte vient de l'OdpfArticle, raw est un filtre twig pour affixher le texte formatté #}
+                                        <p><img src="{{ asset('odpf/odpf-images/31-Carte_France.png') }}" alt="Carte"
                                                 width="588" height="562"></p>
-                                            <br/>
-                                             <p><img src="{{ asset('odpf/odpf-images/31-Carte_monde.png') }}" alt="World Map"
+                                    <br/>
+                                        <p><img src="{{ asset('odpf/odpf-images/Carte_monde.png') }}" alt="World Map"
                                                 width="500" height="300">
-                                        {% else %}
-                                            {{ texte|raw }}
-                                         {% endif %}
-                                         {% if choix == 'inscriptions' %}
-                                            <ul>
-                                                <li>Les
-                                                    <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours
+                                            {% else %}
+                                                {{ texte|raw }}
+                                            {% endif %}
+                                            {% if choix == 'inscriptions' %}
+                                        <ul>
+                                            <li>Les
+                                                <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours
                                                     Interacadémiques</a></li>
-                                                <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours
+                                            <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours
                                                     National</a></li>
-                                            </ul>
+                                        </ul>
                                         {% endif %}
                                     </div>
                                 </div>
