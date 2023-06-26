@@ -52,7 +52,7 @@
             <th scope="col">Initiales</th>
             <th scope="col" title="Peut rester vide si un seul jury">N° Jury</th>
             {% for equipe in listeEquipes %}
-                <th scope="col">{{ equipe.numero }}</th>
+                <th scope="col" title="{{ equipe.titreProjet }}">{{ equipe.numero }}</th>
             {% endfor %}
             <th scope="col">
                 <div style="text-align: center">Enregistrer</div>
@@ -64,83 +64,93 @@
         </thead>
         <tbody>
         {% for jure in listejures %}
-            <tr>
-                {% set attribs = jure.rapporteur %}
-                <form id="form-{{ jure.id }}" method="post" name="form1">
+            {% if jure.numJury == 1 %}
+                <tr style="background-color : #F0F8FF ">
+
+            {% elseif jure.numJury == 2 %}
+                <tr style="background-color : #FFFFE0 ">
+
+            {% elseif jure.numJury == 3 %}
+                <tr style="background-color : #FFE4E1 ">
+
+            {% endif %}
+
+            {% set attribs = jure.rapporteur %}
+            <form id="form-{{ jure.id }}" method="post" name="form1">
 
 
-                    <input type="hidden" name="jure" id="{{ jure.id }}" value="{{ jure.id }}">
-                    <td>
-                        <label for="prenom{{ jure.id }}"></label>
-                        <input type="text" value="{{ jure.prenomJure }}" id="prenom{{ jure.id }}"
-                               name="prenom" style="width: 100px">
+                <input type="hidden" name="jure" id="{{ jure.id }}" value="{{ jure.id }}">
+                <td>
+                    <label for="prenom{{ jure.id }}"></label>
+                    <input type="text" value="{{ jure.prenomJure }}" id="prenom{{ jure.id }}"
+                           name="prenom" style="width: 100px">
 
-                    </td>
-                    <td>
-                        <label for="nom{{ jure.id }}"></label>
-                        <input type="text" value="{{ jure.nomJure }}" id="nom{{ jure.id }}" name="nom"
-                               style="width:100px">
-                    </td>
-                    <td>
-                        <label for="initiales{{ jure.id }}"></label>
-                        <input type="text" value="{{ jure.initialesJure }}" id="initiales{{ jure.id }}"
-                               name="initiales" style="width: 50px">
-                    </td>
-                    <td>
+                </td>
+                <td>
+                    <label for="nom{{ jure.id }}"></label>
+                    <input type="text" value="{{ jure.nomJure }}" id="nom{{ jure.id }}" name="nom"
+                           style="width:100px">
+                </td>
+                <td>
+                    <label for="initiales{{ jure.id }}"></label>
+                    <input type="text" value="{{ jure.initialesJure }}" id="initiales{{ jure.id }}"
+                           name="initiales" style="width: 50px">
+                </td>
+                <td>
 
-                        {% if jure.numJury ==null %}
-                            {% set selectedNum = ['selected','',''] %}
-                        {% elseif jure.numJury == 1 %}
-                            {% set selectedNum = ['selected','',''] %}
-                        {% elseif  jure.numJury == 2 %}
-                            {% set selectedNum = ['','selected',''] %}
-                        {% elseif jure.numJury == 3 %}
-                            {% set selectedNum= ['','','selected'] %}
+                    {% if jure.numJury ==null %}
+                        {% set selectedNum = ['selected','',''] %}
+                    {% elseif jure.numJury == 1 %}
+                        {% set selectedNum = ['selected','',''] %}
+                    {% elseif  jure.numJury == 2 %}
+                        {% set selectedNum = ['','selected',''] %}
+                    {% elseif jure.numJury == 3 %}
+                        {% set selectedNum= ['','','selected'] %}
+                    {% endif %}
+                    <label for="numJury{{ jure.id }}"></label>
+                    <select id="numJury{{ jure.id }}"
+                            name="numJury{{ jure.id }}" style="width: 50px">
+                        <option {{ selectedNum[0] }}>1</option>
+                        <option {{ selectedNum[1] }}>2</option>
+                        <option {{ selectedNum[2] }}>3</option>
+                    </select>
+                </td>
+                {% for equipe in listeEquipes %}
+                    {% if equipe not in jure.equipes %}
+                        {% set selected=['selected','',''] %}
+                    {% endif %}
+                    {% if equipe  in jure.equipes %}
+                        {% if equipe.numero  not in attribs %}
+                            {% set selected =['','selected',''] %}
                         {% endif %}
-                        <label for="numJury{{ jure.id }}"></label>
-                        <select id="numJury{{ jure.id }}"
-                                name="numJury{{ jure.id }}" style="width: 50px">
-                            <option {{ selectedNum[0] }}>1</option>
-                            <option {{ selectedNum[1] }}>2</option>
-                            <option {{ selectedNum[2] }}>3</option>
+                        {% if equipe.numero  in attribs %}
+                            {% set selected =['','','selected'] %}
+                        {% endif %}
+                    {% endif %}
+                    <td>
+                        <select id="equipe-{{ equipe.id }}" name="equipe-{{ equipe.id }}" style="width: 50px">
+
+                            <option {{ selected[0] }}></option>
+                            <option {{ selected[1] }}>E</option>
+                            <option {{ selected[2] }}>R</option>
+
                         </select>
                     </td>
-                    {% for equipe in listeEquipes %}
-                        {% if equipe not in jure.equipes %}
-                            {% set selected=['selected','',''] %}
-                        {% endif %}
-                        {% if equipe  in jure.equipes %}
-                            {% if equipe.numero  not in attribs %}
-                                {% set selected =['','selected',''] %}
-                            {% endif %}
-                            {% if equipe.numero  in attribs %}
-                                {% set selected =['','','selected'] %}
-                            {% endif %}
-                        {% endif %}
-                        <td>
-                            <select id="equipe-{{ equipe.id }}" name="equipe-{{ equipe.id }}" style="width: 50px">
-
-                                <option {{ selected[0] }}></option>
-                                <option {{ selected[1] }}>E</option>
-                                <option {{ selected[2] }}>R</option>
-
-                            </select>
-                        </td>
-                    {% endfor %}
-                    <td>
-                        <div style="text-align: center">
-                            <input type="submit" value="Valider">
-                        </div>
-                    </td>
-                    <td>
-                        <div style="text-align: center">
-                            <button type="button" id="{{ jure.id }}" data-toggle="modal" data-target="#modalconfirmjure"
-                                    data-idjure="{{ jure.id }}" title="Supprimer"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
+                {% endfor %}
+                <td>
+                    <div style="text-align: center">
+                        <input type="submit" value="Valider">
+                    </div>
+                </td>
+                <td>
+                    <div style="text-align: center">
+                        <button type="button" id="{{ jure.id }}" data-toggle="modal" data-target="#modalconfirmjure"
+                                data-idjure="{{ jure.id }}" title="Supprimer"><i class="fas fa-trash"></i></button>
+                    </div>
+                </td>
 
 
-                </form>
+            </form>
             </tr>
         {% endfor %}
         </tbody>

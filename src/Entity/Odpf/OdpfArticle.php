@@ -150,6 +150,10 @@ class OdpfArticle
 
     public function setCategorie(?OdpfCategorie $categorie): self
     {
+
+        if ($categorie == 'Les actus') {
+            $this->choix = 'actus';
+        }
         $this->categorie = $categorie;
 
         return $this;

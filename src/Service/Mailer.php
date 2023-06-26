@@ -179,7 +179,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendInscriptionUserJure($orgacia, $jure, $pwd): TemplatedEmail
+    public function sendInscriptionUserJure($orgacia, $jure, $pwd): TemplatedEmail//Le juré cia créé pat orgacia est ainsi prévenu de l'ouverture de son compte olymphys
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
@@ -189,7 +189,7 @@ class Mailer
             ->htmlTemplate('email/confirme_user_jure.html.twig')
             ->subject('Votre compte Olymphys a été créé')
             //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
-            ->context(['orgacia' => $orgacia, 'jureNom' => $jure->getprenomNom(), 'jureLogin' => $jure->getUsername(), 'pwd' => $pwd, 'email' => $jure->getEmail()]);
+            ->context(['centrecia' => $orgacia->getCentrecia()->getCentre(), 'jureNom' => $jure->getprenomNom(), 'jureLogin' => $jure->getUsername(), 'pwd' => $pwd, 'courriel' => $jure->getEmail()]);
 
         $this->mailer->send($email);
         return $email;
@@ -203,13 +203,13 @@ class Mailer
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
-            ->to($jure->getEmail())//Pour prévenir le juré de son inscription,
+            ->to($jure->getEmail())//Pour prévenir le juré de son inscription en tant que juré du centrecia,
             ->addCc('info@olymphys.fr')//prévient olymphys
             ->addCc($orgacia->getEmail())// prévient l'oganisateur cia
             ->htmlTemplate('email/confirme_jure_cia.html.twig')
             ->subject('OdPF-Votre compte juré du centre de ' . $orgacia->getCentrecia())
             //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
-            ->context(['orgacia' => $orgacia, 'jureNom' => $jure->getPrenomJure() . ' ' . $jure->getNomJure()]);
+            ->context(['centrecia' => $orgacia->getCentrecia()->getCentre(), 'jureNom' => $jure->getPrenomJure() . ' ' . $jure->getNomJure()]);
 
         $this->mailer->send($email);
         return $email;

@@ -53,10 +53,10 @@ class ProfesseursCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $edition = $session->get('edition');
-        $editionEd=$edition->getEd();
-        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
-            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
-            $editionEd=$edition->getEd();
+        $editionEd = $edition->getEd();
+        if (new Datetime('now') < $session->get('edition')->getDateouverturesite()) {
+            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
+            $editionEd = $edition->getEd();
         }
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
         if (isset($_REQUEST['filters']['edition'])) {
@@ -67,8 +67,7 @@ class ProfesseursCrudController extends AbstractCrudController
         return $crud
             ->setPageTitle(Crud::PAGE_DETAIL, 'Professeur')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'uai', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50)
-            ;
+            ->setPaginatorPageSize(50);
 
         //->overrideTemplates(['layout' => 'bundles/EasyAdminBundle/list_profs.html.twig',]);
 
@@ -78,12 +77,12 @@ class ProfesseursCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $session = $this->requestStack->getSession();
-        $edition= $session->get('edition');
-        $editionId=$edition->getId();
-        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
-        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
-            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
-            $editionId=$edition->getId();
+        $edition = $session->get('edition');
+        $editionId = $edition->getId();
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        if (new Datetime('now') < $session->get('edition')->getDateouverturesite()) {
+            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
+            $editionId = $edition->getId();
         }
         if (isset($_REQUEST['filters']['edition'])) {
 
@@ -153,10 +152,10 @@ class ProfesseursCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
 
         if (!isset($_REQUEST['filters'])) {
-            $edition = $session->get('edition');
+            $edition = $repositoryEdition->findOneBy(['id' => $session->get('edition')->getId()]);//afin de charger l'objet $edition
 
-            if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
-                $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+            if (new Datetime('now') < $session->get('edition')->getDateouverturesite()) {
+                $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
             }
         } else {
             if (isset($_REQUEST['filters']['edition'])) {
@@ -170,7 +169,7 @@ class ProfesseursCrudController extends AbstractCrudController
         }
         $qb = $this->doctrine->getRepository(Professeurs::class)->createQueryBuilder('p')
             ->leftJoin('p.equipes', 'eq')
-            ->andWhere('eq.edition =:edition')
+            ->where('eq.edition =:edition')
             ->setParameter('edition', $edition)
             ->leftJoin('p.user', 'u')
             ->orderBy('u.nom', 'ASC');;
@@ -179,7 +178,7 @@ class ProfesseursCrudController extends AbstractCrudController
     }
 
     public function set_equipeString($edition, $qb)
-    {//Equipesstring est un champ à contenu variable destiné à l'affichage des équipes d'un prof pour une session
+    {//Equipesstring est un champ à contenu variable destiné à l'affichage des équipes d'un prof pour une session dans l'admin
         $em = $this->doctrine->getManager();
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $listProfs = $qb->getQuery()->getResult();
@@ -217,7 +216,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
     }
 
-    #[Route("/Professeurs/editer_tableau_excel,{idEdition}", name:"profs_tableau_excel")]
+    #[Route("/Professeurs/editer_tableau_excel,{idEdition}", name: "profs_tableau_excel")]
     public function editer_tableau_excel($idEdition)
     {
 
@@ -308,8 +307,6 @@ class ProfesseursCrudController extends AbstractCrudController
         foreach ($listProfs as $prof) {
 
 
-
-
             $sheet->setCellValue('A' . $ligne, $prof->getUser()->getNom())
                 ->setCellValue('B' . $ligne, $prof->getUser()->getPrenom())
                 ->setCellValue('C' . $ligne, $prof->getUser()->getAdresse())
@@ -317,7 +314,7 @@ class ProfesseursCrudController extends AbstractCrudController
                 ->setCellValue('E' . $ligne, $prof->getUser()->getCode())
                 ->setCellValue('F' . $ligne, $prof->getUser()->getEmail())
                 ->getCell('G' . $ligne)->setValueExplicit($prof->getUser()->getPhone(), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            if ($prof->getUser()->getUaiId()!==null) {
+            if ($prof->getUser()->getUaiId() !== null) {
                 $sheet->setCellValue('H' . $ligne, $prof->getUser()->getUaiId()->getUai())
                     ->setCellValue('I' . $ligne, $prof->getUser()->getUaiId()->getNom())
                     ->setCellValue('J' . $ligne, $prof->getUser()->getUaiId()->getCommune())
@@ -342,7 +339,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
     }
 
-   #[Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name:"profs_tableau_excel_sel")]
+    #[Route("/Professeurs/editer_tableau_excel_sel,{idEdition}", name: "profs_tableau_excel_sel")]
     public function editer_tableau_excel_sel($idEdition)
     {
 

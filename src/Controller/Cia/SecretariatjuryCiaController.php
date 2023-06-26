@@ -21,6 +21,8 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -316,11 +318,11 @@ class SecretariatjuryCiaController extends AbstractController
 
             $this->doctrine->getManager()->remove($jure);
             $this->doctrine->getManager()->flush();
-            $idJure = null;//Le formulaire est envoyé dès le clic sur un des input
+            $idJure = null;//Dans le cas où le formulaire est envoyé dès le clic sur un des input
 
         }
 
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()]);
+
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
@@ -388,7 +390,7 @@ class SecretariatjuryCiaController extends AbstractController
             }
 
         }
-
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
         return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $this->getUser()->getCentrecia()));
 
     }
@@ -397,13 +399,80 @@ class SecretariatjuryCiaController extends AbstractController
     #[Route("/secretariatjuryCia/tableauexcel_repartition", name: "secretariatjuryCia_tableauexcel_repartition")]
     public function tableauexcel_repartition(): void
     {
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()]);
+
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
             ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
+        $styleAlignment = [
+
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+
+        ];
+        $styleArray = [
+
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'top' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'left' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'right' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'bottom' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'inside' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ]
+            ],
+
+        ];
+        $styleArrayTop = [
+
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'top' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'left' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'right' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'bottom' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'inside' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ]
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FFFFFACD',
+                ],
+
+            ],
+
+        ];
         $spreadsheet = new Spreadsheet();
+
         $spreadsheet->getProperties()
             ->setCreator("Olymphys")
             ->setLastModifiedBy("Olymphys")
@@ -412,21 +481,53 @@ class SecretariatjuryCiaController extends AbstractController
             ->setDescription("Office 2007 XLSX répartition des jurés")
             ->setKeywords("Office 2007 XLSX")
             ->setCategory("Test result file");
-
+        $spreadsheet->getActiveSheet()->getPageSetup()
+            ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)
+            ->setHorizontalCentered(true);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setTop(0.4);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setRight(0.4);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.4);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setBottom(0.4);;
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setWorksheet($spreadsheet->getActiveSheet());
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo');
+        $drawing->setPath('./odpf/odpf-images/site-logo-285x75.png');
+        $drawing->setResizeProportional(false);
+        $drawing->setHeight(37);
+        $drawing->setWidth(60);
+        $drawing->setCoordinates('A1');
         $sheet = $spreadsheet->getActiveSheet();
-        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V'] as $letter) {
-            $sheet->getColumnDimension($letter)->setAutoSize(true);
-        }
+        $sheet->getRowDimension(1)->setRowHeight(30, 'pt');
+        $sheet->getStyle('A2')->applyFromArray($styleAlignment);
+        $sheet->getStyle('A2')->getFont()->setSize(16);
+        $sheet->getStyle('A3')->applyFromArray($styleAlignment);
+        $sheet->getStyle('A3')->getFont()->setSize(20);
 
-        $ligne = 1;
+        $lettres = ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'L', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        $sheet->mergeCells('A2:' . $lettres[count($listeEquipes) - 1] . '2', Worksheet::MERGE_CELL_CONTENT_HIDE);
+        $sheet->mergeCells('A3:' . $lettres[count($listeEquipes) - 1] . '3', Worksheet::MERGE_CELL_CONTENT_HIDE);
+        $sheet->getRowDimension(2)->setRowHeight(20, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(35, 'pt');
+        $sheet->mergeCells('E5:' . $lettres[count($listeEquipes) - 1] . '5', Worksheet::MERGE_CELL_CONTENT_HIDE);
+        $sheet->getStyle('E5:' . $lettres[count($listeEquipes) - 1] . '5')->applyFromArray($styleArray);
+        $sheet
+            ->setCellValue('A2', 'Olympiades de Physique France ' . $this->requestStack->getSession()->get('edition')->getEd() . 'e édition');
 
+        $sheet
+            ->setCellValue('A3', 'Répartition des jurés pour le centre de ' . $this->getUser()->getCentrecia()->getCentre());
+        $sheet
+            ->setCellValue('E5', 'N° des équipes');
+
+        $ligne = 6;
         $sheet
             ->setCellValue('A' . $ligne, 'Prénom juré')
             ->setCellValue('B' . $ligne, 'Nom juré')
-            ->setCellValue('C' . $ligne, 'Initiales');
-
-        $lettres = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'L', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            ->setCellValue('C' . $ligne, 'Initiales')
+            ->setCellValue('D' . $ligne, 'sous-jury');
+        $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
         $i = 0;
+        $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArrayTop);
         foreach ($listeEquipes as $equipe) {
 
             $sheet->setCellValue($lettres[$i] . $ligne, $equipe->getNumero());
@@ -434,17 +535,34 @@ class SecretariatjuryCiaController extends AbstractController
         }
 
         $ligne += 1;
-        $styleArray = ['strikethrough' => 'on'];
 
+        $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
         foreach ($listejures as $jure) {
+            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArray);
+            $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
             $equipesjure = $jure->getEquipes();
             $sheet->setCellValue('A' . $ligne, $jure->getPrenomJure());
             $sheet->setCellValue('B' . $ligne, $jure->getNomJure());
             $sheet->setCellValue('C' . $ligne, $jure->getInitialesJure());
+            $sheet->setCellValue('D' . $ligne, $jure->getNumJury());
+            switch ($jure->getNumJury()) {
+                case  1 :
+                    $sheet->getStyle('D' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('F0F8FF');
+                    break;
+                case 2 :
+                    $sheet->getStyle('D' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFE0');
+                    break;
+                case  3 :
+                    $sheet->getStyle('D' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFE4E1');
+                    break;
+
+            }
             $i = 0;
+
             foreach ($listeEquipes as $equipe) {
                 $sheet->setCellValue($lettres[$i] . $ligne, '*');
                 foreach ($equipesjure as $equipejure) {
+
                     if ($equipejure == $equipe) {
                         $sheet->setCellValue($lettres[$i] . $ligne, 'E');
                         if (in_array($equipe->getNumero(), $jure->getRapporteur())) {
@@ -456,17 +574,24 @@ class SecretariatjuryCiaController extends AbstractController
             }
             $ligne += 1;
         }
+        //$sheet->getStyle('A2:' . $lettres[$i - 1] . '2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00AA66');
 
+        foreach (range('A', $lettres[$i - 1]) as $letra) {
+            $sheet->getColumnDimension($letra)->setAutoSize(true);
+        }
+
+
+        $writer = new Xls($spreadsheet);
+        //$writer->save('temp/repartition_des_jures.xls');
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $this->getUser()->getCentrecia() . '-répartition des jurés.xls"');
+        header('Content-Disposition: attachment;filename="repartition_des_jures_de_' . $this->getUser()->getCentrecia()->getcentre() . '.xls"');
         header('Cache-Control: max-age=0');
-
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
         //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
         // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
         ob_end_clean();
         $writer->save('php://output');
+
 
     }
 
