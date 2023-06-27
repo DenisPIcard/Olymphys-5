@@ -53,12 +53,12 @@ vich_uploader:
 
     odpfImagescarousels:
       uri_prefix: 'odpf/odpf-images/imagescarousels'
-      upload_destination: 'odpf/odpf-images/imagescarousels'
+      upload_destination: '%app.path.imagescarousels%'
       inject_on_load: true
       delete_on_update: true
       delete_on_remove: true
       namer:
-        service: vich_uploader.namer_property
+        service: Vich\UploaderBundle\Naming\PropertyNamer
         options: { property: 'personalNamer' }
 
     odpfDocuments:

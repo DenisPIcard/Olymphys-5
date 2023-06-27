@@ -211,7 +211,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route("/admin/OdpfCarousels/add_diapo,{idCarousel},{idDiapo}", name:"add_diapo")]
+    #[Route("/admin/OdpfCarousels/add_diapo,{idCarousel},{idDiapo}", name: "add_diapo")]
     public function addDiapo(Request $request, $idCarousel, $idDiapo): RedirectResponse|Response
     {
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
@@ -250,6 +250,14 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 }
 
             }
+
+
+            if (null !== $form->get('imageFile')->getData()) {
+
+                $diapo->setImageFile($form->get('imageFile')->getData());
+                
+
+            };
             $listImages = $carousel->getImages();
 
             if (count($listImages) != 0) {
@@ -272,9 +280,11 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             }
             $carousel->setUpdatedAt(new DateTime());
             $diapo->setNumero($numero);
+            $diapo->setUpdatedAt(new DateTime());
             $em = $this->doctrine->getManager();
-            $em->persist($carousel);
             $em->persist($diapo);
+            $em->persist($carousel);
+
             $em->flush();
             return new RedirectResponse($url);
         }
@@ -283,7 +293,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route("/admin/OdpfCarousels/supr_diapo", name:"supr_diapo")]
+    #[Route("/admin/OdpfCarousels/supr_diapo", name: "supr_diapo")]
     public function suprDiapo(Request $request): RedirectResponse|Response
     {
 
@@ -347,7 +357,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route("/admin/OdpfCarousels/bouge_diapo,{idDiapo},{updown}", name:"bouge_diapo")]
+    #[Route("/admin/OdpfCarousels/bouge_diapo,{idDiapo},{updown}", name: "bouge_diapo")]
     public function bougeDiapo($idDiapo, $updown): RedirectResponse|Response
     {
         $diapoBouge = $this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id' => $idDiapo]);
