@@ -18,7 +18,7 @@ fm_elfinder:
             show_hidden: false # Masque les fichiers cachés
             driver: LocalFileSystem # Pilote des fichiers
             path: 'odpf/'
-            #sur le site ajouter url : '../public/odpf'
+            #sur le site ajouter url : '../odpf/'
             upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG','application/pdf' ] # Fichiers autorisés
             upload_deny: [ 'all' ] # Fichiers interdits
             upload_max_size: 100M # Taille maximum
@@ -34,7 +34,7 @@ fm_elfinder:
           uploads:
             driver: LocalFileSystem
             path: 'odpf/'
-            #sur le site ajouter url : '../public/odpf'
+            #sur le site ajouter url : '../odpf/'
             upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg', 'image/JPG','application/pdf' ]
             upload_deny: [ 'all' ]
             upload_max_size: 10M

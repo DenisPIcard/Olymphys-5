@@ -18,7 +18,7 @@ class NotesCiaRepository extends EntityRepository
 {
     public function get_rangs($jure_id): array
     {
-        $queryBuilder = $this->createQueryBuilder('n');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
+        $queryBuilder = $this->createQueryBuilder('n');  // n est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
 
         // On ajoute des critères de tri, etc.
         $queryBuilder
@@ -33,6 +33,7 @@ class NotesCiaRepository extends EntityRepository
         // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
         $results = $query->getResult();
         $i = 1;
+        $rangs = [];
         foreach ($results as $result) {
             $id = $result->getEquipe()->getId();
             $rangs[$id] = $i;

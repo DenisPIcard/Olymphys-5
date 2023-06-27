@@ -16,6 +16,7 @@ use App\Entity\Notes;
 use App\Entity\User;
 use App\Form\ConseilJuryCiaType;
 use App\Form\NotesCiaType;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -207,108 +208,113 @@ class JuryCiaController extends AbstractController
     #[Route("/evaluer_une_equipe_cia/{id}", name: "cyberjuryCia_evaluer_une_equipe", requirements: ["id_equipe" => "\d{1}|\d{2}"])]
     public function evaluer_une_equipe_cia(Request $request, Equipesadmin $equipe, $id): RedirectResponse|Response
     {
-        $user = $this->getUser();
-        $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
-        $repositoryNotes = $this->doctrine
-            ->getManager()
-            ->getRepository(NotesCia::class);
 
-        $numero = $equipe->getNumero();
+        if (new DateTime('now') >= $this->requestStack->getSession()->get('edition')->getConcourscia()) {
+            $user = $this->getUser();
+            $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
+            $repositoryNotes = $this->doctrine
+                ->getManager()
+                ->getRepository(NotesCia::class);
+
+            $numero = $equipe->getNumero();
 
 
-        $attrib = $jure->getRapporteur();
+            $attrib = $jure->getRapporteur();
 
-        $em = $this->doctrine->getManager();
+            $em = $this->doctrine->getManager();
 
-        $notes = $this->doctrine
-            ->getManager()
-            ->getRepository(NotesCia::class)
-            ->EquipeDejaNotee($jure, $id);
-
-        $repositoryMemoires = $this->doctrine
-            ->getManager()
-            ->getRepository(Fichiersequipes::class);
-        try {
-
-            $memoire = $repositoryMemoires->createQueryBuilder('m')
-                ->where('m.equipe =:equipe')
-                ->setParameter('equipe', $equipe)
-                ->andWhere('m.typefichier = 0')
-                ->andWhere('m.national = 0')
-                ->getQuery()->getSingleResult();
-
-        } catch (Exception $e) {
-            $memoire = null;
-
-        }
-
-        $flag = 0;
-
-        if (is_null($notes)) {
-            $notes = new NotesCia();
-            $notes->setEquipe($equipe);
-            $notes->setJure($jure);
-            $progression = 0;
-            $nllNote = true;
-            if (in_array($equipe->getNumero(), $attrib)) {
-                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
-                $flag = 1;
-            } else {
-                $notes->setEcrit(0);
-                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
-            }
-        } else {
             $notes = $this->doctrine
                 ->getManager()
                 ->getRepository(NotesCia::class)
                 ->EquipeDejaNotee($jure, $id);
-            $progression = 1;
-            $nllNote = false;
-            if (in_array($equipe->getNumero(), $attrib)) {
-                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
-                $flag = 1;
-            } else {
-                $notes->setEcrit('0');
-                $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
-            }
-        }
-        $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $repositoryMemoires = $this->doctrine
+                ->getManager()
+                ->getRepository(Fichiersequipes::class);
+            try {
 
-            $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
-            $notes->setCoefficients($coefficients);
-            $total = $notes->getPoints();
-            $notes->setTotal($total);
-            if ($nllNote) {
-                $notesequipe = $repositoryNotes->createQueryBuilder('n')
-                    ->where('n.equipe =:equipe')
+                $memoire = $repositoryMemoires->createQueryBuilder('m')
+                    ->where('m.equipe =:equipe')
                     ->setParameter('equipe', $equipe)
-                    ->getQuery()->getResult();
+                    ->andWhere('m.typefichier = 0')
+                    ->andWhere('m.national = 0')
+                    ->getQuery()->getSingleResult();
+
+            } catch (Exception $e) {
+                $memoire = null;
 
             }
-            $em->persist($notes);
-            $em->flush();
-            $repo = $this->doctrine->getRepository(RangsCia::class);
-            $points = $repo->classement($this->getUser()->getCentreCia());
-            //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-            // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
-            return $this->redirectToroute('cyberjuryCia_tableau_de_bord', array('critere' => 'TOT', 'sens' => 'DESC'));
+
+            $flag = 0;
+
+            if (is_null($notes)) {
+                $notes = new NotesCia();
+                $notes->setEquipe($equipe);
+                $notes->setJure($jure);
+                $progression = 0;
+                $nllNote = true;
+                if (in_array($equipe->getNumero(), $attrib)) {
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+                    $flag = 1;
+                } else {
+                    $notes->setEcrit(0);
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
+                }
+            } else {
+                $notes = $this->doctrine
+                    ->getManager()
+                    ->getRepository(NotesCia::class)
+                    ->EquipeDejaNotee($jure, $id);
+                $progression = 1;
+                $nllNote = false;
+                if (in_array($equipe->getNumero(), $attrib)) {
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
+                    $flag = 1;
+                } else {
+                    $notes->setEcrit('0');
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
+                }
+            }
+            $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+                $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+                $notes->setCoefficients($coefficients);
+                $total = $notes->getPoints();
+                $notes->setTotal($total);
+                if ($nllNote) {
+                    $notesequipe = $repositoryNotes->createQueryBuilder('n')
+                        ->where('n.equipe =:equipe')
+                        ->setParameter('equipe', $equipe)
+                        ->getQuery()->getResult();
+
+                }
+                $em->persist($notes);
+                $em->flush();
+                $repo = $this->doctrine->getRepository(RangsCia::class);
+                $points = $repo->classement($this->getUser()->getCentreCia());
+                //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
+                // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
+                return $this->redirectToroute('cyberjuryCia_tableau_de_bord', array('critere' => 'TOT', 'sens' => 'DESC'));
+            }
+
+
+            $content = $this->renderView('cyberjuryCia/evaluerCia.html.twig',
+                array(
+                    'equipe' => $equipe,
+                    'form' => $form->createView(),
+                    'flag' => $flag,
+                    'progression' => $progression,
+                    'jure' => $jure,
+                    'coefficients' => $coefficients,
+                    'memoire' => $memoire
+                ));
+            return new Response($content);
+        } else {
+            $this->requestStack->getSession()->set('info', 'L\'évaluation des équipes n\'est pas encore ouverte');
+            return $this->redirectToRoute('core_home');
         }
-
-
-        $content = $this->renderView('cyberjuryCia/evaluerCia.html.twig',
-            array(
-                'equipe' => $equipe,
-                'form' => $form->createView(),
-                'flag' => $flag,
-                'progression' => $progression,
-                'jure' => $jure,
-                'coefficients' => $coefficients,
-                'memoire' => $memoire
-            ));
-        return new Response($content);
-
     }
 
     #[IsGranted('ROLE_JURYCIA')]
