@@ -5,8 +5,12 @@ namespace App\Repository\Cia;
 
 
 use App\Entity\Cia\NotesCia;
+use App\Entity\Coefficients;
 use App\Entity\Notes;
+use App\Repository\CoefficientsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * @method Notes|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,15 +20,30 @@ use Doctrine\ORM\EntityRepository;
  */
 class NotesCiaRepository extends EntityRepository
 {
+    private EntityManagerInterface $doctrine;
+
+    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
+    {
+        $this->doctrine = $em;
+        parent::__construct($em, $class);
+    }
+
     public function get_rangs($jure_id): array
     {
-        $queryBuilder = $this->createQueryBuilder('n');  // n est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
 
+
+        $queryBuilder = $this->createQueryBuilder('n');  // n est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
+        $repo = $this->doctrine->getRepository(Coefficients::class);
+        $coefficients = $repo->findOneBy(['id' => 1]);
         // On ajoute des critères de tri, etc.
+
         $queryBuilder
             ->where('n.jure=:jure_id')
             ->setParameter('jure_id', $jure_id)
-            ->orderBy('n.exper*15 + n.demarche*10 + n.oral*10 + n.origin*15 + n.wgroupe*5+n.repquestions*10', 'DESC');
+            ->orderBy('n.exper*' . $coefficients->getExper() .
+                '+ n.demarche*' . $coefficients->getDemarche() . ' + n.oral*' . $coefficients->getOral() .
+                ' + n.origin*' . $coefficients->getOrigin() . ' + n.wgroupe*' . $coefficients->getWgroupe() .
+                '+n.repquestions*' . $coefficients->getRepquestions(), 'DESC');
 
         // on récupère la query
         $query = $queryBuilder->getQuery();

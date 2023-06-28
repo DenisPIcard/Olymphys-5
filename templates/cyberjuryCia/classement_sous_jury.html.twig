@@ -30,9 +30,9 @@
             </tr>
             </thead>
             <tbody>
-            {% for equipe in equipes %}
+            {% for key , rang in rangs %}
                 <tr>
-                    {% for key , rang in rangs %}
+                    {% for equipe in equipes %}
                         {% if key == equipe.id %}
                             <th>{{ loop.index }}  </th>
                             <td>

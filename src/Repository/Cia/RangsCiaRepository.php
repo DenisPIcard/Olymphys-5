@@ -138,6 +138,7 @@ class RangsCiaRepository extends ServiceEntityRepository
 
         }
         arsort($points);
+
         return $points;
     }
 

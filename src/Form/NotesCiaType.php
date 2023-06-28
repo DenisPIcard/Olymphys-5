@@ -27,8 +27,8 @@ class NotesCiaType extends AbstractType
         $choix['Moyen'] = Notes::MOYEN;
         $choix['Insuffisant'] = Notes::INSUFFISANT;
 
-        if ($options['EST_PasEncoreNotee']) {
-            if ($options['EST_Lecteur']) {
+        if ($options['EST_PasEncoreNotee'] == true) {
+            if ($options['EST_Lecteur'] == true) {
 
                 $builder
                     ->add('exper', ChoiceType::class, array('choices' => $choix, 'placeholder' => 'Évaluer',))
@@ -53,7 +53,7 @@ class NotesCiaType extends AbstractType
 
             }
         } else {
-            if ($options['EST_Lecteur']) {
+            if ($options['EST_Lecteur'] == true) {
                 $builder
                     ->add('exper', ChoiceType::class, array('choices' => $choix,))
                     ->add('demarche', ChoiceType::class, array('choices' => $choix,))
