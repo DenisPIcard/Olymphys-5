@@ -143,16 +143,23 @@
 
     {# ############################# FIN DE LA PAGE ESPACE PROFESSEUR ################################################### #}
     <div class="well">
-        {% if is_granted('ROLE_COMITE') or is_granted('ROLE_JURYCIA') or is_granted('ROLE_JURY') or is_granted('ROLE_ORGACIA') %}
+    {% if is_granted('ROLE_COMITE') or is_granted('ROLE_JURYCIA') or is_granted('ROLE_JURY') or is_granted('ROLE_ORGACIA') %}
 
-            {% if concours=='interacadémique' %}
-                <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}">Retour à
-                        la liste des équipes</a></div>
-            {% endif %}
-            {% if concours=='national' %}
-                <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'}) }}">Retour
-                        à la liste des équipes</a></div>
-            {% endif %}
+    {% if concours=='interacadémique' %}
+    <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}">Retour à
+            la liste des équipes</a>
+        {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] and "now"|date("m/d/Y") == app.session.get('edition').concourscia|date("m/d/Y") %}
+        <div class="text-center"><a href="{{ path('cyberjuryCia_evaluer_une_equipe',{id: equipe.id}) }}">Retour vers
+                l'évaluation
+                de
+                l'équipe</a>
+
+            {% endif %}</div>
+        {% endif %}
+        {% if concours=='national' %}
+            <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'}) }}">Retour
+                    à la liste des équipes</a></div>
+        {% endif %}
         {% endif %}
         {% if app.user.roles|filter(v => v =='ROLE_PROF') %}
 

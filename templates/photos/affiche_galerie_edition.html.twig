@@ -50,7 +50,7 @@
                                         <div class="containercarousel" onclick="modalShow({{ i }})">
                                             <div class="d-flex h-100 align-items-center justify-content-center">
                                                 <div class="p-2">
-                                                    <a href="#">
+                                                    <a href="{{ path('photos_voir_galerie',{infos:'equipe-'~photo.equipepassee.id})}}">
                                                         <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
                                                              class="img-fluid" id="photo{{ i }}">
                                                     </a>
@@ -81,7 +81,7 @@
                                         <div class="containercarousel" onclick="modalShow({{ i }})">
                                             <div class="d-flex h-100 align-items-center justify-content-center">
                                                 <div class="p-2">
-                                                    <a href="#">
+                                                    <a href="{{ path('photos_voir_galerie',{infos:'equipe-'~photo.equipepassee.id})}}">
                                                         <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
                                                              class="img-fluid" id="photo{{ i }}">
                                                     </a>
@@ -128,12 +128,13 @@
         </div>
 
 
-        <div class="smallsize">{{ i-1 }} photos(une par équipe)</div>
+        <div class="smallsize">{{ i-1 }} photos(une par équipe) <br>
+            Cliquer sur le n°(lettre)  ou la photo de l'équipe pour voir ses photos</div>
         <br>
     </div>
     {% set i=1 %}
     <div class="text-center col-lg-8 col-md-6" style="margin:auto">
-        <div class="smallsize">Cliquer sur le n° ou la lettre de l'équipe pour voir ses photos</div>
+
 
 
         {% for photo in photos %}

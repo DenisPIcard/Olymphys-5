@@ -1,11 +1,5 @@
 {% extends "base1.html.twig" %}
 
-
-
-
-
-
-
 {% block title %}
 
     {{ edition.edition }}   Les photos des Olympiades de Physique {% endblock %}
@@ -15,7 +9,7 @@
 {% block titre3 %}
     <div class="text-center"> Les photos de la {{ edition.edition }}<sup>e</sup> édition</div></br>
     {% if liste_equipes|length ==1 %}
-        <div class="color" style="color:blue">
+        <div id="titre-equipe" class="color" style="color:blue">
             {% if  liste_equipes[0].numero <100 %}
                 Equipe {{ liste_equipes[0].numero }}:
                 {% endif %}
@@ -32,19 +26,25 @@
 
 
 {% block body %}
-    {% if liste_equipes[0].numero<100 %}
-        <a class="btn-primary" href="{{ path('odpf_editionspassees_equipe', {'id':liste_equipes[0].id}) }}">Voir
-            l'équipe</a>
-    {% endif %}
-    <a class="btn-primary"
-       href="{{ path('photos_voir_galerie', {'infos':'edition-'~liste_equipes[0].editionspassees.id}) }}">Galerie de
-        l'édition
-    </a>
+    <div class="container">
+        <div class="row" style="text-align: center">
+            <div class="col">
+                {% if liste_equipes[0].numero<100 %}
+                    <a class="btn-primary" href="{{ path('odpf_editionspassees_equipe', {'id':liste_equipes[0].id}) }}">Voir
+                        l'équipe</a>
+                {% endif %}
+                <a class="btn-primary"
+                   href="{{ path('photos_voir_galerie', {'infos':'edition-'~liste_equipes[0].editionspassees.id}) }}">Galerie de
+                    l'édition
+                </a>
+            </div>
+        </div>
     <!--Carousel Wrapper-->
-    <div class="col-lg-10">
-        <div class="row mx-auto my-auto">
+        <div class="row mx-auto my-auto " >
+        <div class="col-lg-10" style="margin: auto">
 
-            <div id="carousel" class="carousel slide w-100" data-ride="carousel">
+
+            <div id="carousel" class="carousel slide w-100" data-ride="carousel" >
                 <ol class="carousel-indicators">
                     {% set i = 0 %}
                     {% for photo in photos %}
@@ -58,7 +58,7 @@
                     {% endfor %}
                 </ol>
                 <!--Slides-->
-                <div class="black">
+                <div class="black" >
                     <div class="carousel-inner w-100 black" role="listbox">
 
                         {% set i = 1 %}
@@ -68,10 +68,10 @@
                                     <div class="container-fluid">
 
 
-                                        <div class="containercarousel" onclick="modalShow({{ i }})">
+                                        <div class="containercarousel" data-toggle="modal"  data-target="#" data-numimage="{{ i }}">
                                             <div class="d-flex h-100 align-items-center justify-content-center">
                                                 <div class="p-2">
-                                                    <a href="#">
+                                                    <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}" target="_blank">
                                                         <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
                                                              class="img-fluid" id="photo{{ i }}">
                                                     </a>
@@ -95,10 +95,10 @@
                                     <div class="container-fluid">
 
 
-                                        <div class="containercarousel" onclick="modalShow({{ i }})">
+                                        <div class="containercarousel"  data-toggle="modal"  data-target="#" data-numimage="{{ i }}">
                                             <div class="d-flex h-100 align-items-center justify-content-center">
                                                 <div class="p-2">
-                                                    <a href="#">
+                                                    <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}" target="_blank">
                                                         <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
                                                              class="img-fluid" id="photo{{ i }}">
                                                     </a>
@@ -139,17 +139,37 @@
         </div>
 
 
-        <font size="-2">{{ i-1 }} photos</font>
+
         <br>
     </div>
-    <!-- The Modals -->
+    </div>
+    {% set j=1 %}
+    <div class="text-center col-lg-8 col-md-6" style="margin:auto">
+        <div class="smallsize">{{ i-1 }} photos   Cliquer sur la photo du diaporama pour l'obtenir en haute résolution</div>
 
-    <div class="modal-gal">
-        <span class="close">&times;</span>
-        <img class="modal-content-gal">
-        <div class="modal-caption-gal"></div>
-        <a href="" class="btn-primary" id="enregistrer-image" target="_self" download="">Enregistrer l'image</a>
+        <br>
+        {% for photoequipe in photosequipes %}
+            {% set class= 'btn btn-warning' %}
+            {%  if photoequipe.equipepassee==liste_equipes[0] %}
+                {% set class= 'btn btn-danger'%}
+            {% endif %}
+            <a href="{{ path('photos_voir_galerie',{infos:'equipe-'~photoequipe.equipepassee.id}) }}"
+               title="{{ photoequipe.equipepassee.titreProjet }}" type="button" class="{{ class }}" style="width: 80px;">
+
+                {% if  photoequipe.equipepassee.numero != null %}
+                    {{ photoequipe.equipepassee.numero }}
+                {% endif %}
+                {% if  photoequipe.equipepassee.lettre != null %}
+                    ({{ photoequipe.equipepassee.lettre }})
+                {% endif %}
+            </a>
+
+            {% set j= j+1 %}
+        {% endfor %}
 
     </div>
+    <!-- The Modals -->
+{% include('modales/modaleGalerie.html.twig') %}
+
 
 {% endblock %}

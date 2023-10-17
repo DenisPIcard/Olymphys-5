@@ -256,4 +256,21 @@ class Mailer
         return $email;
     }
 
+    public function sendAvertissementMail($user,$eleves)
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('info@olymphys.fr'))
+            ->to($user->getEmail());
+
+        $email->subject('Vérification des adresses de messagerie de vos élèves')
+            ->htmlTemplate('email/avertissementMail.html.twig')
+            ->context([
+                'eleves' => $eleves,
+
+            ]);
+        $this->mailer->send($email);
+        return $email;
+
+    }
+
 }

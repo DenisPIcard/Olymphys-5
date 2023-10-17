@@ -78,47 +78,48 @@ class SecretariatadminController extends AbstractController
 
             $em = $this->doctrine->getManager();
 
-            for ($row = 2; $row <= $highestRow; ++$row) {
+            for ($row = 3; $row <= $highestRow; ++$row) {
 
-                $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();//On lit le uai
+                $value = $worksheet->getCell('A'.$row)->getValue();//On lit le uai
                 $uai = $repositoryUai->findOneByUai($value);//On vérifie si  cet uai est déjà dans la base
                 if (!$uai) { // si le uai n'existe pas, on le crée
                     $uai = new Uai();
-                } //sinon on écrase les précédentes données
+                 //sinon on garde les précédentes données
+                    //dd($value);
                 $uai->setUai($value);
-                $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                $value = $worksheet->getCell('T'.$row)->getValue();
                 $uai->setNature($value);
-                $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-                $uai->setSigle($value);
-                $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                //$value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                //$uai->setSigle($value);
+                $value = $worksheet->getCell('K'.$row)->getValue();
                 $uai->setCommune($value);
-                $value = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+                $value = $worksheet->getCell('AC'.$row)->getValue();
                 $uai->setAcademie($value);
-                $value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
-                $uai->setPays($value);
-                $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+                //$value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+                $uai->setPays('France');
+                $value = $worksheet->getCell('W'.$row)->getValue();
                 $uai->setDepartement($value);
-                $value = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+                $value = $worksheet->getCell('C'.$row)->getValue();
                 $uai->setDenominationPrincipale($value);
-                $value = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+                $value = $worksheet->getCell('B'.$row)->getValue();
                 $uai->setAppellationOfficielle($value);
-                $value = $worksheet->getCellByColumnAndRow(11, $row)->getValue();
-                $uai->setNom($value);
-                $value = $worksheet->getCellByColumnAndRow(12, $row)->getValue();
+                $value = $worksheet->getCell('D'.$row)->getValue();
+                $uai->setNom(ucwords(strtolower($value)));
+                $value = $worksheet->getCell('F'.$row)->getValue();
                 $uai->setAdresse($value);
-                $value = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
+                $value = $worksheet->getCell('H'.$row)->getValue();
                 $uai->setBoitePostale($value);
-                $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();
+                $value = $worksheet->getCell('Z'.$row)->getValue();
                 $uai->setCodePostal($value);
-                $value = $worksheet->getCellByColumnAndRow(15, $row)->getValue();
+                $value = $worksheet->getCell('J'.$row)->getValue();
                 $uai->setAcheminement($value);
-                $value = $worksheet->getCellByColumnAndRow(16, $row)->getValue();
+                $value = $worksheet->getCell('L'.$row)->getValue();
                 $uai->setCoordonneeX($value);
-                $value = $worksheet->getCellByColumnAndRow(17, $row)->getValue();
+                $value = $worksheet->getCell('M'.$row)->getValue();
                 $uai->setCoordonneeY($value);
-                $em->persist($uai);
-                $em->flush();
-
+                $this->em->persist($uai);
+                $this->em->flush();
+            }
             }
             return $this->redirectToRoute('core_home');
         }

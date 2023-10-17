@@ -110,8 +110,10 @@ class EquipesadminCrudController extends AbstractCrudController
 
 
             $edition = $session->get('edition');
+
             $editionId= $this->requestStack->getSession()->get('edition')->getId();
-            if (date('now')<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
+            $date= new DateTime('now');
+            if ($date<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
                 $edition=$this->requestStack->getSession()->get('edition');
                 $editionId=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1])->getId();
 
@@ -140,6 +142,7 @@ class EquipesadminCrudController extends AbstractCrudController
                 // 1) using an array
                 ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId . '-' . $centreId.'-'.$selectionnee])
                 ->createAsGlobalAction();
+
             //->displayAsButton()->setCssClass('btn btn-primary');
 
         }
@@ -357,6 +360,7 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
 
         $idedition = explode('-', $ideditioncentre)[0];
         $idcentre = explode('-', $ideditioncentre)[1];
+
         if (isset(explode('-', $ideditioncentre)[2])){
             $selectionnee=explode('-', $ideditioncentre)[2];
 
@@ -388,6 +392,7 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
             $queryBuilder
                 ->andWhere('e.centre =:centre')
                 ->setParameter('centre', $centre);
+
         }
         if (($selectionnee != 'na')) {
 
@@ -460,9 +465,11 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
             $uai = $equipe->getUaiId();
 
             $sheet->setCellValue('A' . $ligne, $equipe->getId())
-                ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd())
-                ->setCellValue('C' . $ligne, $equipe->getCentre()->getCentre())
-                ->setCellValue('D' . $ligne, $equipe->getTitreprojet())
+                ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd());
+                if( $equipe->getCentre()!=null) {
+                    $sheet->setCellValue('C' . $ligne, $equipe->getCentre()->getCentre());
+                }
+                $sheet->setCellValue('D' . $ligne, $equipe->getTitreprojet())
                 ->setCellValue('E' . $ligne, $equipe->getNumero())
                 ->setCellValue('F' . $ligne, $equipe->getLettre())
                 ->setCellValue('G' . $ligne, $equipe->getInscrite());

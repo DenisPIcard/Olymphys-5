@@ -8,40 +8,48 @@
                 {# définit un padding de 0,5 rem #}
                 <div class="carousel-inner black" style="width:338px !important; height:239px !important ;">
                     {# carousel-inner est un css de Bootstrap, black est défini dans fonds.css en l.7 #}
-                    {% set i = 1 %}
+
 
                     {% if article is defined and article.carousel!=null %}
-                        {% for image in article.carousel.images %}
+                        {% set nbdiapos=article.carousel.images|length  %}
+                        {% for n in 1..nbdiapos %}
+                        {% set imageaffichee = null %}
+                            {% for image in article.carousel.images %}
+                                    {% if image.numero == n %}
+                                        {% set imageaffichee =image %}
+                                    {% endif %}
+                             {% endfor%}
                             {# boucle de défilement des images #}
-                            {% if i==1 %}
+
+                            {% if n==1 %}
 
                                 <div class="carousel-item active" data-interval="5000">
 
                                     <div class="text-center"><img
-                                                src=" {{ asset('odpf/odpf-images/imagescarousels/'~image.name) }}"
-                                                alt="{{ image.coment }}" class="img-fluid"
+                                                src="{{ asset('odpf/odpf-images/imagescarousels/'~imageaffichee.name) }}"
+                                                alt="{{ imageaffichee.coment }}" class="img-fluid"
                                                 style="width:338px !important; height:230px !important ;">
 
                                         <div class="carousel-caption d-none d-md-block"
                                              style="transform: translateY(110%);background:rgba(0, 0, 0, 0.0)">
 
-                                            <div class="smallsize">{{ image.coment }}</div>
+                                            <div class="smallsize">{{ imageaffichee.coment }}</div>
                                         </div>
                                     </div>
 
                                 </div>
                             {% endif %}
-                            {% if i>1 %}
+                            {% if n>1 %}
                                 <div class="carousel-item">
 
                                     <div class="text-center"><img
-                                                src=" {{ asset('odpf/odpf-images/imagescarousels/'~image.name) }}"
-                                                alt="{{ image.coment }}" class="img-fluid"
+                                                src="{{ asset('odpf/odpf-images/imagescarousels/'~imageaffichee.name) }}"
+                                                alt="{{ imageaffichee.coment }}" class="img-fluid"
                                                 style="width:auto !important; height:287px !important ;">
                                         <div class="carousel-caption d-none d-md-block"
                                              style="transform: translateY(110%); background:rgba(0, 0, 0, 0.0)">
 
-                                            <div class="smallsize">{{ image.coment }}</div>
+                                            <div class="smallsize">{{ imageaffichee.coment }}</div>
                                         </div>
 
                                     </div>
@@ -49,7 +57,7 @@
                                 </div>
 
                             {% endif %}
-                            {% set i= i+1 %}
+
 
                         {% endfor %}
                     {% endif %}

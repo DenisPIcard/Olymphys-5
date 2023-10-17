@@ -12,6 +12,7 @@ use App\Form\ProfileType;
 use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
 use App\Service\OdpfRempliEquipesPassees;
+use App\Service\ReceiveMails;
 use datetime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -225,6 +226,7 @@ class UtilisateurController extends AbstractController
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
                             $id = 0;
+                            $nouvelEleve=false;
                             if ($modif == true) {
 
                                 $id = $form1->get('id' . $i)->getData();
@@ -235,6 +237,7 @@ class UtilisateurController extends AbstractController
                             } else {
                                 $eleve[$i] = new Elevesinter();
                                 $nbeleves = $nbeleves + 1;
+                                $nouvelEleve=true;
                             }
 
                             if (($form1->get('prenomeleve' . $i)->getData() == null) or ($form1->get('nomeleve' . $i)->getData() == null) or ($form1->get('maileleve' . $i)->getData() == null) or ($form1->get('classeeleve' . $i)->getData() == null)) {
@@ -252,8 +255,9 @@ class UtilisateurController extends AbstractController
                             $eleve[$i]->setEquipe($equipe);
 
                             $em->persist($eleve[$i]);
-
-                            $mailer->sendVerifieMailEleve($eleve[$i]);
+                            if ($nouvelEleve==true) {
+                                $mailer->sendVerifieMailEleve($eleve[$i]);
+                            }
                         }
                     }
                     $equipe->setNbEleves($nbeleves);
@@ -263,8 +267,6 @@ class UtilisateurController extends AbstractController
                     if ($modif == true) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
-
-
                         $maj_profsequipes = new Maj_profsequipes($doctrine);
                         $maj_profsequipes->maj_profsequipes($equipe);
                     }
@@ -274,9 +276,12 @@ class UtilisateurController extends AbstractController
 
                     $session->set('oldListeEleves', null);
                     $session->set('supr_eleve', null);
-
+                    $mailer->sendConfirmeInscriptionEquipe($equipe, $user, $modif, $checkChange);
+                    //$eleves=$this->getMail();
+                    if ($eleves!=[]){
+                        //$mailer->sendAvertissementMail($this->getUser(),$eleves);
+                    }
                     if ($modif == false) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $user, $modif, $checkChange);
 
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }
@@ -468,6 +473,29 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute('inscrire_equipe', array('idequipe' => $equipe->getId()));
 
     }
-    
+
+    #[Isgranted('ROLE_PROF')]
+    #[Route("/utilisateur/getMail", name: "getMail")]
+    public function getMail(){
+
+        $inbox=new ReceiveMails();
+        $failedMails=$inbox->receiveMail();
+        $eleves=[];
+        if ($failedMails!== null){
+            $i=0;
+            foreach ($failedMails as $mail) {
+                $eleve = $this->doctrine->getRepository(Elevesinter::class)->findOneBy(['courriel' => $mail]);
+                $equipe = $eleve->getEquipe();
+                $prof1 = $equipe->getIdProf1();
+                $prof2 = $equipe->getIdProf2();
+                if ($prof1 == $this->getUser() or $prof2 == $this->getUser()) {
+                    $eleves[$i] = $eleve;
+                    $i++;
+                }
+            }
+        }
+
+        return $eleves;
+    }
 
 }

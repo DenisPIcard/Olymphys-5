@@ -43,7 +43,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Exception;
-use PhpOffice\PhpWord\Shared\ZipArchive;
+
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -54,6 +54,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use ZipArchive;
+
 
 class FichiersequipesCrudController extends AbstractCrudController
 {
@@ -64,7 +66,7 @@ class FichiersequipesCrudController extends AbstractCrudController
     private ParameterBagInterface $parameterBag;
     private EntityManagerInterface $em;
     private ManagerRegistry $doctrine;
-    private AdminUrlGenerator $adminUrlGenerator;
+
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine, AdminUrlGenerator $adminUrlGenerator)
     {
@@ -75,7 +77,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $this->parameterBag = $parameterBag;
         $this->em = $entitymanager;
         $this->doctrine = $doctrine;
-        $this->adminUrlGenerator = $adminUrlGenerator;
+
 
     }
 
@@ -224,11 +226,16 @@ class FichiersequipesCrudController extends AbstractCrudController
     {
         $equipeId = 'na';
         $editionId = 'na';
-
+        $concours = $_REQUEST['concours'];
+        $concours==0?$national=false:$national=true;
         if (isset($_REQUEST['filters'])) {
 
             if (isset($_REQUEST['filters']['equipe'])) {
                 $equipeId = $_REQUEST['filters']['equipe'];
+
+            }
+            if (isset($_REQUEST['filters']['edition'])) {
+                $editionId = $_REQUEST['filters']['edition'];
 
             }
         }
@@ -245,7 +252,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
-            ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId])
+            ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId.'-'.$concours])
             ->createAsGlobalAction();
         //->displayAsButton()            ->setCssClass('btn btn-primary');;
         $telechargerUnFichier = Action::new('telechargerunfichier', 'Télécharger le fichier', 'fa fa-file-download')
@@ -290,8 +297,11 @@ class FichiersequipesCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $idEdition = explode('-', $ideditionequipe)[0];
         $idEquipe = explode('-', $ideditionequipe)[1];
+        $concours=explode('-', $ideditionequipe)[2];
 
-        $qb = $this->doctrine->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f');
+        $qb = $this->doctrine->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f')
+        ->andWhere('f.national =:concours')
+        ->setParameter('concours',$concours);
         if ($typefichier == 0) {
             $qb->andWhere('f.typefichier <= 1');
         } else {
@@ -304,7 +314,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
             }
         } else {
-            $edition = $repositoryEdition->findBy(['id' => $idEdition]);
+            $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
 
         }
         if ($this->requestStack->getSession()->get('concours') == 1) {
@@ -324,39 +334,54 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->setParameter('edition', $edition);
         $fichiers = $qb->getQuery()->getResult();
 
-        $zipFile = new \ZipArchive();
-        $now = new DateTime();
-        $fileNameZip = 'telechargement_olymphys_' . $now->format('d-m-Y\-His');
-        if (($zipFile->open($fileNameZip, ZipArchive::CREATE) === TRUE) and (null !== $fichiers)) {
+        if($fichiers!=[]) {
+            $zipFile = new ZipArchive();
+            $now = new DateTime();
+            $fileNameZip = 'Telechargement_olymphys_'. $this->getParameter('type_fichier')[$typefichier] .'_'. $now->format('d-m-Y\-His');
 
-            foreach ($fichiers as $fichier) {
-                try {
+            if (($zipFile->open($fileNameZip, ZipArchive::CREATE) === TRUE) and (null !== $fichiers)) {
 
-                    $fileName = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
+                foreach ($fichiers as $fichier) {
+                    try {
+                        if ($fichier->getTypefichier()<4) {
+                            $fichier->getPublie() == true ? $autorise = 'publie/' : $autorise = 'prive/';
+                            $fileName = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $autorise . $fichier->getFichier();
+                        }
+                        else{
+                            $fileName = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
+                        }
+                        $zipFile->addFromString(basename($fileName), file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
 
-                    $zipFile->addFromString(basename($fileName), file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
+                    } catch (Exception $e) {
 
-                } catch (Exception $e) {
+                    }
 
                 }
 
+                $zipFile->close();
+
+
             }
 
-            $zipFile->close();
+            $response = new Response(file_get_contents($fileNameZip));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
 
+            $disposition = HeaderUtils::makeDisposition(
+                HeaderUtils::DISPOSITION_ATTACHMENT,
+                $fileNameZip
+            );
+            $response->headers->set('Content-Type', 'application/zip');
+            $response->headers->set('Content-Disposition', $disposition);
 
+            @unlink($fileNameZip);
+            return $response;
         }
-        $response = new Response(file_get_contents($fileNameZip));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+        $url = $adminUrlGenerator
+            ->setController(FichiersequipesCrudController::class)
+            ->setAction(Action::INDEX)
+            ->generateUrl();
 
-        $disposition = HeaderUtils::makeDisposition(
-            HeaderUtils::DISPOSITION_ATTACHMENT,
-            $fileNameZip
-        );
-        $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', $disposition);
-
-        @unlink($fileNameZip);
-        return $response;
+        return $this->redirect($url);
     }
 
     #[Route("/Admin/FichiersequipesCrud/telechargerUnFichier", name: "telechargerUnFichier")]
@@ -372,9 +397,9 @@ class FichiersequipesCrudController extends AbstractCrudController
         $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEdition();
         $typefichier = $fichier->getTypefichier();
-        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier];
+        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier].'/';
         if ($typefichier == 1) {
-            $chemintypefichier = $this->getParameter('type_fichier')[0];
+            $chemintypefichier = $this->getParameter('type_fichier')[0].'/';
         }
         if ($typefichier < 4) {
             $fichier->getPublie() == true ? $acces = $this->getParameter('fichier_acces')[1] : $acces = $this->getParameter('fichier_acces')[0];
@@ -382,17 +407,16 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $chemintypefichier . $fichier->getFichier();
-        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
         $response = new Response(file_get_contents($file));
-        $disposition = HeaderUtils::makeDisposition(
-            HeaderUtils::DISPOSITION_ATTACHMENT,
-            $fichier->getFichier()
-        );
+
+        $type=mime_content_type($file);
         if (str_contains($_SERVER['HTTP_USER_AGENT'], 'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Mac OS X')) {
             $response = new BinaryFileResponse($file);
-            $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
+
         }
-        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Disposition: attachment','attachment; filename="'. $fichier->getFichier().'"' );
+        $response->headers->set('Content-Description', 'File Transfer');
+        $response->headers->set('Content-type',$type);
         $response->headers->set('Content-Length', filesize($file));
 
         return $response;
@@ -602,9 +626,10 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $concours = $context->getRequest()->query->get('concours');
-
+        $concours==0?$national=false:$national=true;
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-
+        $qb->andWhere('entity.national =:national')
+            ->setParameter('national',$national);
         if ($typefichier == 0) {
             $qb //= $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
             ->andWhere('entity.typefichier <=:typefichier')

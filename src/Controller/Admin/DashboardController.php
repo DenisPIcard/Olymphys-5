@@ -35,25 +35,25 @@ class DashboardController extends AbstractDashboardController
 {
     private AdminContextProvider $adminContextProvider;
     private AdminUrlGenerator $adminUrlGenerator;
-
+    
     public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGenerator $adminUrlGenerator)
     {
-
+        
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->adminContextProvider = $adminContextProvider;
     }
-
+    
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
             ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png"" alt="logo des OdpF"  width="160"/>');
     }
-
+    
     public function configureAssets(): Assets
     {
         return Assets::new()->addCssFile('css/fonts.css');
     }
-
+    
     public function configureCrud(): Crud
     {
         return Crud::new()
@@ -61,18 +61,18 @@ class DashboardController extends AbstractDashboardController
             ->setDateTimeFormat('dd/MM/yyyy HH:mm:ss')
             ->setTimeFormat('HH:mm');
     }
-
+    
     public function configureMenuItems(): iterable
     {
-
+        
         $submenu1 = [
             MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
-
+            
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 0)
                 ->setQueryParameter('concours', 0),
-
+            
             MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 2)
@@ -86,7 +86,7 @@ class DashboardController extends AbstractDashboardController
                 ->setQueryParameter('typefichier', 5)
                 ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
-
+            
             MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 6)
@@ -99,7 +99,7 @@ class DashboardController extends AbstractDashboardController
                 ->setQueryParameter('typefichier', 7)
                 ->setQueryParameter('concours', 'interacadémique'),
         ];
-
+        
         $submenu2 = [
             MenuItem::section('Equipes'),
             MenuItem::linkToCrud('Palmares des équipes', 'fas fa-asterisk', Equipes::class)->setQueryParameter('palmares', true),
@@ -116,7 +116,7 @@ class DashboardController extends AbstractDashboardController
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 3)
                 ->setQueryParameter('concours', 1),
-
+            
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
             MenuItem::linkToCrud('Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
@@ -131,7 +131,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Les Visites', 'fas fa-asterisk', Visites::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Cadeaux', 'fas fa-asterisk', Cadeaux::class)->setPermission('ROLE_SUPER_ADMIN'),
         ];
-
+        
         yield MenuItem::linkToCrud('Gestion des éditions', 'fas fa-cogs', Edition::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Les organisateur cia', 'fas fa-book', Orgacia::class)->setPermission('ROLE_SUPER_ADMIN');;
@@ -147,20 +147,20 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::subMenu('Concours interacadémique')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
         yield MenuItem::linktoRoute('Administration du site', 'fa-solid fa-pager', 'odpfadmin');
-
+        
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linktoRoute('Secrétariat du jury', 'fas fa-pencil-alt', 'secretariatjury_accueil')->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
-
+    
     #[Route("/admin", name: "admin")]
     public function index(): Response
     {
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null) {
-
+            
             return $this->redirectToRoute('admin');
         };
-
-        return $this->render('bundles/EasyAdminBundle/page_accueil.html.twig');
+        
+        return $this->render('EasyAdminBundle/page_accueil.html.twig');
     }
 }

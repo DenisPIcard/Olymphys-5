@@ -22,11 +22,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ModifEquipeType extends AbstractType
 {
-    private $session;
+    private $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
-        $this->session = $requestStack->getSession();
+        $this->requestStack = $requestStack;
 
     }
 
@@ -39,7 +39,8 @@ class ModifEquipeType extends AbstractType
 
         $required = [true, true, false, false, false, false];
 
-        $datelim = $this->session->get('datelimphotoscia');
+        $datelim = $this->requestStack->getSession()->get('edition')->getDatelimNat();
+
         new datetime('now') > $datelim ? $tag = true : $tag = false;
         $builder->add('titreProjet', TextType::class, [
             'label' => 'Titre du projet',

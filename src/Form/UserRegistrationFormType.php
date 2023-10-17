@@ -21,31 +21,31 @@ class UserRegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username', TextType::class, ['required' => true, 'label' => 'Votre pseudo'])
+            ->add('username', TextType::class, ['required' => true, 'label' => 'Votre pseudo*'])
             ->add('email', RepeatedType::class, ['required' => true,
                 'mapped' => true,
                 'type' => EmailType::class,
-                'first_options' => array('label' => 'Votre courriel'),
-                'second_options' => array('label' => 'Vérification du courriel'),
+                'first_options' => array('label' => 'Votre courriel (éviter le mail académique souvent protégé par les services des rectorats)*'),
+                'second_options' => array('label' => 'Vérification du courriel*'),
             ])
-            ->add('nom', TextType::class, ['required' => true, 'label' => 'Votre nom'])
-            ->add('prenom', TextType::class, ['required' => true, 'label' => 'Votre prénom'])
+            ->add('nom', TextType::class, ['required' => true, 'label' => 'Votre nom*'])
+            ->add('prenom', TextType::class, ['required' => true, 'label' => 'Votre prénom*'])
             ->add('plainPassword', RepeatedType::class, array('required' => true,
                 'mapped' => true,
                 'type' => PasswordType::class,
-                'first_options' => array('label' => 'Mot de passe'),
-                'second_options' => array('label' => 'Confirmer le mot de passe'),))
+                'first_options' => array('label' => 'Mot de passe*'),
+                'second_options' => array('label' => 'Confirmer le mot de passe*'),))
             //->add('nom',TextType::class)
             ->add('uai', TextType::class, ['required' => true,
-                'label' => 'Le code UAI de votre établissement, de la forme 0123456A)'])
-            ->add('adresse', TextType::class, ['required' => true, 'label' => 'Votre adresse (numéro +rue)'])
-            ->add('ville', TextType::class, ['required' => true, 'label' => 'Votre ville'])
-            ->add('code', TextType::class, ['required' => true, 'label' => 'Votre code'])
-            ->add('phone', TextType::class, ['required' => true, 'label' => 'Votre téléphone, portable, de préférence',])
+                'label' => 'Le code UAI de votre établissement, de la forme 0123456A)*'])
+            ->add('adresse', TextType::class, ['required' => true, 'label' => 'Votre adresse (numéro +rue)*'])
+            ->add('ville', TextType::class, ['required' => true, 'label' => 'Votre ville*'])
+            ->add('code', TextType::class, ['required' => true, 'label' => 'Votre code*'])
+            ->add('phone', TextType::class, ['required' => true, 'label' => 'Votre téléphone, portable, de préférence*',])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'required' => true,
-                'label' => 'J\'accepte l\'enregistrement de ces données par le site Olymphys.'
+                'label' => 'J\'accepte l\'enregistrement de ces données par le site Olymphys.*'
             ])
             ->add('Inscription', SubmitType::class, ['label' => 'Vous inscrire']);
         $builder->addEventListener(

@@ -485,35 +485,28 @@ class PhotosController extends AbstractController
             ->getRepository(Photos::class);
         if (explode('-', $infos)[0] == 'equipe') {
             $idEquipe = explode('-', $infos)[1];
+
             $equipe = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['id' => $idEquipe]);
+            $edition=$equipe->getEditionspassees();
+            $photosequipes=$this->getPhotosEquipes($edition);
             $photos = $repositoryPhotos->findBy(['equipepassee' => $equipe]);
             $listeEquipes = [$equipe];
             $edition = $equipe->getEditionspassees();
-            return $this->render('photos/affiche_galerie_equipe.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition]);
+            return $this->render('photos/affiche_galerie_equipe.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition,'photosequipes'=>$photosequipes]);
 
         }
         if (explode('-', $infos)[0] == 'edition') {
 
             $idEdition = explode('-', $infos)[1];
             $edition = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
-            $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)
+
+           $photos=$this->getPhotosEquipes($edition);
+           $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)
                 ->createQueryBuilder('e')
                 ->andWhere('e.editionspassees =:edition')
                 ->setParameter('edition', $edition)
                 ->addOrderBy('e.numero', 'ASC')
                 ->getQuery()->getResult();
-            foreach ($listeEquipes as $equipe) {
-                $listPhotos = $repositoryPhotos->createQueryBuilder('p')
-                    ->andWhere('p.equipepassee =:equipe')
-                    ->setParameter('equipe', $equipe)
-                    ->getQuery()->getResult();
-
-                if (null != $listPhotos) {
-                    $rand_keys = array_rand($listPhotos, 1);
-                    $equipe->getNumero()!==null?$photos[$equipe->getNumero()] = $listPhotos[$rand_keys]:$photos[$equipe->getLettre()] = $listPhotos[$rand_keys];
-                }
-
-            }
             if (isset($photos)) {
                 return $this->render('photos/affiche_galerie_edition.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition]);
             } else {
@@ -522,6 +515,32 @@ class PhotosController extends AbstractController
 
             }
         };
+
+    }
+    public function getPhotosEquipes($edition)
+    {
+        $repositoryPhotos = $this->doctrine
+            ->getManager()
+            ->getRepository(Photos::class);
+        $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)
+            ->createQueryBuilder('e')
+            ->andWhere('e.editionspassees =:edition')
+            ->setParameter('edition', $edition)
+            ->addOrderBy('e.numero', 'ASC')
+            ->getQuery()->getResult();
+        foreach ($listeEquipes as $equipe) {
+            $listPhotos = $repositoryPhotos->createQueryBuilder('p')
+                ->andWhere('p.equipepassee =:equipe')
+                ->setParameter('equipe', $equipe)
+                ->getQuery()->getResult();
+
+            if (null != $listPhotos) {
+                $rand_keys = array_rand($listPhotos, 1);
+                $equipe->getNumero()!==null?$photos[$equipe->getNumero()] = $listPhotos[$rand_keys]:$photos[$equipe->getLettre()] = $listPhotos[$rand_keys];
+            }
+
+        }
+        return $photos;
 
     }
 

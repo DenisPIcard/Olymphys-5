@@ -182,6 +182,7 @@ class ProfesseursCrudController extends AbstractCrudController
         $em = $this->doctrine->getManager();
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $listProfs = $qb->getQuery()->getResult();
+
         if ($listProfs != null) {
             foreach ($listProfs as $prof) {
                 $equipestring = '';
