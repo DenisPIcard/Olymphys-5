@@ -184,7 +184,8 @@ Layout de départ des utils du site #}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
             integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
             crossorigin="anonymous"></script>
-
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
     <script type="text/javascript">  <!-- permet la soumission du formulaire form1 sans passer par un bouton submit -->
 
         $(document).ready(function () {
@@ -200,7 +201,7 @@ Layout de départ des utils du site #}
         {# permet la construction de fenêtres modales d'information #}
         $(document).ready(function () {
 
-            $('#modalinfo').modal();
+
             $('#modalinfo').modal('open');
         });
 
@@ -241,9 +242,7 @@ Layout de départ des utils du site #}
             modalImg[0].style.display = "none";
         }
 
-        $('#carousel').carousel({
-            interval: 5000
-        })
+
 
         $('.carousel .carousel-item').each(function () {
             var minPerSlide = 4;
@@ -264,18 +263,6 @@ Layout de départ des utils du site #}
         });
 
 
-    </script>
-    <script type="text/javascript">//modal de confirmation de la suppression d'un juré
-        $('#modalconfirmjure').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('idjure');
-            console.log(recipient)// Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('Attention')
-            modal.find('.modal-body input').val(recipient)
-        });
     </script>
 
     <script type="text/javascript">
@@ -314,7 +301,7 @@ Layout de départ des utils du site #}
                     data: {
                         id: $("#myModalID").val()
                     },
-                    console.log(data),
+
 
                     success: function (data) {
                         alert('successfully submitted')
@@ -344,7 +331,7 @@ Layout de départ des utils du site #}
 
                     success: function (data) {
                         alert('successfully submitted')
-                    };
+                    }
                 });
             });
             $("#submit_form").on('click', function () {

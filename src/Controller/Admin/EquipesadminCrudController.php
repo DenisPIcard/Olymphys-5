@@ -71,8 +71,8 @@ class EquipesadminCrudController extends AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
-        if (new DateTime('now')<$session->get('edition')->getDateouverturesite()){
-            $editioned=$editioned-1;
+        if (new DateTime('now') < $session->get('edition')->getDateouverturesite()) {
+            $editioned = $editioned - 1;
         }
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition'];
@@ -105,19 +105,18 @@ class EquipesadminCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $editionId = 'na';
         $centreId = 'na';
-        $selectionnee='na';
+        $selectionnee = 'na';
 
 
+        $edition = $session->get('edition');
 
-            $edition = $session->get('edition');
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $date = new DateTime('now');
+        if ($date < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+            $edition = $this->requestStack->getSession()->get('edition');
+            $editionId = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1])->getId();
 
-            $editionId= $this->requestStack->getSession()->get('edition')->getId();
-            $date= new DateTime('now');
-            if ($date<$this->requestStack->getSession()->get('edition')->getDateouverturesite()){
-                $edition=$this->requestStack->getSession()->get('edition');
-                $editionId=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1])->getId();
-
-            }
+        }
 
 
         if (isset($_REQUEST['filters']['centre'])) {
@@ -126,12 +125,12 @@ class EquipesadminCrudController extends AbstractCrudController
         }
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition'];
-            $editon=$this->doctrine->getRepository(Edition::class)->findOneBy(['id'=>$editionId]);
+            $editon = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
 
         }
         if (isset($_REQUEST['filters']['selectionnee'])) {
 
-            $selectionnee=$_REQUEST['filters']['selectionnee'];
+            $selectionnee = $_REQUEST['filters']['selectionnee'];
 
         }
 
@@ -140,7 +139,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes', 'fa fa_array',)
                 // if the route needs parameters, you can define them:
                 // 1) using an array
-                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId . '-' . $centreId.'-'.$selectionnee])
+                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId . '-' . $centreId . '-' . $selectionnee])
                 ->createAsGlobalAction();
 
             //->displayAsButton()->setCssClass('btn btn-primary');
@@ -161,7 +160,7 @@ class EquipesadminCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_INDEX, $tableauexcel)
-            ->setPermission(Action::NEW,'ROLE_SUPER_ADMIN')
+            ->setPermission(Action::NEW, 'ROLE_SUPER_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
             ->setPermission(Action::EDIT, 'ROLE_SUPER_ADMIN');
 
@@ -184,7 +183,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
             $uai = $equipe->getUai();
             $listProfs = $this->doctrine->getManager()->getRepository(User::class)->findBy(['uai' => $uai, 'isActive' => true]);
-            $listeCentres = $this->doctrine->getManager()->getRepository(Centrescia::class)->findBy(['actif' => true]);
+            $listeCentres = $this->doctrine->getManager()->getRepository(Centrescia::class)->findBy(['actif' => true], ['centre' => 'ASC']);
         } else {
             $listProfs = [];
             $listeCentres = [];
@@ -194,16 +193,16 @@ class EquipesadminCrudController extends AbstractCrudController
         $lettre = ChoiceField::new('lettre')
             ->setChoices(['A' => 'A', 'B' => 'B', 'C' => 'C', 'D' => 'D', 'E' => 'E', 'F' => 'F', 'G' => 'G', 'H' => 'H', 'I' => 'I', 'J' => 'J', 'K' => 'K', 'L' => 'L', 'M' => 'M', 'N' => 'N', 'O' => 'O', 'P' => 'P', 'Q' => 'Q', 'R' => 'R', 'S' => 'S', 'T' => 'T', 'U' => 'U', 'V' => 'V', 'W' => 'W', 'X' => 'X', 'Y' => 'Y', 'Z' => 'Z']);
         $titreProjet = TextField::new('titreProjet', 'Projet');
-        $centre = AssociationField::new('centre')->setFormTypeOption('choices', $listeCentres)->setFormTypeOption('required',false);
-        $IdProf1 = AssociationField::new('idProf1', 'Prof1')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs])->setFormTypeOption('required',false);
-        $IdProf2 = AssociationField::new('idProf2', 'Prof2')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs])->setFormTypeOption('required',false);
+        $centre = AssociationField::new('centre')->setFormTypeOption('choices', $listeCentres)->setFormTypeOption('required', false);
+        $IdProf1 = AssociationField::new('idProf1', 'Prof1')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs])->setFormTypeOption('required', false);
+        $IdProf2 = AssociationField::new('idProf2', 'Prof2')->setColumns(1)->setFormTypeOptions(['choices' => $listProfs])->setFormTypeOption('required', false);
         $selectionnee = BooleanField::new('selectionnee');
         $id = IntegerField::new('id', 'ID');
         $nomLycee = TextField::new('nomLycee', 'Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
         $lyceeLocalite = TextField::new('lyceeLocalite', 'Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie', 'Académie');
-        $uai = TextField::new('uaiId.uai', 'Code UAI')->setFormTypeOption('required',false);
+        $uai = TextField::new('uaiId.uai', 'Code UAI')->setFormTypeOption('required', false);
         $lyceeAdresse = TextField::new('uaiId.adresse', 'Adresse');
         $lyceeCP = TextField::new('uaiId.codePostal', 'Code Postal');
         $lyceePays = TextField::new('uaiId.pays', 'Pays');
@@ -221,8 +220,8 @@ class EquipesadminCrudController extends AbstractCrudController
         $createdAt = DateField::new('createdAt', 'Date d\'inscription');
         $description = TextareaField::new('description', 'Description du projet');
         $inscrite = BooleanField::new('inscrite');
-        $retiree= BooleanField::new('retiree');
-        $uaiId = AssociationField::new('uaiId')->setFormTypeOption('required',false);
+        $retiree = BooleanField::new('retiree');
+        $uaiId = AssociationField::new('uaiId')->setFormTypeOption('required', false);
         $edition = AssociationField::new('edition', 'Edition');
         $editionEd = TextareaField::new('edition.ed', 'Edition');
         $centreCentre = AssociationField::new('centre', 'Centre CIA');
@@ -249,37 +248,37 @@ class EquipesadminCrudController extends AbstractCrudController
                 return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $uai, $retiree];
             } else {
 
-                return [$id,  $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $uai,];
+                return [$id, $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $uai,];
             }
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $titreProjet, $centre, $IdProf1, $IdProf2];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire,$retiree];
+            return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire, $retiree];
         }
 
     }
 
-public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $edition= $session->get('edition');
+        $edition = $session->get('edition');
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        if(new Datetime('now')<$session->get('edition')->getDateouverturesite()){
-            $edition=$repositoryEdition->findOneBy(['ed'=>$edition->getEd()-1]);
+        if (new Datetime('now') < $session->get('edition')->getDateouverturesite()) {
+            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
         $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->andWhere('e.edition =:edition')
             ->setParameter('edition', $edition);
-         if (isset($_REQUEST['filters'])){
-             if (isset($_REQUEST['filters']['edition'])) {
-                 $editionId = $_REQUEST['filters']['edition'];
+        if (isset($_REQUEST['filters'])) {
+            if (isset($_REQUEST['filters']['edition'])) {
+                $editionId = $_REQUEST['filters']['edition'];
 
-                 $editioned = $repositoryEdition->findOneBy(['id' => $editionId]);
-                 $qb->andWhere('e.edition =:edition')
-                     ->setParameter('edition', $editioned);
-             }
+                $editioned = $repositoryEdition->findOneBy(['id' => $editionId]);
+                $qb->andWhere('e.edition =:edition')
+                    ->setParameter('edition', $editioned);
+            }
 
             if (isset($_REQUEST['filters']['centre'])) {
                 $idCentre = $_REQUEST['filters']['centre'];
@@ -288,11 +287,11 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
                 $qb->andWhere('e.centre =:centre')
                     ->setParameter('centre', $centre);
             }
-             if (isset($_REQUEST['filters']['selectionnee'])) {
+            if (isset($_REQUEST['filters']['selectionnee'])) {
 
-                 $qb->andWhere('e.selectionnee =:selectionnee')
-                     ->setParameter('selectionnee', TRUE);
-             }
+                $qb->andWhere('e.selectionnee =:selectionnee')
+                    ->setParameter('selectionnee', TRUE);
+            }
 
         }
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')) {
@@ -309,24 +308,24 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
                 $qb->addOrderBy('e.lettre', 'ASC');
             }
         }
-        if (isset($_REQUEST['sort'])){
+        if (isset($_REQUEST['sort'])) {
             $qb->resetDQLPart('orderBy');
-            $sort=$_REQUEST['sort'];
-            if (key($sort)=='lettre'){
+            $sort = $_REQUEST['sort'];
+            if (key($sort) == 'lettre') {
                 $qb->addOrderBy('e.lettre', $sort['lettre']);
             }
-            if (key($sort)=='numero'){
+            if (key($sort) == 'numero') {
                 $qb->addOrderBy('e.numero', $sort['numero']);
             }
-            if (key($sort)=='selectionnee'){
+            if (key($sort) == 'selectionnee') {
                 $qb->addOrderBy('e.selectionnee', $sort['selectionnee'])
-                ->addOrderBy('e.lettre', 'ASC');
+                    ->addOrderBy('e.lettre', 'ASC');
             }
-            if (key($sort)=='createdAt'){
+            if (key($sort) == 'createdAt') {
                 $qb->addOrderBy('e.createdAt', $sort['createdAt']);
             }
-            if (key($sort)=='centre'){
-                $qb->join('e.centre','c')
+            if (key($sort) == 'centre') {
+                $qb->join('e.centre', 'c')
                     ->addOrderBy('c.centre', $sort['centre']);
             }
         }
@@ -334,35 +333,35 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
         return $qb;
     }
 
-  /*  public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
-        $edition= $this->requestStack->getSession()->get('edition');
-        if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
-            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+    /*  public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+      {
+          $edition= $this->requestStack->getSession()->get('edition');
+          if (date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
+              $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
 
-        }
+          }
 
-        $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+          $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-        if ($filters===null) {
-            $response->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $edition);
-        }
+          if ($filters===null) {
+              $response->andWhere('entity.edition =:edition')
+                  ->setParameter('edition', $edition);
+          }
 
-        return $response;
-        //return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters); // TODO: Change the autogenerated stub
-    }
-  */
+          return $response;
+          //return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters); // TODO: Change the autogenerated stub
+      }
+    */
 
-    #[Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name:"equipes_tableau_excel")]
+    #[Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name: "equipes_tableau_excel")]
     public function equipestableauexcel($ideditioncentre)
     {
 
         $idedition = explode('-', $ideditioncentre)[0];
         $idcentre = explode('-', $ideditioncentre)[1];
 
-        if (isset(explode('-', $ideditioncentre)[2])){
-            $selectionnee=explode('-', $ideditioncentre)[2];
+        if (isset(explode('-', $ideditioncentre)[2])) {
+            $selectionnee = explode('-', $ideditioncentre)[2];
 
         };
 
@@ -377,14 +376,13 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
         $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
             //->andWhere('e.inscrite = TRUE')
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition',$edition)
+            ->setParameter('edition', $edition)
             ->andWhere('e.numero < 100');
 
-        if ($selectionnee == 1){
-            $queryBuilder->addOrderBy('e.lettre','ASC');
-        }
-        else{
-            $queryBuilder->addOrderBy('e.numero','ASC');
+        if ($selectionnee == 1) {
+            $queryBuilder->addOrderBy('e.lettre', 'ASC');
+        } else {
+            $queryBuilder->addOrderBy('e.numero', 'ASC');
         }
         if (($idcentre != 0) and ($idcentre != 'na')) {
             $centre = $repositoryCentre->findOneBy(['id' => $idcentre]);
@@ -466,10 +464,10 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
 
             $sheet->setCellValue('A' . $ligne, $equipe->getId())
                 ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd());
-                if( $equipe->getCentre()!=null) {
-                    $sheet->setCellValue('C' . $ligne, $equipe->getCentre()->getCentre());
-                }
-                $sheet->setCellValue('D' . $ligne, $equipe->getTitreprojet())
+            if ($equipe->getCentre() != null) {
+                $sheet->setCellValue('C' . $ligne, $equipe->getCentre()->getCentre());
+            }
+            $sheet->setCellValue('D' . $ligne, $equipe->getTitreprojet())
                 ->setCellValue('E' . $ligne, $equipe->getNumero())
                 ->setCellValue('F' . $ligne, $equipe->getLettre())
                 ->setCellValue('G' . $ligne, $equipe->getInscrite());
@@ -659,7 +657,7 @@ public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityD
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $uai = $entityInstance->getUaiId();
-        if ($uai !==null) {
+        if ($uai !== null) {
             $entityInstance->setUai($uai->getUai());
             $entityInstance->setNomLycee($uai->getNom());
             $entityInstance->setLyceeLocalite($uai->getCommune());

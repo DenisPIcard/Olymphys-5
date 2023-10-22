@@ -15,7 +15,7 @@
 
         {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
             <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_gestionjures') }}"
-               role="button" aria-pressed="true">Gestion des jurés</a>
+               role="button" aria-pressed="true" id="gestionjures">Gestion des jurés</a>
         {% endif %}
         <a class="dropdown-item login py-0" href="{{ path('cyberjuryCia_gerer_conseils_equipe',{'centre' : centre}) }}">Voir
             les conseils du jury</a>

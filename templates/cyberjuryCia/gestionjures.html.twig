@@ -33,7 +33,8 @@
                 <th>
 
                     {% if loop.index == (listeEquipes|length+5) //2 %}
-                        Numéros des équipes
+                        <span type="text-align: center"> Numéros des équipes<br>
+                        <span type="font-size : 8px">Passer la souris sur le n° pour voir le titre du projet</span></span>
                     {% endif %}
                 </th>
             {% endfor %}
@@ -50,13 +51,11 @@
             <th scope="col">Prenom</th>
             <th scope="col">Nom</th>
             <th scope="col">Initiales</th>
-            <th scope="col" title="Peut rester vide si un seul jury">N° Jury</th>
+            <th scope="col" title="N° du sous-jury(Par défaut 1)">N° Jury</th>
             {% for equipe in listeEquipes %}
                 <th scope="col" title="{{ equipe.titreProjet }}">{{ equipe.numero }}</th>
             {% endfor %}
-            <th scope="col">
-                <div style="text-align: center">Enregistrer</div>
-            </th>
+
             <th scope="col">
                 <div style="text-align: center">Supprimer</div>
             </th>
@@ -76,25 +75,29 @@
             {% endif %}
 
             {% set attribs = jure.rapporteur %}
-            <form id="form-{{ jure.id }}" method="post" name="form1">
+            <form id="form-{{ jure.id }}" method="post" name="form1"
+                  action="{{ path('secretariatjuryCia_gestionjures') }}">
 
 
-                <input type="hidden" name="jure" id="{{ jure.id }}" value="{{ jure.id }}">
+                <input type="hidden" name="idjure" id="{{ jure.id }}" value="{{ jure.id }}">
                 <td>
                     <label for="prenom{{ jure.id }}"></label>
                     <input type="text" value="{{ jure.prenomJure }}" id="prenom{{ jure.id }}"
-                           name="prenom" style="width: 100px">
+                           name="prenom" style="width: 100px" onchange="changejure({{ 'prenom'~jure.id }})">
 
                 </td>
                 <td>
-                    <label for="nom{{ jure.id }}"></label>
-                    <input type="text" value="{{ jure.nomJure }}" id="nom{{ jure.id }}" name="nom"
-                           style="width:100px">
+                    <label for="{{ 'nom'~jure.id }}"></label><input type="text" value="{{ jure.nomJure }}"
+                                                                    id="{{ 'nom'~jure.id }}" name="nom"
+                                                                    style="width:100px"
+                                                                    onchange="changejure({{ 'nom'~jure.id }})">
                 </td>
                 <td>
-                    <label for="initiales{{ jure.id }}"></label>
-                    <input type="text" value="{{ jure.initialesJure }}" id="initiales{{ jure.id }}"
-                           name="initiales" style="width: 50px">
+
+                    <label for="{{ 'initiales'~jure.id }}"></label><input type="text" value="{{ jure.initialesJure }}"
+                                                                          id="{{ 'initiales'~jure.id }}"
+                                                                          name="initiales" style="width: 50px"
+                                                                          onchange="changejure({{ 'initiales'~jure.id }})">
                 </td>
                 <td>
 
@@ -109,7 +112,8 @@
                     {% endif %}
                     <label for="numJury{{ jure.id }}"></label>
                     <select id="numJury{{ jure.id }}"
-                            name="numJury{{ jure.id }}" style="width: 50px">
+                            name="numJury" style="width: 50px"
+                            onchange="changejure({{ 'numJury'~jure.id }})">
                         <option {{ selectedNum[0] }}>1</option>
                         <option {{ selectedNum[1] }}>2</option>
                         <option {{ selectedNum[2] }}>3</option>
@@ -128,8 +132,9 @@
                         {% endif %}
                     {% endif %}
                     <td>
-                        <select id="equipe-{{ equipe.id }}" name="equipe-{{ equipe.id }}" style="width: 50px">
-
+                        <label for="equipe-{{ equipe.id }}">
+                        </label><select id="{{ 'equipe'~equipe.id }}" name="equipe" style="width: 50px"
+                                        onchange="changeequipe({{ 'equipe'~equipe.id }},{{ equipe.id }},{{ jure.id }} )">
                             <option {{ selected[0] }}></option>
                             <option {{ selected[1] }}>E</option>
                             <option {{ selected[2] }}>R</option>
@@ -137,11 +142,7 @@
                         </select>
                     </td>
                 {% endfor %}
-                <td>
-                    <div style="text-align: center">
-                        <input type="submit" value="Valider">
-                    </div>
-                </td>
+
                 <td>
                     <div style="text-align: center">
                         <button type="button" id="{{ jure.id }}" data-toggle="modal" data-target="#modalconfirmjure"
@@ -153,6 +154,7 @@
             </form>
             </tr>
         {% endfor %}
+
         </tbody>
     </table>
 

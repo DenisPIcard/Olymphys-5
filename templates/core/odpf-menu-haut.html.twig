@@ -131,7 +131,7 @@
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix : app.user.centrecia}) }}" role="button"
                            aria-pressed="true">Les équipes et leurs documents</a>
-                        {% if "now"|date("m/d/Y") == app.session.get('edition').concourscia|date("m/d/Y") %}
+                        {% if "now"|date("m/d/Y") >= app.session.get('edition').concourscia|date("m/d/Y") %}
                             <a class="dropdown-item login py-0"
                                href="{{ path('cyberjuryCia_accueil') }}" role="button"
                                aria-pressed="true">Evaluer les équipes</a>

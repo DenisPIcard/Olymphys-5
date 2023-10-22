@@ -143,7 +143,7 @@
             <tr>
                 <td>
                     {% if liste_equipes!=null %}
-                        {% if  date()<= app.session.get('edition').concourscn and date()>app.session.get('edition').dateouverturesite %}
+                        {% if  'now'|date('Y-m-d')<= app.session.get('edition').concourscn|date('Y-m-d') and 'now'|date('Y-m-d')>app.session.get('edition').dateouverturesite|date('Y-m-d') %}
                             <a type="button" class="btn btn-warning"
                                href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button"
                                aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des
@@ -151,8 +151,9 @@
                             <a type="button" class="btn btn-info"
                                href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}"
                                title="Modifier ou supprimer certaines photos">Gerer les photos</a>
+
                         {% endif %}
-                        {% if ((date()> app.session.get('edition').concourscia) and (date()< app.session.get('edition').concourscn)) %}
+                        {#  {% if (('now'|date('Y-m-d')> app.session.get('edition').concourscia|date('Y-m-d')) and ('now'|date('Y-m-d')< app.session.get('edition').concourscn|date('Y-m-d'))) %}
                             <a type="button" class="btn btn-warning"
                                href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button"
                                aria-pressed="true"
@@ -165,7 +166,7 @@
                                 photos des épreuves nationales de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
 
                         {% endif %}
-                        {% if date()>app.session.get('editionN1').concourscn and date()<app.session.get('edition').dateouverturesite %}
+                          {% if 'now'|date('Y-m-d')>app.session.get('editionN1').concourscn|date('Y-m-d') and 'now'|date('Y-m-d')<app.session.get('edition').dateouverturesite|date('Y-m-d') %}
                             <a type="button" class="btn btn-warning"
                                href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button"
                                aria-pressed="true"
@@ -178,6 +179,7 @@
                                 photos des épreuves nationales de la {{ app.session.get('editionN1').ed }}
                                 <sup>e</sup></a>
                         {% endif %}
+                        #}
 
 
                     {% endif %}
