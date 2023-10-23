@@ -5,24 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 16-10-23 après réinstallation d'olymphy-5 en local">
-      <change afterPath="$PROJECT_DIR$/config/packages/sensio_framework_extra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/cyberjuryCia/modifNoteJureCia.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.test" beforeDir="false" afterPath="$PROJECT_DIR$/.env.test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/OdpfCreateArray.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OdpfCreateArray.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/choix_equipe.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base1.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base1.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/gestionjures.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/gestionjures.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/register/inscrire_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register/inscrire_equipe.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/vueglobale.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/vueglobale.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -269,41 +256,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;inlay.hints&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/media/alain/T7 Touch/PhpstormProjects/Olymphys-5/templates/cyberjuryCia",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "editor.preferences.tabs",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/templates/cyberjuryCia" />
       <recent name="$PROJECT_DIR$/templates/email" />
       <recent name="$PROJECT_DIR$/public/odpf/odpf-images" />
-      <recent name="$PROJECT_DIR$/templates/cyberjuryCia" />
       <recent name="$PROJECT_DIR$/templates/bundles/EasyAdminBundle" />
       <recent name="$PROJECT_DIR$/templates/cyberjury" />
     </key>
@@ -581,6 +568,8 @@
       <workItem from="1697905839872" duration="11637000" />
       <workItem from="1697920844081" duration="3410000" />
       <workItem from="1697948959858" duration="16356000" />
+      <workItem from="1698010071164" duration="519000" />
+      <workItem from="1698037340992" duration="11723000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -1000,7 +989,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="cyberjuryCia-3" />
     <MESSAGE value="cyberjuryCia-4" />
     <MESSAGE value="cyberjuryCia-5 : évaluation par les jurés" />
     <MESSAGE value="cyberjuryCia-6 : suivi des résultats, vue globale, classement" />
@@ -1025,7 +1013,8 @@
     <MESSAGE value="Correction du dysfonctionnement de vichuploader pour les carrousels" />
     <MESSAGE value="Utilisation de la table coef dans le notesCias Repo et correction classement équipes sous-jury" />
     <MESSAGE value="Comit du 16-10-23 après réinstallation d'olymphy-5 en local" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 16-10-23 après réinstallation d'olymphy-5 en local" />
+    <MESSAGE value="Comit du 22-10-23 amélioration saisie du tableau répartition des jurés cia" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 22-10-23 amélioration saisie du tableau répartition des jurés cia" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">

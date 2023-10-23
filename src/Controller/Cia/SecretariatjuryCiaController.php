@@ -14,8 +14,10 @@ use App\Entity\Cia\JuresCia;
 use App\Entity\Cia\NotesCia;
 use App\Entity\Uai;
 use App\Form\JuresCiaType;
+use App\Form\NotesCiaType;
 use App\Service\Mailer;
 use Doctrine\DBAL\Types\StringType;
+use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,11 +25,13 @@ use App\Entity\User;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -610,7 +614,7 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_JURYCIA')]
     #[Route("/secretariatjuryCia/envoi_mail_conseils,{idEquipe}", name: "secretariatjuryCia_envoi_mail_conseils")]
-    public function envoi_mail_conseils($idEquipe, Mailer $mailer)
+    public function envoi_mail_conseils($idEquipe, Mailer $mailer)//Envoie le conseil aux prof1 et prof2
     {
         $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idEquipe);
         $prof1 = $equipe->getIdProf1();
@@ -624,11 +628,58 @@ class SecretariatjuryCiaController extends AbstractController
         return $this->redirectToRoute('cyberjuryCia_gerer_conseils_equipe', ['centre' => $equipe->getCentre()->getCentre()]);
     }
 
-    #[IsGranted('ROLE_JURYCIA')]
-    #[Route("/cia/secretariatjuryCia/savejure", name: "savejure")]
-    public function savejure()
+    #[IsGranted('ROLE_COMITE')]
+    #[Route("/cia/secretariatjuryCia/modifnotejure,{idequipe}, {idjure}", name: "modifnotejure")]
+    public function modifnotejure(Request $request, $idequipe, $idjure)//Dans le cas où le jury c'est trompé d'équipe en examinant une équipe qui n'est pas de son jury mais en notant par mégarde  une autre équipe de son jury
     {
-        dd($_REQUEST);
+        //Il faut ajouter l'équipe au juré(qui sera considéré par défaut examinateur simple E)
+        $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idequipe);
+        $jure = $this->doctrine->getRepository(JuresCia::class)->find($idjure);
+        $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->where('e.centre =:centre')
+            ->andWhere('e.edition =:edition')
+            ->setParameters(['centre' => $jure->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')]);
+
+        $noteequipe = $this->doctrine->getRepository(NotesCia::class)->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
+
+        //Il faut transporter les notes à la bonne équipe
+        $form = $this->createFormBuilder()
+            ->add('equipe', EntityType::class, [
+                'class' => Equipesadmin::class,
+                'query_builder' => $qb,
+                'label' => 'Equipe qui a été réellement évaluée par le juré'
+            ])
+            ->add('valider', SubmitType::class, ['label' => 'Valider'])
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() and $form->isValid()) {
+
+            $nllEquipe = $form->get('equipe')->getData();
+            $notenllequipe = new NotesCia();
+            $notenllequipe->setJureCia($jure);
+            $notenllequipe->setEquipe($nllEquipe);
+            $notenllequipe->setEcrit($noteequipe->getEcrit());
+            $notenllequipe->setExper($noteequipe->getExper());
+            $notenllequipe->setDemarche($noteequipe->getDemarche());
+            $notenllequipe->setOral($noteequipe->getOral());
+            $notenllequipe->setOrigin($noteequipe->getOrigin());
+            $notenllequipe->setRepquestions($noteequipe->getRepquestions());
+            $notenllequipe->setWgroupe($noteequipe->getWgroupe());
+            $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+            $notenllequipe->setCoefficients($coefficients);
+            $total = $notenllequipe->getPoints();
+            $notenllequipe->setTotal($total);
+            $this->doctrine->getManager()->persist($notenllequipe);
+            $this->doctrine->getManager()->remove($noteequipe);
+            $this->doctrine->getManager()->persist($notenllequipe);
+            $jure->addEquipe($nllEquipe);
+            $jure->removeEquipe($equipe);
+            $this->doctrine->getManager()->persist($jure);
+            $this->doctrine->getManager()->flush();
+
+        }
+        return $this->render('cyberjuryCia/modifNoteJureCia.html.twig', ['form' => $form->createView(), 'equipe' => $equipe, 'centre' => $jure->getCentrecia(), 'jure' => $jure]);
 
     }
 }

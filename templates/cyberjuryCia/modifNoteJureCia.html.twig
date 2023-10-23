@@ -1,0 +1,28 @@
+{% extends "base1.html.twig" %}
+{% block title %} Accueil {% endblock %}
+
+{% block titre3 %} <p>Secrétariat du jury de {{ centre }}</p>
+    <p>Transférer les notes du jure {{ jure.iduser.prenomNom }}</p>
+
+{% endblock %}
+
+{% block navigation %}
+
+    {{ include ("cyberjuryCia/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div>
+        {{ jure.iduser.prenomNom }} a noté une équipe qui n'est pas initialement prévue dans son jury en saisissant par
+        erreur
+        les notes dans
+        l'équipe {{ equipe }},.<br>
+        Veuillez saisir l'équipe qui a été réellement notée puis valider. L'évaluation de ce juré y sera transférée. Le
+        juré vera ensuite cette équipe dans sa liste d'équipe à évaluer avec son évaluation<br>
+        L'équipe qui a été faussement évaluée disparaîtra des équipes devant être examinées par ce juré.
+        {{ form(form) }}
+    </div>
+
+
+
+{% endblock %}
