@@ -5,7 +5,7 @@
 
         {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
             <a class="dropdown-item login py-0"
-               href="{{ path('secretariatjuryCia_accueil',{'centre':centre}) }}">Accueil</a>
+               href="{{ path('secretariatjuryCia_accueil') }}">Accueil</a>
         {% elseif is_granted('ROLE_COMITE') %}
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_accueil_comite') }}">Accueil</a>
@@ -13,8 +13,9 @@
                 Globale</a>
         {% endif %}
 
-        {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
-            <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_gestionjures') }}"
+        {% if is_granted('ROLE_ORGACIA') %}
+            <a class="dropdown-item login py-0"
+               href="{{ path('secretariatjuryCia_gestionjures',{'centre':centre}) }}"
                role="button" aria-pressed="true" id="gestionjures">Gestion des jurés</a>
         {% endif %}
         <a class="dropdown-item login py-0" href="{{ path('cyberjuryCia_gerer_conseils_equipe',{'centre' : centre}) }}">Voir

@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\String\UnicodeString;
 
 class ProfesseursCrudController extends AbstractCrudController
@@ -201,11 +202,20 @@ class ProfesseursCrudController extends AbstractCrudController
                         if ($equipe->getIdProf2() == $prof->getUser()) {
                             $encad = '(prof2)';
                         }
-                        $equipestring = $equipestring . $equipe->getTitreProjet() . $encad;
+
+
+                        $slugger = new AsciiSlugger();
+                        $nom_equipe = $slugger->slug($equipe->getTitreProjet());
+                        if (strlen($equipe->getTitreProjet() > 40)) {
+
+                            $nom_equipe = substr($nom_equipe, 0, 40);
+                        }
+                        $equipestring = $equipestring . $nom_equipe . $encad;
                         if (next($equipes) != null) {
                             $equipestring = $equipestring . ' || ';
                         }
                     }
+
                     $prof->setEquipesstring($equipestring);
                     $em->persist($prof);
                     $em->flush();
@@ -229,7 +239,6 @@ class ProfesseursCrudController extends AbstractCrudController
         $repositoryProfs = $this->doctrine->getManager()->getRepository(Professeurs::class);
 
         $queryBuilder = $repositoryProfs->createQueryBuilder('p')
-            ->groupBy('p.user')
             ->leftJoin('p.equipes', 'eqs')
             ->andWhere('eqs.edition =:edition')
             ->setParameter('edition', $edition)
@@ -256,12 +265,18 @@ class ProfesseursCrudController extends AbstractCrudController
                         if ($equipe->getIdProf2() == $prof->getUser()) {
                             $encad = '(prof2)';
                         }
-                        $equipestring = $equipestring . $equipe->getTitreProjet() . $encad;
+                        $slugger = new AsciiSlugger();
+                        $nom_equipe = $slugger->slug($equipe->getTitreProjet());
+                        if (strlen($equipe->getTitreProjet() > 40)) {
+
+                            $nom_equipe = substr($nom_equipe, 0, 40);
+                        }
+                        $equipestring = $equipestring . $nom_equipe . $encad;
                         if (next($equipes) != null) {
                             $equipestring = $equipestring . "\n";
                         }
                     }
-                    $equipestring = count($equipes) . '-' . $equipestring;
+
                     $prof->setEquipesstring($equipestring);
                     $em->persist($prof);
                     $em->flush();
@@ -321,10 +336,13 @@ class ProfesseursCrudController extends AbstractCrudController
                     ->setCellValue('J' . $ligne, $prof->getUser()->getUaiId()->getCommune())
                     ->setCellValue('K' . $ligne, $prof->getUser()->getUaiId()->getAcademie());
             }
-            $equipesstring = explode('-', $prof->getEquipesstring());
-            $sheet->getRowDimension($ligne)->setRowHeight(12.5 * intval($equipesstring[0]));
-            $sheet->getCell('L' . $ligne)->setValueExplicit($equipesstring[1], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);//'abc \n cde'
+
+            //$equipesstring = explode('-', $prof->getEquipesstring());
+
+            $sheet->getCell('L' . $ligne)->setValueExplicit($prof->getEquipesstring());//'abc \n cde'
             $sheet->getStyle('A' . $ligne . ':L' . $ligne)->getAlignment()->setWrapText(true);
+
+            $sheet->getRowDimension($ligne)->setRowHeight(2 * count($equipes), 'cm');
             $ligne += 1;
         }
 

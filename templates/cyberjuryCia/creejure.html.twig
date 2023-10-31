@@ -1,14 +1,14 @@
 {% extends 'base1.html.twig' %}
 {% block titre3 %}
-    Inscrire un nouveau juré pour le centre de {{ app.user.centrecia.centre }}
+    Inscrire un nouveau juré pour le centre de {{ centre }}
 {% endblock %}
 {% block body %}
     <div class="small">
         Le compte Olymphys du nouveau juré est automatiquement créé avec envoi au juré de ses identifiants.<br>
         Si juré possède déjà un compte Olymphys(identifié par son adresse mail) un mail l'informant de sa qualité de
         juré du
-        centre de {{ app.user.centrecia.centre }} lui sera envoyé.
+        centre de {{ centre }} lui sera envoyé.
     </div>
     {{ form(form) }}
-    <a href="{{ path('secretariatjuryCia_accueil',{'centre':app.user.centrecia}) }}" class="btn-primary" type="button">Annuler</a>
+    <a href="{{ path('secretariatjuryCia_accueil',{'centre': centre}) }}" class="btn-primary" type="button">Annuler</a>
 {% endblock %}

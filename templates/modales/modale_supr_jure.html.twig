@@ -13,7 +13,7 @@
 
                 <div class="alert hidden" role="alert" id="modalAlert"></div>
                 <form name="confirm_form" id="confirm_form"
-                      action="{{ path('secretariatjuryCia_gestionjures') }}">
+                      action="{{ path('secretariatjuryCia_gestionjures',{'centre':centre}) }}">
                     <input type="hidden" id="jureID" name="jureID" value="recipient-name"/>
                     <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
                     <p>Voulez-vous effacer ce juré ? Ses notes seront effacées .<h6 id="modal_body"></h6> </p>

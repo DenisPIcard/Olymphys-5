@@ -217,10 +217,10 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/creeJure", name: "secretariatjuryCia_creeJure")]
-    public function creeJure(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer): Response    //Creation du juré par l'organisateur cia
+    #[Route("/secretariatjuryCia/creeJure,{centre}", name: "secretariatjuryCia_creeJure")]
+    public function creeJure(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, $centre): Response    //Creation du juré par l'organisateur cia
     {
-
+        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
         $orgacia = $this->getUser();
         $this->requestStack->getSession()->set('info', '');
         $slugger = new AsciiSlugger();
@@ -250,19 +250,19 @@ class SecretariatjuryCiaController extends AbstractController
                         $user->setPrenom($prenom);
                         $user->setEmail($email);
                         $user->setRoles(['ROLE_JURYCIA']);
-                        $user->setCentrecia($orgacia->getCentrecia());
+                        $user->setCentrecia($centrecia);
                         $username = $slugger->slug($prenom[0]) . '_' . $slugger->slug($nom);
-                        $prenom = $slugger->slug($prenom);
+                        $pwd = $slugger->slug($prenom);
                         $i = 1;
                         while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques
                             $username = $username . $i;
                             $i = +1;
                         }
                         $user->setUsername($username);
-                        $user->setPassword($passwordEncoder->hashPassword($user, $prenom));
+                        $user->setPassword($passwordEncoder->hashPassword($user, $pwd));
                         $this->doctrine->getManager()->persist($user);
                         $this->doctrine->getManager()->flush();
-                        $mailer->sendInscriptionUserJure($orgacia, $user, $prenom);
+                        $mailer->sendInscriptionUserJure($orgacia, $user, $pwd, $centre);
                     } catch (\Exception $e) {
                         $texte = 'Une erreur est survenue lors de l\'inscription de ce jure :' . $e;
                         $this->requestStack->getSession()->set('info', $texte);
@@ -275,7 +275,7 @@ class SecretariatjuryCiaController extends AbstractController
                     $jureCia->setIduser($user);
                     //$jureCia->setNomJure($nom);
                     //$jureCia->setPrenomJure($prenom);
-                    $jureCia->setCentrecia($orgacia->getCentrecia());
+                    $jureCia->setCentrecia($centrecia);
                     if (str_contains($slugger->slug($prenom), '-')) {
                         $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
                     } elseif (str_contains($slugger->slug($prenom), '_')) {
@@ -287,34 +287,36 @@ class SecretariatjuryCiaController extends AbstractController
                     $jureCia->setInitialesJure($initiales);
                     $this->doctrine->getManager()->persist($jureCia);
                     $this->doctrine->getManager()->flush();
-                    $mailer->sendInscriptionJureCia($orgacia, $jureCia, $prenom);
+                    $mailer->sendInscriptionJureCia($orgacia, $jureCia, $prenom, $centre);
                 } else {
                     $texte = 'Ce juré existe déjà !';
                     $this->requestStack->getSession()->set('info', $texte);
 
                 }
 
-                return $this->redirectToRoute('secretariatjuryCia_gestionjures');
+                return $this->redirectToRoute('secretariatjuryCia_gestionjures', ['centre' => $centre]);
             }
-            return $this->render('cyberjuryCia/accueil.html.twig');
+            return $this->render('cyberjuryCia/accueil.html.twig', ['centre' => $centre]);
         }
 
-        return $this->render('cyberjuryCia/creejure.html.twig', ['form' => $form->createView()]);
+        return $this->render('cyberjuryCia/creejure.html.twig', ['form' => $form->createView(), 'centre' => $centre]);
 
 
     }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/gestionjures", name: "secretariatjuryCia_gestionjures")]
-    public function gestionjures(Request $request)
+    #[Route("/secretariatjuryCia/gestionjures,{centre}", name: "secretariatjuryCia_gestionjures")]
+    public function gestionjures(Request $request, $centre)
     {
+
+        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
-            ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
 
-        if ($request->get('idjure') !== null) {//pour la modif des données perso du jur
+        if ($request->get('idjure') !== null) {//pour la modif des données perso du juré
             $idJure = $request->get('idjure');
             $val = $request->get('value');
             $type = $request->get('type');
@@ -384,7 +386,7 @@ class SecretariatjuryCiaController extends AbstractController
             $this->doctrine->getManager()->flush();
             $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
 
-            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $this->getUser()->getCentrecia()));
+            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre()));
 
 
         }
@@ -407,22 +409,23 @@ class SecretariatjuryCiaController extends AbstractController
 
         }
 
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
-        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $this->getUser()->getCentrecia()));
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $centre], ['numJury' => 'ASC']);
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre()));
 
     }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/secretariatjuryCia/tableauexcel_repartition", name: "secretariatjuryCia_tableauexcel_repartition")]
-    public function tableauexcel_repartition(): void
+    #[Route("/secretariatjuryCia/tableauexcel_repartition, {centre}", name: "secretariatjuryCia_tableauexcel_repartition")]
+    public function tableauexcel_repartition($centre): void
     {
-
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
+        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $centre], ['numJury' => 'ASC']);
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
-            ->setParameters(['centre' => $this->getUser()->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
+
         $styleAlignment = [
 
             'alignment' => [
@@ -532,7 +535,7 @@ class SecretariatjuryCiaController extends AbstractController
             ->setCellValue('A2', 'Olympiades de Physique France ' . $this->requestStack->getSession()->get('edition')->getEd() . 'e édition');
 
         $sheet
-            ->setCellValue('A3', 'Répartition des jurés pour le centre de ' . $this->getUser()->getCentrecia()->getCentre());
+            ->setCellValue('A3', 'Répartition des jurés pour le centre de ' . $centre);
         $sheet
             ->setCellValue('E5', 'N° des équipes');
 
@@ -601,7 +604,7 @@ class SecretariatjuryCiaController extends AbstractController
         $writer = new Xls($spreadsheet);
         //$writer->save('temp/repartition_des_jures.xls');
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="repartition_des_jures_de_' . $this->getUser()->getCentrecia()->getcentre() . '.xls"');
+        header('Content-Disposition: attachment;filename="repartition_des_jures_de_' . $centre . '.xls"');
         header('Cache-Control: max-age=0');
         //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
@@ -647,7 +650,8 @@ class SecretariatjuryCiaController extends AbstractController
             ->add('equipe', EntityType::class, [
                 'class' => Equipesadmin::class,
                 'query_builder' => $qb,
-                'label' => 'Equipe qui a été réellement évaluée par le juré'
+                'label' => 'Equipe qui a été réellement évaluée par le juré',
+                'placeholder' => '',
             ])
             ->add('valider', SubmitType::class, ['label' => 'Valider'])
             ->getForm();
@@ -657,7 +661,7 @@ class SecretariatjuryCiaController extends AbstractController
 
             $nllEquipe = $form->get('equipe')->getData();
             $notenllequipe = new NotesCia();
-            $notenllequipe->setJureCia($jure);
+            $notenllequipe->setJure($jure);
             $notenllequipe->setEquipe($nllEquipe);
             $notenllequipe->setEcrit($noteequipe->getEcrit());
             $notenllequipe->setExper($noteequipe->getExper());
@@ -672,14 +676,16 @@ class SecretariatjuryCiaController extends AbstractController
             $notenllequipe->setTotal($total);
             $this->doctrine->getManager()->persist($notenllequipe);
             $this->doctrine->getManager()->remove($noteequipe);
-            $this->doctrine->getManager()->persist($notenllequipe);
             $jure->addEquipe($nllEquipe);
+            $this->doctrine->getManager()->persist($notenllequipe);
             $jure->removeEquipe($equipe);
             $this->doctrine->getManager()->persist($jure);
             $this->doctrine->getManager()->flush();
-
+            return $this->redirectToRoute('secretariatjuryCia_vueglobale', ['centre' => $jure->getCentrecia()]);
         }
         return $this->render('cyberjuryCia/modifNoteJureCia.html.twig', ['form' => $form->createView(), 'equipe' => $equipe, 'centre' => $jure->getCentrecia(), 'jure' => $jure]);
 
     }
+
+
 }

@@ -57,3 +57,33 @@ $('#modalconfirmjure').on('show.bs.modal', function (event) {
     modal.find('.modal-title').text('Attention!!!!')
     modal.find('.modal-body input').val(recipient)
 });
+
+function confirmer() {
+
+    console.log('OK');
+    var form = document.getElementsByName("form1");
+    console.log(form)
+    var formURL = "/secretariatjuryCia/confirm_gestion_jures"//document.getElementsByTagName('form')[0].action;
+    var prenoms = [];
+    for (i = 0; i < form.length; i++) {
+        prenoms[i] = form[i].getElementsByTagName('input')
+        console.log(prenoms[i]);
+
+    }
+
+
+    $.ajax({
+        url: formURL,
+        type: "POST",
+        data: {values: prenoms},
+
+        success: function () {
+            document.querySelector('#gestionjures').click()
+
+        },
+
+        error: function (data) {
+            alert("Error while submitting Data");
+        },
+    });
+}

@@ -166,7 +166,7 @@ class Mailer
                 ->addCc('emma.gosse@orange.fr')
                 ->subject('Modification de l\'équipe ' . $equipe->getTitreProjet() . ' par ' . $user->getPrenomNom())
                 ->html('Bonjour<br>' .
-                    $equipe->getIdProf1()->getPrenomNom() . '( <a href="' . $user->getEmail() . '">' . $user->getEmail() .
+                    $user->getPrenomNom() . '( <a href="' . $user->getEmail() . '">' . $user->getEmail() .
                     '</a>)  du lycée ' . $equipe->getNomLycee() . ' de ' . $equipe->getLyceeLocalite() . ' a modifié l\'équipe  n° ' . $equipe->getNumero() . ' : ' . $equipe->getTitreProjet()
                     . '<br> Modifications apportées :<br>' . $changetext . '<br> <br>Le comité national des Olympiades de Physique France');
         }
@@ -179,7 +179,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendInscriptionUserJure($orgacia, $jure, $pwd): TemplatedEmail//Le juré cia créé pat orgacia est ainsi prévenu de l'ouverture de son compte olymphys
+    public function sendInscriptionUserJure($orgacia, $jure, $pwd, $centre): TemplatedEmail//Le juré cia créé pat orgacia est ainsi prévenu de l'ouverture de son compte olymphys
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
@@ -189,7 +189,7 @@ class Mailer
             ->htmlTemplate('email/confirme_user_jure.html.twig')
             ->subject('Votre compte Olymphys a été créé')
             //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
-            ->context(['centrecia' => $orgacia->getCentrecia()->getCentre(), 'jureNom' => $jure->getprenomNom(), 'jureLogin' => $jure->getUsername(), 'pwd' => $pwd, 'courriel' => $jure->getEmail()]);
+            ->context(['centrecia' => $centre, 'jureNom' => $jure->getprenomNom(), 'jureLogin' => $jure->getUsername(), 'pwd' => $pwd, 'courriel' => $jure->getEmail()]);
 
         $this->mailer->send($email);
         return $email;
@@ -199,7 +199,7 @@ class Mailer
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendInscriptionJureCia($orgacia, $jure, $pwd): TemplatedEmail
+    public function sendInscriptionJureCia($orgacia, $jure, $pwd, $centre): TemplatedEmail
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
@@ -207,9 +207,8 @@ class Mailer
             ->addCc('info@olymphys.fr')//prévient olymphys
             ->addCc($orgacia->getEmail())// prévient l'oganisateur cia
             ->htmlTemplate('email/confirme_jure_cia.html.twig')
-            ->subject('OdPF-Votre compte juré du centre de ' . $orgacia->getCentrecia())
-            //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
-            ->context(['centrecia' => $orgacia->getCentrecia()->getCentre(), 'jureNom' => $jure->getPrenomJure() . ' ' . $jure->getNomJure()]);
+            ->subject('OdPF-Votre compte juré du centre de ' . $jure->getCentrecia())
+            ->context(['centrecia' => $centre, 'jureNom' => $jure->getPrenomJure() . ' ' . $jure->getNomJure()]);
 
         $this->mailer->send($email);
         return $email;
@@ -256,7 +255,7 @@ class Mailer
         return $email;
     }
 
-    public function sendAvertissementMail($user,$eleves)
+    public function sendAvertissementMail($user, $eleves)
     {
         $email = (new TemplatedEmail())
             ->from(new Address('info@olymphys.fr'))

@@ -20,7 +20,29 @@
         Veuillez saisir l'équipe qui a été réellement notée puis valider. L'évaluation de ce juré y sera transférée. Le
         juré vera ensuite cette équipe dans sa liste d'équipe à évaluer avec son évaluation<br>
         L'équipe qui a été faussement évaluée disparaîtra des équipes devant être examinées par ce juré.
-        {{ form(form) }}
+
+        {{ form_start(form) }}
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+
+        <div class="row text-center">
+            <div class="col-3 text-right">
+                {{ field_label(form.equipe) }} :<br>
+            </div>
+            <div class="col-3 text-center">
+                {{ form_widget(form.equipe) }}
+            </div>
+            <div class="col-6 text-left" id="some-custom-id">
+
+                {{ form_widget(form.valider) }} <a href="{{ path('secretariatjuryCia_vueglobale',{'centre':centre}) }}"
+                                                   type="button" class="btn btn-primary">
+                    Annuler</a>
+            </div>
+        </div>
+        {{ form_end(form) }}
+
+
     </div>
 
 
