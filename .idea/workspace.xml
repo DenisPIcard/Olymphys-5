@@ -4,23 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 23-10-23 apéliotion du cyberjury+ autres bricoles">
-      <change afterPath="$PROJECT_DIR$/templates/modales/modale_aide_orga_cia.html.twig" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 31-10 cyberjurycia gestion erreur juré">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/Mailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Mailer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/creejure.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/creejure.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/gestionjures.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/gestionjures.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/modifNoteJureCia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/modifNoteJureCia.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/navigation.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/navigation.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/email/confirme_jure_cia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/email/confirme_jure_cia.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/email/confirme_user_jure.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/email/confirme_user_jure.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/modales/modale_supr_jure.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/modales/modale_supr_jure.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/register/inscrire_equipe.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register/inscrire_equipe.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/evaluerCia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/evaluerCia.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/email/confirm_fichier.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/email/confirm_fichier.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -591,7 +585,9 @@
       <workItem from="1698700816038" duration="288000" />
       <workItem from="1698732269710" duration="2789000" />
       <workItem from="1698756005796" duration="854000" />
-      <workItem from="1698769899295" duration="7474000" />
+      <workItem from="1698769899295" duration="9936000" />
+      <workItem from="1698869008529" duration="1776000" />
+      <workItem from="1698910845396" duration="5438000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -936,7 +932,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1011,7 +1007,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="cyberjuryCia-5 : évaluation par les jurés" />
     <MESSAGE value="cyberjuryCia-6 : suivi des résultats, vue globale, classement" />
     <MESSAGE value="cyberjuryCia-7 : Permet au comité d'accéder au cyberjury Cia de chaque centre" />
     <MESSAGE value="cyberjuryCia-7 : Permet au comité d'accéder au cyberjury Cia de chaque centre(suite pour corriger qqes erreurs de path)" />
@@ -1036,7 +1031,8 @@
     <MESSAGE value="Comit du 16-10-23 après réinstallation d'olymphy-5 en local" />
     <MESSAGE value="Comit du 22-10-23 amélioration saisie du tableau répartition des jurés cia" />
     <MESSAGE value="Comit du 23-10-23 apéliotion du cyberjury+ autres bricoles" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 23-10-23 apéliotion du cyberjury+ autres bricoles" />
+    <MESSAGE value="Comit du 31-10 cyberjurycia gestion erreur juré" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 31-10 cyberjurycia gestion erreur juré" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">

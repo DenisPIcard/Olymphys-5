@@ -246,8 +246,8 @@ class SecretariatjuryCiaController extends AbstractController
                 if ($user === null) {
                     $user = new User();
                     try {
-                        $user->setNom($nom);
-                        $user->setPrenom($prenom);
+                        $user->setNom(strtoupper($nom));
+                        $user->setPrenom(ucfirst(strtolower($prenom)));
                         $user->setEmail($email);
                         $user->setRoles(['ROLE_JURYCIA']);
                         $user->setCentrecia($centrecia);
