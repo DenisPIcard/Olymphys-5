@@ -246,18 +246,18 @@ class SecretariatjuryCiaController extends AbstractController
                 $prenom = $form->get('prenomJure')->getData();
                 $user = $repositoryUser->findOneBy(['email' => $email]);
 
-                if ($user === null) {
-                    $user = new User();
+                if ($user === null) {// Le mail ne correspond à aucun compte olymphys
+                    $user = new User();//On crée le user
                     try {
                         $user->setNom(strtoupper($nom));
                         $user->setPrenom(ucfirst(strtolower($prenom)));
                         $user->setEmail($email);
                         $user->setRoles(['ROLE_JURYCIA']);
                         $user->setCentrecia($centrecia);
-                        $username = $slugger->slug($prenom[0]) . '_' . $slugger->slug($nom);
+                        $username = $slugger->slug($prenom[0]) . '_' . $slugger->slug($nom);//Création d'un username avec caratères ASCII
                         $pwd = $slugger->slug($prenom);
                         $i = 1;
-                        while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques
+                        while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques on ajoute un numéro à la fin
                             $username = $username . $i;
                             $i = +1;
                         }
@@ -265,28 +265,28 @@ class SecretariatjuryCiaController extends AbstractController
                         $user->setPassword($passwordEncoder->hashPassword($user, $pwd));
                         $this->doctrine->getManager()->persist($user);
                         $this->doctrine->getManager()->flush();
-                        $mailer->sendInscriptionUserJure($orgacia, $user, $pwd, $centre);
+                        $mailer->sendInscriptionUserJure($orgacia, $user, $pwd, $centre);//On envoie au nouvel user ses identifiants avec copie au comité
                     } catch (\Exception $e) {
                         $texte = 'Une erreur est survenue lors de l\'inscription de ce jure :' . $e;
-                        $this->requestStack->getSession()->set('info', $texte);
+                        $this->requestStack->getSession()->set('info', $texte);//Un emodale surgira si une erreur est survenue lors de la création du juré
                     }
 
                 } else {
-                    $user->setRoles(['ROLE_JURYCIA']);
-                    $user->setCentrecia($centrecia);
+                    $user->setRoles(['ROLE_JURYCIA']);//Si le compte Olymphys existe déjà, on s'assure que son rôle sera jurycia
+                    $user->setCentrecia($centrecia);//On affecte le compte au centre cia créateurdu juré
                     $this->doctrine->getManager()->persist($user);
                     $this->doctrine->getManager()->flush();
                 }
                 $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
-                if ($jure === null) {
-                    $jureCia = new JuresCia();
-                    $jureCia->setIduser($user);
+                if ($jure === null) {//le jurécia n'existe pas encore
+                    $jureCia = new JuresCia(); //On crée ce juré cia
+                    $jureCia->setIduser($user); //On associe le jurécia à compte olymphys
                     //$jureCia->setNomJure($nom);
                     //$jureCia->setPrenomJure($prenom);
-                    $jureCia->setCentrecia($centrecia);
-                    if (str_contains($slugger->slug($prenom), '-')) {
+                    $jureCia->setCentrecia($centrecia);//On affecte le juré cia au centre créateur du juré cia
+                    if (str_contains($slugger->slug($prenom), '-')) {//Pour éliminer les caratères non ASCII et tenir compte d'un prénom composé
                         $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
-                    } elseif (str_contains($slugger->slug($prenom), '_')) {
+                    } elseif (str_contains($slugger->slug($prenom), '_')) {//Pour éliminer les caratères non ASCII  et tenir compte d'un prénom composé mal saisi
                         $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
                     } else {
                         $initiales = strtoupper($slugger->slug($prenom))[0] . strtoupper($slugger->slug($nom))[0];
@@ -295,7 +295,7 @@ class SecretariatjuryCiaController extends AbstractController
                     $jureCia->setInitialesJure($initiales);
                     $this->doctrine->getManager()->persist($jureCia);
                     $this->doctrine->getManager()->flush();
-                    $mailer->sendInscriptionJureCia($orgacia, $jureCia, $prenom, $centre);
+                    $mailer->sendInscriptionJureCia($orgacia, $jureCia, $prenom, $centre);//envoie d'un mail au juré pour l'informer que son compte jurécia du centre où il est affecté est ouvert avec copie au comité
                 } else {
                     $texte = 'Ce juré existe déjà !';
                     $this->requestStack->getSession()->set('info', $texte);
@@ -314,8 +314,8 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/secretariatjuryCia/gestionjures,{centre}", name: "secretariatjuryCia_gestionjures")]
-    public function gestionjures(Request $request, $centre)
-    {
+    public function gestionjures(Request $request, $centre)//Cette fonction est appelée à chaque changement d'un champ du formulaire via une fontion JQUERY et ajax dans app.js
+    {   //Ainsi l'organisateur peut saisir le tableau à la "volée"
 
         $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
@@ -323,18 +323,23 @@ class SecretariatjuryCiaController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
-
+        //$request contient les infos à traiter
         if ($request->get('idjure') !== null) {//pour la modif des données perso du juré
             $idJure = $request->get('idjure');
             $val = $request->get('value');
             $type = $request->get('type');
             $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $userJure = $this->doctrine->getRepository(User::class)->find($jure->getIduser()->getId());
             switch ($type) {
                 case 'prenom':
                     $jure->setPrenomJure($val);
+                    $userJure->setPrenom($val);
+                    $this->doctrine->getManager()->persist($userJure);//pour être en cohérence avec la table user
                     break;
                 case 'nom' :
                     $jure->setNomJure($val);
+                    $userJure->setNom($val);
+                    $this->doctrine->getManager()->persist($userJure);//pour être en cohérence avec la table user
                     break;
                 case 'initiales':
                     $jure->setInitialesJure($val);
@@ -369,7 +374,7 @@ class SecretariatjuryCiaController extends AbstractController
             }
             if ($attrib == 'E') {
 
-                $jure->addEquipe($equipe);//la fonctionadd contient le test d'existence de l'équipe et ne l'ajoute que si elle n'est pas dans la liste des équipes du juré
+                $jure->addEquipe($equipe);//la fonction add contient le test d'existence de l'équipe et ne l'ajoute que si elle n'est pas dans la liste des équipes du juré
                 $rapporteur = $jure->getRapporteur();
                 if ($rapporteur !== null) {
                     if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
@@ -378,15 +383,15 @@ class SecretariatjuryCiaController extends AbstractController
                     $jure->setRapporteur($rapporteur);
                 }
             }
-            if ($attrib == '') {
-                $rapporteur = $jure->getRapporteur();
+            if ($attrib == '') {//Le champ est vide pas d'affectation du juré à cette équipe
+                $rapporteur = $jure->getRapporteur();//on teste si le juré était rapporteur
                 if ($rapporteur !== null) {
                     if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
                         unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
                     }
                     $jure->setRapporteur($rapporteur);
                 }
-                if ($jure->getEquipes()->contains($equipe)) {
+                if ($jure->getEquipes()->contains($equipe)) {//Si le juré était affecté à cette équipe, on le retire de cette équipe
                     $jure->removeEquipe($equipe);
                 }
             }
@@ -696,16 +701,35 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/cia/secretariatjuryCia/modifcoordonneesjure,{centre}}", name: "modifcoordonneesjure")] //Pour que l'organisateur CIA puisse modifier l'adresse mail du juré avec renvoie au juré de ces identifiants, en cas d'erreur de saisie lors de la création du compte
-    public function modifcoordonneesjure(Request $request, $centre)//Dans le cas où le jury c'est trompé d'équipe en examinant une équipe qui n'est pas de son jury mais en notant par mégarde  une autre équipe de son jury
+    #[Route("/cia/secretariatjuryCia/modifcoordonneesjures,{idjure},{centre}", name: "modifcoordonneesjures")] //Pour que l'organisateur CIA puisse modifier l'adresse mail du juré avec renvoie au juré de ces identifiants, en cas d'erreur de saisie lors de la création du compte
+    public function modifcoordonneesjures(Request $request, $idjure, $centre)
     {
-        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findBy(['centre' => $centre]);
-        $listJures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
-            ->leftJoin('j.iduser', 'u')
-            ->where('u.centrecia =:centre')
-            ->setParameter('centre', $centrecia)
-            ->getQuery()->getResult();
-        $form = $this->createForm();
+
+        $jurecia = $this->doctrine->getRepository(JuresCia::class)->find($idjure);
+        $userJure = $this->doctrine->getRepository(User::class)->findOneBy(['id' => $jurecia->getIduser()->getId()]);
+        $form = $this->createFormBuilder($jurecia)
+            ->add('email', EmailType::class)
+            ->add('nomJure', TextType::class)
+            ->add('prenomJure', TextType::class)
+            ->add('valider', SubmitType::class)
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() and $form->isValid()) {
+            $nom = $form->get('nomJure')->getData();
+            $prenom = $form->get('prenomJure')->getData();
+            $email = $form->get('email')->getData();
+            $userJure->setEmail($email);
+            $userJure->setNom($nom);
+            $userJure->setPrenom($prenom);
+            $this->doctrine->getManager()->persist($jurecia);
+            $this->doctrine->getManager()->persist($userJure);
+            $this->doctrine->getManager()->flush();
+            return $this->redirectToRoute('secretariatjuryCia_gestionjures', ['centre' => $centre]);
+
+        }
+
+
+        return $this->render('cyberjuryCia/modifcoordonneesjurescia.html.twig', ['form' => $form->createView(), 'jure' => $jurecia, 'centre' => $centre]);
 
 
     }

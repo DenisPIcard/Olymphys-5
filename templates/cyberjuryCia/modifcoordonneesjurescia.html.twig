@@ -1,0 +1,13 @@
+{% extends 'base1.html.twig' %}
+{% block navigation %}
+
+    {{ include ("cyberjuryCia/navigation.html.twig") }}
+{% endblock %}
+{% block titre3 %}
+    Concours interacadémique de {{ centre }}-{{ app.session.get('edition').ed }}<sup>e</sup> édition<br>
+    Edition et modification des coordonnées du juré {{ jure.prenomJure }} {{ jure.nomJure }}
+{% endblock %}
+{% block body %}
+    {{ form(form) }}
+    <a href="{{ path('secretariatjuryCia_gestionjures',{'centre': centre}) }}" type="button" class="btn btn-primary">Annuler</a>
+{% endblock %}
