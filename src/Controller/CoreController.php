@@ -60,8 +60,8 @@ class CoreController extends AbstractController
             }
             $this->requestStack->getSession()->set('concours', $concours);
         }
-        $this->requestStack->getSession()->set('pageCourante', 1);
-        $this->requestStack->getSession()->set('pageFCourante', 1);
+        $this->requestStack->getSession()->set('pageCourante', 1);//actus
+        $this->requestStack->getSession()->set('pageFCourante', 1);//FAQ
         //pour construire les paginateurs des Actus et de la FAQ
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $tab = $repo->accueil_actus();
@@ -92,6 +92,7 @@ class CoreController extends AbstractController
 
             }
         } catch (Exception $e) {
+            dd($e);
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
             return $this->redirectToRoute('core_home');

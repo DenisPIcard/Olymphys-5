@@ -243,6 +243,7 @@ class SecretariatjuryCiaController extends AbstractController
                 $nom = $form->get('nomJure')->getData();
                 $prenom = $form->get('prenomJure')->getData();
                 $user = $repositoryUser->findOneBy(['email' => $email]);
+
                 if ($user === null) {
                     $user = new User();
                     try {
@@ -268,10 +269,15 @@ class SecretariatjuryCiaController extends AbstractController
                         $this->requestStack->getSession()->set('info', $texte);
                     }
 
+                } else {
+                    $user->setRoles(['ROLE_JURYCIA']);
+                    $user->setCentrecia($centrecia);
+                    $this->doctrine->getManager()->persist($user);
+                    $this->doctrine->getManager()->flush();
                 }
                 $jure = $this->doctrine->getRepository(JuresCia::class)->findOneBy(['iduser' => $user]);
                 if ($jure === null) {
-
+                    $jureCia = new JuresCia();
                     $jureCia->setIduser($user);
                     //$jureCia->setNomJure($nom);
                     //$jureCia->setPrenomJure($prenom);
@@ -283,7 +289,7 @@ class SecretariatjuryCiaController extends AbstractController
                     } else {
                         $initiales = strtoupper($slugger->slug($prenom))[0] . strtoupper($slugger->slug($nom))[0];
                     }
-
+                    $jureCia->setEmail($email);
                     $jureCia->setInitialesJure($initiales);
                     $this->doctrine->getManager()->persist($jureCia);
                     $this->doctrine->getManager()->flush();

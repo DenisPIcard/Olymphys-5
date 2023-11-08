@@ -748,7 +748,7 @@ class FichiersController extends AbstractController
             ->andWhere('t.typefichier in (0,1,2,3,4,8)')
             ->andWhere('t.national =:national')
             ->setParameter('national', TRUE);
-        $listeEleves = $repositoryElevesinter->findByEquipe(['equipe' => $equipe_choisie]);
+        $listeEleves = $repositoryElevesinter->findBy(['equipe' => $equipe_choisie]);
         $liste_prof[1] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf1()]);
         if (null != $equipe_choisie->getIdProf2()) {
             $liste_prof[2] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf2()]);
@@ -883,14 +883,14 @@ class FichiersController extends AbstractController
 
             if (isset($autorisationprofsid)) {
                 foreach ($autorisationprofsid as $id) {
-                    $fichierprof = $repositoryFichiersequipes->findOneById(['id' => $id]);
+                    $fichierprof = $repositoryFichiersequipes->find($id);
                     $fichierName = $this->getParameter('app.path.fichiers') . '/autorisations/' . $fichierprof->getFichier();
                     $zipFile->addFromString(basename($fichierName), file_get_contents($fichierName));
                 }
             }
             if (isset($autorisationelevesid)) {
                 foreach ($autorisationelevesid as $id) {
-                    $fichiereleve = $repositoryFichiersequipes->findOneById(['id' => $id]);
+                    $fichiereleve = $repositoryFichiersequipes->find($id);
                     $fichierName = $this->getParameter('app.path.fichiers') . '/autorisations/' . $fichiereleve->getFichier();
                     $zipFile->addFromString(basename($fichierName), file_get_contents($fichierName));
                 }

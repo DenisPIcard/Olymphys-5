@@ -5,7 +5,7 @@
 
         {% if app.user.roles|filter(v => v =='ROLE_ORGACIA')!=[] %}
             <a class="dropdown-item login py-0"
-               href="{{ path('secretariatjuryCia_accueil') }}">Accueil</a>
+               href="{{ path('secretariatjuryCia_accueil',{'centre':app.user.centrecia.centre}) }}">Accueil</a>
         {% elseif is_granted('ROLE_COMITE') %}
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_accueil_comite') }}">Accueil</a>

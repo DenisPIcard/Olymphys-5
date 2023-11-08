@@ -21,7 +21,7 @@ $response = $kernel->handle($request);
 
 $response->setPublic();
 $date = new DateTime();
-$date->modify('+600 seconds');
+$date->modify('+120 seconds');
 
 $response->setExpires($date);
 $response->send();

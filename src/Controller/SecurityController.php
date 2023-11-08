@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    #[Route("/security/login", name:"login")]
+    #[Route("/security/login", name: "login")]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
@@ -57,7 +57,7 @@ class SecurityController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route("/logout", name:"logout")]
+    #[Route("/logout", name: "logout")]
     public function logout()
     {
         throw new Exception('Sera intercepté avant d\'en arriver là !');
@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
     /**
      * @throws TransportExceptionInterface
      */
-    #[Route("/register", name:"register")]
+    #[Route("/register", name: "register")]
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): Response
     {
 
@@ -130,7 +130,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route("/verif_mail/{id}/{token}", name:"verif_mail")]
+    #[Route("/verif_mail/{id}/{token}", name: "verif_mail")]
     public function verifMail(User $user, Request $request, Mailer $mailer, ManagerRegistry $doctrine, string $token): RedirectResponse
     {
         $uaiRepository = $doctrine->getManager()->getRepository(Uai::class);
@@ -183,9 +183,9 @@ class SecurityController extends AbstractController
     /**
      * @throws TransportExceptionInterface
      */
-    #[Route("/forgottenPassword", name:"forgotten_password")]
-   public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): RedirectResponse|Response
-   {
+    #[Route("/forgottenPassword", name: "forgotten_password")]
+    public function forgottenPassword(Request $request, MailerInterface $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): RedirectResponse|Response
+    {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
             ->add('email', EmailType::class, [
@@ -205,7 +205,7 @@ class SecurityController extends AbstractController
 
             // aucun email associé à ce compte.
             if (!$user) {
-                $request->getSession()->getFlashBag()->add('alert', 'Cet email ne correspond pas à un compte.');
+                $this->requestStack->getSession()->set('info', 'Cet email ne correspond pas à un compte.');
 
                 return $this->redirectToRoute('forgotten_password');
             }
@@ -226,7 +226,7 @@ class SecurityController extends AbstractController
                     'user' => $user,
                 ]);
             $mailer->send($email);
-            $request->getSession()->getFlashBag()->add('success', "Un mail va vous être envoyé afin que vous puissiez renouveler votre mot de passe. Le lien que vous recevrez sera valide 24h.");
+            $this->requestStack->getSession()->set('info', "Un mail va vous être envoyé afin que vous puissiez renouveler votre mot de passe. Le lien que vous recevrez sera valide 24h.");
 
             return $this->redirectToRoute("core_home");
         }
@@ -236,7 +236,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route("/reset_password/{id}/{token}", name:"reset_password")]
+    #[Route("/reset_password/{id}/{token}", name: "reset_password")]
     public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder): RedirectResponse|Response
     {
 
@@ -257,8 +257,8 @@ class SecurityController extends AbstractController
 
             $user->setPassword($passwordEncoder->hashPassword(
                 $user,
-                $form['plainPassword']->getData()));
-            $plainPassword = $form->getData();
+                $form->get('plainPassword')->getData()));
+            //$plainPassword = $form->getData();
 
             // réinitialisation du token à null pour qu'il ne soit plus réutilisable
             $user->setToken(null);
@@ -268,7 +268,7 @@ class SecurityController extends AbstractController
             $em = $this->doctrine->getManager();
             $em->persist($user);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('success', "Votre mot de passe a été renouvelé.");
+            $this->requestStack->getSession()->set('info', "Votre mot de passe a été renouvelé.");
 
             return $this->redirectToRoute('login');
 

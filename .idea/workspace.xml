@@ -4,17 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 31-10 cyberjurycia gestion erreur juré">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 2-11 cyberjurycia améliorations">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/FichiersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/FichiersController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/page_accueil.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/evaluerCia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/evaluerCia.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/email/confirm_fichier.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/email/confirm_fichier.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecurityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/navigation.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/navigation.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -588,6 +586,17 @@
       <workItem from="1698769899295" duration="9936000" />
       <workItem from="1698869008529" duration="1776000" />
       <workItem from="1698910845396" duration="5438000" />
+      <workItem from="1698941273393" duration="661000" />
+      <workItem from="1699112143757" duration="2485000" />
+      <workItem from="1699115873568" duration="1794000" />
+      <workItem from="1699167265989" duration="1205000" />
+      <workItem from="1699205731805" duration="3199000" />
+      <workItem from="1699216706942" duration="726000" />
+      <workItem from="1699299084943" duration="601000" />
+      <workItem from="1699338029120" duration="2732000" />
+      <workItem from="1699344176077" duration="913000" />
+      <workItem from="1699386326682" duration="9769000" />
+      <workItem from="1699426690205" duration="18000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -932,7 +941,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1007,7 +1016,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="cyberjuryCia-6 : suivi des résultats, vue globale, classement" />
     <MESSAGE value="cyberjuryCia-7 : Permet au comité d'accéder au cyberjury Cia de chaque centre" />
     <MESSAGE value="cyberjuryCia-7 : Permet au comité d'accéder au cyberjury Cia de chaque centre(suite pour corriger qqes erreurs de path)" />
     <MESSAGE value="cyberjuryCia-8 : Amélioration de la vue adaptative de la gestion des jurés" />
@@ -1032,7 +1040,8 @@
     <MESSAGE value="Comit du 22-10-23 amélioration saisie du tableau répartition des jurés cia" />
     <MESSAGE value="Comit du 23-10-23 apéliotion du cyberjury+ autres bricoles" />
     <MESSAGE value="Comit du 31-10 cyberjurycia gestion erreur juré" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 31-10 cyberjurycia gestion erreur juré" />
+    <MESSAGE value="Comit du 2-11 cyberjurycia améliorations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 2-11 cyberjurycia améliorations" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
