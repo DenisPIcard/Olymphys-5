@@ -2,21 +2,30 @@
 {% block title %} En savoir plus sur cette équipe {% endblock %}
 
 {% block titre3 %}
-    <a {% if (progression) %} class="btn btn-outline-success btn-lg" {% else %} class="btn btn-primary btn-lg" {% endif %}
-            href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': id_equipe } ) }}">{{ equipe.numero }}</a>
-    {{ equipe.titreProjet }}
+    {% if is_granted('ROLE_COMITE') %}
+
+    {% elseif is_granted('ROLE_JURYCIA') %}
+        <a {% if (progression) %} class="btn btn-outline-success btn-lg" {% else %} class="btn btn-primary btn-lg" {% endif %}
+                href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': id_equipe } ) }}">{{ equipe.numero }}</a>
+        {{ equipe.titreProjet }}
+    {% endif %}
 
     {% if memoires!=null %}
         <a href="/odpf/odpf-archives/{{ equipe..edition.ed }}/fichiers/memoires/{{ memoires[0].fichier }}"
            class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+    {% else %}
+        <div style="color: #6E6E6E">Pas mémoire encore déposé</div>
     {% endif %}
 
 {% endblock %}
 
 {% block navigation %}
-
-    {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+    {% if is_granted('ROLE_COMITE') %}
+        {{ include ('cyberjuryCia/navigation.html.twig') }}
+    {% elseif is_granted('ROLE_JURYCIA') %}
+        {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+    {% endif %}
 {% endblock %}
 {% block body %}
     <div class="well">

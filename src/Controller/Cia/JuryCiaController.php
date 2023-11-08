@@ -448,13 +448,13 @@ class JuryCiaController extends AbstractController
                 return $this->redirectToRoute('cyberjuryCia_evaluer_une_equipe', ['id' => $equipe->getId()]);
             }
             if ($page == 'classement') {
-                return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $this->getUser()->getCentrecia()]);
+                return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $equipe->getCentre()->getCentre()]);
             }
             if ($page == 'gestionconseils') {
-                return $this->redirectToRoute('cyberjuryCia_gerer_conseils_equipe', ['centre' => $this->getUser()->getCentrecia()]);
+                return $this->redirectToRoute('cyberjuryCia_gerer_conseils_equipe', ['centre' => $equipe->getCentre()->getCentre()]);
             }
         }
-        return $this->render('cyberjuryCia/conseils_jury_cia.html.twig', array('equipe' => $equipe, 'form' => $form->createView(),));
+        return $this->render('cyberjuryCia/conseils_jury_cia.html.twig', array('equipe' => $equipe, 'form' => $form->createView(), 'centre' => $equipe->getCentre()->getCentre()));
     }
 
     #[IsGranted('ROLE_JURYCIA')]

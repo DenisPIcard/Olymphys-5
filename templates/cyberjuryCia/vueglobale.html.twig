@@ -30,30 +30,31 @@
                     {% set numligne = loop.index %} {# loop.index va de 1 à nb equipes ; numero de ligne #}
                     <tr>
                         <th>{{ listEquipes[numligne-1].numero }}</th>
+                        {% if progression!= null %}
+                            {% for j in 1..nbre_jures %} {# loop.index va de 1 à nb jurés; numero de colonne #}
 
-                        {% for j in 1..nbre_jures %} {# loop.index va de 1 à nb jurés; numero de colonne #}
+                                <td>
+                                    {% if progression[numligne][loop.index]=='ras' %}
 
-                            <td>
-                                {% if progression[numligne][loop.index]=='ras' %}
+                                    {% elseif  progression[numligne][loop.index] == 0 %}
 
-                                {% elseif  progression[numligne][loop.index] == 0 %}
+                                        {% set index = loop.index-1 %}
+                                        <a href="#"
+                                           title="equipe : {{ listEquipes[numligne-1].numero }}, juré : {{ listJures[index].initialesJure }}">
+                                            <i class="fa fa-asterisk"></i>
+                                        </a>
 
-                                    {% set index = loop.index-1 %}
-                                    <a href="#"
-                                       title="equipe : {{ listEquipes[numligne-1].numero }}, juré : {{ listJures[index].initialesJure }}">
-                                        <i class="fa fa-asterisk"></i>
-                                    </a>
+                                    {% else %}
+                                        {% set index = loop.index-1 %}
+                                        <a href="{{ path('modifnotejure',{'idequipe':listEquipes[numligne-1].id,'idjure':listJures[index].id}) }}"
+                                           title="">
+                                            {{ progression[numligne][loop.index] }}
+                                        </a>
 
-                                {% else %}
-                                    {% set index = loop.index-1 %}
-                                    <a href="{{ path('modifnotejure',{'idequipe':listEquipes[numligne-1].id,'idjure':listJures[index].id}) }}"
-                                       title="">
-                                        {{ progression[numligne][loop.index] }}
-                                    </a>
-
-                                {% endif %}
-                            </td>
-                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
 
                     </tr>
 

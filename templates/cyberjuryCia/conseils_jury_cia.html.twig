@@ -3,18 +3,33 @@
 
 {% block titre3 %}
     Rédaction d'un conseil pour l'équipe :<br>
-    <a class="btn btn-primary btn-lg"
-       href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': equipe.id} ) }}"
-       title="Rédiger mon conseil à donner à cette équipe"> {{ equipe.numero }} </a>
+    {% if is_granted('ROLE_COMITE') %}
+        <a class="btn btn-primary btn-lg"
+           href="#"
+        > {{ equipe.numero }} </a>
+    {% elseif is_granted('ROLE_JURYCIA') %}
+        <a class="btn btn-primary btn-lg"
+           href="{{ path('cyberjuryCia_evaluer_une_equipe', {'id': equipe.id} ) }}"
+           title="Rédiger mon conseil à donner à cette équipe"> {{ equipe.numero }} </a>
+    {% endif %}
     {{ equipe.titreProjet }}
+    {% if is_granted('ROLE_COMITE') %}
+        <a href="{{ path('infos_equipe_comite', {'idequipe': equipe.id} ) }}" class="fas fa-info-circle"
+           title="En savoir plus sur cette équipe"> </a>
+    {% elseif is_granted('ROLE_JURYCIA') %}
 
-    <a href="{{ path('cyberjuryCia_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
-       title="En savoir plus sur cette équipe"> </a>
+        <a href="{{ path('cyberjuryCia_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
+           title="En savoir plus sur cette équipe"> </a>
+    {% endif %}
 
 {% endblock %}
 
 {% block navigation %}
-    {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+    {% if app.user.roles|filter(v => v =='ROLE_JURYCIA') %}
+        {{ include ('cyberjuryCia/navigationJury.html.twig') }}
+    {% elseif is_granted('ROLE_COMITE') %}
+        {{ include ('cyberjuryCia/navigation.html.twig') }}
+    {% endif %}
 {% endblock %}
 {% block body %}
 

@@ -12,6 +12,7 @@ use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Entity\Cia\JuresCia;
 use App\Entity\Cia\NotesCia;
+use App\Entity\Fichiersequipes;
 use App\Entity\Uai;
 use App\Form\JuresCiaType;
 use App\Form\NotesCiaType;
@@ -22,6 +23,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
+use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
@@ -693,5 +695,79 @@ class SecretariatjuryCiaController extends AbstractController
 
     }
 
+    #[IsGranted('ROLE_ORGACIA')]
+    #[Route("/cia/secretariatjuryCia/modifcoordonneesjure,{centre}}", name: "modifcoordonneesjure")] //Pour que l'organisateur CIA puisse modifier l'adresse mail du juré avec renvoie au juré de ces identifiants, en cas d'erreur de saisie lors de la création du compte
+    public function modifcoordonneesjure(Request $request, $centre)//Dans le cas où le jury c'est trompé d'équipe en examinant une équipe qui n'est pas de son jury mais en notant par mégarde  une autre équipe de son jury
+    {
+        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findBy(['centre' => $centre]);
+        $listJures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
+            ->leftJoin('j.iduser', 'u')
+            ->where('u.centrecia =:centre')
+            ->setParameter('centre', $centrecia)
+            ->getQuery()->getResult();
+        $form = $this->createForm();
+
+
+    }
+
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/cia/JuryCia/infos_equipe_comite/{idequipe}", name: "infos_equipe_comite")]
+    public function infos_equipe_cia(Request $request, $idequipe): Response
+    {
+        $repositoryEquipesadmin = $this->doctrine
+            ->getManager()
+            ->getRepository(Equipesadmin::class);
+        $equipe = $repositoryEquipesadmin->find($idequipe);
+
+        $repositoryEleves = $this->doctrine
+            ->getManager()
+            ->getRepository(Elevesinter::class);
+        $repositoryUser = $this->doctrine
+            ->getManager()
+            ->getRepository(User::class);
+        $listEleves = $repositoryEleves->createQueryBuilder('e')
+            ->where('e.equipe =:equipe')
+            ->setParameter('equipe', $equipe)
+            ->getQuery()->getResult();
+
+        try {
+            $memoires = $this->doctrine->getManager()
+                ->getRepository(Fichiersequipes::class)->createQueryBuilder('m')
+                ->where('m.equipe =:equipe')
+                ->setParameter('equipe', $equipe)
+                ->andWhere('m.typefichier = 0')
+                ->getQuery()->getResult();
+        } catch (Exception $e) {
+            $memoires = null;
+        }
+
+        $idprof1 = $equipe->getIdProf1();
+        $idprof2 = $equipe->getIdProf2();
+        $mailprof1 = $repositoryUser->find(['id' => $idprof1])->getEmail();
+        $telprof1 = $repositoryUser->find(['id' => $idprof1])->getPhone();
+        if ($idprof2 != null) {
+            $mailprof2 = $repositoryUser->find(['id' => $idprof2])->getEmail();
+            $telprof2 = $repositoryUser->find(['id' => $idprof2])->getPhone();
+        } else {
+            $mailprof2 = null;
+            $telprof2 = null;
+        }
+
+
+        $content = $this->renderView('cyberjuryCia/infos_equipe.html.twig',
+            array(
+                'equipe' => $equipe,
+                'mailprof1' => $mailprof1,
+                'mailprof2' => $mailprof2,
+                'telprof1' => $telprof1,
+                'telprof2' => $telprof2,
+                'listEleves' => $listEleves,
+                'id_equipe' => $idequipe,
+                'memoires' => $memoires,
+                'centre' => $equipe->getCentre()->getCentre()
+            )
+        );
+        return new Response($content);
+    }
 
 }

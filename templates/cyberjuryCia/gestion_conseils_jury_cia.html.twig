@@ -12,7 +12,7 @@
         {{ include ("cyberjuryCia/navigation.html.twig") }}
     {% elseif app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
         {{ include ("cyberjuryCia/navigationJury.html.twig") }}
-    
+
     {% endif %}
 
 
@@ -28,27 +28,37 @@
                     </th>
                     <th>
                         {{ equipe.titreProjet }}
+                        {% set conseilEquipe=null %}
                     </th>
                     <td>
                     </td>
                     <td>
                     </td>
-                    {% for conseil in conseils %}
-                        {% if conseil.equipe == equipe %}
-                            <td>
+                    <td>
+                        {% for conseil in conseils %}
+
+                            {% if conseil.equipe == equipe %}
+
                                 {{ conseil.texte|raw }}
-                            </td>
-                            <td>
-                                <a href="{{ path("cyberjuryCia_rediger_conseils_equipe",{'idEquipe':equipe.id,'page':'gestionconseils'} ) }}"
-                                   class="fas fa-pencil-alt" title="modifier"> </a>
-                            </td>
-                            <td>
-                                <a class="fas fa-envelope"
-                                   href="{{ path('secretariatjuryCia_envoi_mail_conseils',{'idEquipe':conseil.equipe.id}) }}"
-                                   title="Envoyer à l'équipe"> </a>
-                            </td>
+                                {% set conseilEquipe=conseil %}
+
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+
+                        <a href="{{ path('cyberjuryCia_rediger_conseils_equipe',{'idEquipe':equipe.id,'page':'gestionconseils'} ) }}"
+                           class="fas fa-pencil-alt" title="modifier"> </a>
+                    </td>
+                    <td>
+                        {% if conseilEquipe!= null %}
+                            <a class="fas fa-envelope"
+                               href="{{ path('secretariatjuryCia_envoi_mail_conseils',{'idEquipe':conseilEquipe.equipe.id}) }}"
+                               title="Envoyer à l'équipe" type="button"> </a>
                         {% endif %}
-                    {% endfor %}
+                    </td>
+
+
                 </tr>
             {% endfor %}
         </table>
