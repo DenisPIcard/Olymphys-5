@@ -37,6 +37,7 @@ use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -51,11 +52,13 @@ class SecretariatjuryCiaController extends AbstractController
 {
     private RequestStack $requestStack;
     private ManagerRegistry $doctrine;
+    private Mailer $mailer;
 
-    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine, Mailer $mailer)
     {
         $this->requestStack = $requestStack;
         $this->doctrine = $doctrine;
+        $this->mailer = $mailer;
     }
 
     #[IsGranted('ROLE_COMITE')]
@@ -671,29 +674,33 @@ class SecretariatjuryCiaController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
+            if ($noteequipe !== null) {
+                $nllEquipe = $form->get('equipe')->getData();
+                $notenllequipe = new NotesCia();
+                $notenllequipe->setJure($jure);
+                $notenllequipe->setEquipe($nllEquipe);
+                $notenllequipe->setEcrit($noteequipe->getEcrit());
+                $notenllequipe->setExper($noteequipe->getExper());
+                $notenllequipe->setDemarche($noteequipe->getDemarche());
+                $notenllequipe->setOral($noteequipe->getOral());
+                $notenllequipe->setOrigin($noteequipe->getOrigin());
+                $notenllequipe->setRepquestions($noteequipe->getRepquestions());
+                $notenllequipe->setWgroupe($noteequipe->getWgroupe());
+                $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+                $notenllequipe->setCoefficients($coefficients);
+                $total = $notenllequipe->getPoints();
+                $notenllequipe->setTotal($total);
+                $this->doctrine->getManager()->persist($notenllequipe);
+                $this->doctrine->getManager()->remove($noteequipe);
+                $jure->addEquipe($nllEquipe);
+                $this->doctrine->getManager()->persist($notenllequipe);
+                $jure->removeEquipe($equipe);
+                $this->doctrine->getManager()->persist($jure);
+                $this->doctrine->getManager()->flush();
+            } else {
 
-            $nllEquipe = $form->get('equipe')->getData();
-            $notenllequipe = new NotesCia();
-            $notenllequipe->setJure($jure);
-            $notenllequipe->setEquipe($nllEquipe);
-            $notenllequipe->setEcrit($noteequipe->getEcrit());
-            $notenllequipe->setExper($noteequipe->getExper());
-            $notenllequipe->setDemarche($noteequipe->getDemarche());
-            $notenllequipe->setOral($noteequipe->getOral());
-            $notenllequipe->setOrigin($noteequipe->getOrigin());
-            $notenllequipe->setRepquestions($noteequipe->getRepquestions());
-            $notenllequipe->setWgroupe($noteequipe->getWgroupe());
-            $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
-            $notenllequipe->setCoefficients($coefficients);
-            $total = $notenllequipe->getPoints();
-            $notenllequipe->setTotal($total);
-            $this->doctrine->getManager()->persist($notenllequipe);
-            $this->doctrine->getManager()->remove($noteequipe);
-            $jure->addEquipe($nllEquipe);
-            $this->doctrine->getManager()->persist($notenllequipe);
-            $jure->removeEquipe($equipe);
-            $this->doctrine->getManager()->persist($jure);
-            $this->doctrine->getManager()->flush();
+                $this->requestStack->getSession()->set('info', 'Le juré n\'a pas encore noté l\'équipe, veuillez modifier l\'affectation de ce juré dans le tableau de gestion des jurés');
+            }
             return $this->redirectToRoute('secretariatjuryCia_vueglobale', ['centre' => $jure->getCentrecia()]);
         }
         return $this->render('cyberjuryCia/modifNoteJureCia.html.twig', ['form' => $form->createView(), 'equipe' => $equipe, 'centre' => $jure->getCentrecia(), 'jure' => $jure]);
@@ -794,4 +801,20 @@ class SecretariatjuryCiaController extends AbstractController
         return new Response($content);
     }
 
+    #[IsGranted('ROLE_JURYCIA')]
+    #[Route("/renvoimailjure,{idjure}", name: "renvoimailjure")]
+    public function renvoi_mail_jure($idjure)
+    {
+
+        $jure = $this->doctrine->getRepository(JuresCia::class)->find($idjure);
+        $user = $jure->getIduser();
+        $slugger = new AsciiSlugger();
+        $orgacia = $this->getUser();
+        $pwd = $slugger->slug($user->getPrenom());
+
+        $this->mailer->sendInscriptionUserJure($orgacia, $user, $pwd, $user->getCentrecia()->getCentre());
+        $this->mailer->sendInscriptionJureCia($orgacia, $user, $pwd, $user->getCentrecia()->getCentre());
+        return $this->redirectToRoute('secretariatjuryCia_gestionjures', ['centre' => $user->getCentrecia()]);
+
+    }
 }

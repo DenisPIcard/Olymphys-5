@@ -207,7 +207,7 @@ class Mailer
             ->addCc($orgacia->getEmail())// prévient l'oganisateur cia
             ->htmlTemplate('email/confirme_jure_cia.html.twig')
             ->subject('OdPF-Votre compte juré du centre de ' . $jure->getCentrecia())
-            ->context(['centrecia' => $centre, 'jureNom' => $jure->getPrenomJure() . ' ' . $jure->getNomJure()]);
+            ->context(['centrecia' => $centre, 'jureNom' => $jure->getPrenom() . ' ' . $jure->getNom()]);
 
         $this->mailer->send($email);
         return $email;

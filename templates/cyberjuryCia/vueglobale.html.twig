@@ -64,4 +64,9 @@
         </table>
     </div>
 
+    {% if app.session.get('info')!='' %}
+        {{ include('modales/modale_info.html.twig') }}
+
+    {% endif %}
+    {{ app.session.set('info', '') }}
 {% endblock %}
