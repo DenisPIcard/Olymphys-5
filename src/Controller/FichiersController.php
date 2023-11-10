@@ -128,7 +128,7 @@ class FichiersController extends AbstractController
         $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $choix]);
         $centre === null ?: $phase = 'interacadémique';
         if (in_array('ROLE_ORGACIA', $user->getRoles())) {
-            $centre = $this->doctrine->getRepository(Orgacia::class)->findOneBy(['user' => $user])->getCentre();
+            $centre = $user->getCentrecia();
             $phase = 'interacadémique';
         }
         if (in_array('ROLE_PROF', $user->getRoles())) {

@@ -182,13 +182,12 @@ class Mailer
     public function sendInscriptionUserJure($orgacia, $jure, $pwd, $centre): TemplatedEmail//Le juré cia créé pat orgacia est ainsi prévenu de l'ouverture de son compte olymphys
     {
         $email = (new TemplatedEmail())
-            ->from('info@olymphys.fr')
+            ->from($orgacia->getEmail())
             ->to($jure->getEmail())//Pour prévenir le juré de son inscription
             ->addCc('info@olymphys.fr')//prévient olymphys
             ->addCc($orgacia->getEmail())// prévient l'oganisateur cia
             ->htmlTemplate('email/confirme_user_jure.html.twig')
             ->subject('Votre compte Olymphys a été créé')
-            //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
             ->context(['centrecia' => $centre, 'jureNom' => $jure->getprenomNom(), 'jureLogin' => $jure->getUsername(), 'pwd' => $pwd, 'courriel' => $jure->getEmail()]);
 
         $this->mailer->send($email);
@@ -202,7 +201,7 @@ class Mailer
     public function sendInscriptionJureCia($orgacia, $jure, $pwd, $centre): TemplatedEmail
     {
         $email = (new TemplatedEmail())
-            ->from('info@olymphys.fr')
+            ->from($orgacia->getEmail())
             ->to($jure->getEmail())//Pour prévenir le juré de son inscription en tant que juré du centrecia,
             ->addCc('info@olymphys.fr')//prévient olymphys
             ->addCc($orgacia->getEmail())// prévient l'oganisateur cia

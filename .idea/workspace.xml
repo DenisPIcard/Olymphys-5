@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 8-11 cyberjurycia redaction des conseils par le comité">
-      <change afterPath="$PROJECT_DIR$/templates/cyberjuryCia/modifcoordonneesjurescia.html.twig" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 8-11 cyberjurycia édition des mails, noms et prénoms des jurés CIA par les organisateurs">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/gestionjures.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/gestionjures.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/modales/modale_aide_orga_cia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/modales/modale_aide_orga_cia.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -595,7 +591,8 @@
       <workItem from="1699344176077" duration="913000" />
       <workItem from="1699386326682" duration="9769000" />
       <workItem from="1699426690205" duration="979000" />
-      <workItem from="1699439104969" duration="25391000" />
+      <workItem from="1699439104969" duration="27395000" />
+      <workItem from="1699480704038" duration="33000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -940,7 +937,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1015,7 +1012,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="cyberjuryCia-8 : Amélioration de la vue adaptative de la gestion des jurés et ajout de la fonction suppression d'un juré" />
     <MESSAGE value="cyberjuryCia-8 : correction bug création juré" />
     <MESSAGE value="cyberjuryCN-1 : affectations jurés via entité attributions" />
     <MESSAGE value="cyberjuryCIA : rédaction conseils du jury aux équipes" />
@@ -1040,7 +1036,8 @@
     <MESSAGE value="Comit du 6-11 cyberjurycia correction erreur création juré" />
     <MESSAGE value="Comit du 8-11 cyberjurycia correction erreur création juré" />
     <MESSAGE value="Comit du 8-11 cyberjurycia redaction des conseils par le comité" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 8-11 cyberjurycia redaction des conseils par le comité" />
+    <MESSAGE value="Comit du 8-11 cyberjurycia édition des mails, noms et prénoms des jurés CIA par les organisateurs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 8-11 cyberjurycia édition des mails, noms et prénoms des jurés CIA par les organisateurs" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
