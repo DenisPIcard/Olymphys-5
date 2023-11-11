@@ -19,7 +19,9 @@ class ConseilJuryCiaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('texte', CKEditorType::class)
+            ->add('texte', CKEditorType::class, [
+                'required' => false,
+            ])
             ->add('Enregistrer', SubmitType::class);
 
     }

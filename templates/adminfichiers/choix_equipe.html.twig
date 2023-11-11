@@ -240,9 +240,11 @@
 
             </div>
         {% elseif  app.user.roles|filter(v => v =='ROLE_JURYCIA')!=[] %}
-            <div style="text-align:center">
-                <a href="{{ path('cyberjuryCia_accueil') }}">Cyberjury</a>
+            {% if "now"|date("m/d/Y") >= app.session.get('edition').concourscia|date("m/d/Y") %}
 
+                <div style="text-align:center">
+                <a href="{{ path('cyberjuryCia_accueil') }}">Cyberjury</a>
+            {% endif %}
             </div>
         {% elseif  app.user.roles|filter(v => v =='ROLE_PROF')!=[] %}
             <div style="text-align:center">

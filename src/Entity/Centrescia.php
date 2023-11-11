@@ -7,6 +7,7 @@ use App\Repository\CentresciaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 
 
 #[ORM\Entity(repositoryClass: CentresciaRepository::class)]
@@ -28,6 +29,9 @@ class Centrescia
 
     #[ORM\Column(nullable: true)]
     private ?int $nbselectionnees = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $verouClassement = null;
 
 
     public function __toString()
@@ -84,6 +88,19 @@ class Centrescia
     public function setNbselectionnees(?int $nbselectionnees): self
     {
         $this->nbselectionnees = $nbselectionnees;
+
+        return $this;
+    }
+
+    public function getVerouClassement(): ?bool
+    {
+        return $this->verouClassement;
+    }
+
+    public function setVerouClassement(?bool $verouClassement): static
+    {
+
+        $this->verouClassement = $verouClassement;
 
         return $this;
     }

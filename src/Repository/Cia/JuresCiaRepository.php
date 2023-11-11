@@ -58,30 +58,34 @@ class JuresCiaRepository extends ServiceEntityRepository
 
     public function getEquipesSousJury($centrecia, $numSousJury)
     {
-        $listJures = $this->findBy(['centrecia' => $centrecia, 'numJury' => $numSousJury]);
 
+        $listJures = $this->findBy(['centrecia' => $centrecia, 'numJury' => $numSousJury]);
         $equipes = [];
         $i = 0;
-        foreach ($listJures as $jure) {
+        foreach ($listJures as $jure) {//Pour compter toutes équipes du sous-jury : un jury ne voit pas forcément toutes les équipes du sous-jury
             $equipesjure = $jure->getEquipes();
-
-            if ($equipes == []) {
+            dump($equipesjure);
+            if ($equipes == []) {//Pour le premier juré
                 foreach ($equipesjure as $equipejure) {
                     $equipes[$i] = $equipejure;
-                    $i = $i + 1;
+                    $i = $i + 1; //On ajoute ses équipes dans la liste
+
                 }
             }
-            if ($equipes != []) {
-                foreach ($equipesjure as $equipejure) {
-                    $test = false;
-                    foreach ($equipes as $equipe) {
-                        if ($equipe == $equipejure) {
-                            $test = true;
+
+            if ($equipes != []) {//Pour les jurés suivants, on ajoute les équipes non encore comptablisées
+                foreach ($equipesjure as $equipejure) {//On balaye les équipes du juré
+                    $test = false;//Initialisation du test à faux
+                    foreach ($equipes as $equipe) {//on balaye les équipes déjà dans la liste
+                        if ($equipe->getNumero() == $equipejure->getNumero()) {
+                            $test = true;//Cette équipe du juré est déjà dans la liste des équipes du sous-jury
+
                         }
                     }
-                    if ($test == false) {
-                        $equipes[$i] = $equipejure;
+                    if ($test == false) {//Le balayage précédent n'a pas trouvé l'équipe donc, elle n'est pas dans la liste, on la rajoute
+                        $equipes[$i] = $equipejure;//On ajoute l'équipe du juré dans la liste
                         $i = $i + 1;
+
                     }
                 }
             }

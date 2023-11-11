@@ -213,10 +213,11 @@ class SecretariatjuryCiaController extends AbstractController
         $numJury = $repositoryJures->findOneBy(['iduser' => $this->getUser()])->getNumJury();
         $centrecia = $repositoryCentres->findOneBy(['centre' => $centre]);
         $equipesSousJury = $repositoryJures->getEquipesSousJury($centrecia, $numJury);
+
         $rangs = $repositoryRangs->classementSousJury($equipesSousJury);
 
         $content = $this->renderView('cyberjuryCia/classement_sous_jury.html.twig',
-            array('rangs' => $rangs, 'equipes' => $equipesSousJury, 'centre' => $centrecia->getCentre())
+            array('rangs' => $rangs, 'equipes' => $equipesSousJury, 'centre' => $centre)
         );
         return new Response($content);
     }
@@ -252,6 +253,7 @@ class SecretariatjuryCiaController extends AbstractController
                 if ($user === null) {// Le mail ne correspond à aucun compte olymphys
                     $user = new User();//On crée le user
                     try {
+
                         $user->setNom(strtoupper($nom));
                         $user->setPrenom(ucfirst(strtolower($prenom)));
                         $user->setEmail($email);
@@ -284,8 +286,8 @@ class SecretariatjuryCiaController extends AbstractController
                 if ($jure === null) {//le jurécia n'existe pas encore
                     $jureCia = new JuresCia(); //On crée ce juré cia
                     $jureCia->setIduser($user); //On associe le jurécia à compte olymphys
-                    //$jureCia->setNomJure($nom);
-                    //$jureCia->setPrenomJure($prenom);
+                    $jureCia->setNomJure(strtoupper($nom));
+                    $jureCia->setPrenomJure(ucfirst(strtolower($prenom)));
                     $jureCia->setCentrecia($centrecia);//On affecte le juré cia au centre créateur du juré cia
                     if (str_contains($slugger->slug($prenom), '-')) {//Pour éliminer les caratères non ASCII et tenir compte d'un prénom composé
                         $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
@@ -726,8 +728,10 @@ class SecretariatjuryCiaController extends AbstractController
             $prenom = $form->get('prenomJure')->getData();
             $email = $form->get('email')->getData();
             $userJure->setEmail($email);
-            $userJure->setNom($nom);
-            $userJure->setPrenom($prenom);
+            $userJure->setNom(strtoupper($nom));
+            $userJure->setPrenom(ucfirst(strtolower($prenom)));
+            $jurecia->setNomJure(strtoupper($nom));
+            $jurecia->setPrenomJure(ucfirst(strtolower($prenom)));
             $this->doctrine->getManager()->persist($jurecia);
             $this->doctrine->getManager()->persist($userJure);
             $this->doctrine->getManager()->flush();
@@ -813,8 +817,34 @@ class SecretariatjuryCiaController extends AbstractController
         $pwd = $slugger->slug($user->getPrenom());
 
         $this->mailer->sendInscriptionUserJure($orgacia, $user, $pwd, $user->getCentrecia()->getCentre());
-        $this->mailer->sendInscriptionJureCia($orgacia, $user, $pwd, $user->getCentrecia()->getCentre());
+        $this->mailer->sendInscriptionJureCia($orgacia, $jure, $pwd, $user->getCentrecia()->getCentre());
         return $this->redirectToRoute('secretariatjuryCia_gestionjures', ['centre' => $user->getCentrecia()]);
+
+    }
+
+    #[IsGranted('ROLE_COMITE')]
+    #[Route("/verouiller_classement,{centre}", name: "verouiller_classement")]
+    public function verouiller_classement($centre)
+    {
+        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
+        $centrecia->setVerouClassement(true);
+        $this->doctrine->getManager()->persist($centrecia);
+        $this->doctrine->getManager()->flush();
+        return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $centre]);
+
+
+    }
+
+    #[IsGranted('ROLE_COMITE')]
+    #[Route("/deverouiller_classement,{centre}", name: "deverouiller_classement")]
+    public function deverouiller_classement($centre)
+    {
+        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
+        $centrecia->setVerouClassement(false);
+        $this->doctrine->getManager()->persist($centrecia);
+        $this->doctrine->getManager()->flush();
+        return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $centre]);
+
 
     }
 }
