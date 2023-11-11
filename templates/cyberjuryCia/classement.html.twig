@@ -19,12 +19,12 @@
     {% if is_granted('ROLE_COMITE') %}
         {% if centre.verouClassement!=true %}
             <a href="{{ path('verouiller_classement',{'centre':centre}) }}" type="button" class="fa fa-lock-open"
-               title="Vérouiller le classement">
+               title="Verrouiller le classement">
 
             </a>
         {% else %}
             <a href="{{ path('deverouiller_classement',{'centre':centre}) }}" type="button" class="fa fa-lock"
-               title="Déverouiller le classement">
+               title="Déverrouiller le classement">
 
             </a>
         {% endif %}
