@@ -1,4 +1,4 @@
-function changejure(j) {//j est l'objet input qui a lancé la fonction
+function changejure(j) {//j est l'objet input qui a lancé la fonction, pour le formulaire de gestion des jures des cia
 
     var data_value = j.value;
     var data_type = j.name;
@@ -55,6 +55,14 @@ $('#modalconfirmjure').on('show.bs.modal', function (event) {
 
     var modal = $(this)
     modal.find('.modal-title').text('Attention!!!!')
+    modal.find('.modal-body input').val(recipient)
+});
+$('#modalenvoiconseils').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('idequipe');
+
+    var modal = $(this)
+    modal.find('.modal-title').text('Attention')
     modal.find('.modal-body input').val(recipient)
 });
 

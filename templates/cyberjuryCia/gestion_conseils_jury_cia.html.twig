@@ -52,9 +52,12 @@
                     </td>
                     <td>
                         {% if conseilEquipe!= null %}
-                            <a class="fas fa-envelope"
-                               href="{{ path('secretariatjuryCia_envoi_mail_conseils',{'idEquipe':conseilEquipe.equipe.id}) }}"
-                               title="Envoyer à l'équipe" type="button"> </a>
+                            <button class="fas fa-envelope"
+                                    href="#"
+                                    title="Envoyer à l'équipe" type="button" data-toggle="modal"
+                                    data-target="#modalenvoiconseils"
+                                    data-idequipe="{{ conseilEquipe.equipe.id }}"
+                                    style="color: #0d6efd"></button>
                         {% endif %}
                     </td>
 
@@ -63,4 +66,5 @@
             {% endfor %}
         </table>
     </div>
+    {{ include('modales/modale_envoi_conseils_jurycia.html.twig') }}
 {% endblock %}

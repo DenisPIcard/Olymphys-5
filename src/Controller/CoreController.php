@@ -74,6 +74,11 @@ class CoreController extends AbstractController
         $tab['listfaq'] = $listfaq;
         // ajoute la liste de la Foire aux questions
         // le tout est transmis au template
+        if ($_SERVER['SERVER_NAME'] == 'olympessais.olymphys.fr') {
+            $this->requestStack->getSession()->set('info', 'Vous êtes sur le site d\'essais d\'olymhys, utilisé pour le 
+            développement du site, mais dont le contenu n\'est pas à jour.
+            Il faut se connecter sur  olymphys.fr pour réaliser des actions pérennes ');
+        }
         return $this->render('core/odpf-accueil.html.twig', $tab);
 
     }
@@ -92,7 +97,7 @@ class CoreController extends AbstractController
 
             }
         } catch (Exception $e) {
-            dd($e);
+
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
             return $this->redirectToRoute('core_home');

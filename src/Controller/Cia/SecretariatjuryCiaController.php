@@ -634,9 +634,11 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
     #[IsGranted('ROLE_JURYCIA')]
-    #[Route("/secretariatjuryCia/envoi_mail_conseils,{idEquipe}", name: "secretariatjuryCia_envoi_mail_conseils")]
-    public function envoi_mail_conseils($idEquipe, Mailer $mailer)//Envoie le conseil aux prof1 et prof2
+    #[Route("/secretariatjuryCia/envoi_mail_conseils", name: "secretariatjuryCia_envoi_mail_conseils")]
+    public function envoi_mail_conseils(Request $request, Mailer $mailer)//Envoie le conseil aux prof1 et prof2
     {
+
+        $idEquipe = $request->query->get('idEquipe');
         $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idEquipe);
         $prof1 = $equipe->getIdProf1();
         $prof2 = $equipe->getIdProf2();
@@ -824,7 +826,7 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_COMITE')]
     #[Route("/verouiller_classement,{centre}", name: "verouiller_classement")]
-    public function verouiller_classement($centre)
+    public function verouiller_classement($centre)//Permet au comité de bloquer la modification du classement une fois la délibération terminée
     {
         $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
         $centrecia->setVerouClassement(true);
@@ -837,7 +839,7 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_COMITE')]
     #[Route("/deverouiller_classement,{centre}", name: "deverouiller_classement")]
-    public function deverouiller_classement($centre)
+    public function deverouiller_classement($centre)//Déverouille la modification du classement des équipes au cia
     {
         $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);
         $centrecia->setVerouClassement(false);
@@ -846,5 +848,24 @@ class SecretariatjuryCiaController extends AbstractController
         return $this->redirectToRoute('secretariatjuryCia_classement', ['centre' => $centre]);
 
 
+    }
+
+    #[IsGranted('ROLE_SUPERADMIN')]
+    #[Route("/remplir_des_equipes_fictives_essais", name: "remplir_des_equipes_fictives_essais")]
+    public function remplir_equipes_fictives_essais()
+    {//Pour éviter que le nom des équipes réelles soient utilisées
+
+        if ($_SERVER['SERVER_NAME'] == 'olympessais.olymphys.fr') {//uniquement pour le site d'essais
+
+            $listeEquipe = $this->doctrine->getRepository(Equipesadmin::class)->findBy(['edition' => $this->requestStack->getSession()->get('edition')]);
+            foreach ($listeEquipe as $equipe) {
+                $equipe->setTitreProjet('Ceci est le titre de l\'équipe ' . $equipe->getNumero());
+                $equipe->setNomProf1('prof1 equipe ' . $equipe->getNumero());
+                $equipe->setNomProf2('prof2 equipe ' . $equipe->getNumero());
+                $equipe->
+                $this->doctrine->getManager()->persist($equipe);
+                $this->doctrine->getManager()->flush();
+            }
+        }
     }
 }

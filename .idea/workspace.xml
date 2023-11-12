@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 11-11 mailing profs creation function creation tableau dans l'admin">
+      <change afterPath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/classement.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/classement.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/gestion_conseils_jury_cia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/gestion_conseils_jury_cia.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -597,7 +600,9 @@
       <workItem from="1699480704038" duration="33000" />
       <workItem from="1699630259106" duration="5519000" />
       <workItem from="1699644508785" duration="9537000" />
-      <workItem from="1699687637045" duration="16630000" />
+      <workItem from="1699687637045" duration="18951000" />
+      <workItem from="1699766951139" duration="7757000" />
+      <workItem from="1699779819387" duration="2207000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -942,7 +947,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1017,7 +1022,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="cyberjuryCIA : rédaction conseils du jury aux équipes" />
     <MESSAGE value="fixation de la  date limite de dépôt des fiches sécurité égale à celle des mémoires CIA" />
     <MESSAGE value="Mise au point des conseils du jury et de leur envoi à l'équipe + d'autres modifs pour les accès selon les rôles" />
     <MESSAGE value="Mise au point des conseils du jury et de leur envoi à l'équipe + d'autres modifs pour les accès selon les rôles + sous-jury et classement par sous-jury" />
@@ -1042,7 +1046,8 @@
     <MESSAGE value="Comit du 8-11 cyberjurycia édition des mails, noms et prénoms des jurés CIA par les organisateurs" />
     <MESSAGE value="Comit du 10-11 cyberjurycia transfert d'une note de juré après erreur d'équipe du juré" />
     <MESSAGE value="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs" />
+    <MESSAGE value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
