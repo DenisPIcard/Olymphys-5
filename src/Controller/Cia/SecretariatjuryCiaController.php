@@ -17,6 +17,7 @@ use App\Entity\Uai;
 use App\Form\JuresCiaType;
 use App\Form\NotesCiaType;
 use App\Service\Mailer;
+use DateTime;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\NonUniqueResultException;
@@ -38,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -53,12 +55,14 @@ class SecretariatjuryCiaController extends AbstractController
     private RequestStack $requestStack;
     private ManagerRegistry $doctrine;
     private Mailer $mailer;
+    private UserPasswordHasher $userPasswordHasher;
 
-    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine, Mailer $mailer)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine, Mailer $mailer, UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->requestStack = $requestStack;
         $this->doctrine = $doctrine;
         $this->mailer = $mailer;
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     #[IsGranted('ROLE_COMITE')]
@@ -67,7 +71,7 @@ class SecretariatjuryCiaController extends AbstractController
     {
         $listeCentres = $this->doctrine->getRepository(Centrescia::class)->findBy(['actif' => true], ['centre' => 'ASC']);
         $content = $this->renderView('cyberjuryCia/accueil_comite.html.twig',
-            array('centres' => $listeCentres));
+            array('centres' => $listeCentres));//pour le comité, c'est la liste des centres qui est la page d'accueil du cyberjury
 
         return new Response($content);
 
@@ -76,12 +80,12 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/Cia/SecretariatjuryCia/accueil,{centre}", name: "secretariatjuryCia_accueil")]
-    public function accueil($centre): Response
+    public function accueil($centre): Response//Pour les organisateurs, c'est la liste des équipes du centre qui est la page d'accueil du cyberjury
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
 
-        if (new \DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+        if (new DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);
@@ -93,7 +97,7 @@ class SecretariatjuryCiaController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->andWhere('e.numero <:numero')
             ->andWhere('e.centre =:centre')
-            ->setParameters(['edition' => $edition, 'numero' => 100, 'centre' => $centre])
+            ->setParameters(['edition' => $edition, 'numero' => 100, 'centre' => $centre])//les numéros supérieurs à 100 sont réservés aux "équipes" kurynational, ambiance du concours, remise des prix pour les photos
             ->orderBy('e.numero', 'ASC')
             ->getQuery()
             ->getResult();
@@ -108,7 +112,7 @@ class SecretariatjuryCiaController extends AbstractController
         }
 
         $tableau = [$listEquipes, $lesEleves, $lycee];
-        $session = $this->requestStack->getSession();
+        $session = $this->requestStack->getSession();//on crèe un variable globale de session qui contient le tableau
         $session->set('tableau', $tableau);
         $content = $this->renderView('cyberjuryCia/accueil.html.twig',
             array('centre' => $centre, 'equipes' => $listEquipes));
@@ -117,7 +121,7 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
 
-    #[IsGranted('ROLE_ORGACIA')]
+    #[IsGranted('ROLE_COMITE')] //La vue globale des résultats est visible du comité, pas des organisteurs
     #[Route("/secretariatjuryCia/vueglobale,{centre}", name: "secretariatjuryCia_vueglobale")]
     public function vueglobale($centre): Response  //Donne le total des points obtenus par chaque équipe pour chacun des jurés
     {
@@ -146,17 +150,17 @@ class SecretariatjuryCiaController extends AbstractController
             foreach ($listJures as $jure) {
                 $id_jure = $jure->getId();
                 $nbre_jures += 1;
-                $statut = $repositoryJures->getAttribution($jure, $equipe);//vérifie l'attribution du juré ! 0 si assiste, 1 si lecteur sinon Null
+                $statut = $repositoryJures->getAttribution($jure, $equipe);//vérifie l'attribution du juré !: 0 si assiste, 1 si rapporteur sinon Null
                 //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher(mémoire compris) :
                 if (is_null($statut)) { //Si le juré n'a pas à évaluer l'équipe le statut est null
-                    $progression[$nbre_equipes][$nbre_jures] = 'ras';
+                    $progression[$nbre_equipes][$nbre_jures] = 'ras';//pour éviter une valeur nulle dans le tableau
 
                 } elseif ($statut == 1) {// le juré évalue le mémoire(il est rapporteur)
-                    $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
-                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();
+                    $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);//Vérifie si le juré à déjà noté l'équipe en lisant la note
+                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getTotalPoints();//Si la note est nulle, l'équipe n'est pas encore notée, on place une * , sinon on place le total avec mémoire
                 } else { // Le juré n'évalue pas le mémoire, il est simple examinateur
-                    $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);
-                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getPoints();
+                    $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id_equipe);//Vérifie si le juré à déjà noté l'équipe en lisant la note
+                    $progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? '*' : $note->getPoints();//Si la note est nulle, l'équipe n'est pas encore notée, on place une * , sinon on place le total sans mémoire
                 }
             }
         }
@@ -277,8 +281,9 @@ class SecretariatjuryCiaController extends AbstractController
                     }
 
                 } else {
+
                     $user->setRoles(['ROLE_JURYCIA']);//Si le compte Olymphys existe déjà, on s'assure que son rôle sera jurycia
-                    $user->setCentrecia($centrecia);//On affecte le compte au centre cia créateurdu juré
+                    $user->setCentrecia($centrecia);//On affecte le compte  du juré au centre cia créateur
                     $this->doctrine->getManager()->persist($user);
                     $this->doctrine->getManager()->flush();
                 }
@@ -679,9 +684,9 @@ class SecretariatjuryCiaController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
             if ($noteequipe !== null) {
-                $nllEquipe = $form->get('equipe')->getData();
-                $notenllequipe = new NotesCia();
-                $notenllequipe->setJure($jure);
+                $nllEquipe = $form->get('equipe')->getData();//equipe B dans laquelle la note de l'équipe A doivent être transférées
+                $notenllequipe = new NotesCia();//notes de l'équipe B dans laquelle la note de l'équipe A doivent être transférées
+                $notenllequipe->setJure($jure);  //transfert de la note de l'équipe A vers l'équipe B
                 $notenllequipe->setEquipe($nllEquipe);
                 $notenllequipe->setEcrit($noteequipe->getEcrit());
                 $notenllequipe->setExper($noteequipe->getExper());
@@ -694,12 +699,12 @@ class SecretariatjuryCiaController extends AbstractController
                 $notenllequipe->setCoefficients($coefficients);
                 $total = $notenllequipe->getPoints();
                 $notenllequipe->setTotal($total);
-                $this->doctrine->getManager()->persist($notenllequipe);
-                $this->doctrine->getManager()->remove($noteequipe);
-                $jure->addEquipe($nllEquipe);
-                $this->doctrine->getManager()->persist($notenllequipe);
-                $jure->removeEquipe($equipe);
-                $this->doctrine->getManager()->persist($jure);
+                $this->doctrine->getManager()->persist($notenllequipe);//enregistrement de la notes de l'équipe B
+                $this->doctrine->getManager()->remove($noteequipe);//suppresion de la notes de l'équipe A
+                $jure->addEquipe($nllEquipe);//affectation de l'équipe B au juré
+                $this->doctrine->getManager()->persist($notenllequipe);//hydratation de la base
+                $jure->removeEquipe($equipe);//supression de l'équipe A dans la liste équipes du juré
+                $this->doctrine->getManager()->persist($jure);//enregistrement du juré
                 $this->doctrine->getManager()->flush();
             } else {
 
@@ -712,7 +717,7 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
     #[IsGranted('ROLE_ORGACIA')]
-    #[Route("/cia/secretariatjuryCia/modifcoordonneesjures,{idjure},{centre}", name: "modifcoordonneesjures")] //Pour que l'organisateur CIA puisse modifier l'adresse mail du juré avec renvoie au juré de ces identifiants, en cas d'erreur de saisie lors de la création du compte
+    #[Route("/cia/secretariatjuryCia/modifcoordonneesjures,{idjure},{centre}", name: "modifcoordonneesjures")] //Pour que l'organisateur CIA puisse modifier l'adresse mail du juré  en cas d'erreur de saisie lors de la création du compte
     public function modifcoordonneesjures(Request $request, $idjure, $centre)
     {
 
@@ -807,7 +812,7 @@ class SecretariatjuryCiaController extends AbstractController
         return new Response($content);
     }
 
-    #[IsGranted('ROLE_JURYCIA')]
+    #[IsGranted('ROLE_ORGACIA')]
     #[Route("/renvoimailjure,{idjure}", name: "renvoimailjure")]
     public function renvoi_mail_jure($idjure)
     {
@@ -816,10 +821,10 @@ class SecretariatjuryCiaController extends AbstractController
         $user = $jure->getIduser();
         $slugger = new AsciiSlugger();
         $orgacia = $this->getUser();
-        $pwd = $slugger->slug($user->getPrenom());
-
-        $this->mailer->sendInscriptionUserJure($orgacia, $user, $pwd, $user->getCentrecia()->getCentre());
-        $this->mailer->sendInscriptionJureCia($orgacia, $jure, $pwd, $user->getCentrecia()->getCentre());
+        $plainpwd = $slugger->slug($user->getPrenom());
+        $this->userPasswordHasher->hashPassword($user, $plainpwd); //réinitialise le mot de passe par défaut  en cas de demande du juré
+        $this->mailer->sendInscriptionUserJure($orgacia, $user, $plainpwd, $user->getCentrecia()->getCentre());
+        $this->mailer->sendInscriptionJureCia($orgacia, $jure, $plainpwd, $user->getCentrecia()->getCentre());
         return $this->redirectToRoute('secretariatjuryCia_gestionjures', ['centre' => $user->getCentrecia()]);
 
     }

@@ -275,7 +275,7 @@ class ProfesseursCrudController extends AbstractCrudController
                         $nom_equipe = $slugger->slug($equipe->getTitreProjet());
                         if (strlen($equipe->getTitreProjet() > 40)) {
 
-                            $nom_equipe = substr($nom_equipe, 0, 40);
+                            $nom_equipe = $equipe->getNumero() . ' : ' . substr($nom_equipe, 0, 40);
                         }
                         $equipestring = $equipestring . $nom_equipe . $encad;
                         if (next($equipes) != null) {

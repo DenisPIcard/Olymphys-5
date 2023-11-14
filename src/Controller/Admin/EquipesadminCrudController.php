@@ -431,20 +431,20 @@ class EquipesadminCrudController extends AbstractCrudController
         $sheet
             ->setCellValue('A' . $ligne, 'Idequipe')
             ->setCellValue('B' . $ligne, 'Edition')
-            ->setCellValue('C' . $ligne, 'Centre')
-            ->setCellValue('D' . $ligne, 'nom équipe')
-            ->setCellValue('E' . $ligne, 'Numéro')
-            ->setCellValue('F' . $ligne, 'Lettre')
-            ->setCellValue('G' . $ligne, 'inscrite')
-            ->setCellValue('H' . $ligne, 'sélectionnée')
-            ->setCellValue('I' . $ligne, 'Nom du lycée')
-            ->setCellValue('J' . $ligne, 'Commune')
-            ->setCellValue('K' . $ligne, 'Académie')
-            ->setCellValue('L' . $ligne, 'uai')
-            ->setCellValue('M' . $ligne, 'Description')
-            ->setCellValue('N' . $ligne, 'Origine du projet')
-            ->setCellValue('O' . $ligne, 'Contribution financière à ')
-            ->setCellValue('P' . $ligne, 'Année')
+            ->setCellValue('C' . $ligne, 'Année')
+            ->setCellValue('D' . $ligne, 'Centre')
+            ->setCellValue('E' . $ligne, 'nom équipe')
+            ->setCellValue('F' . $ligne, 'Numéro')
+            ->setCellValue('G' . $ligne, 'Lettre')
+            ->setCellValue('H' . $ligne, 'inscrite')
+            ->setCellValue('I' . $ligne, 'sélectionnée')
+            ->setCellValue('J' . $ligne, 'Nom du lycée')
+            ->setCellValue('K' . $ligne, 'Commune')
+            ->setCellValue('L' . $ligne, 'Académie')
+            ->setCellValue('M' . $ligne, 'uai')
+            ->setCellValue('N' . $ligne, 'Description')
+            ->setCellValue('O' . $ligne, 'Origine du projet')
+            ->setCellValue('P' . $ligne, 'Contribution financière à ')
             ->setCellValue('Q' . $ligne, 'Prof 1')
             ->setCellValue('R' . $ligne, 'mail prof1')
             ->setCellValue('S' . $ligne, 'Prof2')
@@ -463,28 +463,28 @@ class EquipesadminCrudController extends AbstractCrudController
             $uai = $equipe->getUaiId();
 
             $sheet->setCellValue('A' . $ligne, $equipe->getId())
-                ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd());
+                ->setCellValue('B' . $ligne, $equipe->getEdition()->getEd())
+                ->setCellValue('C' . $ligne, $equipe->getEdition()->getAnnee());
             if ($equipe->getCentre() != null) {
-                $sheet->setCellValue('C' . $ligne, $equipe->getCentre()->getCentre());
+                $sheet->setCellValue('D' . $ligne, $equipe->getCentre()->getCentre());
             }
-            $sheet->setCellValue('D' . $ligne, $equipe->getTitreprojet())
-                ->setCellValue('E' . $ligne, $equipe->getNumero())
-                ->setCellValue('F' . $ligne, $equipe->getLettre())
-                ->setCellValue('G' . $ligne, $equipe->getInscrite());
+            $sheet->setCellValue('E' . $ligne, $equipe->getTitreprojet())
+                ->setCellValue('F' . $ligne, $equipe->getNumero())
+                ->setCellValue('G' . $ligne, $equipe->getLettre())
+                ->setCellValue('H' . $ligne, $equipe->getInscrite());
             if ($equipe->getInscrite() == 0) {
                 $range = 'A' . strval($ligne) . ':W' . strval($ligne);
                 $sheet->getStyle($range)->getFont()->setStrikethrough(true);
 
             }
-            $sheet->setCellValue('H' . $ligne, $equipe->getSelectionnee())
-                ->setCellValue('I' . $ligne, $uai->getNom())
-                ->setCellValue('J' . $ligne, $uai->getCommune())
-                ->setCellValue('K' . $ligne, $uai->getAcademie())
-                ->setCellValue('L' . $ligne, $uai->getUai())
-                ->setCellValue('M' . $ligne, $equipe->getDescription())
-                ->setCellValue('N' . $ligne, $equipe->getOrigineprojet())
-                ->setCellValue('O' . $ligne, $equipe->getContribfinance())
-                ->setCellValue('P' . $ligne, $equipe->getEdition()->getAnnee())
+            $sheet->setCellValue('I' . $ligne, $equipe->getSelectionnee())
+                ->setCellValue('J' . $ligne, $uai->getNom())
+                ->setCellValue('K' . $ligne, $uai->getCommune())
+                ->setCellValue('L' . $ligne, $uai->getAcademie())
+                ->setCellValue('M' . $ligne, $uai->getUai())
+                ->setCellValue('N' . $ligne, $equipe->getDescription())
+                ->setCellValue('O' . $ligne, $equipe->getOrigineprojet())
+                ->setCellValue('P' . $ligne, $equipe->getContribfinance())
                 ->setCellValue('Q' . $ligne, $prof1->getNomPrenom())
                 ->setCellValue('R' . $ligne, $prof1->getEmail());
             if ($prof2 != null) {
@@ -495,7 +495,16 @@ class EquipesadminCrudController extends AbstractCrudController
                 ->setCellValue('V' . $ligne, $equipe->getCreatedAt());
             $ligne += 1;
         }
-
+        $sheet->getColumnDimension('E')->setAutoSize(false);
+        $sheet->getColumnDimension('E')->setWidth(40);
+        $sheet->getColumnDimension('N')->setAutoSize(false);
+        $sheet->getColumnDimension('N')->setWidth(40);
+        $sheet->getColumnDimension('O')->setAutoSize(false);
+        $sheet->getColumnDimension('O')->setWidth(20);
+        $sheet->getColumnDimension('P')->setAutoSize(false);
+        $sheet->getColumnDimension('P')->setWidth(12.0, 'cm');
+        $sheet->getColumnDimension('Q')->setAutoSize(false);
+        $sheet->getColumnDimension('Q')->setWidth(8.0, 'cm');
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="equipes.xls"');
         header('Cache-Control: max-age=0');
