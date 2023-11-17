@@ -79,6 +79,7 @@
             {% endif %}
 
             {% set attribs = jure.rapporteur %}
+            {% set lecteur = jure.lecteur %}
             <form id="form-{{ jure.id }}" method="post" name="form1"
                   action="{{ path('secretariatjuryCia_gestionjures',{'centre':centre}) }}">
 
@@ -135,14 +136,17 @@
                 </td>
                 {% for equipe in listeEquipes %}
                     {% if equipe not in jure.equipes %}
-                        {% set selected=['selected','',''] %}
+                        {% set selected=['selected','','',''] %}
                     {% endif %}
                     {% if equipe  in jure.equipes %}
                         {% if equipe.numero  not in attribs %}
-                            {% set selected =['','selected',''] %}
+                            {% set selected =['','selected','',''] %}
                         {% endif %}
                         {% if equipe.numero  in attribs %}
-                            {% set selected =['','','selected'] %}
+                            {% set selected =['','','selected',''] %}
+                        {% endif %}
+                        {% if equipe.numero  in lecteur %}
+                            {% set selected =['','','','selected'] %}
                         {% endif %}
                     {% endif %}
                     <td>
@@ -152,6 +156,7 @@
                             <option {{ selected[0] }}></option>
                             <option {{ selected[1] }}>E</option>
                             <option {{ selected[2] }}>R</option>
+                            <option {{ selected[3] }}>L</option>
 
                         </select>
                     </td>

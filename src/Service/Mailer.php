@@ -229,6 +229,7 @@ class Mailer
             ->htmlTemplate('email/conseilCia.html.twig')
             ->context([
                 'conseil' => $conseil->getTexte(),
+                'equipe' => $conseil->getEquipe()
 
             ]);
         $this->mailer->send($email);

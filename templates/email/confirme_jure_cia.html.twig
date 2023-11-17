@@ -85,7 +85,8 @@
                 mot de passe, vous pouver utiliser le lien "mot de passe oublié" en précisant l'adresse mail à laquelle
                 est envoyé ce message, seule reconnue par Olymphys</p>
             <p class="block"> Vous pourrez ainsi lire les mémoires en suivant "Les équipes et leur documents" dans le
-                menu "Page jury CIA". Pour évaluer les équipes lors du concours il faudra cliquer sur le lien "évaluer
+                menu "Page jury CIA" au fur et à mesure qu'ils seront déposés sur le site par les équipes, la date limite de dépôt des mémoires étant le  {{ app.session.get('edition').datelimCia|date("d/m/Y") }}.
+                <br> Pour évaluer les équipes lors du concours il faudra cliquer sur le lien "évaluer
                 une équipe" qui apparaîtra dans le menu le jour du concours interacadémique.</p>
         </div>
         <div class="footer">

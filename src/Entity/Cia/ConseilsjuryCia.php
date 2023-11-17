@@ -25,6 +25,9 @@ class ConseilsjuryCia
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $texte = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $envoye = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +65,18 @@ class ConseilsjuryCia
     public function setTexte(?string $texte): self
     {
         $this->texte = $texte;
+
+        return $this;
+    }
+
+    public function isEnvoye(): ?bool
+    {
+        return $this->envoye;
+    }
+
+    public function setEnvoye(?bool $envoye): static
+    {
+        $this->envoye = $envoye;
 
         return $this;
     }

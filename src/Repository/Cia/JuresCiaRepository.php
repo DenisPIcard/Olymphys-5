@@ -44,6 +44,7 @@ class JuresCiaRepository extends ServiceEntityRepository
     {
         $statut = null;
         $equipes = $jure->getEquipes();
+
         foreach ($equipes as $equipejure)
             if ($equipe == $equipejure) {
                 if (in_array($equipe->getNumero(), $jure->getRapporteur())) {
@@ -51,6 +52,13 @@ class JuresCiaRepository extends ServiceEntityRepository
                     $statut = 1;
                 } else {
                     $statut = 0;
+                }
+                if (in_array($equipe->getNumero(), $jure->getLecteur())) {
+                    $statut = 1;
+
+                } else {
+                    $statut = 0;
+
                 }
             }
         return $statut;
@@ -64,7 +72,7 @@ class JuresCiaRepository extends ServiceEntityRepository
         $i = 0;
         foreach ($listJures as $jure) {//Pour compter toutes équipes du sous-jury : un jury ne voit pas forcément toutes les équipes du sous-jury
             $equipesjure = $jure->getEquipes();
-            dump($equipesjure);
+
             if ($equipes == []) {//Pour le premier juré
                 foreach ($equipesjure as $equipejure) {
                     $equipes[$i] = $equipejure;

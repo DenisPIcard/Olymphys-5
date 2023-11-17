@@ -221,6 +221,7 @@ class JuryCiaController extends AbstractController
 
 
                 $attrib = $jure->getRapporteur();
+                $lecteur = $jure->getLecteur();
 
                 $em = $this->doctrine->getManager();
 
@@ -254,9 +255,13 @@ class JuryCiaController extends AbstractController
                     $notes->setJure($jure);
                     $progression = 0;
                     $nllNote = true;
-                    if (in_array($equipe->getNumero(), $attrib)) {
+                    if (in_array($equipe->getNumero(), $attrib)) {//Pour le rapporteur
                         $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
                         $flag = 1;
+                    } elseif (in_array($equipe->getNumero(), $lecteur)) {//Pour le lecteur
+                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+                        $flag = 1;
+                        //Lecteur et rapporteur donnent une note au mémoire, il n'y a pas de distinction entre les deux notes, le code 'EST_Lecteur" regroupe les deux
                     } else {
                         $notes->setEcrit(0);
                         $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
@@ -448,8 +453,11 @@ class JuryCiaController extends AbstractController
         }
         $form = $this->createForm(ConseilJuryCiaType::class, $conseil);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $this->doctrine->getManager()->persist($conseil);
-            $this->doctrine->getManager()->flush();
+            
+            if ($form->get('texte')->getData() != null) {
+                $this->doctrine->getManager()->persist($conseil);
+                $this->doctrine->getManager()->flush();
+            }
             if ($page == 'evaluation') {
                 return $this->redirectToRoute('cyberjuryCia_evaluer_une_equipe', ['id' => $equipe->getId()]);
             }

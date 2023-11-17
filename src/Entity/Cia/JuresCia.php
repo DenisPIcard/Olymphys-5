@@ -50,6 +50,9 @@ class JuresCia
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $numJury = 1;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $lecteur = [];
+
     /**
      * Constructor
      */
@@ -257,6 +260,18 @@ class JuresCia
     public function setNumJury(?int $numJury): self
     {
         $this->numJury = $numJury;
+
+        return $this;
+    }
+
+    public function getLecteur(): ?array
+    {
+        return $this->lecteur;
+    }
+
+    public function setLecteur(?array $lecteur): static
+    {
+        $this->lecteur = $lecteur;
 
         return $this;
     }

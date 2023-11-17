@@ -9,11 +9,11 @@
         {% elseif is_granted('ROLE_COMITE') %}
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_accueil_comite') }}">Accueil</a>
+        {% endif %}
+        {% if is_granted('ROLE_ORGACIA') %}
             <a class="dropdown-item login py-0" href="{{ path('secretariatjuryCia_vueglobale',{'centre' : centre}) }}">Vue
                 Globale</a>
-        {% endif %}
-
-        {% if is_granted('ROLE_ORGACIA') %}
+      
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_gestionjures',{'centre':centre}) }}"
                role="button" aria-pressed="true" id="gestionjures">Gestion des jurés</a>

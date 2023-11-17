@@ -52,12 +52,19 @@
                     </td>
                     <td>
                         {% if conseilEquipe!= null %}
-                            <button class="fas fa-envelope"
-                                    href="#"
-                                    title="Envoyer à l'équipe" type="button" data-toggle="modal"
-                                    data-target="#modalenvoiconseils"
-                                    data-idequipe="{{ conseilEquipe.equipe.id }}"
-                                    style="color: #0d6efd"></button>
+                            {% if conseilEquipe.envoye!=true %}
+                                <button class="fas fa-envelope"
+                                        href="#"
+                                        title="Envoyer à l'équipe" type="button" data-toggle="modal"
+                                        data-target="#modalenvoiconseils"
+                                        data-idequipe="{{ conseilEquipe.equipe.id }}"
+                                        style="color: green"></button>
+                            {% else %}
+                                <button class="fas fa-check"
+                                        href="#"
+                                        title="Les conseils ont été envoyé" type="button" data-toggle="modal"
+                                        style="color: red"></button>
+                            {% endif %}
                         {% endif %}
                     </td>
 

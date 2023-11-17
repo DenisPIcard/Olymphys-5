@@ -112,7 +112,7 @@ class SecretariatjuryCiaController extends AbstractController
         }
 
         $tableau = [$listEquipes, $lesEleves, $lycee];
-        $session = $this->requestStack->getSession();//on crèe un variable globale de session qui contient le tableau
+        $session = $this->requestStack->getSession();//on crèe une variable globale de session qui contient le tableau
         $session->set('tableau', $tableau);
         $content = $this->renderView('cyberjuryCia/accueil.html.twig',
             array('centre' => $centre, 'equipes' => $listEquipes));
@@ -121,7 +121,7 @@ class SecretariatjuryCiaController extends AbstractController
     }
 
 
-    #[IsGranted('ROLE_COMITE')] //La vue globale des résultats est visible du comité, pas des organisteurs
+    #[IsGranted('ROLE_ORGACIA')] //La vue globale des résultats est visible du comité et des organisateurs
     #[Route("/secretariatjuryCia/vueglobale,{centre}", name: "secretariatjuryCia_vueglobale")]
     public function vueglobale($centre): Response  //Donne le total des points obtenus par chaque équipe pour chacun des jurés
     {
@@ -380,6 +380,18 @@ class SecretariatjuryCiaController extends AbstractController
                 if (!in_array($equipe->getNumero(), $rapporteur)) {//le juré n'était pas rapporteur, il le devient
                     $rapporteur[count($rapporteur)] = $equipe->getNumero();
                     $jure->setRapporteur($rapporteur);
+                }
+            }
+            if ($attrib == 'L') {
+                $jure->addEquipe($equipe);
+                $lecteur = $jure->getLecteur();
+                if ($lecteur == null) {
+                    $lecteur[0] = $equipe->getNumero();
+                    $jure->setLecteur($lecteur);
+                }
+                if (!in_array($equipe->getNumero(), $lecteur)) {//le juré n'était pas lecteur , il le devient
+                    $lecteur[count($lecteur)] = $equipe->getNumero();
+                    $jure->setLecteur($lecteur);
                 }
             }
             if ($attrib == 'E') {
@@ -649,9 +661,14 @@ class SecretariatjuryCiaController extends AbstractController
         $prof2 = $equipe->getIdProf2();
         $conseil = $this->doctrine->getRepository(ConseilsjuryCia::class)->findOneBy(['equipe' => $equipe]);
 
+        if ($conseil->isEnvoye() != true) {
+            $mailer->sendConseil($conseil, $prof1, $prof2);
+        }
+        $conseil->setEnvoye(true);
 
-        $mailer->sendConseil($conseil, $prof1, $prof2);
 
+        $this->doctrine->getManager()->persist($conseil);
+        $this->doctrine->getManager()->flush();
 
         return $this->redirectToRoute('cyberjuryCia_gerer_conseils_equipe', ['centre' => $equipe->getCentre()->getCentre()]);
     }
