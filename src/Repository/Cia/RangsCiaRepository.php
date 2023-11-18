@@ -60,6 +60,7 @@ class RangsCiaRepository extends ServiceEntityRepository
 
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryNotes = $this->doctrine->getRepository(NotesCia::class);
+        $coef = $this->doctrine->getRepository(Coefficients::class)->find(1);
         $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centre]);
         $points = [];
 
@@ -73,7 +74,7 @@ class RangsCiaRepository extends ServiceEntityRepository
                 $points[$equipe->getId()] = $points[$equipe->getId()] + $note->getPoints();
                 if ($note->getEcrit() != null) {
                     $nb_notes_ecrit = $nb_notes_ecrit + 1;
-                    $total_ecrit = $total_ecrit + $note->getEcrit();
+                    $total_ecrit = $total_ecrit + ($note->getEcrit() * $coef->getEcrit());
                 }
             }
             if ($nbre_notes != 0) {
@@ -104,6 +105,7 @@ class RangsCiaRepository extends ServiceEntityRepository
             next($points);
             $i = $i + 1;
         }
+
         return $points;
 
     }

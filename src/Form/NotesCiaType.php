@@ -53,6 +53,7 @@ class NotesCiaType extends AbstractType
 
             }
         } else {
+
             if ($options['EST_Lecteur'] == true) {
                 $builder
                     ->add('exper', ChoiceType::class, array('choices' => $choix,))

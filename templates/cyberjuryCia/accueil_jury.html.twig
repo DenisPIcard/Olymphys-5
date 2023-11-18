@@ -31,9 +31,16 @@
                 {% for key,mem in memoires %}
                     {% if key == numero %}
                         {% if mem!=null %}
-                            <a href="{{ asset('/odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/memoires/'~ mem.fichier) }}"
-                               class="fas fa-book-reader"
-                               title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                            {% if mem.publie==false %}
+                                <a href="{{ asset('odpf/odpf-archives/'~equipes.edition.ed~'/fichiers/memoires/prive/'~ mem.fichier) }}"
+                                   class="fas fa-book-reader"
+                                   title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                            {% endif %}
+                            {% if mem.publie==true %}
+                                <a href="{{ asset('odpf/odpf-archives/'~equipes.edition.ed~'/fichiers/memoires/public/'~ mem.fichier) }}"
+                                   class="fas fa-book-reader"
+                                   title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 {% endfor %}

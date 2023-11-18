@@ -17,10 +17,11 @@
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
            aria-haspopup="true" aria-expanded="false">Délibération du jury de {{ app.user.centrecia }}</a>
         <div class="dropdown-menu">
-            {#   <a class="dropdown-item login py-0"
-               href="{{ path('secretariatjuryCia_classementSousJury',{'centre':app.user.centrecia}) }}">Classement des
-                équipes de mon sous-jury
-            </a> #}
+            <a class="dropdown-item login py-0"
+               href="{{ path('secretariatjuryCia_classementEquipesJure',{'idUserJure':app.user.id}) }}">Classement des
+                mes
+                équipes.
+            </a>
             <a class="dropdown-item login py-0"
                href="{{ path('secretariatjuryCia_classement',{'centre':app.user.centrecia}) }}">Classement de toute les
                 équipes</a>

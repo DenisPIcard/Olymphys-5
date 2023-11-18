@@ -6,9 +6,16 @@
 
         {{ equipe.numero }} </span>  {{ equipe.titreProjet }}
     {% if memoire!=null %}
-        <a href="{{ asset('odpf/odpf-archives/'~equipe.edition.ed~'/fichiers/memoires/'~ memoire.fichier) }}"
-           class="fas fa-book-reader"
-           title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+        {% if memoire.publie==false %}
+            <a href="{{ asset('odpf/odpf-archives/'~equipe.edition.ed~'/fichiers/memoires/prive/'~ memoire.fichier) }}"
+               class="fas fa-book-reader"
+               title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+        {% endif %}
+        {% if memoire.publie==true %}
+            <a href="{{ asset('odpf/odpf-archives/'~equipe.edition.ed~'/fichiers/memoires/public/'~ memoire.fichier) }}"
+               class="fas fa-book-reader"
+               title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+        {% endif %}
     {% endif %}
     <a href="{{ path('cyberjuryCia_rediger_conseils_equipe', {'idEquipe': equipe.id,'page':'evaluation'} ) }}"
        class="fas fa-pencil-alt"

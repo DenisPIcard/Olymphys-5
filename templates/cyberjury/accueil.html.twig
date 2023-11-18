@@ -36,8 +36,14 @@
                 <a href="#" class="fas fa-clock" title="{{ heure }} {{ salle }}"> </a>
                 {% for key,mem in memoires %}
                     {% if key == lettre %}
-                        {% if mem!=null %}
-                            <a href="{{ asset('/odpf/odpf-archives/'~app.session.get('edition').ed~'/fichiers/memoires/'~ mem.fichier) }}" class="fas fa-book-reader"
+                        {% if memoire.publie==false %}
+                            <a href="{{ asset('odpf/odpf-archives/'~equipe.edition.ed~'/fichiers/memoires/prive/'~ memoire.fichier) }}"
+                               class="fas fa-book-reader"
+                               title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+                        {% endif %}
+                        {% if memoire.publie==true %}
+                            <a href="{{ asset('odpf/odpf-archives/'~equipe.edition.ed~'/fichiers/memoires/public/'~ memoire.fichier) }}"
+                               class="fas fa-book-reader"
                                title="Accéder au mémoire de l'équipe" target="_blank"> </a>
                         {% endif %}
                     {% endif %}
@@ -46,7 +52,7 @@
                    title="En savoir plus sur cette équipe"> </a>
                 <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt"
                    title="Les phrases amusantes"> </a>
-              {#  <a href="{{ equipes.salleZoom }}" class="fas fa-wifi"
+                {#  <a href="{{ equipes.salleZoom }}" class="fas fa-wifi"
                    title="Vers la salle Zoom de l'équipe" target="_blank"> </a> #}
             </p>
         {% endif %}

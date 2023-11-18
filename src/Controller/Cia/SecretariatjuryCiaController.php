@@ -226,6 +226,33 @@ class SecretariatjuryCiaController extends AbstractController
         return new Response($content);
     }
 
+    #[Route("/secretariatjuryCia/classementEquipesJure,{idUserJure}", name: "secretariatjuryCia_classementEquipesJure")]
+    public function classementEquipesJure($idUserJure): Response
+    {
+
+        // affiche les équipes dans l'ordre de la note brute
+        $edition = $this->requestStack->getSession()->get('edition');
+        $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
+        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
+        $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);
+        $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
+        $jure = $repositoryJures->findOneBy(['iduser' => $idUserJure]);
+        $centre = $jure->getCentrecia();
+        $equipesjure = $jure->getEquipes();
+        
+        $rangs = $repositoryRangs->createQueryBuilder('r')
+            ->leftJoin('r.equipe', 'eq')
+            ->where('eq.centre =:centre')
+            ->setParameter('centre', $centre)
+            ->orderBy('r.rang', 'ASC')
+            ->getQuery()->getResult();
+
+        $content = $this->renderView('cyberjuryCia/classement_equipes_jure.html.twig',
+            array('rangs' => $rangs, 'equipes' => $equipesjure, 'centre' => $centre)
+        );
+        return new Response($content);
+    }
+
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/secretariatjuryCia/creeJure,{centre}", name: "secretariatjuryCia_creeJure")]
     public function creeJure(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, $centre): Response    //Creation du juré par l'organisateur cia
@@ -398,11 +425,18 @@ class SecretariatjuryCiaController extends AbstractController
 
                 $jure->addEquipe($equipe);//la fonction add contient le test d'existence de l'équipe et ne l'ajoute que si elle n'est pas dans la liste des équipes du juré
                 $rapporteur = $jure->getRapporteur();
+                $lecteur = $jure->getLecteur();
                 if ($rapporteur !== null) {
                     if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
                         unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
                     }
                     $jure->setRapporteur($rapporteur);
+                }
+                if ($lecteur !== null) {
+                    if (in_array($equipe->getNumero(), $lecteur)) {//On change l'attribution de l'équipe au juré : il n'est plus lecteurr
+                        unset($lecteur[array_search($equipe->getNumero(), $lecteur)]);//supprime le numero de l'équipe dans la liste du champ lecteur
+                    }
+                    $jure->setLecteur($lecteur);
                 }
             }
             if ($attrib == '') {//Le champ est vide pas d'affectation du juré à cette équipe

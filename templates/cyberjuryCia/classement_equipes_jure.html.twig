@@ -1,0 +1,64 @@
+{% extends "base1.html.twig" %}
+{% block title %} Classement des équipes du sous jury {% endblock %}
+
+{% block titre3 %} Classement des équipes que je dois examiner selon le  nombre total de points<br>
+    <div class="smallsize" title="Ce total regroupe tous les jurés ayant examiné l'équipe">Ce total est la moyenne des
+        points attribués par les jurés ayant examiné l'équipe, en tenant compte du mémoire
+    </div>
+{% endblock %}
+
+{% block navigation %}
+    {% if is_granted('ROLE_ORGACIA') %}
+        {{ include ("cyberjuryCia/navigation.html.twig") }}
+    {% elseif is_granted('ROLE_JURYCIA') %}
+        {{ include ("cyberjuryCia/navigationJury.html.twig") }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Rang</th>
+                <th>Éq.</th>
+                <th>Projet</th>
+                <th title="points">Points</th>
+                <th>Conseils-Remarques</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set i=1 %}
+            {% for rang in rangs %}
+                {% for equipe in equipes %}
+                    {% if   rang.equipe==equipe %}
+                        <tr>
+
+                            <th>{{ i }}  </th>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-lg">{{ rang.equipe.numero }}</button>
+                            </td>
+
+                            <td> {{ rang.equipe.titreProjet }} </td>
+                            <td>{{ rang.points }} </td>
+
+                            <td>
+                                <a href="{{ path('cyberjuryCia_rediger_conseils_equipe', {'idEquipe': rang.equipe.id,'page':'classement'} ) }}"
+                                   class="fas fa-pencil-alt"
+                                   title="Conseils et remarques"> </a>
+                            </td>
+
+                        </tr>
+                        {% set i=i+1 %}
+                    {% endif %}
+
+                {% endfor %}
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

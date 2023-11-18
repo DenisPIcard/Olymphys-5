@@ -255,39 +255,53 @@ class JuryCiaController extends AbstractController
                     $notes->setJure($jure);
                     $progression = 0;
                     $nllNote = true;
+                    $notes->setEcrit(0);//Par défaut on considère le juré ni lecteur, ni rapporteur
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
+
                     if (in_array($equipe->getNumero(), $attrib)) {//Pour le rapporteur
-                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+
                         $flag = 1;
-                    } elseif (in_array($equipe->getNumero(), $lecteur)) {//Pour le lecteur
-                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+                    }
+                    if (in_array($equipe->getNumero(), $lecteur)) {//Pour le lecteur
+
                         $flag = 1;
-                        //Lecteur et rapporteur donnent une note au mémoire, il n'y a pas de distinction entre les deux notes, le code 'EST_Lecteur" regroupe les deux
-                    } else {
-                        $notes->setEcrit(0);
-                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
+                    }
+                    //Lecteur et rapporteur donnent une note au mémoire, il n'y a pas de distinction entre les deux notes, le code 'EST_Lecteur" regroupe les deux
+                    if ($flag == 1) {
+                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+
                     }
                 } else {
                     $notes = $this->doctrine
                         ->getManager()
                         ->getRepository(NotesCia::class)
-                        ->EquipeDejaNotee($jure, $id);
+                        ->EquipeDejaNotee($jure, $id);//On récupère la note du juré attribuée à cette équipe
                     $progression = 1;
                     $nllNote = false;
-                    if (in_array($equipe->getNumero(), $attrib)) {
-                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
+                    //$notes->setEcrit('0');
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
+
+                    if (in_array($equipe->getNumero(), $attrib)) {//pour le rapporteur
                         $flag = 1;
-                    } else {
-                        $notes->setEcrit('0');
-                        $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
+                    }
+                    if (in_array($equipe->getNumero(), $lecteur)) {//Pour le lecteur
+                        $flag = 1;
                     }
                 }
+                if ($flag == 1) {
+                    $form = $this->createForm(NotesCiaType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
+                    //Lecteur et rapporteur donnent une note au mémoire, il n'y a pas de distinction entre les deux notes, le code 'EST_Lecteur" regroupe les deux
+
+                }
+
+
                 $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
                 if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
                     $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
                     $notes->setCoefficients($coefficients);
-                    $total = $notes->getPoints();
+                    $total = $notes->getPoints();//sans l'écrit
                     $notes->setTotal($total);
                     if ($nllNote) {
                         $notesequipe = $repositoryNotes->createQueryBuilder('n')
@@ -299,7 +313,7 @@ class JuryCiaController extends AbstractController
                     $em->persist($notes);
                     $em->flush();
                     $repo = $this->doctrine->getRepository(RangsCia::class);
-                    $points = $repo->classement($this->getUser()->getCentreCia());
+                    $points = $repo->classement($this->getUser()->getCentreCia());//classe l'équipe parmi les équipes de son centre, le reng(equipe, points, clsst) est enregistré dans la base
                     //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
                     // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
                     return $this->redirectToroute('cyberjuryCia_tableau_de_bord', array('critere' => 'TOT', 'sens' => 'DESC'));
@@ -453,7 +467,7 @@ class JuryCiaController extends AbstractController
         }
         $form = $this->createForm(ConseilJuryCiaType::class, $conseil);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            
+
             if ($form->get('texte')->getData() != null) {
                 $this->doctrine->getManager()->persist($conseil);
                 $this->doctrine->getManager()->flush();

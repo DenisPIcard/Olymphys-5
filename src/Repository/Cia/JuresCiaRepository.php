@@ -101,4 +101,5 @@ class JuresCiaRepository extends ServiceEntityRepository
         return $equipes;
 
     }
+
 }
