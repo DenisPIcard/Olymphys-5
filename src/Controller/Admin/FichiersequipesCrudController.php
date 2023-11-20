@@ -13,6 +13,7 @@ use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfFichierspasses;
+use App\Entity\User;
 use App\Service\OdpfRempliEquipesPassees;
 use App\Service\valid_fichiers;
 use DateTime;
@@ -226,8 +227,12 @@ class FichiersequipesCrudController extends AbstractCrudController
     {
         $equipeId = 'na';
         $editionId = 'na';
-        $concours = $_REQUEST['concours'];
-        $concours==0?$national=false:$national=true;
+        $concours = 0;
+        if (isset($_REQUEST['concours'])) {
+            $concours = $_REQUEST['concours'];
+
+            $concours == 0 ? $national = false : $national = true;
+        }
         if (isset($_REQUEST['filters'])) {
 
             if (isset($_REQUEST['filters']['equipe'])) {
@@ -252,7 +257,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
-            ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId.'-'.$concours])
+            ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId . '-' . $concours])
             ->createAsGlobalAction();
         //->displayAsButton()            ->setCssClass('btn btn-primary');;
         $telechargerUnFichier = Action::new('telechargerunfichier', 'Télécharger le fichier', 'fa fa-file-download')
@@ -282,7 +287,6 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $telechargerUnFichier)
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
 
-
         return $actions;
     }
 
@@ -297,11 +301,11 @@ class FichiersequipesCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $idEdition = explode('-', $ideditionequipe)[0];
         $idEquipe = explode('-', $ideditionequipe)[1];
-        $concours=explode('-', $ideditionequipe)[2];
+        $concours = explode('-', $ideditionequipe)[2];
 
         $qb = $this->doctrine->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f')
-        ->andWhere('f.national =:concours')
-        ->setParameter('concours',$concours);
+            ->andWhere('f.national =:concours')
+            ->setParameter('concours', $concours);
         if ($typefichier == 0) {
             $qb->andWhere('f.typefichier <= 1');
         } else {
@@ -334,20 +338,19 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->setParameter('edition', $edition);
         $fichiers = $qb->getQuery()->getResult();
 
-        if($fichiers!=[]) {
+        if ($fichiers != []) {
             $zipFile = new ZipArchive();
             $now = new DateTime();
-            $fileNameZip = 'Telechargement_olymphys_'. $this->getParameter('type_fichier')[$typefichier] .'_'. $now->format('d-m-Y\-His');
+            $fileNameZip = 'Telechargement_olymphys_' . $this->getParameter('type_fichier')[$typefichier] . '_' . $now->format('d-m-Y\-His');
 
             if (($zipFile->open($fileNameZip, ZipArchive::CREATE) === TRUE) and (null !== $fichiers)) {
 
                 foreach ($fichiers as $fichier) {
                     try {
-                        if ($fichier->getTypefichier()<4) {
+                        if ($fichier->getTypefichier() < 4) {
                             $fichier->getPublie() == true ? $autorise = 'publie/' : $autorise = 'prive/';
                             $fileName = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $autorise . $fichier->getFichier();
-                        }
-                        else{
+                        } else {
                             $fileName = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
                         }
                         $zipFile->addFromString(basename($fileName), file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
@@ -397,9 +400,9 @@ class FichiersequipesCrudController extends AbstractCrudController
         $fichier = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEdition();
         $typefichier = $fichier->getTypefichier();
-        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier].'/';
+        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier] . '/';
         if ($typefichier == 1) {
-            $chemintypefichier = $this->getParameter('type_fichier')[0].'/';
+            $chemintypefichier = $this->getParameter('type_fichier')[0] . '/';
         }
         if ($typefichier < 4) {
             $fichier->getPublie() == true ? $acces = $this->getParameter('fichier_acces')[1] : $acces = $this->getParameter('fichier_acces')[0];
@@ -409,14 +412,14 @@ class FichiersequipesCrudController extends AbstractCrudController
         $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $chemintypefichier . $fichier->getFichier();
         $response = new Response(file_get_contents($file));
 
-        $type=mime_content_type($file);
+        $type = mime_content_type($file);
         if (str_contains($_SERVER['HTTP_USER_AGENT'], 'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Mac OS X')) {
             $response = new BinaryFileResponse($file);
 
         }
-        $response->headers->set('Content-Disposition: attachment','attachment; filename="'. $fichier->getFichier().'"' );
+        $response->headers->set('Content-Disposition: attachment', 'attachment; filename="' . $fichier->getFichier() . '"');
         $response->headers->set('Content-Description', 'File Transfer');
-        $response->headers->set('Content-type',$type);
+        $response->headers->set('Content-type', $type);
         $response->headers->set('Content-Length', filesize($file));
 
         return $response;
@@ -427,6 +430,7 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
 
     {
+
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $idEdition = $this->requestStack->getSession()->get('edition')->getId();
 
@@ -540,15 +544,28 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->setParameter('edition', $edition)
             ->addOrderBy('eq.numero', 'ASC')
             ->getQuery()->getResult();
-
+        $qb = $this->doctrine->getRepository(User::class)->createQueryBuilder('u');
+        $listeProfs = $this->doctrine->getRepository(User::class)->createQueryBuilder('u')
+            ->andWhere($qb->expr()->like('u.roles', ':roles'))
+            ->setParameter('roles', 'a:2:{i:0;s:9:"ROLE_PROF";i:1;s:9:"ROLE_USER";}')
+            // ->orWhere($qb->expr()->like('entity.roles',':roles'))
+            // ->setParameter('roles','%i:0;s:9:"ROLE_PROF";i:2;s:9:"ROLE_USER";%')
+            ->addOrderBy('u.nom', 'ASC')
+            ->getQuery()->getResult();
         $eleve = AssociationField::new('eleve')
             ->setFormTypeOptions(['class' => Elevesinter::class,
                 'choices' => $listeEleves,
                 'choice_label' => 'getNomPrenom',
+                'mapped' => true,
+                'required' => false]);
+        $prof = AssociationField::new('prof')
+            ->setFormTypeOptions(['class' => User::class,
+                'choices' => $listeProfs,
+                'choice_label' => 'getNomPrenom',
+                'mapped' => true,
                 'required' => false]);
 
-
-        $prof = AssociationField::new('prof')->setQueryBuilder(function ($queryBuilder) {
+        $profnew = AssociationField::new('prof')->setQueryBuilder(function ($queryBuilder) {
             $qb = $queryBuilder;
 
             return $queryBuilder->select()
@@ -559,7 +576,8 @@ class FichiersequipesCrudController extends AbstractCrudController
                 // ->setParameter('roles','%i:0;s:9:"ROLE_PROF";i:2;s:9:"ROLE_USER";%')
                 ->addOrderBy('entity.nom', 'ASC');//    ->addOrderBy('entity.numero','ASC'))
         })->setFormTypeOptions(['placeholder' => 'Non',
-            'required' => false]);
+            'required' => false,
+            'mapped' => true,]);
         $editionEd = TextareaField::new('edition.ed', 'Edition');
         $equipelibel = AssociationField::new('equipe', 'Equipe')->setSortable(true);
         if ($numtypefichier != 6) {
@@ -591,7 +609,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
             if ($numtypefichier == 6) {
 
-                return [$panel1, $eleve, $prof, $fichierFile];
+                return [$panel1, $eleve, $profnew, $fichierFile];
             }
         }
         if (Crud::PAGE_EDIT === $pageName) {
@@ -626,10 +644,10 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $concours = $context->getRequest()->query->get('concours');
-        $concours==0?$national=false:$national=true;
+        $concours == 0 ? $national = false : $national = true;
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $qb->andWhere('entity.national =:national')
-            ->setParameter('national',$national);
+            ->setParameter('national', $national);
         if ($typefichier == 0) {
             $qb //= $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
             ->andWhere('entity.typefichier <=:typefichier')

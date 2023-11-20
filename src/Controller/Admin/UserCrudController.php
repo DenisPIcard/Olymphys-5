@@ -2,12 +2,17 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Filter\CustomEditionFilter;
+use App\Controller\Admin\Filter\CustomEquipeFilter;
+use App\Controller\Admin\Filter\CustomRolesFilter;
 use App\Entity\User;
+use App\Form\Type\Admin\CustomRolesFilterType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -42,6 +47,13 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
+    /* public function configureFilters(Filters $filters): Filters
+     {
+         return $filters
+             ->add(CustomRolesFilter::new('roles'));
+
+     }*/
+
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -64,7 +76,7 @@ class UserCrudController extends AbstractCrudController
             'ROLE_ORGACIA' => 'ROLE_ORGACIA',
             'ROLE_COMITE' => 'ROLE_COMITE'])
             ->setFormTypeOption('multiple', true);
-        $password = Field::new('password')->setFormType(PasswordType::class);
+        $password = Field::new('password')->setFormType(PasswordType::class)->onlyOnForms();
         if ($pageName == 'edit') {
             $iD = $_REQUEST['entityId'];
             $user = $this->doctrine->getRepository(User::class)->findOneBy(['id' => $iD]);
@@ -76,10 +88,7 @@ class UserCrudController extends AbstractCrudController
         $uai = TextField::new('uai');
         $uaiId = AssociationField::new('uaiId', 'UAI')->setFormTypeOptions(['required' => false]);
         $centreCia = AssociationField::new('centrecia');
-
         $isActive = Field::new('isActive');
-        $token = TextField::new('token');
-        $passwordRequestedAt = DateTimeField::new('passwordRequestedAt');
         $adresse = TextField::new('adresse');
         $ville = TextField::new('ville');
         $code = TextField::new('code');
@@ -87,11 +96,12 @@ class UserCrudController extends AbstractCrudController
         $createdAt = DateTimeField::new('createdAt');
         $updatedAt = DateTimeField::new('updatedAt');
         $lastVisit = DateTimeField::new('lastVisit');
-        $civilite = TextField::new('civilite');
+        //$civilite = TextField::new('civilite');
         $autorisationphotos = AssociationField::new('autorisationphotos');
-
+        $token = TextField::new('token');
+        $passwordRequestedAt = DateTimeField::new('passwordRequestedAt');
         //$centreciaCentre = TextField::new('centrecia.centre', 'Centre CIA');
-
+        /*
         if (Crud::PAGE_INDEX === $pageName) {
             return [$id, $email, $username, $nomPrenom, $roles, $isActive,];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
@@ -100,7 +110,44 @@ class UserCrudController extends AbstractCrudController
             return [$username, $email, $rolesedit, $password, $isActive, $nom, $prenom, $uaiId, $centreCia, $adresse, $ville, $code, $phone];
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$username, $email, $password, $rolesedit, $isActive, $nom, $prenom, $uaiId, $centreCia, $adresse, $ville, $code, $phone];
-        }
+        }*/
+        return [
+            IntegerField::new('id')->setFormTypeOption('disabled', true),
+            TextField::new('prenom'),
+            TextField::new('nom'),
+            TextField::new('email'),
+            TextField::new('username'),
+            ArrayField::new('roles')->onlyOnIndex(),
+            ArrayField::new('roles')->hideOnForm(),
+            ChoiceField::new('roles')->setChoices(['ROLES_ADMIN' => 'ROLES_ADMIN',
+                'ROLE_SUPER_ADMIN' => 'ROLE_SUPER_ADMIN',
+                'ROLE_ADMIN' => 'ROLE_ADMIN',
+                'ROLE_PROF' => 'ROLE_PROF',
+                'ROLE_JURY' => 'ROLE_JURY',
+                'ROLE_JURYCIA' => 'ROLE_JURYCIA',
+                'ROLE_ORGACIA' => 'ROLE_ORGACIA',
+                'ROLE_COMITE' => 'ROLE_COMITE'])
+                ->setFormTypeOption('multiple', true)->onlyOnForms(),
+            TextField::new('uai')->onlyOnIndex(),
+            TextField::new('plainPassword', 'Mot de passe')->onlyOnForms(),
+            AssociationField::new('uaiId', 'UAI')->setFormTypeOptions(['required' => false])->onlyOnForms(),
+            AssociationField::new('centrecia'),
+            $isActive = Field::new('isActive'),
+            $adresse = TextField::new('adresse'),
+            $ville = TextField::new('ville'),
+            $code = TextField::new('code'),
+            $phone = TextField::new('phone'),
+            $createdAt = DateTimeField::new('createdAt'),
+            $updatedAt = DateTimeField::new('updatedAt'),
+            $lastVisit = DateTimeField::new('lastVisit'),
+            $civilite = TextField::new('civilite'),
+            $autorisationphotos = AssociationField::new('autorisationphotos'),
+            $token = TextField::new('token'),
+            $passwordRequestedAt = DateTimeField::new('passwordRequestedAt'),
+
+        ];
+
+
     }
 
     public function configureActions(Actions $actions): Actions
@@ -127,10 +174,13 @@ class UserCrudController extends AbstractCrudController
 
             $entityInstance->setUai($uai);
         }
-        if ($entityInstance->getPassword() != null) {
-            $hashpassword = $this->passwordEncoder->hashPassword($entityInstance, $entityInstance->getPassword());
+
+        if ($entityInstance->getPlainPassword() != null) {
+            $hashpassword = $this->passwordEncoder->hashPassword($entityInstance, $entityInstance->getPlainPassword());
             $entityInstance->setPassword($hashpassword);
+
         }
+
         parent::updateEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
 
@@ -141,7 +191,7 @@ class UserCrudController extends AbstractCrudController
 
             $entityInstance->setUai($uai);
         }
-        $hashpassword = $this->passwordEncoder->hashPassword($entityInstance, $entityInstance->getPassword());
+        $hashpassword = $this->passwordEncoder->hashPassword($entityInstance, $entityInstance->getPlainPassword());
         $entityInstance->setPassword($hashpassword);
 
         parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub

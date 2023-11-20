@@ -4,7 +4,7 @@ function changejure(j) {//j est l'objet input qui a lancé la fonction, pour le 
     var data_type = j.name;
     var id_jure = j.id.split(data_type)[1];
 
-    var formURL = document.getElementsByTagName('form')[0].action;
+    var formURL = document.getElementsByTagName('form')[2].action;
 
     $.ajax({
         url: formURL,
@@ -30,7 +30,7 @@ function changeequipe(e, i, j) {
     console.log(e.value);
     console.log(i);
     console.log(j);
-    var formURL = document.getElementsByTagName('form')[0].action;
+    var formURL = document.getElementsByTagName('form')[2].action;
     $.ajax({
         url: formURL,
         type: "POST",
@@ -95,3 +95,61 @@ function confirmer() {
         },
     });
 }
+
+function modifheure(j) {//j est l'objet input qui a lancé la fonction, pour le formulaire de gestion des jures des cia
+
+
+    var data_type = j.name;
+    var id_equipe = j.id.split(data_type)[1];
+    var data_value = j.value;
+    var formURL = document.getElementById('formhoraires').action;
+
+
+    console.log(data_type);
+    console.log(id_equipe);
+
+    console.log(data_value);
+    $.ajax({
+        url: formURL,
+        type: "GET",
+        data: {value: data_value, type: data_type, idequipe: id_equipe},
+
+        success: function () {
+            document.querySelector('#gestionjures').click()//Recharge la page pour actualiser l'affichage
+        },
+
+        error: function (data) {
+            alert("Error while submitting Data");
+        },
+    });
+
+
+}
+
+function modifsalle(j) {//j est l'objet input qui a lancé la fonction, pour le formulaire de gestion des jures des cia
+
+    var data_value = j.value;
+    var data_type = j.name;
+    var id_equipe = j.id.split(data_type)[1];
+
+    var formURL = document.getElementById('formsalles').action;
+
+
+    $.ajax({
+        url: formURL,
+        type: "GET",
+        data: {value: data_value, type: data_type, idequipe: id_equipe},
+
+        success: function () {
+            document.querySelector('#gestionjures').click()
+        },
+
+        error: function (data) {
+            alert("Error while submitting Data");
+        },
+    });
+
+
+}
+
+

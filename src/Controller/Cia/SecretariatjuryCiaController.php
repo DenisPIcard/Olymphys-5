@@ -5,6 +5,7 @@ namespace App\Controller\Cia;
 
 use App\Entity\Centrescia;
 use App\Entity\Cia\ConseilsjuryCia;
+use App\Entity\Cia\HorairesSallesCia;
 use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
@@ -24,6 +25,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
+use DoctrineExtensions\Query\Mysql\Time;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -239,7 +241,7 @@ class SecretariatjuryCiaController extends AbstractController
         $jure = $repositoryJures->findOneBy(['iduser' => $idUserJure]);
         $centre = $jure->getCentrecia();
         $equipesjure = $jure->getEquipes();
-        
+
         $rangs = $repositoryRangs->createQueryBuilder('r')
             ->leftJoin('r.equipe', 'eq')
             ->where('eq.centre =:centre')
@@ -360,6 +362,11 @@ class SecretariatjuryCiaController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
+        $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
+            ->leftJoin('h.equipe', 'eq')
+            ->where('eq.centre =:centre')
+            ->setParameter('centre', $centre)
+            ->getQuery()->getResult();
         //$request contient les infos à traiter
         if ($request->get('idjure') !== null) {//pour la modif des données perso du juré
             $idJure = $request->get('idjure');
@@ -455,7 +462,7 @@ class SecretariatjuryCiaController extends AbstractController
             $this->doctrine->getManager()->flush();
             $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
 
-            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre()));
+            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre(), 'horaires' => $horaires));
 
 
         }
@@ -478,8 +485,82 @@ class SecretariatjuryCiaController extends AbstractController
 
         }
 
+
         $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $centre], ['numJury' => 'ASC']);
-        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre()));
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre(), 'horaires' => $horaires));
+
+    }
+
+    #[IsGranted('ROLE_ORGACIA')]
+    #[Route("/secretariatjuryCia/attrib_horaires_salles_cia,{centre}", name: "attrib_horaires_salles_cia")]
+    public function attrib_horaires_salles_cia(Request $request, $centre)
+    {
+        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
+        $idEquipe = $request->query->get('idequipe');
+        $type = $request->query->get('type');
+        $valeur = $request->query->get('value');
+        $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idEquipe);
+        $horaire = $this->doctrine->getRepository(HorairesSallesCia::class)->findOneBy(['equipe' => $equipe]);
+        if ($horaire === null) {
+            $horaire = new HorairesSallesCia();
+            $horaire->setEquipe($equipe);
+        }
+
+        if ($type != null) {
+            if ($type == 'heure') {
+                if ($valeur != null) {
+                    $heure = new DateTime($valeur);
+                    $horaire->setHoraire($heure);
+                }
+            }
+            if ($type == 'salle') {
+                $horaire->setSalle($valeur);
+            }
+        }
+        $this->doctrine->getManager()->persist($horaire);
+        $this->doctrine->getManager()->flush();
+        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->where('e.centre =:centre')
+            ->andWhere('e.edition =:edition')
+            ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->getQuery()->getResult();
+        $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
+            ->leftJoin('h.equipe', 'eq')
+            ->where('eq.centre =:centre')
+            ->setParameter('centre', $centre)
+            ->getQuery()->getResult();
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $centre], ['numJury' => 'ASC']);
+
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre(), 'horaires' => $horaires));
+
+    }
+
+    #[IsGranted('ROLE_ORGACIA')]
+    #[Route("/secretariatjuryCia/effacer_heure_cia,{idequipe}", name: "effacer_heure_cia")]
+    public function effacer_heure_cia(Request $request, $idequipe)
+    {
+        $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idequipe);
+        $horaire = $this->doctrine->getRepository(HorairesSallesCia::class)->findONeBy(['equipe' => $equipe]);
+        if ($horaire !== null) {
+            $horaire->setHoraire(null);
+            $this->doctrine->getManager()->persist($horaire);
+            $this->doctrine->getManager()->flush();
+        }
+
+        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+            ->where('e.centre =:centre')
+            ->andWhere('e.edition =:edition')
+            ->setParameters(['centre' => $equipe->getCentre(), 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->getQuery()->getResult();
+        $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
+            ->leftJoin('h.equipe', 'eq')
+            ->where('eq.centre =:centre')
+            ->setParameter('centre', $equipe->getCentre())
+            ->getQuery()->getResult();
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $equipe->getCentre()], ['numJury' => 'ASC']);
+
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $equipe->getCentre()->getCentre(), 'horaires' => $horaires));
+
 
     }
 
@@ -494,7 +575,12 @@ class SecretariatjuryCiaController extends AbstractController
             ->andWhere('e.edition =:edition')
             ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
-
+        $horairesSalles = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
+            ->leftJoin('h.equipe', 'eq')
+            ->where('eq.centre =:centre')
+            ->andWhere('eq.edition =:edition')
+            ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->getQuery()->getResult();
         $styleAlignment = [
 
             'alignment' => [
@@ -608,32 +694,68 @@ class SecretariatjuryCiaController extends AbstractController
         $sheet
             ->setCellValue('E5', 'N° des équipes');
 
-        $ligne = 6;
+        $ligne = 8;
+
+        $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
+
         $sheet
             ->setCellValue('A' . $ligne, 'Prénom juré')
             ->setCellValue('B' . $ligne, 'Nom juré')
             ->setCellValue('C' . $ligne, 'Initiales')
-            ->setCellValue('D' . $ligne, 'sous-jury');
-        $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
+            ->setCellValue('D' . $ligne, 'sous-jury')
+            ->setCellValue('D' . $ligne - 1, 'salle')
+            ->setCellValue('D' . $ligne - 2, 'horaire');
         $i = 0;
         $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArrayTop);
         foreach ($listeEquipes as $equipe) {
 
             $sheet->setCellValue($lettres[$i] . $ligne, $equipe->getNumero());
+            foreach ($horairesSalles as $horairesSalle) {
+                $sheet->getStyle($lettres[$i] . $ligne - 2)->applyFromArray($styleArray);
+                $sheet->getStyle($lettres[$i] . $ligne - 1)->applyFromArray($styleArray);
+                if ($horairesSalle->getEquipe() == $equipe) {
+                    if ($horairesSalle->getHoraire() != null) {
+                        $sheet->setCellValue($lettres[$i] . $ligne - 2, $horairesSalle->getHoraire()->format('H:i'));
+                    }
+                    $sheet->setCellValue($lettres[$i] . $ligne - 1, $horairesSalle->getSalle());
+                }
+
+
+            }
             $i = $i + 1;
         }
+        $i = 0;
 
         $ligne += 1;
-
         $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
         foreach ($listejures as $jure) {
+            $sheet
+                ->setCellValue('A' . $ligne, $jure->getPrenomJure())
+                ->setCellValue('B' . $ligne, $jure->getNomJure())
+                ->setCellValue('C' . $ligne, $jure->getInitialesJure())
+                ->setCellValue('D' . $ligne, $jure->getNumJury());
             $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArray);
             $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
             $equipesjure = $jure->getEquipes();
-            $sheet->setCellValue('A' . $ligne, $jure->getPrenomJure());
-            $sheet->setCellValue('B' . $ligne, $jure->getNomJure());
-            $sheet->setCellValue('C' . $ligne, $jure->getInitialesJure());
-            $sheet->setCellValue('D' . $ligne, $jure->getNumJury());
+            foreach ($listeEquipes as $equipe) {
+                $sheet->setCellValue($lettres[$i] . $ligne, '*');
+                foreach ($equipesjure as $equipejure) {
+
+                    if ($equipejure == $equipe) {
+                        $sheet->setCellValue($lettres[$i] . $ligne, 'E');
+                        if (in_array($equipe->getNumero(), $jure->getRapporteur())) {
+                            $sheet->setCellValue($lettres[$i] . $ligne, 'R');
+                        }
+                        if (in_array($equipe->getNumero(), $jure->getLecteur())) {
+                            $sheet->setCellValue($lettres[$i] . $ligne, 'L');
+                        }
+                    }
+                }
+                $i += 1;
+            }
+            //
+
+
             switch ($jure->getNumJury()) {
                 case  1 :
                     $sheet->getStyle('D' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('F0F8FF');
@@ -646,28 +768,14 @@ class SecretariatjuryCiaController extends AbstractController
                     break;
 
             }
-            $i = 0;
-
-            foreach ($listeEquipes as $equipe) {
-                $sheet->setCellValue($lettres[$i] . $ligne, '*');
-                foreach ($equipesjure as $equipejure) {
-
-                    if ($equipejure == $equipe) {
-                        $sheet->setCellValue($lettres[$i] . $ligne, 'E');
-                        if (in_array($equipe->getNumero(), $jure->getRapporteur())) {
-                            $sheet->setCellValue($lettres[$i] . $ligne, 'R');
-                        }
-                    }
-                }
-                $i += 1;
+            foreach (range('A', $lettres[$i - 1]) as $letra) {
+                $sheet->getColumnDimension($letra)->setAutoSize(true);
             }
+            $i = 0;
             $ligne += 1;
+
         }
         //$sheet->getStyle('A2:' . $lettres[$i - 1] . '2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00AA66');
-
-        foreach (range('A', $lettres[$i - 1]) as $letra) {
-            $sheet->getColumnDimension($letra)->setAutoSize(true);
-        }
 
 
         $writer = new Xls($spreadsheet);
