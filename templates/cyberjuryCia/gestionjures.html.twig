@@ -142,13 +142,16 @@
         <tbody>
         {% for jure in listejures %}
             {% if jure.numJury == 1 %}
-                <tr style="background-color : #F0F8FF ">
+                <tr style="background-color : #f0f8ff">
 
             {% elseif jure.numJury == 2 %}
-                <tr style="background-color : #FFFFE0 ">
+                <tr style="background-color : #ffffe0 ">
 
             {% elseif jure.numJury == 3 %}
-                <tr style="background-color : #FFE4E1 ">
+                <tr style="background-color : #ffe4e1 ">
+
+            {% elseif jure.numJury == 4 %}
+                <tr style="background-color : #d4ffee ">
 
             {% endif %}
 
@@ -192,13 +195,15 @@
                 <td>
 
                     {% if jure.numJury ==null %}
-                        {% set selectedNum = ['selected','',''] %}
+                        {% set selectedNum = ['selected','','',''] %}
                     {% elseif jure.numJury == 1 %}
-                        {% set selectedNum = ['selected','',''] %}
+                        {% set selectedNum = ['selected','','',''] %}
                     {% elseif  jure.numJury == 2 %}
-                        {% set selectedNum = ['','selected',''] %}
+                        {% set selectedNum = ['','selected','',''] %}
                     {% elseif jure.numJury == 3 %}
-                        {% set selectedNum= ['','','selected'] %}
+                        {% set selectedNum= ['','','selected',''] %}
+                    {% elseif jure.numJury == 4 %}
+                        {% set selectedNum= ['','','','selected'] %}
                     {% endif %}
                     <label for="numJury{{ jure.id }}"></label>
                     <select id="numJury{{ jure.id }}"
@@ -207,6 +212,7 @@
                         <option {{ selectedNum[0] }}>1</option>
                         <option {{ selectedNum[1] }}>2</option>
                         <option {{ selectedNum[2] }}>3</option>
+                        <option {{ selectedNum[3] }}>4</option>
                     </select>
                 </td>
                 {% for equipe in listeEquipes %}

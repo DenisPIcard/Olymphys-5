@@ -5,6 +5,7 @@ namespace App\Controller\Cia;
 
 use App\Entity\Centrescia;
 use App\Entity\Cia\ConseilsjuryCia;
+use App\Entity\Cia\HorairesSallesCia;
 use App\Entity\Cia\JuresCia;
 use App\Entity\Cia\NotesCia;
 use App\Entity\Cia\RangsCia;
@@ -89,6 +90,14 @@ class JuryCiaController extends AbstractController
             ->setParameter('centre', $this->getUser()->getCentrecia())
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
+
+        $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
+            ->leftJoin('h.equipe', 'eq')
+            ->where('eq.centre =:centre')
+            ->andWhere('eq.edition =:edition')
+            ->setParameters(['centre' => $jure->getCentrecia(), 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->getQuery()->getResult();
+
         foreach ($listeEquipes as $equipe) {
 
             foreach ($equipes as $equipejure) {
@@ -115,7 +124,13 @@ class JuryCiaController extends AbstractController
         }
 
         $content = $this->renderView('cyberjuryCia/accueil_jury.html.twig',
-            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires, 'page' => 'accueil')
+            array(
+                'listeEquipes' => $listeEquipes,
+                'progression' => $progression,
+                'jure' => $jure,
+                'memoires' => $memoires,
+                'page' => 'accueil',
+                'horaires' => $horaires)
         );
 
 
@@ -470,6 +485,10 @@ class JuryCiaController extends AbstractController
 
             if ($form->get('texte')->getData() != null) {
                 $this->doctrine->getManager()->persist($conseil);
+                $this->doctrine->getManager()->flush();
+            }
+            if ($form->get('texte')->getData() == null) {
+                $this->doctrine->getManager()->remove($conseil);
                 $this->doctrine->getManager()->flush();
             }
             if ($page == 'evaluation') {

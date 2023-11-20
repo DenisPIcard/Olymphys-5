@@ -48,6 +48,19 @@
                    class="fas fa-info-circle"
                    title="En savoir plus sur cette équipe"> </a>
 
+                {% if horaires!=null %}
+                    {% for horaire in horaires %}
+                        {% if horaire.equipe==equipes %}
+                            {% if horaire.horaire!= null %}
+                                 Heure de passage : {{ horaire.horaire|date('H:i') }},
+                            {% endif %}
+
+                            salle :{{ horaire.salle }}
+                        {% endif %}
+
+
+                    {% endfor %}
+                {% endif %}
             </p>
         {% endif %}
     {% endfor %}
