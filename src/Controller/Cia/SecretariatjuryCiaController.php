@@ -287,13 +287,38 @@ class SecretariatjuryCiaController extends AbstractController
                     $user = new User();//On crée le user
                     try {
 
-                        $user->setNom(strtoupper($nom));
-                        $user->setPrenom(ucfirst(strtolower($prenom)));
+                        $user->setNom(strtoupper($slugger->slug($nom)));//Elimine les caractères ésotériques
+                        $prenomNorm = ucfirst(strtolower($slugger->slug($prenom)));//prépare la normalisation du prénom
+
+                        if (count(explode('-', $prenom)) > 1) {//Si le prénom est composé
+
+                            $prenomNorm = '';
+                            $i = 0;
+                            $arrayPrenom = explode('-', $prenom);
+
+                            foreach ($arrayPrenom as $sprenom) {//Pour obtenir un prénom composé de la form Prenom-Prenom
+                                if ($i == 0) {
+                                    $prenomNorm = ucfirst(strtolower($sprenom)) . '-';
+                                    $i++;
+
+                                } elseif ($i < count(explode('-', $prenom)) - 1) {
+
+                                    $prenomNorm = $prenomNorm . ucfirst(strtolower($sprenom)) . '-';
+
+                                } elseif ($i == count(explode('-', $prenom)) - 1) {
+                                    $prenomNorm = $prenomNorm . ucfirst(strtolower($sprenom));
+
+                                }
+                            }
+
+                        }
+
+                        $user->setPrenom($prenomNorm);
                         $user->setEmail($email);
                         $user->setRoles(['ROLE_JURYCIA']);
                         $user->setCentrecia($centrecia);
-                        $username = $slugger->slug($prenom[0]) . '_' . $slugger->slug($nom);//Création d'un username avec caratères ASCII
-                        $pwd = $slugger->slug($prenom);
+                        $username = $prenomNorm[0] . '_' . $slugger->slug($nom);//Création d'un username avec caratères ASCII
+                        $pwd = $prenomNorm;
                         $i = 1;
                         while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques on ajoute un numéro à la fin
                             $username = $username . $i;
@@ -320,8 +345,8 @@ class SecretariatjuryCiaController extends AbstractController
                 if ($jure === null) {//le jurécia n'existe pas encore
                     $jureCia = new JuresCia(); //On crée ce juré cia
                     $jureCia->setIduser($user); //On associe le jurécia à compte olymphys
-                    $jureCia->setNomJure(strtoupper($nom));
-                    $jureCia->setPrenomJure(ucfirst(strtolower($prenom)));
+                    $jureCia->setNomJure($user->getNom());
+                    $jureCia->setPrenomJure($user->getPrenom());
                     $jureCia->setCentrecia($centrecia);//On affecte le juré cia au centre créateur du juré cia
                     if (str_contains($slugger->slug($prenom), '-')) {//Pour éliminer les caratères non ASCII et tenir compte d'un prénom composé
                         $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
@@ -356,16 +381,16 @@ class SecretariatjuryCiaController extends AbstractController
     public function gestionjures(Request $request, $centre)//Cette fonction est appelée à chaque changement d'un champ du formulaire via une fontion JQUERY et ajax dans app.js
     {   //Ainsi l'organisateur peut saisir le tableau à la "volée"
 
-        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
+        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
-            ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->setParameters(['centre' => $centrecia, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
         $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
             ->leftJoin('h.equipe', 'eq')
             ->where('eq.centre =:centre')
-            ->setParameter('centre', $centre)
+            ->setParameter('centre', $centrecia)
             ->getQuery()->getResult();
         //$request contient les infos à traiter
         if ($request->get('idjure') !== null) {//pour la modif des données perso du juré
@@ -460,9 +485,13 @@ class SecretariatjuryCiaController extends AbstractController
             }
             $this->doctrine->getManager()->persist($jure);
             $this->doctrine->getManager()->flush();
-            $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $this->getUser()->getCentrecia()], ['numJury' => 'ASC']);
-
-            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre(), 'horaires' => $horaires));
+            $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
+                ->where('j.centrecia =:centre')
+                ->setParameter('centre', $centrecia)
+                ->orderBy('j.numJury', 'ASC')
+                ->addOrderBy('j.nomJure', 'ASC')
+                ->getQuery()->getResult();
+            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
 
 
         }
@@ -486,8 +515,13 @@ class SecretariatjuryCiaController extends AbstractController
         }
 
 
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $centre], ['numJury' => 'ASC']);
-        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre(), 'horaires' => $horaires));
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
+            ->where('j.centrecia =:centre')
+            ->setParameter('centre', $centrecia)
+            ->orderBy('j.numJury', 'ASC')
+            ->addOrderBy('j.nomJure', 'ASC')
+            ->getQuery()->getResult();
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
 
     }
 
@@ -495,8 +529,8 @@ class SecretariatjuryCiaController extends AbstractController
     #[Route("/secretariatjuryCia/attrib_horaires_salles_cia,{centre}", name: "attrib_horaires_salles_cia")]
     public function attrib_horaires_salles_cia(Request $request, $centre)
     {
-        $centre = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
-        $idEquipe = $request->query->get('idequipe');
+        $centrecia = $this->doctrine->getRepository(Centrescia::class)->findOneBy(['centre' => $centre]);//$centrecia est un string nom du centre
+        $idEquipe = $request->query->get('idequipe');//on récupére les datas envoyées par ajax dans le query via la méthode get
         $type = $request->query->get('type');
         $valeur = $request->query->get('value');
         $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idEquipe);
@@ -508,7 +542,7 @@ class SecretariatjuryCiaController extends AbstractController
 
         if ($type != null) {
             if ($type == 'heure') {
-                if ($valeur != null) {
+                if ($valeur != null) {//La methode onfocusout utilisée se déclenche dès que la zone de saisie perd le focus, même si rie, n'a été saisi
                     $heure = new DateTime($valeur);
                     $horaire->setHoraire($heure);
                 }
@@ -522,16 +556,21 @@ class SecretariatjuryCiaController extends AbstractController
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
-            ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->setParameters(['centre' => $centrecia, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
         $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
             ->leftJoin('h.equipe', 'eq')
             ->where('eq.centre =:centre')
-            ->setParameter('centre', $centre)
+            ->setParameter('centre', $centrecia)
             ->getQuery()->getResult();
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->findBy(['centrecia' => $centre], ['numJury' => 'ASC']);
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
+            ->where('j.centrecia =:centre')
+            ->setParameter('centre', $centrecia)
+            ->orderBy('j.numJury', 'ASC')
+            ->addOrderBy('j.nomJure', 'ASC')
+            ->getQuery()->getResult();
 
-        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centre->getCentre(), 'horaires' => $horaires));
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
 
     }
 
@@ -797,7 +836,7 @@ class SecretariatjuryCiaController extends AbstractController
     public function envoi_mail_conseils(Request $request, Mailer $mailer)//Envoie le conseil aux prof1 et prof2
     {
 
-        $idEquipe = $request->query->get('idEquipe');
+        $idEquipe = $request->query->get('idequipe');
         $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idEquipe);
         $prof1 = $equipe->getIdProf1();
         $prof2 = $equipe->getIdProf2();
@@ -895,9 +934,33 @@ class SecretariatjuryCiaController extends AbstractController
             $email = $form->get('email')->getData();
             $userJure->setEmail($email);
             $userJure->setNom(strtoupper($nom));
-            $userJure->setPrenom(ucfirst(strtolower($prenom)));
+            $prenomNorm = ucfirst(strtolower($prenom));
+            if (count(explode('-', $prenom)) > 1) {
+
+                $prenomNorm = '';
+                $i = 0;
+                $arrayPrenom = explode('-', $prenom);
+
+                foreach ($arrayPrenom as $sprenom) {
+                    if ($i == 0) {
+                        $prenomNorm = ucfirst(strtolower($sprenom)) . '-';
+                        $i++;
+
+                    } elseif ($i < count(explode('-', $prenom)) - 1) {
+
+                        $prenomNorm = $prenomNorm . ucfirst(strtolower($sprenom)) . '-';
+
+                    } elseif ($i == count(explode('-', $prenom)) - 1) {
+                        $prenomNorm = $prenomNorm . ucfirst(strtolower($sprenom));
+
+                    }
+                }
+
+            }
+            $userJure->setPrenom($prenomNorm);
+            $jurecia->setPrenomJure($prenomNorm);
             $jurecia->setNomJure(strtoupper($nom));
-            $jurecia->setPrenomJure(ucfirst(strtolower($prenom)));
+
             $this->doctrine->getManager()->persist($jurecia);
             $this->doctrine->getManager()->persist($userJure);
             $this->doctrine->getManager()->flush();
@@ -973,15 +1036,16 @@ class SecretariatjuryCiaController extends AbstractController
 
     #[IsGranted('ROLE_ORGACIA')]
     #[Route("/renvoimailjure,{idjure}", name: "renvoimailjure")]
-    public function renvoi_mail_jure($idjure)
+    public function renvoi_mail_jure($idjure)//Renvoi des identifiants et affectation du juré
     {
 
         $jure = $this->doctrine->getRepository(JuresCia::class)->find($idjure);
         $user = $jure->getIduser();
-        $slugger = new AsciiSlugger();
         $orgacia = $this->getUser();
-        $plainpwd = $slugger->slug($user->getPrenom());
-        $this->userPasswordHasher->hashPassword($user, $plainpwd); //réinitialise le mot de passe par défaut  en cas de demande du juré
+        $plainpwd = $user->getPrenom();
+        $passwordEncoder = $this->userPasswordHasher;
+        $user->setPassword($passwordEncoder->hashPassword($user, $plainpwd));
+        $this->userPasswordHasher->hashPassword($user, $plainpwd); //réinitialise le mot de passe par défaut
         $this->mailer->sendInscriptionUserJure($orgacia, $user, $plainpwd, $user->getCentrecia()->getCentre());
         $this->mailer->sendInscriptionJureCia($orgacia, $jure, $plainpwd, $user->getCentrecia()->getCentre());
         return $this->redirectToRoute('secretariatjuryCia_gestionjures', ['centre' => $user->getCentrecia()]);

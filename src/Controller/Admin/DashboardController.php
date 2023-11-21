@@ -97,7 +97,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier', 7)
-                ->setQueryParameter('concours', 'interacadémique'),
+                ->setQueryParameter('concours', 0),
         ];
 
         $submenu2 = [
@@ -157,7 +157,7 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null) {
-            
+
             return $this->redirectToRoute('admin');
         };
 

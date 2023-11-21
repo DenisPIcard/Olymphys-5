@@ -4,14 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 11-11 mailing profs creation function creation tableau dans l'admin">
-      <change afterPath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 20-11 quelques améliorations">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230101103713.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20231110224719.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20231119191045.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20231110225000.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cyberjuryCia/gestion_conseils_jury_cia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cyberjuryCia/gestion_conseils_jury_cia.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -272,14 +276,14 @@
     &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5/templates/modales&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -290,8 +294,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/templates/modales" />
       <recent name="$PROJECT_DIR$/templates/cyberjuryCia" />
+      <recent name="$PROJECT_DIR$/templates/modales" />
       <recent name="$PROJECT_DIR$/templates/email" />
       <recent name="$PROJECT_DIR$/public/odpf/odpf-images" />
       <recent name="$PROJECT_DIR$/templates/bundles/EasyAdminBundle" />
@@ -602,7 +606,23 @@
       <workItem from="1699644508785" duration="9537000" />
       <workItem from="1699687637045" duration="18951000" />
       <workItem from="1699766951139" duration="7757000" />
-      <workItem from="1699779819387" duration="2207000" />
+      <workItem from="1699779819387" duration="2299000" />
+      <workItem from="1699864735712" duration="2691000" />
+      <workItem from="1699886159672" duration="3009000" />
+      <workItem from="1699904797916" duration="849000" />
+      <workItem from="1699946217518" duration="9142000" />
+      <workItem from="1699987556656" duration="746000" />
+      <workItem from="1700076503251" duration="63000" />
+      <workItem from="1700160252765" duration="1254000" />
+      <workItem from="1700161852101" duration="8307000" />
+      <workItem from="1700241621430" duration="7179000" />
+      <workItem from="1700293379900" duration="704000" />
+      <workItem from="1700297409303" duration="978000" />
+      <workItem from="1700298591653" duration="38000" />
+      <workItem from="1700300547695" duration="33426000" />
+      <workItem from="1700418509780" duration="10919000" />
+      <workItem from="1700464149783" duration="38032000" />
+      <workItem from="1700551121856" duration="4916000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -947,7 +967,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1022,13 +1042,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="fixation de la  date limite de dépôt des fiches sécurité égale à celle des mémoires CIA" />
-    <MESSAGE value="Mise au point des conseils du jury et de leur envoi à l'équipe + d'autres modifs pour les accès selon les rôles" />
-    <MESSAGE value="Mise au point des conseils du jury et de leur envoi à l'équipe + d'autres modifs pour les accès selon les rôles + sous-jury et classement par sous-jury" />
-    <MESSAGE value="Mise au point de l'envoi des conseils Cia  à l'équipe +" />
-    <MESSAGE value="Affichage des équipes sur la page d'accueil des orgacia+mise au point navigation selon role(encore inachevé)" />
-    <MESSAGE value="remplacement de la variable 'rne' par 'uai' dans le mailer nouvel utilisateur." />
-    <MESSAGE value="Vérification mail élèves à l'inscription" />
     <MESSAGE value="première ligne page inscriptions" />
     <MESSAGE value="CyberjuryCIa, couleurs pour les équipes sélectionnées, mailing vers le jurésCia lors de la création de leur compte par l'orgacia" />
     <MESSAGE value="CyberjuryCIa, amélioration du tableau de gestion des jurés et du tableau excel" />
@@ -1047,7 +1060,14 @@
     <MESSAGE value="Comit du 10-11 cyberjurycia transfert d'une note de juré après erreur d'équipe du juré" />
     <MESSAGE value="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs" />
     <MESSAGE value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
+    <MESSAGE value="Comit du 12-11 mailing conseil juru : modale de confirmation d'envoi" />
+    <MESSAGE value="Comit du 14-11 amélioration tableaux excel" />
+    <MESSAGE value="Comit du 17-11 creation du lecteur, verouillage envoi du mail conseil, accessibilité vue globale aux orga" />
+    <MESSAGE value="Comit du 17-11 creation du lecteur, verrouillage envoi du mail conseil, accessibilité vue globale aux orga" />
+    <MESSAGE value="Comit du 18-11 corrrection erreur de calcul du total des points d'une équipe avec mémoire" />
+    <MESSAGE value="Comit du 20-11 mise au point de la saisie des horaires et salles cia" />
+    <MESSAGE value="Comit du 20-11 quelques améliorations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 20-11 quelques améliorations" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">

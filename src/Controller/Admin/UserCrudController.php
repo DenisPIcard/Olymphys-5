@@ -118,7 +118,6 @@ class UserCrudController extends AbstractCrudController
             TextField::new('email'),
             TextField::new('username'),
             ArrayField::new('roles')->onlyOnIndex(),
-            ArrayField::new('roles')->hideOnForm(),
             ChoiceField::new('roles')->setChoices(['ROLES_ADMIN' => 'ROLES_ADMIN',
                 'ROLE_SUPER_ADMIN' => 'ROLE_SUPER_ADMIN',
                 'ROLE_ADMIN' => 'ROLE_ADMIN',
@@ -141,7 +140,7 @@ class UserCrudController extends AbstractCrudController
             $updatedAt = DateTimeField::new('updatedAt'),
             $lastVisit = DateTimeField::new('lastVisit'),
             $civilite = TextField::new('civilite'),
-            $autorisationphotos = AssociationField::new('autorisationphotos'),
+            //$autorisationphotos = AssociationField::new('autorisationphotos'),
             $token = TextField::new('token'),
             $passwordRequestedAt = DateTimeField::new('passwordRequestedAt'),
 

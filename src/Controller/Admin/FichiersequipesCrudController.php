@@ -410,6 +410,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $chemintypefichier . $fichier->getFichier();
+        
         $response = new Response(file_get_contents($file));
 
         $type = mime_content_type($file);
@@ -644,7 +645,8 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $concours = $context->getRequest()->query->get('concours');
-        $concours == 0 ? $national = false : $national = true;
+
+        $concours == '0' ? $national = false : $national = true;
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $qb->andWhere('entity.national =:national')
             ->setParameter('national', $national);
