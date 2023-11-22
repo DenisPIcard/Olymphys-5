@@ -117,9 +117,10 @@
                         {% endfor %}
                     {% endif %}
                     <th>
+
                         <input type="text" value="{{ salle }}" id="{{ 'salle'~equipe.id }}" name="salle"
                                style="width: 60px; text-align: center"
-                               onchange="modifsalle({{ 'salle'~equipe.id }})">
+                               onchange="modifsalle({{ 'salle'~equipe.id }})" title="{{ salle }}">
                     </th>
                 {% endfor %}
             </form>

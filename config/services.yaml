@@ -36,6 +36,7 @@ parameters:
     Pdf: pdf
     Doc: doc
 
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
   env(DATABASE_URL): "mysql://root:Enthalpie@127.0.0.1:3306/olymphys4_odpf"
 services:
   # default configuration for services in *this* file

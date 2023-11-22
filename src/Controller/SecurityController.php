@@ -28,6 +28,7 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
 
 class SecurityController extends AbstractController
 {
@@ -194,6 +195,7 @@ class SecurityController extends AbstractController
                     new NotBlank()
                 ]
             ])
+            ->add('captcha', ReCaptchaType::class)
             ->getForm();
         $form->handleRequest($request);
 

@@ -140,7 +140,7 @@ class SecretariatjuryCiaController extends AbstractController
             ->getQuery()->getResult();
 
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
-        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centrecia]);
+        $listEquipes = $repositoryEquipes->findBy(['edition' => $this->requestStack->getSession()->get('edition'), 'centre' => $centrecia, 'inscrite' => true]);
 
         $nbre_equipes = 0;
         $progression = [];
@@ -245,7 +245,9 @@ class SecretariatjuryCiaController extends AbstractController
         $rangs = $repositoryRangs->createQueryBuilder('r')
             ->leftJoin('r.equipe', 'eq')
             ->where('eq.centre =:centre')
+            ->andWhere('eq.inscrite =:value')
             ->setParameter('centre', $centre)
+            ->setParameter('value', true)
             ->orderBy('r.rang', 'ASC')
             ->getQuery()->getResult();
 
@@ -385,7 +387,8 @@ class SecretariatjuryCiaController extends AbstractController
         $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
-            ->setParameters(['centre' => $centrecia, 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->andWhere('e.inscrite =:value')
+            ->setParameters(['value' => true, 'centre' => $centrecia, 'edition' => $this->requestStack->getSession()->get('edition')])
             ->getQuery()->getResult();
         $horaires = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
             ->leftJoin('h.equipe', 'eq')
