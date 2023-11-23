@@ -8,6 +8,7 @@ use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 
+use App\Controller\Admin\Filter\CustomFichiersequipesFilter;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
@@ -89,9 +90,15 @@ class FichiersequipesCrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
-        return $filters
+        ;
+        $filters
             ->add(CustomEquipeFilter::new('equipe', 'equipe'))
             ->add(CustomEditionFilter::new('edition', 'edition'));
+        if ($this->requestStack->getCurrentRequest()->query->get('typefichier') <= 1) {
+            $filters->
+            add(CustomFichiersequipesFilter::new('typefichier', 'categorie'));
+        }
+        return $filters;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -138,6 +145,11 @@ class FichiersequipesCrudController extends AbstractCrudController
         if (isset($_REQUEST['filters']['edition'])) {
             $idEdition = $_REQUEST['filters']['edition'];
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
+            $session->set('titreedition', $edition);
+        }
+        if (isset($_REQUEST['filters']['typefichier'])) {
+
+            //$edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
             $session->set('titreedition', $edition);
         }
 
@@ -410,7 +422,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd() . '/fichiers/' . $chemintypefichier . $fichier->getFichier();
-        
+
         $response = new Response(file_get_contents($file));
 
         $type = mime_content_type($file);
@@ -686,7 +698,18 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $qb->andWhere('entity.equipe =:equipe')
                     ->setParameter('equipe', $equipe);
             }
+            if (isset($_REQUEST['filters']['typefichier'])) {
+                $typefichier = $_REQUEST['filters']['typefichier'];
+                $session->set('titreedition', $edition);
 
+                $qb->andWhere('entity.typefichier =:value')
+                    ->setParameter('value', $typefichier);
+                if (!isset($_REQUEST['filters']['edition'])) {
+                    $qb->andWhere('entity.edition =:edition')
+                        ->setParameter('edition', $edition);
+                }
+
+            }
 
         }
         $qb->leftJoin('entity.equipe', 'eq');
