@@ -150,7 +150,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         if (isset($_REQUEST['filters']['typefichier'])) {
 
             //$edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
-            $session->set('titreedition', $edition);
+            $session->set('typefichier', $typefichier);
         }
 
         $concours == 1 ? $concourslit = 'national' : $concourslit = 'interacadémique';
@@ -245,6 +245,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             $concours == 0 ? $national = false : $national = true;
         }
+        $typefichierfiltre = 'na';
         if (isset($_REQUEST['filters'])) {
 
             if (isset($_REQUEST['filters']['equipe'])) {
@@ -253,6 +254,10 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
             if (isset($_REQUEST['filters']['edition'])) {
                 $editionId = $_REQUEST['filters']['edition'];
+
+            }
+            if (isset($_REQUEST['filters']['typefichier'])) {
+                $typefichierfiltre = $_REQUEST['filters']['typefichier'];
 
             }
         }
@@ -269,7 +274,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
 
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
-            ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId . '-' . $concours])
+            ->linkToRoute('telechargerFichiers', ['ideditionequipe' => $editionId . '-' . $equipeId . '-' . $concours . '-' . $typefichier . '-' . $typefichierfiltre])
             ->createAsGlobalAction();
         //->displayAsButton()            ->setCssClass('btn btn-primary');;
         $telechargerUnFichier = Action::new('telechargerunfichier', 'Télécharger le fichier', 'fa fa-file-download')
@@ -307,20 +312,33 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function telechargerFichiers(AdminContext $context, $ideditionequipe)
     {
         $session = $this->requestStack->getSession();
-
         $typefichier = $this->requestStack->getSession()->get('typefichier');
+        $typefichierfiltre = explode('-', $ideditionequipe)[4];
+
+        if ($typefichierfiltre != 'na') {
+            $typefichier = $typefichierfiltre;
+        }
         $repositoryEquipe = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $idEdition = explode('-', $ideditionequipe)[0];
         $idEquipe = explode('-', $ideditionequipe)[1];
         $concours = explode('-', $ideditionequipe)[2];
 
+
         $qb = $this->doctrine->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f')
             ->andWhere('f.national =:concours')
             ->setParameter('concours', $concours);
-        if ($typefichier == 0) {
-            $qb->andWhere('f.typefichier <= 1');
-        } else {
+
+        if ($typefichierfiltre == 'na') {
+            if ($typefichier == 0) {
+                $qb->andWhere('f.typefichier <= 1');
+            } else {
+
+                $qb->andWhere('f.typefichier =:typefichier')
+                    ->setParameter('typefichier', $typefichier);
+            }
+        }
+        if ($typefichierfiltre != 'na') {
             $qb->andWhere('f.typefichier =:typefichier')
                 ->setParameter('typefichier', $typefichier);
         }
@@ -642,6 +660,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
@@ -660,6 +679,8 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $concours == '0' ? $national = false : $national = true;
         $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+
+
         $qb->andWhere('entity.national =:national')
             ->setParameter('national', $national);
         if ($typefichier == 0) {
@@ -702,14 +723,24 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $typefichier = $_REQUEST['filters']['typefichier'];
                 $session->set('titreedition', $edition);
 
-                $qb->andWhere('entity.typefichier =:value')
-                    ->setParameter('value', $typefichier);
-                if (!isset($_REQUEST['filters']['edition'])) {
-                    $qb->andWhere('entity.edition =:edition')
-                        ->setParameter('edition', $edition);
-                }
+                $qb->andWhere('entity.typefichier =:typefichier')
+                    ->setParameter('typefichier', $typefichier);
+
 
             }
+
+            /*if (isset($_REQUEST['filters']['typefichier']) and isset($_REQUEST['filters']['edition'])) {
+                $idEdition = $_REQUEST['filters']['edition'];
+                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+                $session->set('titreedition', $edition);
+
+                $typefichier = $_REQUEST['filters']['typefichier'];
+                $qb->andWhere('entity.typefichier =:value')
+                    ->setParameter('value', $typefichier);
+
+
+            }*/
+
 
         }
         $qb->leftJoin('entity.equipe', 'eq');

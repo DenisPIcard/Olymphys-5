@@ -199,10 +199,13 @@ class FichiersController extends AbstractController
         $phase = $info[1];
         $choix = $info[2];
         $roles = $this->getUser()->getRoles();
+        $datelimcia = $repositoryEdition->find($this->requestStack->getSession()->get('edition')->getId())->getDatelimCia();
+        $datelimCn = $repositoryEdition->find($this->requestStack->getSession()->get('edition')->getId())->getDatelimNat();
+
         if (in_array('ROLE_PROF', $roles)) {
-            if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 4) {//memoire, annexe et résumé et fiche sécurité doivent être remis avant la date limite
+            if ($choix == 0 or $choix == 1 or $choix == 2) {//memoire, annexe et résumé et fiche sécurité doivent être remis avant la date limite
 
-                if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
+                if (($datelimcia < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
                     $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                     return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                         'infos' => $infos,
@@ -210,16 +213,12 @@ class FichiersController extends AbstractController
 
 
                 }
-                if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours') == 'national')) {
+                if (($datelimCn < new DateTime('now')) and ($session->get('concours') == 'national')) {
                     $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                     return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                         'infos' => $infos,
                     ]);
-
-
                 }
-
-
             }
         }
         if (count($info) >= 5) {//pour les autorisations photos info comporte un cinquième paramètre
@@ -292,7 +291,24 @@ class FichiersController extends AbstractController
         $form1->handleRequest($request);
 
         if ($form1->isSubmitted() && $form1->isValid()) {
+            if (in_array('ROLE_PROF', $roles)) {
+                if ($choix == 0 or $choix == 1 or $choix == 2) {//memoire, annexe et résumé et fiche sécurité doivent être remis avant la date limite
 
+                    if (($datelimcia < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
+                        $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                            'infos' => $infos,
+                        ]);
+
+                    }
+                    if (($datelimCn < new DateTime('now')) and ($session->get('concours') == 'national')) {
+                        $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                            'infos' => $infos,
+                        ]);
+                    }
+                }
+            }
             /** @var UploadedFile $file */
             $file = $form1->get('fichier')->getData();
 
@@ -929,7 +945,7 @@ class FichiersController extends AbstractController
             $fichier->getFichier()
         );
 
-        if (str_contains($_SERVER['HTTP_USER_AGENT'], 'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Mac OS X')) {
+        if (str_contains($_SERVER['HTTP_USER_AGENT'], 'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Mac OS X') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Android')) {
             $response = new BinaryFileResponse($file);
             $response->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($file));
         }

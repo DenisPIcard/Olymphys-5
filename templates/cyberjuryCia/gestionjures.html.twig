@@ -13,7 +13,7 @@
         <thead>
         <tr>
             <th>
-                <a href="#" , data-toggle="modal" data-target="#modalaideorgacia"
+                <a href="#" data-toggle="modal" data-target="#modalaideorgacia"
                    title="vide : n'examine pas l'équipe  E : examine l'équipe sans être rapporteur R : est rapporteur de l'équipe"><i
                             class="fas fa-question-circle fa-2x"></i>
                 </a>
@@ -232,9 +232,9 @@
                         {% endif %}
                     {% endif %}
                     <td>
-                        <label for="equipe-{{ equipe.id }}">
-                        </label><select id="{{ 'equipe'~equipe.id }}" name="equipe" style="width: 50px"
-                                        onchange="changeequipe({{ 'equipe'~equipe.id }},{{ equipe.id }},{{ jure.id }} )">
+                        <label for="{{ 'equipe'~equipe.id }}"></label>
+                        <select id="{{ 'equipe'~equipe.id }}" name="equipe" style="width: 50px"
+                                onchange="changeequipe({{ 'equipe'~equipe.id }},{{ equipe.id }},{{ jure.id }} )">
                             <option {{ selected[0] }}></option>
                             <option {{ selected[1] }}>E</option>
                             <option {{ selected[2] }}>R</option>

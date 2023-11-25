@@ -72,10 +72,7 @@
                         {% if is_granted('ROLE_PROF') %}<!-- le prof , le comité, les organisateurs CIA sont habilités à déposer des fichiers -->
                             {% if i<3 or i==4 %}
                                 {% if (app.user.roles|filter(v => v =='ROLE_PROF')!=[]) %}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
-                                    {{ dump(app.session.get('edition').datelimcia) }}
-                                    {{ dump(date()) }}
-
-                                    {{ dump(app.session.get('concours')) }}
+                                    
                                     {% if date()>=app.session.get('edition').dateouverturesite %}
                                         {% if app.session.get('concours')=='interacadémique' %}
                                             {% if date()<= app.session.get('edition').datelimcia %}
