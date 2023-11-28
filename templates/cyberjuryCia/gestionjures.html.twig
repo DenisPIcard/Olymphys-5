@@ -86,6 +86,7 @@
                         {% endfor %}
                     {% endif %}
                     <th>
+                        <label for="{{ 'heure'~equipe.id }}"></label>
                         <input type="time" value="{{ heure }}" id="{{ 'heure'~equipe.id }}"
                                name="heure"
                                style="width: 60px; text-align: center"
@@ -143,7 +144,7 @@
         <tbody>
         {% for jure in listejures %}
             {% if jure.numJury == 1 %}
-                <tr style="background-color : #f0f8ff">
+                <tr style="background-color : #dbfdff ">
 
             {% elseif jure.numJury == 2 %}
                 <tr style="background-color : #ffffe0 ">
@@ -152,7 +153,7 @@
                 <tr style="background-color : #ffe4e1 ">
 
             {% elseif jure.numJury == 4 %}
-                <tr style="background-color : #d4ffee ">
+                <tr style="background-color : #ddffda ">
 
             {% endif %}
 
@@ -233,7 +234,8 @@
                     {% endif %}
                     <td>
                         <label for="{{ 'equipe'~equipe.id }}"></label>
-                        <select id="{{ 'equipe'~equipe.id }}" name="equipe" style="width: 50px"
+                        <select id="{{ 'equipe'~equipe.id }}" name="changeequipe{{ equipe.id~'-'~jure.id }}"
+                                style="width: 50px"
                                 onchange="changeequipe({{ 'equipe'~equipe.id }},{{ equipe.id }},{{ jure.id }} )">
                             <option {{ selected[0] }}></option>
                             <option {{ selected[1] }}>E</option>

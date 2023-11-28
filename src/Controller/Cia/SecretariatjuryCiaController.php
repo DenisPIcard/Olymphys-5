@@ -508,7 +508,10 @@ class SecretariatjuryCiaController extends AbstractController
                 foreach ($notes as $note) {
                     $jure->removeNote($note);
                     $this->doctrine->getManager()->remove($note);
+
                 }
+                $repo = $this->doctrine->getRepository(RangsCia::class);
+                $points = $repo->classement($jure->getCentreCia());
             }
 
             $this->doctrine->getManager()->remove($jure);

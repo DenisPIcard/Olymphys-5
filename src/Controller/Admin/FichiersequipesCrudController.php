@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 
 use App\Controller\Admin\Filter\CustomEditionFilter;
+use App\Controller\Admin\Filter\CustomEquipeFichierFilter;
 use App\Controller\Admin\Filter\CustomEquipeFilter;
 use App\Controller\Admin\Filter\CustomEquipespasseesFilter;
 
@@ -28,9 +29,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -90,9 +94,9 @@ class FichiersequipesCrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
-        ;
+
         $filters
-            ->add(CustomEquipeFilter::new('equipe', 'equipe'))
+            ->add(CustomEquipeFichierFilter::new('equipe', 'equipe'))
             ->add(CustomEditionFilter::new('edition', 'edition'));
         if ($this->requestStack->getCurrentRequest()->query->get('typefichier') <= 1) {
             $filters->
@@ -658,135 +662,117 @@ class FichiersequipesCrudController extends AbstractCrudController
 
     }
 
+
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-
+        $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        $edition = $this->requestStack->getSession()->get('edition');
-        if (new DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
-            $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
-        }
-        $repositoryEquipe = $this->doctrine->getRepository(Equipesadmin::class);
-
         $typefichier = $context->getRequest()->query->get('typefichier');
-        if ($typefichier == null) {
-            $typefichier = $this->requestStack->getSession()->get('typefichier');
-        }
+        if (!isset($_REQUEST['filters']['equipe'])) {
 
-        $concours = $context->getRequest()->query->get('concours');
-
-        $concours == '0' ? $national = false : $national = true;
-        $qb = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-
-
-        $qb->andWhere('entity.national =:national')
-            ->setParameter('national', $national);
-        if ($typefichier == 0) {
-            $qb //= $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
-            ->andWhere('entity.typefichier <=:typefichier')
-                ->setParameter('typefichier', $typefichier + 1);
-        }
-        if ($typefichier > 1) {
-            $qb //= $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
-            ->andWhere('entity.typefichier =:typefichier')
-                ->setParameter('typefichier', $typefichier);
-
-        }
-
-
-        if (!isset($_REQUEST['filters'])) {
-
-            $qb->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $edition);
-
-
-        } else {
-            if (isset($_REQUEST['filters']['edition'])) {
-                $idEdition = $_REQUEST['filters']['edition'];
-                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-                $session->set('titreedition', $edition);
-
-                $qb->andWhere('entity.edition =:edition')
-                    ->setParameter('edition', $edition);
+            $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+            $edition = $this->requestStack->getSession()->get('edition');
+            if (new DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+                $edition = $repositoryEdition->findOneBy(['ed' => $edition->getEd() - 1]);
             }
-            if (isset($_REQUEST['filters']['equipe'])) {
-                $idEquipe = $_REQUEST['filters']['equipe'];
-                $equipe = $repositoryEquipe->findOneBy(['id' => $idEquipe]);
-                $session->set('titreedition', $edition);
-
-                $qb->andWhere('entity.equipe =:equipe')
-                    ->setParameter('equipe', $equipe);
-            }
-            if (isset($_REQUEST['filters']['typefichier'])) {
-                $typefichier = $_REQUEST['filters']['typefichier'];
-                $session->set('titreedition', $edition);
-
-                $qb->andWhere('entity.typefichier =:typefichier')
-                    ->setParameter('typefichier', $typefichier);
+            $repositoryEquipe = $this->doctrine->getRepository(Equipesadmin::class);
 
 
+            if ($typefichier == null) {
+                $typefichier = $this->requestStack->getSession()->get('typefichier');
             }
 
-            /*if (isset($_REQUEST['filters']['typefichier']) and isset($_REQUEST['filters']['edition'])) {
-                $idEdition = $_REQUEST['filters']['edition'];
-                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-                $session->set('titreedition', $edition);
+            $concours = $context->getRequest()->query->get('concours');
 
-                $typefichier = $_REQUEST['filters']['typefichier'];
-                $qb->andWhere('entity.typefichier =:value')
-                    ->setParameter('value', $typefichier);
+            $concours == '0' ? $national = false : $national = true;
 
 
-            }*/
+            $qb->andWhere('entity.national =:national')
+                ->setParameter('national', $national);
+            $qb->andWhere('entity.edition =:edition');
 
 
-        }
-        $qb->leftJoin('entity.equipe', 'eq');
-        if ((($typefichier == 4) or ($typefichier == 8)) and ($concours == 1)) {//affiche uniquement les fiches sécurité expo et oral des équipes sélectionnées pour le choix du concours national
+            if (!isset($_REQUEST['filters'])) {
+                if ($typefichier == 0) {
+                    $qb->andWhere('entity.typefichier <=:typefichier');
+                    $typefichier = $typefichier + 1;
+                }
+                if ($typefichier > 1) {
+                    $qb->andWhere('entity.typefichier=:typefichier');
+                }
+                $qb->setParameter('edition', $edition);
+                $qb->setParameter('typefichier', $typefichier);
 
-            $qb->andWhere('eq.selectionnee = TRUE')
-                ->orWhere('entity.typefichier =:value')
-                ->setParameter('value', 8);;
-        } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours
-            $qb->andWhere('entity.national =:concours')
-                ->setParameter('concours', $concours);
-        }
-
-
-        if (isset($_REQUEST['sort'])) {
-            $qb->resetDQLPart('orderBy');
-            $sort = $_REQUEST['sort'];
-            if (key($sort) == 'equipe.lettre') {
-                $qb->addOrderBy('eq.lettre', $sort['equipe.lettre']);
+            } else {
+                if (!isset($_REQUEST['filters']['edition'])) {
+                    $qb->setParameter('edition', $edition);
+                } else {
+                    $idEdition = $_REQUEST['filters']['edition'];
+                    $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+                    $session->set('titreedition', $edition);
+                    if (!isset($_REQUEST['filters']['typefichier'])) {
+                        if ($typefichier == 0) {
+                            $qb->andWhere('entity.typefichier <=:typefichier');
+                            $typefichier = $typefichier + 1;
+                        }
+                        if ($typefichier > 1) {
+                            $qb->andWhere('entity.typefichier=:typefichier');
+                        }
+                        $qb->setParameter('typefichier', $typefichier);
+                    }
+                }
+                $qb->setParameter('edition', $edition);
             }
-            if (key($sort) == 'equipe.numero') {
-                $qb->addOrderBy('eq.numero', $sort['equipe.numero']);
-            }
-            if (key($sort) == 'fichier') {
-                $qb->addOrderBy('entity.fichier', $sort['fichier']);
+            $qb->leftJoin('entity.equipe', 'eq');
+            if ((($typefichier == 4) or ($typefichier == 8)) and ($concours == 1)) {//affiche uniquement les fiches sécurité expo et oral des équipes sélectionnées pour le choix du concours national
+
+                $qb->andWhere('eq.selectionnee = TRUE')
+                    ->orWhere('entity.typefichier =:type')//condition ou pour les fiches secur expo du national
+                    ->setParameter('type', 8);;
+            } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours cette condition n'a pas être testée pour elles
+
+                $qb->andWhere('entity.national =:concours')
+                    ->setParameter('concours', $concours);
             }
 
-            if (key($sort) == 'equipe.titreProjet') {
-                $qb->addOrderBy('eq.titreProjet', $sort['equipe.titreProjet']);
-            }
-            if (key($sort) == 'updatedat') {
-                $qb->addOrderBy('entity.updatedAt', $sort['updatedat']);
+
+            if (isset($_REQUEST['sort'])) {
+                $qb->resetDQLPart('orderBy');
+                $sort = $_REQUEST['sort'];
+                if (key($sort) == 'equipe.lettre') {
+                    $qb->addOrderBy('eq.lettre', $sort['equipe.lettre']);
+                }
+                if (key($sort) == 'equipe.numero') {
+                    $qb->addOrderBy('eq.numero', $sort['equipe.numero']);
+                }
+                if (key($sort) == 'fichier') {
+                    $qb->addOrderBy('entity.fichier', $sort['fichier']);
+                }
+
+                if (key($sort) == 'equipe.titreProjet') {
+                    $qb->addOrderBy('eq.titreProjet', $sort['equipe.titreProjet']);
+                }
+                if (key($sort) == 'updatedat') {
+                    $qb->addOrderBy('entity.updatedAt', $sort['updatedat']);
+                }
+            } else {
+                if ($concours == 0) {
+                    $qb->addOrderBy('eq.numero', 'ASC');
+                }
+                if ($concours == 1) {
+                    $qb->addOrderBy('eq.lettre', 'ASC');
+                }
+
+
             }
         } else {
-            if ($concours == 0) {
-                $qb->addOrderBy('eq.numero', 'ASC');
-            }
-            if ($concours == 1) {
-                $qb->addOrderBy('eq.lettre', 'ASC');
-            }
 
-
+            $session->set('titreedition', $this->getParameter('type_fichier_lit')[$typefichier]);
         }
-
         return $qb;
     }
+
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
@@ -836,7 +822,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         }
         if (($entityInstance->getTypefichier() < 4) and ($entityInstance->getNational() == true)) {
-            $this->fichierspublies($entityInstance);
+            $this->fichierspublies($entityInstance);//vérifie si le fichier est dans le bon sous dossier et le déplace sinon
             parent::updateEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
         }
 

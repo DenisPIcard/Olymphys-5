@@ -85,25 +85,27 @@ class OdpfArticleCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$titre, $choix, $categorie, $texte, $publie, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$tab1, $titre, $publie, $panel1, $choix,  $categorie, $texte, $panel2, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$tab1, $titre, $publie, $panel1, $choix, $categorie, $texte, $panel2, $titre_objectifs, $texte_objectifs, $carousel];
         }
 
 
     }
+
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
             ->add(EntityFilter::new('categorie'));
 
     }
+
     public function configureActions(Actions $actions): Actions
     {
         $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_NEW, Action::INDEX)
-            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
-            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+        //->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
         return $actions;
     }
 
@@ -114,32 +116,31 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $response = $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters) //le tri selon les éditions ne fonctionne pas bien
-            ->leftJoin('entity.categorie', 'eq');
-            //->resetDQLPart('orderBy');
-        if (isset($_REQUEST['sort'])){
-            $sort=$_REQUEST['sort'];
-            if (key($sort)=='titre'){
+        ->leftJoin('entity.categorie', 'eq');
+        //->resetDQLPart('orderBy');
+        if (isset($_REQUEST['sort'])) {
+            $sort = $_REQUEST['sort'];
+            if (key($sort) == 'titre') {
                 $response->addOrderBy('entity.titre', $sort['titre']);
             }
-            if (key($sort)=='choix'){
+            if (key($sort) == 'choix') {
                 $response->addOrderBy('entity.choix', $sort['choix']);
             }
-            if (key($sort)=='texte'){
+            if (key($sort) == 'texte') {
                 $response->addOrderBy('entity.texte', $sort['texte']);
             }
-            if (key($sort)=='categorie'){
+            if (key($sort) == 'categorie') {
                 $response->addOrderBy('entity.categorie', $sort['categorie']);
 
-            if (key($sort)=='createdAt'){
+                if (key($sort) == 'createdAt') {
                     $response->addOrderBy('entity.createdAt', $sort['createdAt']);
-            }
-            if (key($sort)=='updatedAt'){
+                }
+                if (key($sort) == 'updatedAt') {
                     $response->addOrderBy('entity.updatedAt', $sort['updatedAt']);
-            }
+                }
             }
 
-        }
-        else {
+        } else {
 
             $response->OrderBy('entity.updatedAt', 'DESC');
 
