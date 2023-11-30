@@ -11,7 +11,7 @@ parameters:
   app.path.photos.site: /../public/odpf/odpf-archives
   app.path.tempdirectory: '%kernel.project_dir%/public/temp'
   app.path.thumbtmp: '%kernel.project_dir%/public/upload/images/tmp'
-  type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires','fichessecur' ]
+  type_fichier: [ 'memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires','fichessecur' ]#Les fiches securités expo sont dans le même répertoire que les fiches exposés
   type_fichier_lit: [ 'mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité(présentation)','diaporama(pour les cia)','autorisation','questionnaire','fiche securité(exposition)' ]
   fichier_acces: [ 'prive','publie' ]
   app.path.fichiers: '%kernel.project_dir%/public/fichiers'

@@ -195,7 +195,6 @@ class SecurityController extends AbstractController
                     new NotBlank()
                 ]
             ])
-            ->add('captcha', ReCaptchaType::class)
             ->getForm();
         $form->handleRequest($request);
 

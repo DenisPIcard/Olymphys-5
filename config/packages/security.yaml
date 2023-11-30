@@ -8,7 +8,7 @@ security:
     app_user_provider:
       entity:
         class: App\Entity\User
-        property: username
+        property: email
 
   role_hierarchy:
     ROLE_COMITE: [ ROLE_USER,ROLE_ADMIN ]

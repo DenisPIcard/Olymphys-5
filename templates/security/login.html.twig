@@ -11,8 +11,8 @@
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
         <h1 class="h3 mb-3 font-weight-normal">Connectez vous</h1>
-        <label for="inputUsername" class="sr-only">Pseudo</label>
-        <input autofocus class="form-control" id="inputUsername" name="_username" placeholder="Pseudo" required>
+        <label for="inputEmail" class="sr-only">Email</label>
+        <input autofocus class="form-control" id="inputEmail" name="_email" placeholder="Adresse mail" required>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="_password" id="inputPassword" class="form-control" placeholder="Mot de Passe"
                required>
