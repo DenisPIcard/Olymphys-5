@@ -70,27 +70,20 @@
                 {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[] %} <!--le jury n'a pas à déposer des fichiers -->
                     {% if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
                         {% if is_granted('ROLE_PROF') %}<!-- le prof , le comité, les organisateurs CIA sont habilités à déposer des fichiers -->
-                            {% if i<3 or i==4 %}
+                            {% if i<3  %}
                                 {% if (app.user.roles|filter(v => v =='ROLE_PROF')!=[]) %}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
-                                    
-                                    {% if date()>=app.session.get('edition').dateouverturesite %}
-                                        {% if app.session.get('concours')=='interacadémique' %}
-                                            {% if date()<= app.session.get('edition').datelimcia %}
-                                                {% if attrib==1 %}
-                                                    <button type="button" id="{{ fichieraffiche.id }}"
-                                                            data-toggle="modal"
-                                                            data-target="#modalfichier" data-typefichier="{{ i }}"
-                                                            data-idfichier="{{ fichieraffiche.id }}" title="Déposer"><i
-                                                                class="fas fa-upload"></i></button>
-                                                {% endif %}
-                                                {% if attrib== 0 %}
-                                                    <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} ) }}">
-                                                        <button type="button" title="Déposer"><i
-                                                                    class="fas fa-upload"></i>
-                                                        </button>
-                                                    </a>
-                                                {% endif %}
-                                            {% endif %}
+                                    {% if (app.session.get('concours')=='interacadémique') and (date()<= app.session.get('edition').datelimcia) and (date()>=app.session.get('edition').dateouverturesite) %}
+                                        {% if attrib==1 %}
+                                            <button type="button" id="{{ fichieraffiche.id }}" data-toggle="modal"
+                                                    data-target="#modalfichier" data-typefichier="{{ i }}"
+                                                    data-idfichier="{{ fichieraffiche.id }}" title="Déposer"><i
+                                                        class="fas fa-upload"></i></button>
+                                        {% endif %}
+                                        {% if attrib== 0 %}
+                                            <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} ) }}">
+                                                <button type="button" title="Déposer"><i class="fas fa-upload"></i>
+                                                </button>
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                     {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) %}
@@ -123,7 +116,7 @@
                                 {% endif %}
 
                             {% endif %}
-                            {% if i== 3 or i>=5 %}<!-- les autres fichiers sont déposables pour toute date -->
+                            {% if i== 3 or i>=5 or i==4 %}<!-- les autres fichiers sont déposables pour toute date -->
                                 {% if attrib==1 %}
                                     <button type="button" id="{{ fichieraffiche.id }}" data-toggle="modal"
                                             data-target="#modalfichier" data-typefichier="{{ i }}"
