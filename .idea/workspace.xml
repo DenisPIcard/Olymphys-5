@@ -4,18 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 20-11 quelques améliorations">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 28-11 filtres mémoires(suite)">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230101103713.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20231110224719.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20231119191045.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20231110225000.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CoreController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/adminfichiers/listefichiers.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminfichiers/listefichiers.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +42,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="modales_grdes_photos" />
+        <entry key="$PROJECT_DIR$" value="easyadmin4" />
       </map>
     </option>
     <option name="RECENT_COMMON_BRANCH" value="main" />
@@ -245,6 +242,9 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
       <path value="$PROJECT_DIR$/vendor/friendsofsymfony/jsrouting-bundle" />
       <path value="$PROJECT_DIR$/vendor/willdurand/jsonp-callback-validator" />
+      <path value="$PROJECT_DIR$/vendor/victor-prdh/recaptcha-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/twig-pack" />
+      <path value="$PROJECT_DIR$/vendor/google/recaptcha" />
     </include_path>
   </component>
   <component name="ProblemsViewState">
@@ -273,7 +273,7 @@
     &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;true&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5&quot;,
@@ -283,7 +283,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -623,6 +623,28 @@
       <workItem from="1700418509780" duration="10919000" />
       <workItem from="1700464149783" duration="38032000" />
       <workItem from="1700551121856" duration="4916000" />
+      <workItem from="1700566893661" duration="13299000" />
+      <workItem from="1700596977552" duration="452000" />
+      <workItem from="1700597740141" duration="5016000" />
+      <workItem from="1700633353738" duration="1492000" />
+      <workItem from="1700649401335" duration="1345000" />
+      <workItem from="1700681917581" duration="6641000" />
+      <workItem from="1700763880335" duration="7627000" />
+      <workItem from="1700807542553" duration="6303000" />
+      <workItem from="1700831913403" duration="1887000" />
+      <workItem from="1700942470481" duration="6643000" />
+      <workItem from="1701026907492" duration="3877000" />
+      <workItem from="1701034838757" duration="878000" />
+      <workItem from="1701077868739" duration="7591000" />
+      <workItem from="1701096995370" duration="8698000" />
+      <workItem from="1701155158364" duration="1369000" />
+      <workItem from="1701172889957" duration="589000" />
+      <workItem from="1701190712844" duration="372000" />
+      <workItem from="1701192603204" duration="9860000" />
+      <workItem from="1701257507074" duration="694000" />
+      <workItem from="1701274105283" duration="5604000" />
+      <workItem from="1701322178902" duration="1199000" />
+      <workItem from="1701345987275" duration="1284000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -967,7 +989,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1042,12 +1064,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="première ligne page inscriptions" />
-    <MESSAGE value="CyberjuryCIa, couleurs pour les équipes sélectionnées, mailing vers le jurésCia lors de la création de leur compte par l'orgacia" />
-    <MESSAGE value="CyberjuryCIa, amélioration du tableau de gestion des jurés et du tableau excel" />
-    <MESSAGE value="Ajustements avant la mise en ligne" />
-    <MESSAGE value="Correction du dysfonctionnement de vichuploader pour les carrousels" />
-    <MESSAGE value="Utilisation de la table coef dans le notesCias Repo et correction classement équipes sous-jury" />
     <MESSAGE value="Comit du 16-10-23 après réinstallation d'olymphy-5 en local" />
     <MESSAGE value="Comit du 22-10-23 amélioration saisie du tableau répartition des jurés cia" />
     <MESSAGE value="Comit du 23-10-23 apéliotion du cyberjury+ autres bricoles" />
@@ -1067,7 +1083,13 @@
     <MESSAGE value="Comit du 18-11 corrrection erreur de calcul du total des points d'une équipe avec mémoire" />
     <MESSAGE value="Comit du 20-11 mise au point de la saisie des horaires et salles cia" />
     <MESSAGE value="Comit du 20-11 quelques améliorations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 20-11 quelques améliorations" />
+    <MESSAGE value="Comit du 21-11 quelques améliorations suite, correction erreur de chargement questionnaire, supression colonne role en trop" />
+    <MESSAGE value="Comit du 22-captcha" />
+    <MESSAGE value="Comit du 23-11 filres mémoires" />
+    <MESSAGE value="Comit du 25-11 filtres mémoires(suite) + date lim ch" />
+    <MESSAGE value="Comit du 25-11 filtres mémoires(suite) + date lim charge fichier" />
+    <MESSAGE value="Comit du 28-11 filtres mémoires(suite)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 28-11 filtres mémoires(suite)" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
