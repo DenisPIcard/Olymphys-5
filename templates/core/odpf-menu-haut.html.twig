@@ -1,9 +1,19 @@
 <div class="row  justify-content-end">
     {# menu haut des pafes odpf #}
     <nav>
+
         {# utilise les fonctions nav de Bootstrap #}
         <ul class="nav flex-column flex-md-row">
             <li class="nav-item dropdown menu_haut">
+                <form action="{{ path('app_search') }}">
+                    <label for="site-search">Rechercher sur le site</label>
+                    <input type="search" id="site-search" name="search-text"/>
+
+                    <input type="submit" value="Rechercher">
+                </form>
+            </li>
+            <li class="nav-item dropdown menu_haut">
+
                 {#  ouvre un menu déroulant #}
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true"
                    aria-expanded="false">Foire aux questions</a>

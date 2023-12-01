@@ -45,8 +45,8 @@ class CoreController extends AbstractController
         $user = $this->getUser();
 
         $repository = $doctrine->getRepository(Edition::class);
-        $edition = $repository->findOneBy([], ['id' => 'desc']);
-        $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
+        $edition = $repository->findOneBy([], ['id' => 'desc']);//Edition en cous
+        $editionN1 = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);//Edition prcédente pour la période entre CN et ouverture du site
         $this->requestStack->getSession()->set('edition', $edition);
         $this->requestStack->getSession()->set('editionN1', $editionN1);
         if (null != $user) {

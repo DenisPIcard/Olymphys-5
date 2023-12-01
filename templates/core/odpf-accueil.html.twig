@@ -13,7 +13,7 @@
 {% block contenu %}
     {# va se placer dans le block contenu de base.html.twig #}
     <div id="barre_haut">
-       {#  trace une barre noire en haut de page : odpf.css l.35#}
+        {#  trace une barre noire en haut de page : odpf.css l.35 #}
     </div>
     <div id="wrapper">
         {# place une ligne gris foncé : odpf.css l.41 #}
@@ -25,11 +25,12 @@
             <div class="row justify-content-between">
                 {# place ensuite les images : logo et illustration : elles sont placées sur la ligne suivante #}
                 <div class="col-md-8 col-lg-5"><a href="{{ path('core_home') }}">
-                        <img  src="{{ asset('odpf/odpf-images/site-logo-398x106.png') }}" alt="Logo Olympiades"
-                              style="width:100%; height:auto"></a>
+                        <img src="{{ asset('odpf/odpf-images/site-logo-398x106.png') }}" alt="Logo Olympiades"
+                             style="width:100%; height:auto"></a>
                 </div>
                 <div class="col-md-8 col-lg-4 pr-0">
-                    <img src="{{ asset('odpf/odpf-images/home-rightcol-top2.png') }}" alt="image_en_tete" style="width:100%; height:auto">
+                    <img src="{{ asset('odpf/odpf-images/home-rightcol-top2.png') }}" alt="image_en_tete"
+                         style="width:100%; height:auto">
                 </div>
             </div>
             <div class="row">
@@ -103,7 +104,8 @@
                                 {% for actu in affActus %}
                                     <li>
                                         <p class="actus-home-titre">
-                                        <a href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a></p>
+                                            <a href="{{ path('core_actus', {tourn:'rien'}) }}">{{ actu.titre|raw }}</a>
+                                        </p>
                                         <p class="actus-home-introtext">{{ actu.texte|raw }} ...</p>
                                         <p class="actus-home-lireplus">
                                             <a class="lireplus" href="{{ path('core_actus', {tourn:'rien'}) }}"
@@ -181,7 +183,6 @@
                         <script async src="https://cse.google.com/cse.js?cx=d07702abaf7e74949">
                         </script>
                         <div class="gcse-searchbox-only"></div>
-
 
                     </div>
 

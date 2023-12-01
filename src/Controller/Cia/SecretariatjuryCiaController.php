@@ -86,7 +86,10 @@ class SecretariatjuryCiaController extends AbstractController
     {
         $em = $this->doctrine->getManager();
         $edition = $this->requestStack->getSession()->get('edition');
-
+        if ($edition == null) {
+            $this->requestStack->getSession()->set('info', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         if (new DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         }
@@ -186,6 +189,10 @@ class SecretariatjuryCiaController extends AbstractController
 
         // affiche les équipes dans l'ordre de la note brute
         $edition = $this->requestStack->getSession()->get('edition');
+        if ($edition == null) {
+            $this->requestStack->getSession()->set('info', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);
@@ -212,6 +219,10 @@ class SecretariatjuryCiaController extends AbstractController
 
         // affiche les équipes dans l'ordre de la note brute
         $edition = $this->requestStack->getSession()->get('edition');
+        if ($edition == null) {
+            $this->requestStack->getSession()->set('info', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
         $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
         $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);
@@ -234,6 +245,10 @@ class SecretariatjuryCiaController extends AbstractController
 
         // affiche les équipes dans l'ordre de la note brute
         $edition = $this->requestStack->getSession()->get('edition');
+        if ($edition == null) {
+            $this->requestStack->getSession()->set('info', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryCentres = $this->doctrine->getRepository(Centrescia::class);
         $repositoryJures = $this->doctrine->getRepository(JuresCia::class);
         $repositoryRangs = $this->doctrine->getRepository(RangsCia::class);

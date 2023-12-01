@@ -57,6 +57,9 @@ class OdpfFichierspasses
     #[ORM\Column(nullable: true)]
     private ?bool $publie;
 
+    #[ORM\ManyToOne(inversedBy: 'fichiers')]
+    private ?odpfFichierIndex $odpfFichierIndex = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -289,6 +292,18 @@ class OdpfFichierspasses
 
             }
         }
+        return $this;
+    }
+
+    public function getOdpfFichierIndex(): ?odpfFichierIndex
+    {
+        return $this->odpfFichierIndex;
+    }
+
+    public function setOdpfFichierIndex(?odpfFichierIndex $odpfFichierIndex): static
+    {
+        $this->odpfFichierIndex = $odpfFichierIndex;
+
         return $this;
     }
 
