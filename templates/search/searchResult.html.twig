@@ -1,0 +1,17 @@
+{% extends('base1.html.twig') %}
+
+
+{% block body %}
+    Resultats de la recherche : {{ searchText }}
+    {% if fichiers!=[] %}
+        {% for fichier in fichiers %}
+            <ul>
+                <li>
+                    {% set type= fichier.typefichier %}
+                    <a href="{{ asset('odpf/odpf-archives/'~fichier.editionspassees.edition~'/fichiers/'~type_fichier[type]~'/public/'~fichier.nomfichier) }}">{{ fichier.nomfichier }}</a>
+                </li>
+
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

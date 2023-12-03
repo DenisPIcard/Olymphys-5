@@ -10,6 +10,7 @@ use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfDocuments;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfFichierIndex;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfLogos;
 
@@ -37,7 +38,7 @@ class OdpfDashboardController extends AbstractDashboardController
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    #[Route("/odpfadmin", name:"odpfadmin")]
+    #[Route("/odpfadmin", name: "odpfadmin")]
     public function index(): Response
     {
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null) {
@@ -95,6 +96,7 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Logos du site', 'fa-solid fa-icons', OdpfLogos::class);
         yield MenuItem::linkToCrud('Carrousels', 'fa-solid fa-clapperboard', OdpfCarousels::class);
         yield MenuItem::linkToCrud('Partenaires', 'fa-solid fa-list', OdpfPartenaires::class);
+        yield MenuItem::linkToCrud('Index', 'fas fa-list', OdpfFichierIndex::class);
         yield MenuItem::subMenu('Les éditions passées', 'fa-solid fa-book-bookmark')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::linktoRoute('Aller à l\'admin du concours', 'fa-solid fa-marker', 'admin');
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
