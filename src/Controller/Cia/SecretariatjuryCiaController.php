@@ -619,7 +619,9 @@ class SecretariatjuryCiaController extends AbstractController
             ->where('e.centre =:centre')
             ->andWhere('e.edition =:edition')
             ->setParameters(['centre' => $centre, 'edition' => $this->requestStack->getSession()->get('edition')])
+            ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
+
         $horairesSalles = $this->doctrine->getRepository(HorairesSallesCia::class)->createQueryBuilder('h')
             ->leftJoin('h.equipe', 'eq')
             ->where('eq.centre =:centre')
@@ -724,7 +726,7 @@ class SecretariatjuryCiaController extends AbstractController
         $sheet->getStyle('A3')->applyFromArray($styleAlignment);
         $sheet->getStyle('A3')->getFont()->setSize(20);
 
-        $lettres = ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'L', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        $lettres = ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA'];
         $sheet->mergeCells('A2:' . $lettres[count($listeEquipes) - 1] . '2', Worksheet::MERGE_CELL_CONTENT_HIDE);
         $sheet->mergeCells('A3:' . $lettres[count($listeEquipes) - 1] . '3', Worksheet::MERGE_CELL_CONTENT_HIDE);
         $sheet->getRowDimension(2)->setRowHeight(20, 'pt');
