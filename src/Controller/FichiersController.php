@@ -119,8 +119,11 @@ class FichiersController extends AbstractController
 
         $dateconnect = new \Datetime('now');
         $dateciaN1 = $editionN1->getConcourscia();
+        $datecia = $editionN->getConcourscia();
         $dateOuvertureSite = $editionN->getDateouverturesite();
         $dateconnect > $dateciaN1 and $dateconnect < $dateOuvertureSite ? $phase = 'national' : $phase = 'interacadémique';
+        $dateconnect > $datecia and $dateconnect > $dateOuvertureSite ? $phase = 'national' : $phase = 'interacadémique';
+
         $user = $this->getUser();
         $roles = $user->getRoles();
         $jure = null;
@@ -733,7 +736,7 @@ class FichiersController extends AbstractController
             $id_equipe = $Infos[4];
         }
         $concours = $Infos[1];
-
+        
         $choix = $Infos[2];
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);

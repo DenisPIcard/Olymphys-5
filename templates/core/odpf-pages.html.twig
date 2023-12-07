@@ -125,6 +125,7 @@
                                                 width="500" height="300">
                                             {% else %}
                                                 {{ texte|raw }}
+
                                             {% endif %}
                                             {% if choix == 'inscriptions' %}
                                         <ul>
@@ -143,6 +144,7 @@
                         <div class="col-centre">
                             <h2 class="sous-titre">{{ titre|raw }}</h2>{# titre et texte viennent de l'OdpfAticle #}
                             <div class="contenu">
+
                                 {{ texte|raw }}
                             </div>
                         </div>
@@ -171,6 +173,10 @@
                         {% if article is defined %}
                             {% if article.carousel != null %}
                                 {{ include('OdpfAdmin/carousel.html.twig') }}
+                            {% endif %}
+                            {% if titre =='Les Concours Interacadémiques' %}
+                                <a href="{{ path('photos_voir_galerie',{'infos':'editionEnCours-'~app.session.get('edition').id}) }}">Voir
+                                    la galerie des concours interacadémiques</a>
                             {% endif %}
                         {% endif %}
                     {% endif %}

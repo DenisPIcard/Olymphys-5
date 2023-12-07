@@ -12,12 +12,12 @@
         <div id="titre-equipe" class="color" style="color:blue">
             {% if  liste_equipes[0].numero <100 %}
                 Equipe {{ liste_equipes[0].numero }}:
-                {% endif %}
+            {% endif %}
             {% if  liste_equipes[0].lettre!=null %}
                 ({{ liste_equipes[0].lettre }}) :
             {% endif %}
 
-             {{ liste_equipes[0].Titreprojet }} </div>
+            {{ liste_equipes[0].Titreprojet }} </div>
     {% elseif liste_equipes|length >1 %}
         <div class="color" style="color:blue">Edition {{ edition.edition }}  </div>
     {% endif %}
@@ -33,128 +33,138 @@
                     <a class="btn-primary" href="{{ path('odpf_editionspassees_equipe', {'id':liste_equipes[0].id}) }}">Voir
                         l'équipe</a>
                 {% endif %}
-                <a class="btn-primary"
-                   href="{{ path('photos_voir_galerie', {'infos':'edition-'~liste_equipes[0].editionspassees.id}) }}">Galerie de
-                    l'édition
-                </a>
+                {% if edition.edition != app.session.get('edition').ed or date()>app.session.get('edition').concoursCn %}
+                    <a class="btn-primary"
+                       href="{{ path('photos_voir_galerie', {'infos':'edition-'~liste_equipes[0].editionspassees.id}) }}">Galerie
+                        de
+                        l'édition
+                    </a>
+                {% endif %}
             </div>
         </div>
-    <!--Carousel Wrapper-->
-        <div class="row mx-auto my-auto " >
-        <div class="col-lg-10" style="margin: auto">
+        <!--Carousel Wrapper-->
+        <div class="row mx-auto my-auto ">
+            <div class="col-lg-10" style="margin: auto">
 
 
-            <div id="carousel" class="carousel slide w-100" data-ride="carousel" >
-                <ol class="carousel-indicators">
-                    {% set i = 0 %}
-                    {% for photo in photos %}
-                        {% if i==0 %}
-                            <li data-target="#carousel" data-slide-to="{{ i }}" class="active"></li>
-                        {% endif %}
-                        {% if i>0 %}
-                            <li data-target="#carousel" data-slide-to="{{ i }}"></li>
-                        {% endif %}
-                        {% set i =i+ 1 %}
-                    {% endfor %}
-                </ol>
-                <!--Slides-->
-                <div class="black" >
-                    <div class="carousel-inner w-100 black" role="listbox">
-
-                        {% set i = 1 %}
+                <div id="carousel" class="carousel slide w-100" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        {% set i = 0 %}
                         {% for photo in photos %}
-                            {% if i ==1 %}
-                                <div class="carousel-item col-lg-4 col-md-6 active">
-                                    <div class="container-fluid">
-
-
-                                        <div class="containercarousel" data-toggle="modal"  data-target="#" data-numimage="{{ i }}">
-                                            <div class="d-flex h-100 align-items-center justify-content-center">
-                                                <div class="p-2">
-                                                    <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}" target="_blank">
-                                                        <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
-                                                             class="img-fluid" id="photo{{ i }}">
-                                                    </a>
-                                                </div>
-
-                                                <div class="p-2">
-                                                    {% if photo.coment !='' %}
-                                                        <div class="text" id="caption{{ i }}">
-                                                            <font size="-2">{{ photo.coment }}</font>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                            {% if i==0 %}
+                                <li data-target="#carousel" data-slide-to="{{ i }}" class="active"></li>
                             {% endif %}
-                            {% if i>1 %}
-                                <div class="carousel-item col-lg-4 col-md-6">
-                                    <div class="container-fluid">
-
-
-                                        <div class="containercarousel"  data-toggle="modal"  data-target="#" data-numimage="{{ i }}">
-                                            <div class="d-flex h-100 align-items-center justify-content-center">
-                                                <div class="p-2">
-                                                    <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}" target="_blank">
-                                                        <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
-                                                             class="img-fluid" id="photo{{ i }}">
-                                                    </a>
-                                                </div>
-
-                                                <div class="p-2">
-                                                    {% if photo.coment !='' %}
-                                                        <div class="text" id="caption{{ i }}">
-                                                            <font size="-2">{{ photo.coment }}</font>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                            {% if i>0 %}
+                                <li data-target="#carousel" data-slide-to="{{ i }}"></li>
                             {% endif %}
-                            {% set i = i+1 %}
+                            {% set i =i+ 1 %}
                         {% endfor %}
+                    </ol>
+                    <!--Slides-->
+                    <div class="black">
+                        <div class="carousel-inner w-100 black" role="listbox">
 
+                            {% set i = 1 %}
+                            {% for photo in photos %}
+                                {% if i ==1 %}
+                                    <div class="carousel-item col-lg-4 col-md-6 active">
+                                        <div class="container-fluid">
+
+
+                                            <div class="containercarousel" data-toggle="modal" data-target="#"
+                                                 data-numimage="{{ i }}">
+                                                <div class="d-flex h-100 align-items-center justify-content-center">
+                                                    <div class="p-2">
+                                                        <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}"
+                                                           target="_blank">
+                                                            <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
+                                                                 class="img-fluid" id="photo{{ i }}">
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="p-2">
+                                                        {% if photo.coment !='' %}
+                                                            <div class="text" id="caption{{ i }}">
+                                                                <font size="-2">{{ photo.coment }}</font>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                {% endif %}
+                                {% if i>1 %}
+                                    <div class="carousel-item col-lg-4 col-md-6">
+                                        <div class="container-fluid">
+
+
+                                            <div class="containercarousel" data-toggle="modal" data-target="#"
+                                                 data-numimage="{{ i }}">
+                                                <div class="d-flex h-100 align-items-center justify-content-center">
+                                                    <div class="p-2">
+                                                        <a href="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/'~photo.photo) }}"
+                                                           target="_blank">
+                                                            <img src="{{ asset('odpf/odpf-archives/'~edition.edition~'/photoseq/thumbs/'~photo.photo) }}"
+                                                                 class="img-fluid" id="photo{{ i }}">
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="p-2">
+                                                        {% if photo.coment !='' %}
+                                                            <div class="text" id="caption{{ i }}">
+                                                                <font size="-2">{{ photo.coment }}</font>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                {% endif %}
+                                {% set i = i+1 %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                    <div style="background:black;">
+                        <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                            <img src="{{ asset('odpf/odpf-images/diapo-arwl-37x37.png') }}"
+                                 style="align-self: flex-end; "
+                                 alt=""/>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                            <img src="{{ asset('odpf/odpf-images/diapo-arwr-37x37.png') }}"
+                                 style="align-self: flex-end;"
+                                 alt=""/>
+                            <span class="sr-only">Next</span>
+                        </a>
                     </div>
                 </div>
-
-                <div style="background:black;">
-                    <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
-                        <img src="{{ asset('odpf/odpf-images/diapo-arwl-37x37.png') }}" style="align-self: flex-end; "
-                             alt=""/>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
-                        <img src="{{ asset('odpf/odpf-images/diapo-arwr-37x37.png') }}" style="align-self: flex-end;"
-                             alt=""/>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </div>
             </div>
+
+
+            <br>
         </div>
-
-
-
-        <br>
-    </div>
     </div>
     {% set j=1 %}
     <div class="text-center col-lg-8 col-md-6" style="margin:auto">
-        <div class="smallsize">{{ i-1 }} photos   Cliquer sur la photo du diaporama pour l'obtenir en haute résolution</div>
+        <div class="smallsize">{{ i-1 }} photos Cliquer sur la photo du diaporama pour l'obtenir en haute résolution
+        </div>
 
         <br>
         {% for photoequipe in photosequipes %}
             {% set class= 'btn btn-warning' %}
-            {%  if photoequipe.equipepassee==liste_equipes[0] %}
-                {% set class= 'btn btn-danger'%}
+            {% if photoequipe.equipepassee==liste_equipes[0] %}
+                {% set class= 'btn btn-danger' %}
             {% endif %}
             <a href="{{ path('photos_voir_galerie',{infos:'equipe-'~photoequipe.equipepassee.id}) }}"
-               title="{{ photoequipe.equipepassee.titreProjet }}" type="button" class="{{ class }}" style="width: 80px;">
+               title="{{ photoequipe.equipepassee.titreProjet }}" type="button" class="{{ class }}"
+               style="width: 80px;">
 
                 {% if  photoequipe.equipepassee.numero != null %}
                     {{ photoequipe.equipepassee.numero }}
@@ -169,7 +179,7 @@
 
     </div>
     <!-- The Modals -->
-{% include('modales/modaleGalerie.html.twig') %}
+    {% include('modales/modaleGalerie.html.twig') %}
 
 
 {% endblock %}

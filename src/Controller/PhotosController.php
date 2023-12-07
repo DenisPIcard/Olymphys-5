@@ -13,6 +13,7 @@ use App\Form\ConfirmType;
 use App\Form\PhotosType;
 use Imagick;
 use ImagickException;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -45,8 +46,9 @@ class PhotosController extends AbstractController
         $this->requestStack = $requestStack;
         $this->doctrine = $doctrine;
     }
+
     #[IsGranted("ROLE_PROF")]
-    #[Route("/photos/deposephotos,{concours}", name:"photos_deposephotos")]
+    #[Route("/photos/deposephotos,{concours}", name: "photos_deposephotos")]
     public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {
         $em = $this->doctrine->getManager();
@@ -79,12 +81,12 @@ class PhotosController extends AbstractController
             $equipe = $form->get('equipe')->getData();
 //$equipe=$repositoryEquipesadmin->findOneBy(['id'=>$id_equipe]);
             $nom_equipe = $equipe->getTitreProjet();
-            $edition=$equipe->getEdition();
+            $edition = $equipe->getEdition();
             $numero_equipe = $equipe->getNumero();
             $files = $form->get('photoFiles')->getData();
             $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $edition->getEd()]);
             $equipepassee = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees' => $editionpassee, 'numero' => $equipe->getNumero()]);
-            $type=true;
+            $type = true;
             if ($files) {
                 $nombre = count($files);
                 $fichiers_erreurs = [];
@@ -99,18 +101,18 @@ class PhotosController extends AbstractController
                             ])
                         ]
                     );
-                    $typeImage= $file->guessExtension();//Les .HEIC donnent jpg
-                    $originalFilename=$file->getClientOriginalName();
+                    $typeImage = $file->guessExtension();//Les .HEIC donnent jpg
+                    $originalFilename = $file->getClientOriginalName();
                     $parsedName = explode('.', $originalFilename);
                     $ext = end($parsedName);// détecte les .JPG et .HEIC
 
-                    if (($typeImage!='jpg') or ($ext != 'jpg')) {// on transforme  le fichier en .JPG
+                    if (($typeImage != 'jpg') or ($ext != 'jpg')) {// on transforme  le fichier en .JPG
                         //dd('OK');
                         $nameExtLess = $parsedName[0];
-                        $imax=count($parsedName );
-                        for ($i=1;$i<=$imax-2;$i++) {// dans le cas où le nom de  fichier comporte plusieurs points
-                           $nameExtLess =$nameExtLess.'.'.$parsedName[$i];
-                            }
+                        $imax = count($parsedName);
+                        for ($i = 1; $i <= $imax - 2; $i++) {// dans le cas où le nom de  fichier comporte plusieurs points
+                            $nameExtLess = $nameExtLess . '.' . $parsedName[$i];
+                        }
                         try {//on dépose le fichier dans le temp
                             $file->move(
                                 'temp/',
@@ -119,26 +121,25 @@ class PhotosController extends AbstractController
                         } catch (FileException $e) {
 
                         }
-                        $this->setImageType( $originalFilename, $nameExtLess,'temp/');//appelle de la fonction de transformation de la compression
+                        $this->setImageType($originalFilename, $nameExtLess, 'temp/');//appelle de la fonction de transformation de la compression
 
-                        if (isset($_REQUEST['erreur'])){
+                        if (isset($_REQUEST['erreur'])) {
 
-                            unlink('temp/'. $originalFilename);
-                            $type=false;
+                            unlink('temp/' . $originalFilename);
+                            $type = false;
                         }
                         if (!isset($_REQUEST['erreur'])) {
-                            $type=true;
-                            if(file_exists('temp/'.$nameExtLess.'.jpg')){
-                                $size =filesize('temp/'.$nameExtLess.'.jpg');
-                            }
-                            else($size=10000000);
-                            $file=new UploadedFile('temp/'.$nameExtLess.'.jpg',$nameExtLess.'.jpg',$size , null, true);
-                            unlink('temp/'. $originalFilename);
-                          }
+                            $type = true;
+                            if (file_exists('temp/' . $nameExtLess . '.jpg')) {
+                                $size = filesize('temp/' . $nameExtLess . '.jpg');
+                            } else($size = 10000000);
+                            $file = new UploadedFile('temp/' . $nameExtLess . '.jpg', $nameExtLess . '.jpg', $size, null, true);
+                            unlink('temp/' . $originalFilename);
+                        }
                     }
 
 
-                    if (($violations->count() > 0) or ($type==false)) {
+                    if (($violations->count() > 0) or ($type == false)) {
                         $violation = '';
                         /** @var ConstraintViolation $violation */
                         if (isset($violations[0])) {
@@ -153,14 +154,14 @@ class PhotosController extends AbstractController
                         $photo = new Photos();
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if (($equipe->getLettre() === null) or ($concours=='inter') )  {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
+                        if (($equipe->getLettre() === null) or ($concours == 'inter')) {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
                             $photo->setNational(FALSE);
                         }
-                        if (($equipe->getLettre() !== null) or ($concours=='cn')) {
+                        if (($equipe->getLettre() !== null) or ($concours == 'cn')) {
 
                             $photo->setNational(TRUE);
                         }
-                        if ($equipe->getNumero()>=100){ //ces "équipes" sont des équipes technique remise des prix, ambiance du concours, etc, ...
+                        if ($equipe->getNumero() >= 100) { //ces "équipes" sont des équipes technique remise des prix, ambiance du concours, etc, ...
                             $photo->setNational(TRUE);
                         }
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
@@ -215,7 +216,8 @@ class PhotosController extends AbstractController
             'form' => $Form, 'edition' => $edition, 'concours' => $concours,
         ]);
     }
-    public function setImageType($image,$nameExtLess,$path)
+
+    public function setImageType($image, $nameExtLess, $path)
     {
         try {
             $imageOrig = new Imagick($path . $image);
@@ -224,18 +226,17 @@ class PhotosController extends AbstractController
             $imageOrig->setType(Imagick::IMGTYPE_TRUECOLOR);
 
             $imageOrig->writeImage($path . $nameExtLess . '.jpg');
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
 
 
-            $_REQUEST['erreur']='yes';
+            $_REQUEST['erreur'] = 'yes';
 
         }
 
     }
 
     #[Isgranted("ROLE_PROF")]
-    #[Route("/photos/gestion_photos, {infos}", name:"photos_gestion_photos")]
+    #[Route("/photos/gestion_photos, {infos}", name: "photos_gestion_photos")]
     public function gestion_photos(Request $request, $infos)
     {
         $choix = explode('-', $infos)[3];
@@ -262,8 +263,8 @@ class PhotosController extends AbstractController
         $concourseditioncentre = explode('-', $infos);
         $concours = $concourseditioncentre[0];
         $editionN = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
-        $editionN1 =  $repositoryEdition->findOneBy(['ed'=>$editionN->getEd()-1]);
-        new DateTime('now')>=$this->requestStack->getSession()->get('ouverturesite')?$edition=$editionN:$edition=$editionN1;
+        $editionN1 = $repositoryEdition->findOneBy(['ed' => $editionN->getEd() - 1]);
+        new DateTime('now') >= $this->requestStack->getSession()->get('ouverturesite') ? $edition = $editionN : $edition = $editionN1;
         if ($concours == 'inter') {
             $qb = $repositoryEquipesadmin->createQueryBuilder('e')
                 ->andWhere('e.edition =:edition')
@@ -325,11 +326,10 @@ class PhotosController extends AbstractController
                 ->andWhere('eq.idProf1 =:prof or eq.idProf2 =:prof')
                 ->setParameter('prof', $id_user)
                 ->andWhere('eq.edition =:edition')
-                ->setParameter('edition',$edition)
+                ->setParameter('edition', $edition)
                 ->getQuery()->getResult();
 
             $qb2 = $repositoryPhotos->createQueryBuilder('p')
-
                 ->andWhere('p.national = 1')
                 ->andWhere('p.equipe in(:equipes)')
                 ->setParameter('equipes', $equipes)
@@ -337,14 +337,14 @@ class PhotosController extends AbstractController
                 ->addOrderBy('e.lettre', 'ASC');
 
 
-            }
-            $liste_photos = $qb2->getQuery()->getResult();
-            if (!$liste_photos) {
-                $request->getSession()
-                    ->getFlashBag()
-                    ->add('info', 'Pas de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
-                return $this->redirectToRoute('core_home');
-            }
+        }
+        $liste_photos = $qb2->getQuery()->getResult();
+        if (!$liste_photos) {
+            $request->getSession()
+                ->getFlashBag()
+                ->add('info', 'Pas de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
+            return $this->redirectToRoute('core_home');
+        }
 
         $i = 0;
         foreach ($liste_photos as $photo) {
@@ -353,15 +353,14 @@ class PhotosController extends AbstractController
 //if($photo->getComent()==null){$data=$photo->getEquipe()->getTitreProjet();}
 //else {$data=$photo->getComent();}
 
-            $form[$i]->add('equipe',EntityType::class,[
-                        'class'=>Equipesadmin::class,
-                        'choices'=>$equipes,
-                    ])
-                    ->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
-                    ->add('coment', TextType::class, [
+            $form[$i]->add('equipe', EntityType::class, [
+                'class' => Equipesadmin::class,
+                'choices' => $equipes,
+            ])
+                ->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
+                ->add('coment', TextType::class, [
                     'required' => false,
-                    ])
-                    ;
+                ]);
 
             if ($concours == 'inter') {
                 $form[$i]->add('equipe', EntityType::class, [
@@ -435,7 +434,7 @@ class PhotosController extends AbstractController
     }
 
     #[IsGranted("ROLE_PROF")]
-    #[Route("/photos/confirme_efface_photo, {concours_photoid_infos}", name:"photos_confirme_efface_photo")]
+    #[Route("/photos/confirme_efface_photo, {concours_photoid_infos}", name: "photos_confirme_efface_photo")]
     public function confirme_efface_photo(Request $request, $concours_photoid_infos)
     {
         $filesystem = new Filesystem();
@@ -477,7 +476,7 @@ class PhotosController extends AbstractController
 
     }
 
-    #[Route("/photos/voirgalerie {infos}", name:"photos_voir_galerie")]
+    #[Route("/photos/voirgalerie {infos}", name: "photos_voir_galerie")]
     public function voirgalerie(Request $request, $infos)
     {
         $repositoryPhotos = $this->doctrine
@@ -487,21 +486,31 @@ class PhotosController extends AbstractController
             $idEquipe = explode('-', $infos)[1];
 
             $equipe = $this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['id' => $idEquipe]);
-            $edition=$equipe->getEditionspassees();
-            $photosequipes=$this->getPhotosEquipes($edition);
+            $edition = $equipe->getEditionspassees();
+            $photosequipes = $this->getPhotosEquipes($edition);
             $photos = $repositoryPhotos->findBy(['equipepassee' => $equipe]);
             $listeEquipes = [$equipe];
             $edition = $equipe->getEditionspassees();
-            return $this->render('photos/affiche_galerie_equipe.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition,'photosequipes'=>$photosequipes]);
+            return $this->render('photos/affiche_galerie_equipe.html.twig', ['photos' => $photos, 'liste_equipes' => $listeEquipes, 'edition' => $edition, 'photosequipes' => $photosequipes]);
 
         }
-        if (explode('-', $infos)[0] == 'edition') {
+        if (explode('-', $infos)[0] == 'edition' or explode('-', $infos)[0] == 'editionEnCours') {
 
             $idEdition = explode('-', $infos)[1];
-            $edition = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
 
-           $photos=$this->getPhotosEquipes($edition);
-           $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)
+            if (explode('-', $infos)[0] == 'edition') {
+
+
+                $edition = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
+            }
+            if (explode('-', $infos)[0] == 'editionEnCours') {
+
+                $editionEnCours = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
+
+                $edition = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition' => $editionEnCours->getEd()]);
+            }
+            $photos = $this->getPhotosEquipes($edition);
+            $listeEquipes = $this->doctrine->getRepository(OdpfEquipesPassees::class)
                 ->createQueryBuilder('e')
                 ->andWhere('e.editionspassees =:edition')
                 ->setParameter('edition', $edition)
@@ -517,6 +526,7 @@ class PhotosController extends AbstractController
         };
 
     }
+
     public function getPhotosEquipes($edition)
     {
         $repositoryPhotos = $this->doctrine
@@ -536,7 +546,7 @@ class PhotosController extends AbstractController
 
             if (null != $listPhotos) {
                 $rand_keys = array_rand($listPhotos, 1);
-                $equipe->getNumero()!==null?$photos[$equipe->getNumero()] = $listPhotos[$rand_keys]:$photos[$equipe->getLettre()] = $listPhotos[$rand_keys];
+                $equipe->getNumero() !== null ? $photos[$equipe->getNumero()] = $listPhotos[$rand_keys] : $photos[$equipe->getLettre()] = $listPhotos[$rand_keys];
             }
 
         }
