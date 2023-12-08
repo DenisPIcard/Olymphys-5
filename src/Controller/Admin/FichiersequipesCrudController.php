@@ -613,7 +613,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         })->setFormTypeOptions(['placeholder' => 'Non',
             'required' => false,
             'mapped' => true,]);
-        $editionEd = TextareaField::new('edition.ed', 'Edition');
+        $editionEd = TextareaField::new('edition', 'Edition');
         $equipelibel = AssociationField::new('equipe', 'Equipe')->setSortable(true);
         if ($numtypefichier != 6) {
             $equipeNumero = IntegerField::new('equipe.numero', 'numero')->setSortable(true);
@@ -631,7 +631,11 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
         }
         if (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $fichier, $typefichier, $national, $publie, $updatedAt, $nomautorisation, $edition, $equipe, $eleve, $prof];
+            if ($numtypefichier == 6) {
+                return [$fichier, $nomautorisation, $typefichier, $updatedAt, $nomautorisation, $eleve, $prof];
+            } else {
+                return [$fichier, $typefichier, $national, $publie, $updatedAt, $edition, $equipe];
+            }
         }
         if (Crud::PAGE_NEW === $pageName) {
 

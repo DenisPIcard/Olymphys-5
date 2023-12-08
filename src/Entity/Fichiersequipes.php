@@ -54,7 +54,7 @@ class Fichiersequipes //extends BaseMedia
     private ?Edition $edition = null;
 
 
-    #[ORM\OneToOne(inversedBy: 'autorisationphotos', cascade: ['persist'])]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Elevesinter $eleve = null;
 
 

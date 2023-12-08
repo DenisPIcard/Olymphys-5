@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Controller\Admin\Filter\CustomEquipeFilter;
+use App\Controller\Admin\Filter\CustomEquipeSelectionnesFilter;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
@@ -80,6 +81,14 @@ class ElevesinterCrudController extends AbstractCrudController
             $crud->setPageTitle('index', 'Liste des élèves ' . $equipeTitre);
 
         }
+        if (isset($_REQUEST['filters']['selectionnes'])) {
+            $selectionnes = $_REQUEST['filters']['selectionnes'];
+            $selectionnes == true ? $qualite = 'sélectionnés' : $qualite = 'non-sélectionnés';
+            $equipeTitre = $qualite;
+
+            $crud->setPageTitle('index', 'Liste des élèves ' . $equipeTitre);
+
+        }
 
         if ($_REQUEST['crudAction'] == 'edit') {
             $idEleve = $_REQUEST['entityId'];
@@ -90,7 +99,7 @@ class ElevesinterCrudController extends AbstractCrudController
         }
 
         return $crud
-            ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id', 'equipe.edition', 'equipe.numero', 'equipe.titreProjet', 'equipe.lettre'])
+            //->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id', 'equipe.edition', 'equipe.numero', 'equipe.titreProjet', 'equipe.lettre'])
             ->overrideTemplate('layout', 'bundles/EasyAdminBundle/list_eleves.html.twig');
     }
 
@@ -98,7 +107,8 @@ class ElevesinterCrudController extends AbstractCrudController
     {
         return $filters
             ->add(CustomEquipeFilter::new('equipe'))
-            ->add(CustomEditionFilter::new('edition'));
+            ->add(CustomEditionFilter::new('edition'))
+            ->add(customEquipeSelectionnesFilter::new('selectionnes'));
 
 
     }
@@ -129,7 +139,7 @@ class ElevesinterCrudController extends AbstractCrudController
             $actions->add(Crud::PAGE_INDEX, $tableauexcelelevesequipe);
         }
 
-        if (((!isset($_REQUEST['filters'])) or (isset($_REQUEST['filters']['edition']))) and (!isset($_REQUEST['filters']['equipe']))) {
+        if (((!isset($_REQUEST['filters'])) or (isset($_REQUEST['filters']['edition']))) or (isset($_REQUEST['filters']['selectionnes'])) and (!isset($_REQUEST['filters']['equipe']))) {
             if (new DateTime('now') < $session->get('dateouverturesite')) {
                 $editionId = $repositoryEdition->findOneBy(['ed' => $session->get('edition')->getEd() - 1])->getId();
             }
@@ -173,33 +183,45 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setParameter('edition', $edition)
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
-        $nom = TextField::new('nom')->setSortable(true);
-        $prenom = TextField::new('prenom')->setSortable(true);
-        $genre = TextField::new('genre');
-        $courriel = TextField::new('courriel');
-        $equipe = AssociationField::new('equipe')->setFormTypeOptions(['choices' => $listEquipes])->setSortable(true);;
-        $id = IntegerField::new('id', 'ID');
-        $numsite = IntegerField::new('numsite');
-        $classe = TextField::new('classe');
-        $autorisationphotos = AssociationField::new('autorisationphotos');
+        /* $nom = TextField::new('nom')->setSortable(true);
+         $prenom = TextField::new('prenom')->setSortable(true);
+         $genre = TextField::new('genre');
+         $courriel = TextField::new('courriel');
+         $equipe = AssociationField::new('equipe')->setFormTypeOptions(['choices' => $listEquipes])->setSortable(true);;
+         $id = IntegerField::new('id', 'ID');
+         $numsite = IntegerField::new('numsite');
+         $classe = TextField::new('classe');
+         $autorisationphotos = AssociationField::new('autorisationphotos');
 
-        $equipeNumero = IntegerField::new('equipe.numero', ' Numéro équipe')->setSortable(true);
-        $equipeTitreProjet = TextareaField::new('equipe.titreProjet', 'Projet')->setSortable(true);
-        $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville')->setSortable(true);
-        $equipeEdition = TextareaField::new('equipe.edition', 'Edition');
-        $autorisationphotosFichier = AssociationField::new('autorisationphotos', 'Autorisation photos');
+         $equipeNumero = IntegerField::new('equipe.numero', ' Numéro équipe')->setSortable(true);
+         $equipeTitreProjet = TextareaField::new('equipe.titreProjet', 'Projet')->setSortable(true);
+         $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville')->setSortable(true);
+         $equipeEdition = TextareaField::new('equipe.edition', 'Edition');
+         $autorisationphotosFichier = AssociationField::new('autorisationphotos', 'Autorisation photos');
 
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$equipeEdition, $nom, $prenom, $genre, $classe, $courriel, $equipe, $autorisationphotos];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$nom, $prenom, $genre, $courriel, $equipe];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$nom, $prenom, $genre, $classe, $courriel, $equipe];
-        }
-        return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
-
+         if (Crud::PAGE_INDEX === $pageName) {
+             return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
+         } elseif (Crud::PAGE_DETAIL === $pageName) {
+             return [$equipeEdition, $nom, $prenom, $genre, $classe, $courriel, $equipe, $autorisationphotos];
+         } elseif (Crud::PAGE_NEW === $pageName) {
+             return [$nom, $prenom, $genre, $courriel, $equipe];
+         } elseif (Crud::PAGE_EDIT === $pageName) {
+             return [$nom, $prenom, $genre, $classe, $courriel, $equipe];
+         }*/
+        //return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
+        return [
+            yield TextareaField::new('equipe.edition', 'Edition'),
+            yield TextField::new('nom')->setSortable(true),
+            yield TextField::new('prenom')->setSortable(true),
+            yield TextField::new('genre'),
+            yield TextField::new('classe')->hideOnIndex()->hideOnForm(),
+            yield AssociationField::new('equipe')->setFormTypeOptions(['choices' => $listEquipes])->setSortable(true)->hideOnIndex(),
+            yield IntegerField::new('equipe.numero', ' Numéro équipe')->setSortable(true),
+            yield TextareaField::new('equipe.titreProjet', 'Projet')->setSortable(true),
+            yield TextareaField::new('equipe.lyceeLocalite', 'ville')->setSortable(true),
+            yield AssociationField::new('autorisationphotos')->onlyOnDetail(),
+            yield AssociationField::new('autorisationphotos', 'Autorisation photos')->onlyOnIndex()
+        ];
     }
 
     /*public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -267,6 +289,7 @@ class ElevesinterCrudController extends AbstractCrudController
     }*/
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+
         $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $repositoryEquipesadmin = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
         $session = $this->requestStack->getSession();
@@ -278,6 +301,7 @@ class ElevesinterCrudController extends AbstractCrudController
         if (!isset($_REQUEST['filters'])) {
             $response->join('e.equipe', 'eq')
                 ->andWhere('eq.edition =:edition')
+                ->andWhere('eq.inscrite = TRUE')
                 ->setParameter('edition', $edition)
                 ->addOrderBy('eq.numero', 'ASC');
         }
@@ -295,9 +319,21 @@ class ElevesinterCrudController extends AbstractCrudController
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
                 $response->join('e.equipe', 'eq')
                     ->andWhere('eq.edition =:edition')
+                    ->andWhere('eq.inscrite = TRUE')
                     ->setParameter('edition', $edition);
             }
+            if (isset($_REQUEST['filters']['selectionnes'])) {
 
+                $selectionne = $_REQUEST['filters']['selectionnes'];
+
+                $response->join('e.equipe', 'eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->andWhere('eq.selectionnee =:selectionnee')
+                    ->andWhere('eq.inscrite = TRUE')
+                    ->setParameter('selectionnee', $selectionne)
+                    ->setParameter('edition', $edition)
+                    ->addOrderBy('eq.numero', 'ASC');
+            }
 
         }
 
@@ -402,7 +438,8 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setCellValue('H' . $ligne, 'Equipe')
             ->setCellValue('I' . $ligne, 'Nom du lycée')
             ->setCellValue('J' . $ligne, 'Commune')
-            ->setCellValue('K' . $ligne, 'Académie');
+            ->setCellValue('K' . $ligne, 'Académie')
+            ->setCellValue('L' . $ligne, 'Centre');
 
         $ligne += 1;
 
@@ -421,7 +458,8 @@ class ElevesinterCrudController extends AbstractCrudController
                 ->setCellValue('H' . $ligne, $eleve->getEquipe())
                 ->setCellValue('I' . $ligne, $uai->getNom())
                 ->setCellValue('J' . $ligne, $uai->getCommune())
-                ->setCellValue('K' . $ligne, $uai->getAcademie());
+                ->setCellValue('K' . $ligne, $uai->getAcademie())
+                ->setCellValue('L' . $ligne, $eleve->getEquipe()->getCentre()->getCentre());
 
             $ligne += 1;
         }

@@ -288,9 +288,10 @@ class EquipesadminCrudController extends AbstractCrudController
                     ->setParameter('centre', $centre);
             }
             if (isset($_REQUEST['filters']['selectionnee'])) {
-
+                $selectionnee = $_REQUEST['filters']['selectionnee'];
                 $qb->andWhere('e.selectionnee =:selectionnee')
-                    ->setParameter('selectionnee', TRUE);
+                    ->setParameter('selectionnee', $selectionnee)
+                    ;
             }
 
         }
