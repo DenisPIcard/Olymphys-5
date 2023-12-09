@@ -210,7 +210,7 @@ class ElevesinterCrudController extends AbstractCrudController
          }*/
         //return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
         return [
-            yield TextareaField::new('equipe.edition', 'Edition'),
+            yield TextField::new('equipe.edition', 'Edition'),
             yield TextField::new('nom')->setSortable(true),
             yield TextField::new('prenom')->setSortable(true),
             yield TextField::new('genre'),
