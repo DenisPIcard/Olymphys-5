@@ -213,7 +213,7 @@ class Equipesadmin
             return $infoequipe;
 
         }
-        return $this->$edition->getEd() . '-' . $this->titreProjet;
+        return $this->edition->getEd() . '-' . $this->titreProjet;
     }
 
 

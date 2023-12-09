@@ -736,7 +736,7 @@ class FichiersController extends AbstractController
             $id_equipe = $Infos[4];
         }
         $concours = $Infos[1];
-        
+
         $choix = $Infos[2];
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);

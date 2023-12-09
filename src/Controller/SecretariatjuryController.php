@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Cadeaux;
+use App\Entity\Centrescia;
+use App\Entity\Cia\HorairesSallesCia;
+use App\Entity\Cia\JuresCia;
+use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;

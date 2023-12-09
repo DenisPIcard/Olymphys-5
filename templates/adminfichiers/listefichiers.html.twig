@@ -70,7 +70,7 @@
                 {% if app.user.roles|filter(v => v =='ROLE_JURYCIA')==[] %} <!--le jury n'a pas à déposer des fichiers -->
                     {% if app.user.roles|filter(v => v =='ROLE_JURY')==[] %}
                         {% if is_granted('ROLE_PROF') %}<!-- le prof , le comité, les organisateurs CIA sont habilités à déposer des fichiers -->
-                            {% if i<3  %}
+                            {% if i<3 %}
                                 {% if (app.user.roles|filter(v => v =='ROLE_PROF')!=[]) %}<!-- le prof ne peut déposer ces fichiers qu'avant la date limite -->
                                     {% if (app.session.get('concours')=='interacadémique') and (date()<= app.session.get('edition').datelimcia) and (date()>=app.session.get('edition').dateouverturesite) %}
                                         {% if attrib==1 %}
@@ -86,7 +86,7 @@
                                             </a>
                                         {% endif %}
                                     {% endif %}
-                                    {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) %}
+                                    {% if (app.session.get('concours')=='national') and (date()<= app.session.get('edition').datelimnat) and (equipe.selectionnee == true) %}
                                         {% if attrib==1 %}
                                             <button type="button" id="{{ fichieraffiche.id }}" data-toggle="modal"
                                                     data-target="#modalfichier" data-typefichier="{{ i }}"
