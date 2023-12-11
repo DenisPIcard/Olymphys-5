@@ -845,8 +845,8 @@ class FichiersequipesCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $editionId = $session->get('edition');
 
-        //$edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
-        $edition = $entityInstance->getEquipe()->getEdition();
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
+
         $validator = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();
@@ -867,6 +867,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             $this->redirectToRoute('admin', $_REQUEST);
         } else {
             if ($typefichier != 6) {
+                $edition = $entityInstance->getEquipe()->getEdition();
                 $entityInstance->setNational($concours);
                 $oldfichier = $repositoryFichiers->createQueryBuilder('f')
                     ->where('f.equipe =:equipe')
