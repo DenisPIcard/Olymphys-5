@@ -9,6 +9,8 @@ use App\Entity\User;
 use App\Form\CustomAttributionsType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -50,6 +52,12 @@ class JuresCrudController extends AbstractCrudController
         return $crud
             ->setPaginatorPageSize(30)
             ->overrideTemplates(['crud/index' => 'bundles/EasyAdminBundle/index_jures.html.twig']);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $gestionjures = Action::new('gestionjures')->createAsGlobalAction()->linkToRoute('secretariatjury_gestionjures');
+        return $actions->add(Crud::PAGE_INDEX, $gestionjures);
     }
 
     public function configureFields(string $pageName): iterable

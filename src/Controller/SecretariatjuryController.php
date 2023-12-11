@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Cadeaux;
+use App\Entity\Centrescia;
+use App\Entity\Cia\HorairesSallesCia;
+use App\Entity\Cia\JuresCia;
+use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
@@ -1332,6 +1336,139 @@ class SecretariatjuryController extends AbstractController
             ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('titre' => 'Remplissage des prix', 'form' => $form->createView(),));
         return new Response($content);
 
+
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/gestionjures", name: "secretariatjury_gestionjures")]
+    public function gestionjures(Request $request)//Cette fonction est appelée à chaque changement d'un champ du formulaire via une fontion JQUERY et ajax dans app.js
+    {   //Ainsi l'organisateur peut saisir le tableau à la "volée"
+
+        $listeEquipes = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->leftJoin(('e.equipesinter','eq')
+            ->addOrderBy('eq.lettre','ASC')
+            ->getQuery()->getResult();
+
+
+        //$request contient les infos à traiter
+        if ($request->get('idjure') !== null) {//pour la modif des données perso du juré
+            $idJure = $request->get('idjure');
+            $val = $request->get('value');
+            $type = $request->get('type');
+            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $userJure = $this->doctrine->getRepository(User::class)->find($jure->getIduser()->getId());
+            switch ($type) {
+                case 'prenom':
+                    $jure->setPrenomJure($val);
+                    $userJure->setPrenom($val);
+                    $this->doctrine->getManager()->persist($userJure);//pour être en cohérence avec la table user
+                    break;
+                case 'nom' :
+                    $jure->setNomJure($val);
+                    $userJure->setNom($val);
+                    $this->doctrine->getManager()->persist($userJure);//pour être en cohérence avec la table user
+                    break;
+                case 'initiales':
+                    $jure->setInitialesJure($val);
+                    break;
+
+            }
+            $this->doctrine->getManager()->persist($jure);
+            $this->doctrine->getManager()->flush();
+            //$this->redirectToRoute('secretariatjuryCia_gestionjures');
+        }
+
+        if ($request->get('idequipe') !== null) {//pour la modification des attribtions des équipes
+            $idJure = $request->get('idjure');
+            $attrib = $request->get('value');
+            $idequipe = $request->get('idequipe');
+            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idequipe);
+
+            if ($attrib == 'L') {
+                $jure->addEquipe($equipe);
+                $lecteur = $jure->getLecteur();
+                if ($lecteur == null) {
+                    $lecteur[0] = $equipe->getNumero();
+                    $jure->setLecteur($lecteur);
+                }
+                if (!in_array($equipe->getNumero(), $lecteur)) {//le juré n'était pas lecteur , il le devient
+                    $lecteur[count($lecteur)] = $equipe->getNumero();
+                    $jure->setLecteur($lecteur);
+                }
+            }
+            if ($attrib == 'E') {
+
+                $jure->addEquipe($equipe);//la fonction add contient le test d'existence de l'équipe et ne l'ajoute que si elle n'est pas dans la liste des équipes du juré
+                $rapporteur = $jure->getRapporteur();
+                $lecteur = $jure->getLecteur();
+                if ($rapporteur !== null) {
+                    if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
+                        unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
+                    }
+                    $jure->setRapporteur($rapporteur);
+                }
+                if ($lecteur !== null) {
+                    if (in_array($equipe->getNumero(), $lecteur)) {//On change l'attribution de l'équipe au juré : il n'est plus lecteurr
+                        unset($lecteur[array_search($equipe->getNumero(), $lecteur)]);//supprime le numero de l'équipe dans la liste du champ lecteur
+                    }
+                    $jure->setLecteur($lecteur);
+                }
+            }
+            if ($attrib == '') {//Le champ est vide pas d'affectation du juré à cette équipe
+                $rapporteur = $jure->getRapporteur();//on teste si le juré était rapporteur
+                if ($rapporteur !== null) {
+                    if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
+                        unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
+                    }
+                    $jure->setRapporteur($rapporteur);
+                }
+                if ($jure->getEquipes()->contains($equipe)) {//Si le juré était affecté à cette équipe, on le retire de cette équipe
+                    $jure->removeEquipe($equipe);
+                }
+            }
+            $this->doctrine->getManager()->persist($jure);
+            $this->doctrine->getManager()->flush();
+            $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
+                ->where('j.centrecia =:centre')
+                ->setParameter('centre', $centrecia)
+                ->orderBy('j.numJury', 'ASC')
+                ->addOrderBy('j.nomJure', 'ASC')
+                ->getQuery()->getResult();
+            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
+
+
+        }
+
+        if ($request->query->get('jureID') !== null) {//la fenêtre modale de confirmation de suppresion du juré a été validée, elle renvoie l'id du juré
+
+            $idJure = $request->query->get('jureID');
+            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $notes = $jure->getNotesj();
+            if ($notes !== null) {
+                foreach ($notes as $note) {
+                    $jure->removeNote($note);
+                    $this->doctrine->getManager()->remove($note);
+
+                }
+                $repo = $this->doctrine->getRepository(RangsCia::class);
+                $points = $repo->classement($jure->getCentreCia());
+            }
+
+            $this->doctrine->getManager()->remove($jure);
+            $this->doctrine->getManager()->flush();
+            $idJure = null;//Dans le cas où le formulaire est envoyé dès le clic sur un des input
+
+        }
+
+
+        $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
+            ->where('j.centrecia =:centre')
+            ->setParameter('centre', $centrecia)
+            ->orderBy('j.numJury', 'ASC')
+            ->addOrderBy('j.nomJure', 'ASC')
+            ->getQuery()->getResult();
+        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
 
     }
 
