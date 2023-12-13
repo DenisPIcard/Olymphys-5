@@ -107,7 +107,7 @@ class PhotosController extends AbstractController
                     $ext = end($parsedName);// détecte les .JPG et .HEIC
 
                     if (($typeImage != 'jpg') or ($ext != 'jpg')) {// on transforme  le fichier en .JPG
-                        //dd('OK');
+                        // dd('OK');
                         $nameExtLess = $parsedName[0];
                         $imax = count($parsedName);
                         for ($i = 1; $i <= $imax - 2; $i++) {// dans le cas où le nom de  fichier comporte plusieurs points
@@ -134,7 +134,7 @@ class PhotosController extends AbstractController
                                 $size = filesize('temp/' . $nameExtLess . '.jpg');
                             } else($size = 10000000);
                             $file = new UploadedFile('temp/' . $nameExtLess . '.jpg', $nameExtLess . '.jpg', $size, null, true);
-                            unlink('temp/' . $originalFilename);
+                            //unlink('temp/' . $originalFilename);
                         }
                     }
 
@@ -154,7 +154,7 @@ class PhotosController extends AbstractController
                         $photo = new Photos();
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionpassee);
-                        if (($equipe->getLettre() === null) or ($concours == 'inter')) {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
+                        if ($concours == 'inter') {//Un membre du comité peut vouloir déposer une photo interacadémique lors du concours national
                             $photo->setNational(FALSE);
                         }
                         if (($equipe->getLettre() !== null) or ($concours == 'cn')) {
@@ -539,10 +539,13 @@ class PhotosController extends AbstractController
             ->addOrderBy('e.numero', 'ASC')
             ->getQuery()->getResult();
         foreach ($listeEquipes as $equipe) {
-            $listPhotos = $repositoryPhotos->createQueryBuilder('p')
-                ->andWhere('p.equipepassee =:equipe')
-                ->setParameter('equipe', $equipe)
-                ->getQuery()->getResult();
+            $listPhotos = null;
+            if ($equipe->isAutorisationsPhotos() == true) {
+                $listPhotos = $repositoryPhotos->createQueryBuilder('p')
+                    ->andWhere('p.equipepassee =:equipe')
+                    ->setParameter('equipe', $equipe)
+                    ->getQuery()->getResult();
+            }
 
             if (null != $listPhotos) {
                 $rand_keys = array_rand($listPhotos, 1);
@@ -553,6 +556,7 @@ class PhotosController extends AbstractController
         return $photos;
 
     }
+
 
 }
 

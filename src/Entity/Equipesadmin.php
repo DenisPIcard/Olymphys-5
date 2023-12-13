@@ -110,6 +110,7 @@ class Equipesadmin
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
@@ -554,5 +555,6 @@ class Equipesadmin
 
         return $this;
     }
+
 
 }

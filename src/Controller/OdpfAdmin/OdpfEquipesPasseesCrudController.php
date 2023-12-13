@@ -80,8 +80,8 @@ use function Symfony\Component\String\u;
             TextField::new('academie'),
             TextField::new('profs'),
             TextField::new('eleves'),
-            BooleanField::new('selectionnee')
-
+            BooleanField::new('selectionnee'),
+            BooleanField::new('autorisationsPhotos')
         ];
     }
 

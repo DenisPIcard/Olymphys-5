@@ -44,6 +44,9 @@ class OdpfEquipesPassees
     #[ORM\ManyToOne(targetEntity:OdpfEditionsPassees::class, inversedBy:"odpfEquipesPassees")]
     private ?OdpfEditionsPassees $editionspassees = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $autorisationsPhotos = null;
+
     public function __toString()
     {
         $this->getLettre() != null ? $num = $this->getNumero() . '-' . $this->getLettre() : $num = $this->getNumero();
@@ -177,6 +180,18 @@ class OdpfEquipesPassees
     public function setEditionspassees(?OdpfEditionsPassees $edition): self
     {
         $this->editionspassees = $edition;
+
+        return $this;
+    }
+
+    public function isAutorisationsPhotos(): ?bool
+    {
+        return $this->autorisationsPhotos;
+    }
+
+    public function setAutorisationsPhotos(?bool $autorisationsPhotos): static
+    {
+        $this->autorisationsPhotos = $autorisationsPhotos;
 
         return $this;
     }
