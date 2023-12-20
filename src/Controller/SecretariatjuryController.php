@@ -1345,8 +1345,8 @@ class SecretariatjuryController extends AbstractController
     {   //Ainsi l'organisateur peut saisir le tableau à la "volée"
 
         $listeEquipes = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
-            ->leftJoin(('e.equipesinter','eq')
-            ->addOrderBy('eq.lettre','ASC')
+            ->leftJoin('e.equipeinter', 'eq')
+            ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery()->getResult();
 
 
@@ -1355,7 +1355,7 @@ class SecretariatjuryController extends AbstractController
             $idJure = $request->get('idjure');
             $val = $request->get('value');
             $type = $request->get('type');
-            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $jure = $this->doctrine->getRepository(Jures::class)->find($idJure);
             $userJure = $this->doctrine->getRepository(User::class)->find($jure->getIduser()->getId());
             switch ($type) {
                 case 'prenom':
@@ -1402,12 +1402,7 @@ class SecretariatjuryController extends AbstractController
                 $jure->addEquipe($equipe);//la fonction add contient le test d'existence de l'équipe et ne l'ajoute que si elle n'est pas dans la liste des équipes du juré
                 $rapporteur = $jure->getRapporteur();
                 $lecteur = $jure->getLecteur();
-                if ($rapporteur !== null) {
-                    if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
-                        unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
-                    }
-                    $jure->setRapporteur($rapporteur);
-                }
+
                 if ($lecteur !== null) {
                     if (in_array($equipe->getNumero(), $lecteur)) {//On change l'attribution de l'équipe au juré : il n'est plus lecteurr
                         unset($lecteur[array_search($equipe->getNumero(), $lecteur)]);//supprime le numero de l'équipe dans la liste du champ lecteur
@@ -1417,12 +1412,7 @@ class SecretariatjuryController extends AbstractController
             }
             if ($attrib == '') {//Le champ est vide pas d'affectation du juré à cette équipe
                 $rapporteur = $jure->getRapporteur();//on teste si le juré était rapporteur
-                if ($rapporteur !== null) {
-                    if (in_array($equipe->getNumero(), $rapporteur)) {//On change l'attribution de l'équipe au juré : il n'est plus rapporteur
-                        unset($rapporteur[array_search($equipe->getNumero(), $rapporteur)]);//supprime le numero de l'équipe dans la liste du champ rapporteur
-                    }
-                    $jure->setRapporteur($rapporteur);
-                }
+
                 if ($jure->getEquipes()->contains($equipe)) {//Si le juré était affecté à cette équipe, on le retire de cette équipe
                     $jure->removeEquipe($equipe);
                 }
@@ -1435,7 +1425,7 @@ class SecretariatjuryController extends AbstractController
                 ->orderBy('j.numJury', 'ASC')
                 ->addOrderBy('j.nomJure', 'ASC')
                 ->getQuery()->getResult();
-            return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
+            return $this->render('secretariatjury/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
 
 
         }
@@ -1462,15 +1452,39 @@ class SecretariatjuryController extends AbstractController
         }
 
 
-        $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
-            ->where('j.centrecia =:centre')
-            ->setParameter('centre', $centrecia)
-            ->orderBy('j.numJury', 'ASC')
+        $listejures = $this->doctrine->getRepository(Jures::class)->createQueryBuilder('j')
             ->addOrderBy('j.nomJure', 'ASC')
             ->getQuery()->getResult();
-        return $this->render('cyberjuryCia/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
+        return $this->render('secretariatjury/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes));
 
     }
 
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/tableauexcelRepartition", name: "secretariatjury_tableauexcel_repartition")]
+    public function tableauexcelRepartition()
+    {
+
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury_creejure", name: "secretariatjury_creeJure")]
+    public function creeJure(Request $request)
+    {
+
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury_attribhorairessalles", name: "secretariatjury_attrib_horaires_salles")]
+    public function attribHorairesSalles(Request $request)
+    {
+
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury_effacerHeure,{idequipe'", name: "secretariatjury_effacer_heure")]
+    public function effacerHeure(Request $request, $idEquipe)
+    {
+
+    }
 
 }

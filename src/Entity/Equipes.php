@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DoctrineExtensions\Query\Mysql\Time;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 #[ORM\Entity(repositoryClass: EquipesRepository::class)]
 class Equipes
@@ -22,8 +24,8 @@ class Equipes
     #[ORM\Column(nullable: true)]
     private ?int $ordre = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $heure = null;
+    #[ORM\Column(nullable: true)]
+    private ?Time $heure;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $salle = null;
@@ -109,12 +111,12 @@ class Equipes
         return $this;
     }
 
-    public function getHeure(): ?string
+    public function getHeure(): ?Time
     {
         return $this->heure;
     }
 
-    public function setHeure(?string $heure): self
+    public function setHeure(?Time $heure): self
     {
         $this->heure = $heure;
 
