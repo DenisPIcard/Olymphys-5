@@ -86,9 +86,9 @@ class EquipesRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.cadeau', 'c')
             ->addSelect('c')
-            ->addOrderBy('e.couleur','ASC')
-            ->leftJoin('e.equipeinter','eq')
-            ->addOrderBy('eq.lettre','ASC')
+            ->addOrderBy('e.couleur', 'ASC')
+            ->leftJoin('e.equipeinter', 'eq')
+            ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery();
 
         return $query->getResult();
@@ -159,10 +159,10 @@ class EquipesRepository extends ServiceEntityRepository
 
         $queryBuilder = $this->createQueryBuilder('e');
 
-        if ($niveau == 0) {
+        if ($niveau == 0) {//Pour le classement général des équipes sans considéartion de prix
             $queryBuilder
-                ->orderBy('e.total', 'DESC');
-        } else {
+                ->orderBy('e.total', 'DESC');//Classe les équipes selon le total des points décroissants
+        } else {//pour le classement pour une catégorie de prix
             $limit = $nbreprix;
             $queryBuilder
                 ->select('e')

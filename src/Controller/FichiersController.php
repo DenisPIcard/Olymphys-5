@@ -399,7 +399,7 @@ class FichiersController extends AbstractController
                                 $nouveau = true;
                             }
                             if (!isset($nouveau)) {
-                                $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
+                                $message = '';
                             }
                         }
                         if ($num_type_fichier > 6) {
@@ -736,7 +736,7 @@ class FichiersController extends AbstractController
             $id_equipe = $Infos[4];
         }
         $concours = $Infos[1];
-        
+
         $choix = $Infos[2];
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
         $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);

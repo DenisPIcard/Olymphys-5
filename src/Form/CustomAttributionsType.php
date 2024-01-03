@@ -28,7 +28,7 @@ class CustomAttributionsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        
+
         $options['page'] == 'edit' ? $disabled = true : $disabled = false;
         $builder
             ->add('equipe', EntityType::class, [
@@ -38,9 +38,10 @@ class CustomAttributionsType extends AbstractType
             ->add('estLecteur', ChoiceType::class, [
                 'choices' => ['null' => null,
                     'E' => 0,
-                    'L' => 1],
+                    'L' => 1,
+                    'R' => 2],
 
-                'label' => 'Le juré est lecteur(L)  ou examinateur(E) ou n\'examine pas(null)',
+                'label' => 'Le juré est lecteur(L), examinateur(E) ou rapporteur(R) ou n\'examine pas(null)',
 
             ]);
 

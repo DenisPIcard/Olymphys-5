@@ -14,23 +14,26 @@ class Prix
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $prix = null;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $niveau = null;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $voix = null;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $intervenant = null;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $remisPar = null;
 
     #[ORM\OneToOne(mappedBy: 'prix', cascade: ['persist', 'remove'])]
     private ?Equipes $equipe = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $attribue = null;
 
     public function __toString(): string
     {
@@ -59,7 +62,7 @@ class Prix
     }
 
 
-     public function setNiveau(string $niveau): Prix
+    public function setNiveau(string $niveau): Prix
     {
         $this->niveau = $niveau;
 
@@ -115,8 +118,34 @@ class Prix
 
     public function setEquipe(?Equipes $equipe): self
     {
+        if ($equipe === null && $this->equipe !== null) {
+            $this->equipe->setPrix(null);
+            $this->attribue = false;
+        }
+
+        // set the owning side of the relation if necessary
+        if ($equipe !== null && $equipe->getPrix() !== $this) {
+            $equipe->setPrix($this);
+        }
+        if ($equipe !== null) {
+            $this->attribue = true;
+
+        }
+
 
         $this->equipe = $equipe;
+
+        return $this;
+    }
+
+    public function isAttribue(): ?bool
+    {
+        return $this->attribue;
+    }
+
+    public function setAttribue(?bool $attribue): static
+    {
+        $this->attribue = $attribue;
 
         return $this;
     }

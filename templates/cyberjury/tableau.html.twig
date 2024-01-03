@@ -10,9 +10,9 @@
 {% endblock %}
 
 {% block body %}
-
-    {% if ordre[critere] == 'DESC' %}
-        {% set ordre=ordre|merge({(critere) : 'ASC'}) %}
+    <span style="text-align: center">Le total ne tient pas compte de la note du mémoire</span>
+    {% if ordre[critere] == 'DESC' %}<!-- chaque choix de classement est une bascule si on clique dessus on inverse le sens -->
+        {% set ordre=ordre|merge({(critere) : 'ASC'}) %}<!-- On inverse le sens de classement selon le critère  pour le prochain affichage-->
     {% elseif ordre[critere] == 'ASC' %}
         {% set ordre=ordre|merge({(critere) : 'DESC'}) %}
     {% endif %}
@@ -25,6 +25,7 @@
                 <th>Rang</th>
                 <th>Éq.</th>
                 <th>Projet</th>
+                <!-- chaque balise <a appelle la fonction tableau de bord avec le parametre sens inversé par rapport à celui affiché -->
                 <th title="Qualité de l'expérience"><a
                             href="{{ path('cyberjury_tableau_de_bord',{'critere':'EXP','sens':ordre['EXP']}) }}">EXP<i
                                 class="fas fa-sort"></i></a></th>

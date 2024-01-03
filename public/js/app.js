@@ -24,17 +24,17 @@ function changejure(j) {//j est l'objet input qui a lancé la fonction, pour le 
 }
 
 function changeequipe(e, i, j) {
+    var type = 'equipe';
     var data_value = e.value;
     var id_equipe = i;
     var id_jure = j;
-    console.log(e.value);
-    console.log(i);
-    console.log(j);
-    var formURL = document.getElementsByTagName('form')[2].action;
+    console.log(data_value);
+    var formURL = document.getElementsByName('forme'.concat(id_equipe))[0].action;
+    console.log(formURL);
     $.ajax({
         url: formURL,
-        type: "POST",
-        data: {value: data_value, idequipe: id_equipe, idjure: id_jure},
+        type: "GET",
+        data: {type: type, value: data_value, idequipe: id_equipe, idjure: id_jure},
 
         success: function () {
             document.querySelector('#gestionjures').click()
@@ -50,6 +50,14 @@ function changeequipe(e, i, j) {
 }
 
 $('#modalconfirmjure').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('idjure');
+
+    var modal = $(this)
+    modal.find('.modal-title').text('Attention!!!!')
+    modal.find('.modal-body input').val(recipient)
+});
+$('#modalconfirmjurecn').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var recipient = button.data('idjure');
 
@@ -133,7 +141,10 @@ function modifsalle(j) {//j est l'objet input qui a lancé la fonction, pour le 
     var id_equipe = j.id.split(data_type)[1];
 
     var formURL = document.getElementById('formsalles').action;
+    console.log(data_type);
+    console.log(id_equipe);
 
+    console.log(data_value);
 
     $.ajax({
         url: formURL,
@@ -152,4 +163,32 @@ function modifsalle(j) {//j est l'objet input qui a lancé la fonction, pour le 
 
 }
 
+function modifordre(j) {//j est l'objet input qui a lancé la fonction, pour le formulaire de gestion des jures des cia
+
+    var data_value = j.value;
+    var data_type = j.name;
+    var id_equipe = j.id.split(data_type)[1];
+
+    var formURL = document.getElementById('formordre').action;
+    console.log(data_type);
+    console.log(id_equipe);
+
+    console.log(data_value);
+
+    $.ajax({
+        url: formURL,
+        type: "GET",
+        data: {value: data_value, type: data_type, idequipe: id_equipe},
+
+        success: function () {
+            document.querySelector('#gestionjures').click()
+        },
+
+        error: function (data) {
+            alert("Error while submitting Data");
+        },
+    });
+
+
+}
 

@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Attributions;
 use App\Entity\Cadeaux;
 use App\Entity\Centrescia;
 use App\Entity\Cia\HorairesSallesCia;
 use App\Entity\Cia\JuresCia;
+use App\Entity\Cia\NotesCia;
 use App\Entity\Cia\RangsCia;
 use App\Entity\Coefficients;
 use App\Entity\Edition;
@@ -22,6 +24,7 @@ use App\Entity\Visites;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
+use App\Service\Mailer;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,13 +43,17 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 
 class SecretariatjuryController extends AbstractController
@@ -184,9 +191,74 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
+    #[\Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted('ROLE_COMITE')]
+    #[Route("/secretariatjury/modifnotejurecn,{idequipe}, {idjure}", name: "modifnotejurecn")]
+    public function modifnotejurecn(Request $request, $idequipe, $idjure)//Dans le cas où le jury c'est trompé d'équipe en examinant une équipe qui n'est pas de son jury mais en notant par mégarde  une autre équipe de son jury
+    {
+        //Il faut ajouter l'équipe au juré(qui sera considéré par défaut examinateur simple E)
+        $equipe = $this->doctrine->getRepository(Equipes::class)->find($idequipe);
+        $jure = $this->doctrine->getRepository(Jures::class)->find($idjure);
+        $qb = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e');
+
+
+        $noteequipe = $this->doctrine->getRepository(Notes::class)->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
+
+        //Il faut transporter les notes à la bonne équipe
+        $form = $this->createFormBuilder()
+            ->add('equipe', EntityType::class, [
+                'class' => Equipes::class,
+                'query_builder' => $qb,
+                'label' => 'Equipe qui a été réellement évaluée par le juré',
+                'placeholder' => '',
+            ])
+            ->add('valider', SubmitType::class, ['label' => 'Valider'])
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() and $form->isValid()) {
+            if ($noteequipe !== null) {
+                $nllEquipe = $form->get('equipe')->getData();//equipe B dans laquelle la note de l'équipe A doivent être transférées
+                $notenllequipe = new Notes();//notes de l'équipe B dans laquelle la note de l'équipe A doivent être transférées
+                $notenllequipe->setJure($jure);  //transfert de la note de l'équipe A vers l'équipe B
+                $notenllequipe->setEquipe($nllEquipe);
+                $notenllequipe->setEcrit($noteequipe->getEcrit());
+                $notenllequipe->setExper($noteequipe->getExper());
+                $notenllequipe->setDemarche($noteequipe->getDemarche());
+                $notenllequipe->setOral($noteequipe->getOral());
+                $notenllequipe->setOrigin($noteequipe->getOrigin());
+                $notenllequipe->setRepquestions($noteequipe->getRepquestions());
+                $notenllequipe->setWgroupe($noteequipe->getWgroupe());
+                $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+                $notenllequipe->setCoefficients($coefficients);
+                $total = $notenllequipe->getPoints();
+                $notenllequipe->setTotal($total);
+                $this->doctrine->getManager()->persist($notenllequipe);//enregistrement de la notes de l'équipe B
+
+                $attribution = $this->doctrine->getRepository(Attributions::class)->findOneBy(['equipe' => $equipe, 'jure' => $jure]);
+                $nllattribution = new Attributions();
+                $nllattribution->setEquipe($nllEquipe); //affectation de l'équipe B au juré
+                $nllattribution->setJure($jure);
+                $nllattribution->setEstLecteur(0);//Le juré n'est qu'examinateur dans ce cas.
+                $this->doctrine->getManager()->remove($attribution);//supression de l'équipe A dans la liste équipes du juré
+                $this->doctrine->getManager()->persist($nllattribution);
+                $this->doctrine->getManager()->persist($notenllequipe);//hydratation de la base
+                //$jure->removeNotej($noteequipe);//Suppresion de la note de l'équipe A de ce juré
+                $this->doctrine->getManager()->remove($noteequipe);//suppresion de la notes de l'équipe A
+                $this->doctrine->getManager()->persist($jure);//enregistrement du juré
+                $this->doctrine->getManager()->flush();
+            } else {
+
+                $this->requestStack->getSession()->set('info', 'Le juré n\'a pas encore noté l\'équipe, veuillez modifier l\'affectation de ce juré dans le tableau de gestion des jurés');
+            }
+            return $this->redirectToRoute('secretariatjury_vueglobale');
+        }
+        return $this->render('secretariatjury/modifNoteJure.html.twig', ['form' => $form->createView(), 'equipe' => $equipe, 'jure' => $jure]);
+
+    }
+
     #[IsGranted('ROLE_SUPER_ADMIN')]
     #[Route("/secretariatjury/classement", name: "secretariatjury_classement")]
-    public function classement(): Response
+    public function classement(): Response//L'apel de cette fonction permet de mettre à jour la table équipes avec le rang et le total de chaque équipe
     {
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
@@ -204,22 +276,25 @@ class SecretariatjuryController extends AbstractController
             $nbre_notes_ecrit = 0;
             $points_ecrit = 0;
             $points = 0;
-
-            if ($nbre_notes == 0) {
+            $moyenne_ecrit = 0;
+            if ($nbre_notes == 0) {//L'équipe n'est pas encore notée
                 $equipe->setTotal(0);
                 $em->persist($equipe);
                 $em->flush();
-            } else {
+            } else {//calcul de la moyenne des notes de l'équipe
                 foreach ($listesNotes as $note) {
-                    $points = $points + $note->getPoints();
+                    $points = $points + $note->getPoints();//Calcul de la somme des points sans les notes d'écrit
 
-                    $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;
-                    $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();
+                    $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;//Détermination du nombre de notes d'écrit
+                    $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();//Détermination du total des poins de l'écrit
 
                 }
-                $nbNotes = count($equipe->getNotess());//met à jour le nb de notes et le total lors des essais
-                $equipe->setNbNotes($nbNotes);
-                $equipe->setTotal($points / $nbre_notes);
+                if ($nbre_notes_ecrit != 0) {
+                    $moyenne_ecrit = $points_ecrit / $nbre_notes_ecrit;
+                }
+                //met à jour le nb de notes et le total
+                $equipe->setNbNotes($nbre_notes);
+                $equipe->setTotal(($points / $nbre_notes) + $moyenne_ecrit);//
                 $em->persist($equipe);
                 $em->flush();
             }
@@ -234,11 +309,11 @@ class SecretariatjuryController extends AbstractController
         } catch (NoResultException|NonUniqueResultException) {
         }
 
-        $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+        $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);//
 
 
         $i = 1;
-        foreach ($classement as $equipe) {
+        foreach ($classement as $equipe) {//Enregistrement du rang de chaque équipe dans la table équipes
             $equipe->setRang($i);
             $em->persist($equipe);
             $i = $i + 1;
@@ -590,7 +665,7 @@ class SecretariatjuryController extends AbstractController
         foreach ($listeVisite as $visite) {
             if ($visite->getEquipe() === null) {
                 $visitesNonAttr[$i] = $visite;
-                $i = +1;
+                $i++;
             }
         }
         $i = 0;
@@ -981,7 +1056,7 @@ class SecretariatjuryController extends AbstractController
                 ->setCellValue('B' . $ligne, 'Lycée ' . $lycee[$lettre][0]->getNom() . " - " . $lycee[$lettre][0]->getCommune())
                 ->setCellValue('C' . $ligne, $prof1[$lettre][0]->getPrenom() . " " . strtoupper($prof1[$lettre][0]->getNom()))
                 ->setCellValue('D' . $ligne, $equipe->getClassement() . ' ' . 'prix');
-            if ($equipe->getPhrases() !== null) {
+            if ($equipe->getPhrases()[0] !== null) {
                 $sheet->setCellValue('E' . $ligne, $equipe->getPhrases()[0]->getPhrase() . ' ' . $equipe->getPhrases()[0]->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()[0]->getPrix());
             } else {
                 $sheet->setCellValue('E' . $ligne, 'Phrase');
@@ -1185,13 +1260,13 @@ class SecretariatjuryController extends AbstractController
             }
 
 
-            $ligne += 1;
+            $ligne = $ligne + 1;
             $sheet->getRowDimension($ligne)->setRowHeight(30);
 
             $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
             $remispar = 'Philippe'; //remplacer $remispar par $voix1 et $voix2
 
-            if ($equipe->getPhrases() != null) {
+            if ($equipe->getPhrases()[0] != null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
                 $sheet->setCellValue('B' . $ligne, $equipe->getPhrases()[0]->getPhrase() . ' ' . $equipe->getPhrases()[0]->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()[0]->getPrix());
             }
@@ -1200,7 +1275,7 @@ class SecretariatjuryController extends AbstractController
                 ->applyFromArray($styleText);
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)->applyFromArray($borderArray);
 
-            $ligne += 1;
+            $ligne++;
             $remispar = 'Nathalie';
             $sheet->getRowDimension($ligne)->setRowHeight(40);
             if ($equipe->getVisite() !== null) {
@@ -1210,7 +1285,9 @@ class SecretariatjuryController extends AbstractController
 
                 $sheet->setCellValue('C' . $ligne, $equipe->getVisite()->getIntitule());
             }
+
             $ligne = $this->getLigne($sheet, $ligne, $styleText, $borderArray);
+            $ligne++;
             $sheet->getRowDimension($ligne)->setRowHeight(40);
             $sheet->setCellValue('A' . $ligne, $remispar);
             $sheet->setCellValue('B' . $ligne, 'Votre lycée recevra');
@@ -1232,7 +1309,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->getStyle('B' . $ligne)->getAlignment()
                 ->setVertical(Alignment::VERTICAL_CENTER);
             $aligne = $ligne;
-            $ligne += 1;
+            $ligne = $ligne + 1;
             $sheet->getRowDimension($ligne)->setRowHeight(40);
 
             $sheet->setCellValue('C' . $ligne, 'AC. ' . $lycee[$lettre][0]->getAcademie())
@@ -1244,13 +1321,12 @@ class SecretariatjuryController extends AbstractController
             $sheet->getStyle('A' . $aligne . ':D' . $lignep)->applyFromArray($borderArray);
             $ligne = $ligne + 2;
             $sheet->mergeCells('A' . $ligne . ':D' . $ligne);
+            $ligne++;
+            //$spreadsheet->getActiveSheet()->getStyle('A' . $ligne)->getFont()->getColor()->setARGB(Color::COLOR_RED);
+            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':D' . $ligne)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':D' . $ligne)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
 
-            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne)->getFont()->getColor()->setARGB(Color::COLOR_RED);
-            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne)->getFill()
-                ->setFillType(Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('F3333333');
-
-            $ligne = $ligne + 2;
+            $ligne = $ligne + 1;
         }
         $nblignes = 5 * $nbreEquipes + 2;
         $sheet->getColumnDimension('A')->setWidth(32);
@@ -1348,7 +1424,7 @@ class SecretariatjuryController extends AbstractController
             ->leftJoin('e.equipeinter', 'eq')
             ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery()->getResult();
-
+        $attributionsRepo = $this->doctrine->getRepository(Attributions::class);
 
         //$request contient les infos à traiter
         if ($request->get('idjure') !== null) {//pour la modif des données perso du juré
@@ -1378,54 +1454,59 @@ class SecretariatjuryController extends AbstractController
             //$this->redirectToRoute('secretariatjuryCia_gestionjures');
         }
 
-        if ($request->get('idequipe') !== null) {//pour la modification des attribtions des équipes
-            $idJure = $request->get('idjure');
-            $attrib = $request->get('value');
-            $idequipe = $request->get('idequipe');
-            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
-            $equipe = $this->doctrine->getRepository(Equipesadmin::class)->find($idequipe);
+        if ($request->query->get('idequipe') != null) {//pour la modification des attribtions des équipes
 
-            if ($attrib == 'L') {
-                $jure->addEquipe($equipe);
-                $lecteur = $jure->getLecteur();
-                if ($lecteur == null) {
-                    $lecteur[0] = $equipe->getNumero();
-                    $jure->setLecteur($lecteur);
+            $idJure = $request->query->get('idjure');
+            $attrib = $request->query->get('value');
+            $idequipe = $request->query->get('idequipe');
+            $jure = $this->doctrine->getRepository(Jures::class)->find($idJure);
+            $equipe = $this->doctrine->getRepository(Equipes::class)->find($idequipe);
+            $attribution = $attributionsRepo->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
+            if ($attrib != '') {
+                $value = null;
+                switch ($attrib) {
+                    case 'E':
+                        $value = 0;
+                        break;
+                    case 'L':
+                        $value = 1;
+                        break;
+                    case 'R':
+                        $value = 2;
+                        break;
+
                 }
-                if (!in_array($equipe->getNumero(), $lecteur)) {//le juré n'était pas lecteur , il le devient
-                    $lecteur[count($lecteur)] = $equipe->getNumero();
-                    $jure->setLecteur($lecteur);
+
+                if ($attribution !== null) {
+                    $attribution->setEstLecteur($value);
+                    $this->doctrine->getManager()->persist($attribution);
+                } else {
+                    $attribution = new Attributions();
+                    $attribution->setJure($jure);
+                    $attribution->setEquipe(($equipe));
+                    $attribution->setEstLecteur($value);
+                    $this->doctrine->getManager()->persist($attribution);
+                    $jure->addAttribution($attribution);
+                    $this->doctrine->getManager()->persist($jure);
                 }
+                $this->doctrine->getManager()->flush();
             }
-            if ($attrib == 'E') {
 
-                $jure->addEquipe($equipe);//la fonction add contient le test d'existence de l'équipe et ne l'ajoute que si elle n'est pas dans la liste des équipes du juré
-                $rapporteur = $jure->getRapporteur();
-                $lecteur = $jure->getLecteur();
-
-                if ($lecteur !== null) {
-                    if (in_array($equipe->getNumero(), $lecteur)) {//On change l'attribution de l'équipe au juré : il n'est plus lecteurr
-                        unset($lecteur[array_search($equipe->getNumero(), $lecteur)]);//supprime le numero de l'équipe dans la liste du champ lecteur
-                    }
-                    $jure->setLecteur($lecteur);
-                }
-            }
             if ($attrib == '') {//Le champ est vide pas d'affectation du juré à cette équipe
-                $rapporteur = $jure->getRapporteur();//on teste si le juré était rapporteur
-
-                if ($jure->getEquipes()->contains($equipe)) {//Si le juré était affecté à cette équipe, on le retire de cette équipe
-                    $jure->removeEquipe($equipe);
+                if ($attribution != null) {
+                    $note = $this->doctrine->getRepository(Notes::class)->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
+                    if ($note != null) {
+                        $jure->removeNote($note);
+                    }
+                    $jure->removeAttribution($attribution);
+                    $this->doctrine->getManager()->remove($attribution);
+                    $this->doctrine->getManager()->flush();
                 }
             }
-            $this->doctrine->getManager()->persist($jure);
-            $this->doctrine->getManager()->flush();
-            $listejures = $this->doctrine->getRepository(JuresCia::class)->createQueryBuilder('j')
-                ->where('j.centrecia =:centre')
-                ->setParameter('centre', $centrecia)
-                ->orderBy('j.numJury', 'ASC')
+            $listejures = $this->doctrine->getRepository(Jures::class)->createQueryBuilder('j')
                 ->addOrderBy('j.nomJure', 'ASC')
                 ->getQuery()->getResult();
-            return $this->render('secretariatjury/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes, 'centre' => $centrecia->getCentre(), 'horaires' => $horaires));
+            return $this->render('secretariatjury/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes));
 
 
         }
@@ -1433,7 +1514,7 @@ class SecretariatjuryController extends AbstractController
         if ($request->query->get('jureID') !== null) {//la fenêtre modale de confirmation de suppresion du juré a été validée, elle renvoie l'id du juré
 
             $idJure = $request->query->get('jureID');
-            $jure = $this->doctrine->getRepository(JuresCia::class)->find($idJure);
+            $jure = $this->doctrine->getRepository(Jures::class)->find($idJure);
             $notes = $jure->getNotesj();
             if ($notes !== null) {
                 foreach ($notes as $note) {
@@ -1441,10 +1522,8 @@ class SecretariatjuryController extends AbstractController
                     $this->doctrine->getManager()->remove($note);
 
                 }
-                $repo = $this->doctrine->getRepository(RangsCia::class);
-                $points = $repo->classement($jure->getCentreCia());
-            }
 
+            }
             $this->doctrine->getManager()->remove($jure);
             $this->doctrine->getManager()->flush();
             $idJure = null;//Dans le cas où le formulaire est envoyé dès le clic sur un des input
@@ -1455,6 +1534,7 @@ class SecretariatjuryController extends AbstractController
         $listejures = $this->doctrine->getRepository(Jures::class)->createQueryBuilder('j')
             ->addOrderBy('j.nomJure', 'ASC')
             ->getQuery()->getResult();
+
         return $this->render('secretariatjury/gestionjures.html.twig', array('listejures' => $listejures, 'listeEquipes' => $listeEquipes));
 
     }
@@ -1463,14 +1543,311 @@ class SecretariatjuryController extends AbstractController
     #[Route("/secretariatjury/tableauexcelRepartition", name: "secretariatjury_tableauexcel_repartition")]
     public function tableauexcelRepartition()
     {
+        $listejures = $this->doctrine->getRepository(Jures::class)->findAll();
+        $listeEquipes = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->leftJoin('e.equipeinter', 'eq')
+            ->addOrderBy('eq.lettre', 'ASC')
+            ->getQuery()->getResult();
+
+        $styleAlignment = [
+
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+
+        ];
+        $styleArray = [
+
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'top' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'left' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'right' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'bottom' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'inside' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ]
+            ],
+
+        ];
+        $styleArrayTop = [
+
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'top' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'left' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'right' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'bottom' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+                'inside' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ]
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FFFFFACD',
+                ],
+
+            ],
+
+        ];
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("CN-Tableau destiné au comité")
+            ->setSubject("Tableau destiné aux organisateurs")
+            ->setDescription("Office 2007 XLSX répartition des jurés")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+        $spreadsheet->getActiveSheet()->getPageSetup()
+            ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)
+            ->setHorizontalCentered(true);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setTop(0.4);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setRight(0.4);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setLeft(0.4);
+        $spreadsheet->getActiveSheet()->getPageMargins()->setBottom(0.4);;
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setWorksheet($spreadsheet->getActiveSheet());
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo');
+        $drawing->setPath('./odpf/odpf-images/site-logo-285x75.png');
+        $drawing->setResizeProportional(false);
+        $drawing->setHeight(37);
+        $drawing->setWidth(60);
+        $drawing->setCoordinates('A1');
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getRowDimension(1)->setRowHeight(30, 'pt');
+        $sheet->getStyle('A2')->applyFromArray($styleAlignment);
+        $sheet->getStyle('A2')->getFont()->setSize(16);
+        $sheet->getStyle('A3')->applyFromArray($styleAlignment);
+        $sheet->getStyle('A3')->getFont()->setSize(20);
+
+        $lettres = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE'];
+        $sheet->mergeCells('A2:' . $lettres[count($listeEquipes) - 1] . '2', Worksheet::MERGE_CELL_CONTENT_HIDE);
+        $sheet->mergeCells('A3:' . $lettres[count($listeEquipes) - 1] . '3', Worksheet::MERGE_CELL_CONTENT_HIDE);
+        $sheet->getRowDimension(2)->setRowHeight(20, 'pt');
+        $sheet->getRowDimension(3)->setRowHeight(35, 'pt');
+        $sheet->mergeCells('D5:' . $lettres[count($listeEquipes) - 1] . '5', Worksheet::MERGE_CELL_CONTENT_HIDE);
+        $sheet->getStyle('D5:' . $lettres[count($listeEquipes) - 1] . '5')->applyFromArray($styleArray);
+        $sheet
+            ->setCellValue('A2', 'Olympiades de Physique France ' . $this->requestStack->getSession()->get('edition')->getEd() . 'e édition');
+
+        $sheet
+            ->setCellValue('A3', 'Concours National - Répartition des jurés');
+        $sheet
+            ->setCellValue('D5', 'Lettres des équipes');
+
+        $ligne = 8;
+
+        $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
+
+        $sheet
+            ->setCellValue('A' . $ligne, 'Prénom juré')
+            ->setCellValue('B' . $ligne, 'Nom juré')
+            ->setCellValue('C' . $ligne, 'Initiales')
+            ->setCellValue('D' . $ligne, 'sous-jury')
+            ->setCellValue('D' . $ligne - 1, 'salle')
+            ->setCellValue('D' . $ligne - 2, 'horaire');
+        $i = 0;
+        $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArrayTop);
+        foreach ($listeEquipes as $equipe) {
+
+            $sheet->setCellValue($lettres[$i] . $ligne, $equipe->getEquipeinter()->getLettre());
+
+            $sheet->getStyle($lettres[$i] . $ligne - 2)->applyFromArray($styleArray);
+            $sheet->getStyle($lettres[$i] . $ligne - 1)->applyFromArray($styleArray);
+            if ($equipe->getHeure() != null) {
+                $sheet->setCellValue($lettres[$i] . $ligne - 2, $equipe->getHeure());
+            }
+            $sheet->setCellValue($lettres[$i] . $ligne - 1, $equipe->getSalle());
+
+            $i = $i + 1;
+        }
+        $i = 0;
+
+        $ligne += 1;
+        $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
+        foreach ($listejures as $jure) {
+            $sheet
+                ->setCellValue('A' . $ligne, $jure->getPrenomJure())
+                ->setCellValue('B' . $ligne, $jure->getNomJure())
+                ->setCellValue('C' . $ligne, $jure->getInitialesJure());
+            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArray);
+            $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
+            $attributionsJure = $jure->getAttributions();
+
+            foreach ($listeEquipes as $equipe) {
+                foreach ($attributionsJure as $attribution) {
+                    if ($attribution->getEquipe() == $equipe) {
+                        $sheet->setCellValue($lettres[$i] . $ligne, 'E');
+                        if ($attribution->getEstLecteur()) {
+                            $sheet->setCellValue($lettres[$i] . $ligne, 'L');
+                        }
+                    }
+
+                }
+                $i += 1;
+            }
+            //
+
+
+            foreach (range('A', $lettres[$i - 1]) as $letra) {
+                $sheet->getColumnDimension($letra)->setAutoSize(true);
+            }
+            $i = 0;
+            $ligne += 1;
+
+        }
+        //$sheet->getStyle('A2:' . $lettres[$i - 1] . '2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00AA66');
+
+
+        $writer = new Xls($spreadsheet);
+        //$writer->save('temp/repartition_des_jures.xls');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=' . $this->requestStack->getSession()->get('edition')->getEd() . '"-repartition_des_jures_du_concours_national.xls"');
+        header('Cache-Control: max-age=0');
+        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+        ob_end_clean();
+        $writer->save('php://output');
+
 
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
     #[Route("/secretariatjury_creejure", name: "secretariatjury_creeJure")]
-    public function creeJure(Request $request)
+    public function creeJure(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer,)
     {
 
+        $this->requestStack->getSession()->set('info', '');
+        $slugger = new AsciiSlugger();
+        $repositoryUser = $this->doctrine->getRepository(User::class);
+        $user = new User();
+        $form = $this->createFormBuilder($user)
+            ->add('email', RepeatedType::class, [
+                'first_options' => ['label' => 'Email'],
+                'second_options' => ['label' => 'Saisir de nouveau l\'email'],
+            ])
+            ->add('nom', TextType::class)
+            ->add('prenom', TextType::class)
+            ->add('valider', SubmitType::class)
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('valider')->isClicked()) {
+                $email = $form->get('email')->getData();
+                $nom = $form->get('nom')->getData();
+                $prenom = $form->get('prenom')->getData();
+                $userIni = $repositoryUser->findOneBy(['email' => $email]);
+                //Tout d'abord on crée le compte olymphys si le juré n'en a pas encore
+                if ($userIni === null) {// Le mail ne correspond à aucun compte olymphys
+                    //On crée le user
+                    try {
+
+                        $user->setNom($nom);//Elimine les caractères ésotériques
+                        $prenomNorm = ucfirst(strtolower($slugger->slug($prenom)));//prépare la normalisation du prénom
+
+                        if (count(explode('-', $prenom)) > 1) {//Si le prénom est composé
+
+                            $prenomNorm = '';
+                            $i = 0;
+                            $arrayPrenom = explode('-', $prenom);
+
+                            foreach ($arrayPrenom as $sprenom) {//Pour obtenir un prénom composé de la form Prenom-Prenom
+                                if ($i == 0) {
+                                    $prenomNorm = ucfirst(strtolower($sprenom)) . '-';
+                                    $i++;
+
+                                } elseif ($i < count(explode('-', $prenom)) - 1) {
+
+                                    $prenomNorm = $prenomNorm . ucfirst(strtolower($sprenom)) . '-';
+
+                                } elseif ($i == count(explode('-', $prenom)) - 1) {
+                                    $prenomNorm = $prenomNorm . ucfirst(strtolower($sprenom));
+
+                                }
+                            }
+
+                        }
+
+                        $user->setPrenom($prenom);
+                        $user->setEmail($email);
+                        $user->setRoles(['ROLE_JURY']);
+                        $username = $prenomNorm[0] . '_' . $slugger->slug($nom);//Création d'un username avec caratères ASCII
+                        $pwd = $prenomNorm;
+                        $i = 1;
+                        while ($repositoryUser->findBy(['username' => $username])) {//pour éviter des logins identiques on ajoute un numéro à la fin
+                            $username = $username . $i;
+                            $i = +1;
+                        }
+                        $user->setUsername($username);
+                        $user->setPassword($passwordEncoder->hashPassword($user, $pwd));
+                        $this->doctrine->getManager()->persist($user);
+                        $this->doctrine->getManager()->flush();
+                        $mailer->sendInscriptionUserJure($user, $pwd);//On envoie au nouvel user ses identifiants avec copie au comité
+                    } catch (\Exception $e) {
+                        $texte = 'Une erreur est survenue lors de l\'inscription de ce jure :' . $e;
+                        $this->requestStack->getSession()->set('info', $texte);//Un emodale surgira si une erreur est survenue lors de la création du juré
+                    }
+
+                } else {
+                    $user = $repositoryUser->findOneBy(['email' => $email]);
+                    $user->setRoles(['ROLE_JURY']);//Si le compte Olymphys existe déjà, on s'assure que son rôle sera jurycia
+                    $this->doctrine->getManager()->persist($user);
+                    $this->doctrine->getManager()->flush();
+                }
+                $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
+                if ($jure === null) {//le juré n'existe pas encore
+                    $jure = new Jures(); //On crée ce juré
+                    $jure->setIduser($user); //On associe le jurécia à compte olymphys
+                    $jure->setNomJure($user->getNom());
+                    $jure->setPrenomJure($user->getPrenom());
+                    if (str_contains($slugger->slug($prenom), '-')) {//Pour éliminer les caratères non ASCII et tenir compte d'un prénom composé
+                        $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
+                    } elseif (str_contains($slugger->slug($prenom), '_')) {//Pour éliminer les caratères non ASCII  et tenir compte d'un prénom composé mal saisi
+                        $initiales = strtoupper(explode('-', $slugger->slug($prenom))[0][0] . explode('-', $slugger->slug($prenom))[1][0] . $slugger->slug($nom[0]));
+                    } else {
+                        $initiales = strtoupper($slugger->slug($prenom))[0] . strtoupper($slugger->slug($nom))[0];
+                    }
+                    $jure->setInitialesJure($initiales);
+                    $this->doctrine->getManager()->persist($jure);
+                    $this->doctrine->getManager()->flush();
+                    $mailer->sendInscriptionJure($jure);//envoie d'un mail au juré pour l'informer que son compte jurévcia est ouvert avec copie au comité
+                } else {
+                    $texte = 'Ce juré existe déjà !';
+                    $this->requestStack->getSession()->set('info', $texte);//fenêtre modale d'avertissement déclenchée
+
+                }
+                return $this->redirectToRoute('secretariatjury_gestionjures');
+            }
+        }
+        return $this->render('secretariatjury/creejure.html.twig', ['form' => $form->createView()]);
     }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
@@ -1478,13 +1855,179 @@ class SecretariatjuryController extends AbstractController
     public function attribHorairesSalles(Request $request)
     {
 
+        $idEquipe = $request->query->get('idequipe');//on récupére les datas envoyées par ajax dans le query via la méthode get
+        $type = $request->query->get('type');
+        $valeur = $request->query->get('value');
+        $equipe = $this->doctrine->getRepository(Equipes::class)->find($idEquipe);
+        if ($type == 'heure') {
+            $equipe->setHeure($valeur);
+            $this->doctrine->getManager()->persist($equipe);
+            $this->doctrine->getManager()->flush();
+        }
+        if ($type == 'salle') {
+            $equipe->setSalle($valeur);
+            $this->doctrine->getManager()->persist($equipe);
+            $this->doctrine->getManager()->flush();
+        }
+        if ($type == 'ordre') {
+            $equipe->setOrdre($valeur);
+            $this->doctrine->getManager()->persist($equipe);
+            $this->doctrine->getManager()->flush();
+        }
+
+        return $this->redirectToRoute('secretariatjury_gestionjures');
     }
+
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatjury_effacerHeure,{idequipe'", name: "secretariatjury_effacer_heure")]
-    public function effacerHeure(Request $request, $idEquipe)
+    #[Route("/secretariatjury_effacerHeure,{idequipe}", name: "secretariatjury_effacer_heure")]
+    public function effacerHeure(Request $request, $idequipe)
     {
-
+        $equipe = $this->doctrine->getRepository(Equipes::class)->find($idequipe);
+        $equipe->setHeure('00:00');
+        $this->doctrine->getManager()->persist($equipe);
+        $this->doctrine->getManager()->flush();
+        return $this->redirectToRoute('secretariatjury_gestionjures');
     }
 
+    #[\Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("/secretariatjury/charge_jures", name: "secretariatjury_charge_jures")]
+    public function charge_jures(Request $request): RedirectResponse|Response //Pour charger le tableau fourni par Pierre
+    {
+
+        $defaultData = ['message' => 'Charger le fichier Jures'];
+        $form = $this->createFormBuilder($defaultData)
+            ->add('fichier', FileType::class)
+            ->add('save', SubmitType::class)
+            ->getForm();
+
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $fichier = $data['fichier'];
+            $spreadsheet = IOFactory::load($fichier);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
+
+            $em = $this->doctrine->getManager();
+            //$lettres = range('A','Z') ;
+            $repositoryEquipes = $this->doctrine->getManager()
+                ->getRepository(Equipes::class);
+            $equipes = $repositoryEquipes->createQueryBuilder('e')
+                ->leftJoin('e.equipeinter', 'eq')
+                ->orderBy('eq.lettre', 'ASC')
+                ->getQuery()->getResult();
+
+
+            $repositoryUser = $this->doctrine->getRepository(User::class);
+            $message = '';
+
+            for ($row = 2; $row <= $highestRow; ++$row) {
+
+                $nom = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                $prenom = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                $email = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                $initiales = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+
+                $qb = $repositoryUser->createQueryBuilder('u');
+                $user = $qb//vérification que le juré a déjà un compte user
+                ->where('u.email =:email')
+                    ->setParameter('email', $email)
+                    ->getQuery()->getOneOrNullResult();
+
+                //Si l'user existe
+                if ($user !== null) {//certains jurés sont parfois aussi organisateur des cia avec un autre compte.on ne sélectionne que le compte de role jury
+                    if (in_array('ROLE_JURY', $user->getRoles())) {
+                        $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);//Evite le problème en cas d'homonymie
+
+                        if ($jure == null) {
+                            $jure = new Jures();
+                            $jure->setIduser($user);
+                        }
+                        $jure->setPrenomJure($prenom);
+                        $jure->setNomJure($nom);
+                        $jure->setInitialesJure($initiales);
+
+                        $colonne = 5;
+                        foreach ($equipes as $equipe) {
+                            /* $equipe=$repositoryEquipes->createQueryBuilder('e')
+                                 ->leftJoin('e.equipeinter','eq')
+                                 ->where('eq.lettre =:lettre')
+                                 ->setParameter('lettre',  $worksheet->getCellByColumnAndRow($colonne, 1)->getValue())
+                                 ->getQuery()->getSingleResult();*/
+                            $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();//Le tableau comporte les attributions des jurés classées par lettre équipe croissantes, vide  pas attribué, 0 examinateur, 1 lecteur
+                            switch ($value) {
+                                case '1':
+                                    $value = 0;
+                                    break;
+                                case 'L' :
+                                    $value = 1;
+                                    break;
+                                case 'R' :
+                                    $value = 2;
+                                    break;
+
+
+                            }
+                            //$method = 'set' . $equipe->getEquipeinter()->getLettre();
+                            //$jure->$method($value);//rempli la table jures
+                            //remplissage de la table attributions
+                            $attributions = $jure->getAttributions();//On vérifie que l'équipe n'a pas été déjà attribué au juré
+                            $test = false;
+                            if ($attributions != null) {
+                                foreach ($attributions as $attribution) {//Mise à jour des attributions lors de la lecture du tableau
+                                    if ($attribution->getEquipe() == $equipe) {
+                                        $test = true;
+                                        if ($value != '') {
+                                            $attribution->setEstLecteur($value);
+                                            $em->persist($attribution);
+
+                                        } else {//Suppression de l'attribution si la cellule est vide.
+
+                                            $note = $this->doctrine->getRepository(Notes::class)->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
+                                            if ($note != null) {
+                                                $this->doctrine->getManager()->remove($note);
+                                            }
+                                            $jure->removeAttribution($attribution);
+                                            $this->doctrine->getManager()->flush();
+
+                                        }
+
+                                    }
+                                }
+                                if ($value != '') {
+                                    if ($test == false) {//L'attribution est nouvelle , on la crée
+                                        $attribution = new Attributions();
+                                        $attribution->setJure($jure);
+                                        $attribution->setEquipe($equipe);
+                                        $attribution->setEstLecteur($value);
+                                        $jure->addAttribution($attribution);
+                                        $em->persist($attribution);
+                                    }
+
+                                }
+                            }
+
+                            $colonne += 1;//Chaque collone correspond à une équipe repérée par sa lettre
+                        }
+                        $em->persist($jure);
+                        $em->flush();
+                    } else {//L'user existe mais n'a pas le role JURY
+                        $message = $message . $nom . ' n\'a pas le  ROLE_JURY  et n\'a pu être affecté au jury';
+                    }
+                }
+                if ($user == null) {//L'user n'existe pas
+                    $message = $message . $nom . ' ne correspond pas à un user existant et n\'a pu être enregistré';
+                }
+            }
+
+            $this->requestStack->getSession()->set('info', $message);
+            return $this->redirectToRoute('secretariatjury_gestionjures');
+        }
+        $content = $this
+            ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('titre' => 'Remplissage de la table Jurés', 'form' => $form->createView(),));
+        return new Response($content);
+    }
 }

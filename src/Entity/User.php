@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-#[ORM\Entity(repositoryClass:UserRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -70,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?DateTime $passwordRequestedAt = null;
 
-    #[ORM\Column(type : Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $createdAt;
 
     #[ORM\Column(nullable: true)]
@@ -79,12 +79,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?DateTime $lastVisit = null;
 
-    #[ORM\OneToOne(targetEntity : Fichiersequipes::class, cascade: ['persist'])]
+    #[ORM\OneToOne(targetEntity: Fichiersequipes::class, cascade: ['persist'])]
     private ?Fichiersequipes $autorisationphotos = null;
 
 
     #[ORM\ManyToOne]
-    private ?Uai $uaiId=null;
+    private ?Uai $uaiId = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $newsletter;
@@ -92,11 +92,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $roles = [];
 
-    #[ORM\Column(length: 255,  unique: true)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\ManyToOne]
-    private ?Centrescia $centrecia = null;
+    private ?Centrescia $centrecia;
 
 
     #[Pure] public function __construct()
@@ -409,8 +409,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-
-
     public function getUaiId(): ?Uai
     {
         return $this->uaiId;
@@ -463,12 +461,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     }
 
-    public function getCentrecia(): ?centrescia
+    public function getCentrecia(): ?Centrescia
     {
         return $this->centrecia;
     }
 
-    public function setCentrecia(?centrescia $centrecia): self
+    public function setCentrecia(?Centrescia $centrecia): self
     {
         $this->centrecia = $centrecia;
 

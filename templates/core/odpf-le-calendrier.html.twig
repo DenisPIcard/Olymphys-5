@@ -29,13 +29,15 @@
     <li>pour les équipes sélectionnées : réponse aux demandes du Comité concernant le transport, l’hébergement, la fiche
         matériel et sécurité
     </li>
-    <li>avant le 15 janvier, dépôt sur Olymphys, dans l'espace du Professeur, du mémoire, du résumé, ainsi que de la
+    <li>avant le {{ date(app.session.get('edition').datelimNat)|date('j') }} janvier, dépôt sur Olymphys, dans l'espace
+        du
+        Professeur, du mémoire, du résumé, ainsi que de la
         fiche matériel et sécurité.
     </li>
 
     {# #}
     <li><strong>Vendredi {{ date(app.session.get('edition').date)|date('j') }} et
-            samedi {{ date(app.session.get('edition').concourscn)|date('j')}}
+            samedi {{ date(app.session.get('edition').concourscn)|date('j') }}
             {% if date(app.session.get('edition').concourscn)|date('m') == 1 %}
                 janvier
             {% else %}

@@ -134,7 +134,6 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::linkToCrud('Gestion des éditions', 'fas fa-cogs', Edition::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)->setPermission('ROLE_SUPER_ADMIN');
-        yield MenuItem::linkToCrud('Les organisateur cia', 'fas fa-book', Orgacia::class)->setPermission('ROLE_SUPER_ADMIN');;
         yield MenuItem::linkToCrud('Affectation des jurés', 'fas fa-graduation-cap', Jures::class)->setPermission('ROLE_SUPER_ADMIN')->setDefaultSort(['nomJure' => 'ASC']);
         yield MenuItem::linkToCrud('Coefficients', 'fas fa-graduation-cap', Coefficients::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Documents à télécharger', 'fas fa-book', Docequipes::class);

@@ -372,12 +372,12 @@ class Equipesadmin
         return $this->getPrenomProf2() . ' ' . $this->getNomProf2();
     }
 
-    public function getCentre(): ?centrescia
+    public function getCentre(): ?Centrescia
     {
         return $this->centre;
     }
 
-    public function setCentre(?centrescia $centre): self
+    public function setCentre(?Centrescia $centre): self
     {
         $this->centre = $centre;
 

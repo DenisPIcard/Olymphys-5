@@ -1,4 +1,4 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base2.html.twig' %}
 {% block navigation %}
 
     {{ include ("cyberjuryCia/navigation.html.twig") }}
@@ -165,10 +165,10 @@
 
                 <input type="hidden" name="idjure" id="{{ jure.id }}" value="{{ jure.id }}">
                 <td>
-                    <label for="prenom{{ jure.id }}"></label>
-                    <input type="text" value="{{ jure.prenomJure }}" id="prenom{{ jure.id }}"
-                           name="prenom" style="width: 80px"
-                           onchange="changejure({{ 'prenom'~jure.id }})">
+                    <label for="prenom{{ jure.id }}"></label><input type="text" value="{{ jure.prenomJure }}"
+                                                                    id="prenom{{ jure.id }}"
+                                                                    name="prenom" style="width: 80px"
+                                                                    onchange="changejure({{ 'prenom'~jure.id }})">
 
                 </td>
                 <td>

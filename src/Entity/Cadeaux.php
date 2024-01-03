@@ -19,8 +19,8 @@ class Cadeaux
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $fournisseur = null;
-    #[ORM\Column(type:Types::FLOAT, nullable:true)]
-    private ?float $montant=null;
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $montant = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $raccourci = null;
@@ -28,11 +28,14 @@ class Cadeaux
     #[ORM\OneToOne(mappedBy: 'cadeau', cascade: ['persist', 'remove'])]
     private ?Equipes $equipe = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $attribue = null;
+
 
     public function __toString()
     {
 
-        return $this->contenu . '-' . $this->fournisseur;
+        return $this->contenu . '-' . $this->fournisseur . '-' . $this->getMontant() . ' €';
 
     }
 
@@ -87,7 +90,7 @@ class Cadeaux
         return $this;
     }
 
-     public function getMontant(): ?float
+    public function getMontant(): ?float
     {
         return $this->montant;
     }
@@ -107,7 +110,32 @@ class Cadeaux
 
     public function setEquipe(?Equipes $equipe): self
     {
-       $this->equipe = $equipe;
+        if ($equipe === null && $this->equipe !== null) {
+            $this->equipe->setCadeau(null);
+            $this->attribue = false;
+        }
+
+        // set the owning side of the relation if necessary
+        if ($equipe !== null && $equipe->getcadeau() !== $this) {
+            $equipe->setCadeau($this);
+
+        }
+        if ($equipe !== null) {
+            $this->attribue = true;
+        }
+        $this->equipe = $equipe;
+
+        return $this;
+    }
+
+    public function isAttribue(): ?bool
+    {
+        return $this->attribue;
+    }
+
+    public function setAttribue(?bool $attribue): static
+    {
+        $this->attribue = $attribue;
 
         return $this;
     }

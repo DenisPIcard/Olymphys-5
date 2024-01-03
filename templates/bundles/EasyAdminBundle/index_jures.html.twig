@@ -154,6 +154,7 @@
 
         <tbody>
         {% block table_body %}
+            {% set lettres= app.session.get('lettres') %}
             {% for entity in entities %}
                 {% if entity.isAccessible %}
                     <tr data-id="{{ entity.primaryKeyValueAsString }}">
@@ -172,12 +173,30 @@
                         <td>
                             {{ entity.instance.initialesJure }}
                         </td>
-                        {% for equipes in entity.instance.attributions %}
-                            <td>
-                                {{ equipes.estLecteur }}
-                            </td>
-                        {% endfor %}
+                        {% for lettre in lettres %}
 
+                            <td>
+                                {% set test= false %}
+                                {% for equipes in entity.instance.attributions %}
+                                    {% if equipes.equipe.equipeinter.lettre== lettre %}
+                                        {% set test=true %}
+                                        {% if  equipes.estLecteur == 0 %}
+                                            E
+                                        {% endif %}
+                                        {% if  equipes.estLecteur == 1 %}
+                                            L
+                                        {% endif %}
+                                        {% if  equipes.estLecteur == 2 %}
+                                            R
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if test==false %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                        {% endfor %}
 
                         {% block entity_actions %}
                             <td class="actions {{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">

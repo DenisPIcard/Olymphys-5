@@ -74,7 +74,8 @@
     "twig/twig": "^2.12|^3.0",
     "vich/uploader-bundle": "^1.10",
     "victor-prdh/recaptcha-bundle": "^1.7",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "ext-cassandra": "*"
   },
   "config": {
     "allow-plugins": {
