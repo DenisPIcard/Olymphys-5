@@ -33,7 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CadeauxCrudController extends AbstractCrudController
 {
 
-    public function __Construct(protected EntityManagerInterface $doctrine , protected RequestStack $requestStack)
+    public function __Construct(protected EntityManagerInterface $doctrine, protected RequestStack $requestStack)
     {
 
     }
@@ -50,110 +50,79 @@ class CadeauxCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Cadeaux')
             ->setSearchFields(['id', 'contenu', 'fournisseur', 'montant', 'raccourci']);
     }
+
     public function configureActions(Actions $actions): Actions
     {
-        $tableauExcel=Action::new('cadeaux_tableau_excel','Extraire un tableau Excel', 'fa fa_array')
+        $tableauExcel = Action::new('cadeaux_tableau_excel', 'Extraire un tableau Excel', 'fa fa_array')
             ->linkToRoute('cadeaux_tableau_excel')
             ->createAsGlobalAction();
 
         return $actions->add(Crud::PAGE_INDEX, $tableauExcel)
-            ->add(Crud::PAGE_EDIT,'index');
+            ->add(Crud::PAGE_EDIT, 'index');
     }
+
     public function configureFields(string $pageName): iterable
     {
-
-        if (isset($_REQUEST['entityId'])){
-            $id=$_REQUEST['entityId'];
-            $cadeauEquipe=$this->doctrine->getRepository(Cadeaux::class)->findOneBy(['id'=>$id]);
-            $equipe= $cadeauEquipe->getEquipe();
-        }
-
-        $equipesSansCadeau=$this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
-            ->where('e.cadeau=:value')
-            ->setParameter('value', 'null')
+        $equipesSansCadeau = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->where('e.cadeau is NULL')
             ->getQuery()->getResult();
-
-        if (isset($equipe)){
-            $equipesSansCadeau[count($equipesSansCadeau)]=$equipe;//pour afficher la valeur de l'équipe dans le formulaire
-        }
-
-
-        $contenu = TextField::new('contenu');
-        $fournisseur = TextField::new('fournisseur');
-        $montant = NumberField::new('montant');
-        $raccourci = TextField::new('raccourci');
-        $id = IntegerField::new('id', 'ID');
-        $equipe=AssociationField::new('equipe')->setFormType(EntityType::class)
-                            ->setFormTypeOptions(
-                                [
-                                    'class'=>Equipes::class,
-                                    'choices'=>$equipesSansCadeau,
-                                ]
-                            );
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $contenu, $fournisseur, $montant,  $equipe, $raccourci];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $contenu, $fournisseur, $montant,  $equipe, $raccourci];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$contenu, $fournisseur, $montant,  $equipe, $raccourci];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$contenu, $fournisseur, $montant,$equipe, $raccourci];
-        }
-    }
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
-
-        $qb = $this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
-            ->select('c')
-            ->leftJoin('c.equipe', 'eq')
-            ->join('eq.equipeinter','ei');
-
-        if (isset($_REQUEST['sort'])){
-            $sort=$_REQUEST['sort'];
-            if (key($sort)=='equipe'){
-                $qb->addOrderBy('ei.lettre', $sort['equipe']);
+        if (isset($_REQUEST['entityId'])) {
+            $id = $_REQUEST['entityId'];
+            $cadeauEquipe = $this->doctrine->getRepository(Cadeaux::class)->findOneBy(['id' => $id]);
+            $equipe = $cadeauEquipe->getEquipe();
+            if (isset($equipe)) {
+                $equipesSansCadeau[count($equipesSansCadeau)] = $equipe;//pour afficher la valeur de l'équipe dans le formulaire, elle est ajoutée à la fin de la liste
             }
-            if (key($sort)=='montant'){
-                $qb->addOrderBy('c.montant', $sort['montant']);
-            }
-
-        }
-        else{
-            $qb->addOrderBy('ei.lettre', 'ASC');
         }
 
+        /*  if (Crud::PAGE_INDEX === $pageName) {
+              return [$id, $contenu, $fournisseur, $montant, $equipe, $raccourci];
+          } elseif (Crud::PAGE_DETAIL === $pageName) {
+              return [$id, $contenu, $fournisseur, $montant, $equipe, $raccourci];
+          } elseif (Crud::PAGE_NEW === $pageName) {
+              return [$contenu, $fournisseur, $montant, $equipe, $raccourci];
+          } elseif (Crud::PAGE_EDIT === $pageName) {
+              return [$contenu, $fournisseur, $montant, $equipe, $raccourci];
+          }*/
+        return [
+            $id = IntegerField::new('id', 'ID')->onlyOnIndex(),
+            $contenu = TextField::new('contenu'),
+            $fournisseur = TextField::new('fournisseur'),
+            $montant = NumberField::new('montant'),
+            $raccourci = TextField::new('raccourci'),
+            $equipe = AssociationField::new('equipe')->setFormType(EntityType::class)
+                ->setFormTypeOptions(
+                    [
+                        'class' => Equipes::class,
+                        'choices' => $equipesSansCadeau,
+                    ]
+                ),
 
-        ;
-        return $qb;
-    }
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        $equipe=$entityInstance->getEquipe();
-        $equipe->setCadeau($entityInstance);
-        $this->doctrine->persist($equipe);
-        $this->doctrine->flush();
-        parent::updateEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+
+        ];
+
     }
 
-    #[Route("/Admin/CadeauxCrud/cadeaux_tableau_excel", name:"cadeaux_tableau_excel")]
+
+    #[Route("/Admin/CadeauxCrud/cadeaux_tableau_excel", name: "cadeaux_tableau_excel")]
     public function cadeauxstableauexcel()
     {
 
-        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
-            ->join('e.equipeinter','eq')
+        $listEquipes = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->join('e.equipeinter', 'eq')
             ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery()->getResult();
 
         $edition = $this->requestStack->getSession()->get('edition');
-        if(date('now')<$this->requestStack->getSession()->get('dateouverturesite')){
-            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        if (date('now') < $this->requestStack->getSession()->get('dateouverturesite')) {
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         $liste_cadeaux = [];
-        $i=0;
-        foreach($listEquipes as $equipe){
+        $i = 0;
+        foreach ($listEquipes as $equipe) {
 
-            $liste_cadeaux[$i]=$equipe->getCadeau();
-            $i=$i+1;
+            $liste_cadeaux[$i] = $equipe->getCadeau();
+            $i = $i + 1;
         }
 
         $spreadsheet = new Spreadsheet();
@@ -183,10 +152,9 @@ class CadeauxCrudController extends AbstractCrudController
         foreach ($liste_cadeaux as $cadeau) {
             $sheet->setCellValue('A' . $ligne, $cadeau->getContenu())
                 ->setCellValue('B' . $ligne, $cadeau->getFournisseur())
-                ->setCellValue('C' . $ligne, $cadeau->getMontant().' €')
+                ->setCellValue('C' . $ligne, $cadeau->getMontant() . ' €')
                 ->setCellValue('D' . $ligne, $cadeau->getEquipe())
-                ->setCellValue('E' . $ligne, $cadeau->getRaccourci())
-            ;
+                ->setCellValue('E' . $ligne, $cadeau->getRaccourci());
 
             $ligne += 1;
         }

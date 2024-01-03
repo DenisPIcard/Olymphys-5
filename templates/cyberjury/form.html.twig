@@ -49,7 +49,7 @@
   </span>
         <span> <i> coef : {{ coefficients.wgroupe }} </i> </span>
     </div>
-    {% if flag == 1 %}
+    {% if flag == 1 %}<!-- le juré doit évaluer l'écrit -->
         <div class="form-group">
             {{ form_label(form.ecrit, "Le mémoire", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
             {{ form_errors(form.ecrit) }}

@@ -229,7 +229,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
         $nbeleves = IntegerField::new('nbeleves', 'Nbre elev')->setColumns(1);
-        $autorisations = BooleanField::new('autorisationsPhotos', 'Autorisations OK');
+
         //dd($this->adminContextProvider->getContext());
         //dd($this->adminContextProvider->getContext()->getRequest()->attributes->get('_controller')[1]=='detail');
 
@@ -239,7 +239,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
                 return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $uai];
             } else {
-                return [$numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $nomLycee, $lyceeLocalite, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet, $autorisations, $createdAt];
+                return [$numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $nomLycee, $lyceeLocalite, $lyceeAcademie, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet, $createdAt];
             }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
 
@@ -248,12 +248,12 @@ class EquipesadminCrudController extends AbstractCrudController
                 return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeLocalite, $lyceeCP, $lyceePays, $lyceeEmail, $uai, $retiree];
             } else {
 
-                return [$id, $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $autorisations, $partenaire, $createdAt, $inscrite, $uai,];
+                return [$id, $lettre, $numero, $centre, $titreProjet, $description, $selectionnee, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceePays, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt, $inscrite, $uai,];
             }
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $titreProjet, $centre, $IdProf1, $IdProf2];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire, $retiree, $autorisations];
+            return [$edition, $numero, $lettre, $uaiId, $lyceeAcademie, $lyceeLocalite, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire, $retiree];
         }
 
     }
@@ -320,6 +320,10 @@ class EquipesadminCrudController extends AbstractCrudController
             if (key($sort) == 'selectionnee') {
                 $qb->addOrderBy('e.selectionnee', $sort['selectionnee'])
                     ->addOrderBy('e.lettre', 'ASC');
+            }
+            if (key($sort) == 'lyceeAcademie') {
+                $qb->addOrderBy('e.lyceeAcademie', $sort['lyceeAcademie'])
+                    ->addOrderBy('e.nomLycee', 'ASC');
             }
             if (key($sort) == 'createdAt') {
                 $qb->addOrderBy('e.createdAt', $sort['createdAt']);

@@ -14,27 +14,28 @@ class Coefficients
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type : Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $demarche = 0;
 
-    #[ORM\Column(type : Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $oral = 0;
 
-    #[ORM\Column(type : Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $origin = 0;
 
-    #[ORM\Column(type : Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $wgroupe = 0;
 
-    #[ORM\Column(type : Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $ecrit = 0;
 
-    #[ORM\Column(type : Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $exper = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $repquestions = 0;
 
+    
     public function getId(): ?int
     {
         return $this->id;

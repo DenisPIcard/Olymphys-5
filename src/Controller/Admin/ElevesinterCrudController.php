@@ -646,8 +646,8 @@ class ElevesinterCrudController extends AbstractCrudController
 
     }
 
-    #[Route("/Admin/ElevesinteradminCrud/attestationsElevesPdf,{ideditionequipe}", name: "attestations_eleves_pdf")]
-    public function attestationsElevesPdf($ideditionequipe)
+    #[Route("/Admin/ElevesinteradminCrud/attestationsElevesTwig,{ideditionequipe}", name: "attestations_eleves_pdf")]
+    public function attestationsElevesPdf($ideditionequipe)//Un essais de conversion d'un twig avec  $knpSnappyPdf mais problème du this->render qui va chercher dans les templates, répertoire protégé;
     {
         $slugger = new AsciiSlugger();
         $idedition = explode('-', $ideditionequipe)[0];

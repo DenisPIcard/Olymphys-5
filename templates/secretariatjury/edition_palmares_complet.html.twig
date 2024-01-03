@@ -46,7 +46,8 @@
                             {% if equipe.classement == '1er' %} class="danger"
                             {% elseif  equipe.classement == '2ème' %} class="warning"
                             {% else %} class="active" {% endif %} >
-                        {% if  equipe.phrases is null %}
+                        {% if  equipe.phrases[0] is not  defined %}
+
                         {% else %}
 
                         <p style="color:blue">{{ equipe.phrases[0].phrase }} {{ equipe.phrases[0].liaison.liaison }} {{ equipe.phrases[0].prix }}</p>

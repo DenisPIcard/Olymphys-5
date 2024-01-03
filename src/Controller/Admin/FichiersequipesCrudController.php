@@ -843,10 +843,11 @@ class FichiersequipesCrudController extends AbstractCrudController
         $concours == '0' ? $concours = 0 : $concours = 1;
         $session = $this->requestStack->getSession();
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        $editionId = $session->get('edition');
+        $editionId = $session->get('edition')->getId();
 
-        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
-
+        //$edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
+        $edition = $entityInstance->getEquipe()->getEdition();
+        $entityInstance->setEdition($edition);
         $validator = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();
@@ -867,7 +868,6 @@ class FichiersequipesCrudController extends AbstractCrudController
             $this->redirectToRoute('admin', $_REQUEST);
         } else {
             if ($typefichier != 6) {
-                $edition = $entityInstance->getEquipe()->getEdition();
                 $entityInstance->setNational($concours);
                 $oldfichier = $repositoryFichiers->createQueryBuilder('f')
                     ->where('f.equipe =:equipe')
@@ -905,6 +905,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
             if ($typefichier == 6) {
 
+                $entityInstance->setEdition($edition);
                 $entityInstance->setNational(0);
                 $citoyen = $entityInstance->getProf();
                 $quidam = 'Prof';

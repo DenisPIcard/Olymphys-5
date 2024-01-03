@@ -36,7 +36,7 @@ class Jures
     #[ORM\OneToMany(targetEntity: Phrases::class, mappedBy: "jure")]
     private ?Collection $phrases;
 
-    #[ORM\ManyToMany(targetEntity: Attributions::class, inversedBy: 'jure', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Attributions::class, mappedBy: "jure", cascade: ['persist', 'remove'])]
     private ?Collection $attributions;
 
 

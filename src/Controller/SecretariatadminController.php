@@ -12,7 +12,9 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use DoctrineExtensions\Query\Mysql\Time;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -25,7 +27,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
@@ -80,46 +82,46 @@ class SecretariatadminController extends AbstractController
 
             for ($row = 3; $row <= $highestRow; ++$row) {
 
-                $value = $worksheet->getCell('A'.$row)->getValue();//On lit le uai
+                $value = $worksheet->getCell('A' . $row)->getValue();//On lit le uai
                 $uai = $repositoryUai->findOneByUai($value);//On vérifie si  cet uai est déjà dans la base
                 if (!$uai) { // si le uai n'existe pas, on le crée
                     $uai = new Uai();
-                 //sinon on garde les précédentes données
+                    //sinon on garde les précédentes données
                     //dd($value);
-                $uai->setUai($value);
-                $value = $worksheet->getCell('T'.$row)->getValue();
-                $uai->setNature($value);
-                //$value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-                //$uai->setSigle($value);
-                $value = $worksheet->getCell('K'.$row)->getValue();
-                $uai->setCommune($value);
-                $value = $worksheet->getCell('AC'.$row)->getValue();
-                $uai->setAcademie($value);
-                //$value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
-                $uai->setPays('France');
-                $value = $worksheet->getCell('W'.$row)->getValue();
-                $uai->setDepartement($value);
-                $value = $worksheet->getCell('C'.$row)->getValue();
-                $uai->setDenominationPrincipale($value);
-                $value = $worksheet->getCell('B'.$row)->getValue();
-                $uai->setAppellationOfficielle($value);
-                $value = $worksheet->getCell('D'.$row)->getValue();
-                $uai->setNom(ucwords(strtolower($value)));
-                $value = $worksheet->getCell('F'.$row)->getValue();
-                $uai->setAdresse($value);
-                $value = $worksheet->getCell('H'.$row)->getValue();
-                $uai->setBoitePostale($value);
-                $value = $worksheet->getCell('Z'.$row)->getValue();
-                $uai->setCodePostal($value);
-                $value = $worksheet->getCell('J'.$row)->getValue();
-                $uai->setAcheminement($value);
-                $value = $worksheet->getCell('L'.$row)->getValue();
-                $uai->setCoordonneeX($value);
-                $value = $worksheet->getCell('M'.$row)->getValue();
-                $uai->setCoordonneeY($value);
-                $this->em->persist($uai);
-                $this->em->flush();
-            }
+                    $uai->setUai($value);
+                    $value = $worksheet->getCell('T' . $row)->getValue();
+                    $uai->setNature($value);
+                    //$value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    //$uai->setSigle($value);
+                    $value = $worksheet->getCell('K' . $row)->getValue();
+                    $uai->setCommune($value);
+                    $value = $worksheet->getCell('AC' . $row)->getValue();
+                    $uai->setAcademie($value);
+                    //$value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+                    $uai->setPays('France');
+                    $value = $worksheet->getCell('W' . $row)->getValue();
+                    $uai->setDepartement($value);
+                    $value = $worksheet->getCell('C' . $row)->getValue();
+                    $uai->setDenominationPrincipale($value);
+                    $value = $worksheet->getCell('B' . $row)->getValue();
+                    $uai->setAppellationOfficielle($value);
+                    $value = $worksheet->getCell('D' . $row)->getValue();
+                    $uai->setNom(ucwords(strtolower($value)));
+                    $value = $worksheet->getCell('F' . $row)->getValue();
+                    $uai->setAdresse($value);
+                    $value = $worksheet->getCell('H' . $row)->getValue();
+                    $uai->setBoitePostale($value);
+                    $value = $worksheet->getCell('Z' . $row)->getValue();
+                    $uai->setCodePostal($value);
+                    $value = $worksheet->getCell('J' . $row)->getValue();
+                    $uai->setAcheminement($value);
+                    $value = $worksheet->getCell('L' . $row)->getValue();
+                    $uai->setCoordonneeX($value);
+                    $value = $worksheet->getCell('M' . $row)->getValue();
+                    $uai->setCoordonneeY($value);
+                    $this->em->persist($uai);
+                    $this->em->flush();
+                }
             }
             return $this->redirectToRoute('core_home');
         }
@@ -256,7 +258,9 @@ class SecretariatadminController extends AbstractController
                 $equipe->setEquipeinter($equipesel);
                 $equipe->setOrdre(1);
                 $equipe->setCouleur(0);
-                $equipe->setHeure('00H00');
+                $date = new DateTime('now');
+                $heure = '00:00';
+                $equipe->setHeure($heure);
                 $equipe->setSalle('000');
                 $equipe->setClassement(0);
 
@@ -274,97 +278,6 @@ class SecretariatadminController extends AbstractController
         return new Response($content);
     }
 
-    #[IsGranted('ROLE_SUPER_ADMIN')]
-    #[Route("/secretariatadmin/charge_jures", name: "secretariatadmin_charge_jures")]
-    public function charge_jures(Request $request): RedirectResponse|Response
-    {
-
-        $defaultData = ['message' => 'Charger le fichier Jures'];
-        $form = $this->createFormBuilder($defaultData)
-            ->add('fichier', FileType::class)
-            ->add('save', SubmitType::class)
-            ->getForm();
-
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $fichier = $data['fichier'];
-            $spreadsheet = IOFactory::load($fichier);
-            $worksheet = $spreadsheet->getActiveSheet();
-
-            $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
-
-            $em = $this->doctrine->getManager();
-            //$lettres = range('A','Z') ;
-            $repositoryEquipes = $this->doctrine->getManager()
-                ->getRepository(Equipes::class);
-            $equipes = $repositoryEquipes->createQueryBuilder('e')
-                ->leftJoin('e.equipeinter', 'eq')
-                ->orderBy('eq.lettre', 'ASC')
-                ->getQuery()->getResult();
-
-
-            $repositoryUser = $this->doctrine->getManager()
-                ->getRepository(User::class);
-            $message = '';
-
-            for ($row = 2; $row <= $highestRow; ++$row) {
-                $jure = new jures();
-                $prenom = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
-                $jure->setPrenomJure($prenom);
-                $nom = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
-                $jure->setNomJure($nom);
-                $initiales = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
-                $jure->setInitialesJure($initiales);
-
-                $user = $repositoryUser->createQueryBuilder('u')
-                    ->where('u.nom =:nom')
-                    ->setParameter('nom', $nom)
-                    ->andWhere('u.prenom =:prenom')
-                    ->setParameter('prenom', $prenom)
-                    ->getQuery()->getResult();
-
-                if (count($user) > 1) {
-
-                    foreach ($user as $jury) {//certains jurés sont parfois aussi organisateur des cia avec un autre compte.on ne sélectionne que le compte de role jury
-
-                        if (in_array('ROLE_JURY', $jury->getRoles())) {
-                            $jure->setIduser($jury);
-                        }
-                    }
-                }
-                if (count($user) != 0) {
-
-                    $jure->setIduser($user[0]);
-                    $colonne = 4;
-
-
-                    foreach ($equipes as $equipe) {
-                        $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();
-
-                        $method = 'set' . $equipe->getEquipeinter()->getLettre();
-                        $jure->$method($value);
-
-                        $colonne += 1;
-                    }
-                    $em->persist($jure);
-                    $em->flush();
-                }
-                if (count($user) == 0) {
-                    $message = $message . $nom . ' ne correspond pas à un user existant et n\'a pu être enregistré';
-                }
-
-            }
-            $request->getSession()
-                ->getFlashBag()
-                ->add('alert', $message);
-            return $this->redirectToRoute('core_home');
-        }
-        $content = $this
-            ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('titre' => 'Remplissage de la table Jurés', 'form' => $form->createView(),));
-        return new Response($content);
-    }
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
     #[Route("/secretariatadmin/charge_equipe_id_uai", name: "secretariatadmin_charge_equipe_id_uai")]

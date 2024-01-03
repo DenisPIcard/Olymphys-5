@@ -40,11 +40,13 @@ class EquipesType extends AbstractType
     private $Attrib_Couleur;
     private EntityManagerInterface $doctrine;
 
-    public function __construct(EntityManagerInterface $doctrine){
-        $this->doctrine=$doctrine;
+    public function __construct(EntityManagerInterface $doctrine)
+    {
+        $this->doctrine = $doctrine;
 
 
     }
+
     /**
      * {@inheritdoc}
      */
@@ -55,13 +57,17 @@ class EquipesType extends AbstractType
         $this->Attrib_Cadeaux = $options['Attrib_Cadeaux'];
         $this->Deja_Attrib = $options['Deja_Attrib'];
         $this->Attrib_Couleur = $options['Attrib_Couleur'];
-        $liste = $this->doctrine->getRepository(Cadeaux::class)->findAll();
-        $listeCadeaux= [];
-        $i=0;
-        foreach($liste as $cadeau ){
-            if ($cadeau->getEquipe()===null){
-                $listeCadeaux[$i]=$cadeau;
+        $liste = $this->doctrine->getRepository(Cadeaux::class)->createQueryBuilder('c')
+            ->orderBy('c.montant', 'DESC')
+            ->getQuery()->getResult();
+
+        $listeCadeaux = [];
+        $i = 0;
+        foreach ($liste as $cadeau) {
+            if ($cadeau->getEquipe() === null) {
+                $listeCadeaux[$i] = $cadeau;
             };
+            $i++;
         }
         if ($options['Modifier_Rang']) {
             $builder

@@ -214,6 +214,21 @@ class Mailer
 
     }
 
+    public function sendInscriptionJure($jure, $pwd, $centre): TemplatedEmail
+    {
+        $email = (new TemplatedEmail())
+            ->from('info@olymphys.fr')
+            ->to($jure->getEmail())//Pour prévenir le juré de son inscription en tant que juré du centrecia,
+            ->addCc('info@olymphys.fr')//prévient olymphys
+            ->htmlTemplate('email/confirme_jure_cia.html.twig')
+            ->subject('OdPF-Votre compte juré du concours national ')
+            ->context(['jureNom' => $jure->getPrenomJure() . ' ' . $jure->getNomJure()]);
+
+        $this->mailer->send($email);
+        return $email;
+
+    }
+
     /**
      * @throws TransportExceptionInterface
      */

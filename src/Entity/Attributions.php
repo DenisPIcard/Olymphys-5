@@ -13,10 +13,10 @@ class Attributions
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'attributions', cascade: ['persist'])]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     private ?Jures $jure = null;
 
-    #[ORM\ManyToOne(inversedBy: 'attribution', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     private ?Equipes $equipe = null;
 
     #[ORM\Column(nullable: true)]

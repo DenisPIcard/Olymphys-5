@@ -9,6 +9,8 @@ use App\Entity\User;
 use App\Form\CustomAttributionsType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -52,6 +54,12 @@ class JuresCrudController extends AbstractCrudController
             ->overrideTemplates(['crud/index' => 'bundles/EasyAdminBundle/index_jures.html.twig']);
     }
 
+    public function configureActions(Actions $actions): Actions
+    {
+        $gestionjures = Action::new('gestionjures')->createAsGlobalAction()->linkToRoute('secretariatjury_gestionjures');
+        return $actions->add(Crud::PAGE_INDEX, $gestionjures);
+    }
+
     public function configureFields(string $pageName): iterable
     {
         $role = 'ROLE_JURY';
@@ -87,27 +95,28 @@ class JuresCrudController extends AbstractCrudController
             $lettre = $equipe->getEquipeinter()->getlettre();
             $label = $label . '<b>' . str_replace(' ', '&nbsp;', str_pad($lettre, 9, ' ', STR_PAD_RIGHT)) . '</b>';
         }
-        $attributions = CollectionField::new('attributions')->setLabel($label)->showEntryLabel()->formatValue(function ($value, $entity) {
-            $repoJures = $this->doctrine->getRepository(Jures::class);
-            $attribs = $repoJures->getAttributionAdmin($entity);
-            $equipesNat = $this->doctrine->getRepository(Equipes::class)->findAll();
-            $attribution = '';
-            foreach ($equipesNat as $equipe) {
-                $lettre = $equipe->getEquipeinter()->getlettre();
-                /* if (!isset($attribs[$lettre])) {
-                     $attribs[$lettre] = str_replace(' ', '&nbsp;', str_pad('_', 1, ' ', STR_PAD_RIGHT));
-                 }*/
-                if ($attribs == []) {
-                    $attribution = $attribution . str_replace(' ', '&nbsp;', str_pad('_', 10, ' ', STR_PAD_RIGHT));
-                } else {
-                    $attribution = $attribution . str_replace(' ', '&nbsp;', str_pad($attribs[$lettre], 10, ' ', STR_PAD_RIGHT));
-                }
+        /*  $attributions = CollectionField::new('attributions')->setLabel($label)->showEntryLabel()->formatValue(function ($value, $entity) {
+              $repoJures = $this->doctrine->getRepository(Jures::class);
+              $attribs = $repoJures->getAttributionAdmin($entity);
+              $equipesNat = $this->doctrine->getRepository(Equipes::class)->findAll();
+              $attribution = '';
+              foreach ($equipesNat as $equipe) {
+                  $lettre = $equipe->getEquipeinter()->getlettre();
+                  /* if (!isset($attribs[$lettre])) {
+                       $attribs[$lettre] = str_replace(' ', '&nbsp;', str_pad('_', 1, ' ', STR_PAD_RIGHT));
+                   }
+                  if (!isset($attribs[$lettre])) {
+                      $attribution = $attribution . str_replace(' ', '&nbsp;', str_pad('_', 10, ' ', STR_PAD_RIGHT));
+                  } else {
+                      $attribution = $attribution . str_replace(' ', '&nbsp;', str_pad($attribs[$lettre], 10, ' ', STR_PAD_RIGHT));
+                  }
 
-            }
+              }
 
 
-            return $attribution;
-        })->onlyOnIndex();
+              return $attribution;
+          })->onlyOnIndex();*/
+
         $lesAttributions = CollectionField::new('attributions');
         //$lesAttributions = CollectionField::new('attributions');
         if (($pageName == 'edit') or ($pageName == 'new')) {

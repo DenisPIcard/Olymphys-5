@@ -399,7 +399,7 @@ class FichiersController extends AbstractController
                                 $nouveau = true;
                             }
                             if (!isset($nouveau)) {
-                                $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
+                                $message = '';
                             }
                         }
                         if ($num_type_fichier > 6) {

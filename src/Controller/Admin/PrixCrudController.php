@@ -35,10 +35,10 @@ use Symfony\Component\Routing\Annotation\Route;
     protected EntityManagerInterface $doctrine;
     protected RequestStack $requeststack;
 
-    public function __Construct(EntityManagerInterface $doctrine,RequestStack $requestStack)
+    public function __Construct(EntityManagerInterface $doctrine, RequestStack $requestStack)
     {
-        $this->doctrine=$doctrine;
-        $this->requeststack=$requestStack;
+        $this->doctrine = $doctrine;
+        $this->requeststack = $requestStack;
     }
 
     public static function getEntityFqcn(): string
@@ -57,20 +57,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
     public function configureFields(string $pageName): iterable
     {
-       // dd($_REQUEST);
-        if (isset($_REQUEST['entityId'])){
-            $id=$_REQUEST['entityId'];
-            $prixEquipe=$this->doctrine->getRepository(Prix::class)->findOneBy(['id'=>$id]);
-            $equipe= $prixEquipe->getEquipe();
+        // dd($_REQUEST);
+        if (isset($_REQUEST['entityId'])) {
+            $id = $_REQUEST['entityId'];
+            $prixEquipe = $this->doctrine->getRepository(Prix::class)->findOneBy(['id' => $id]);
+            $equipe = $prixEquipe->getEquipe();
         }
 
-        $equipesSansPrix=$this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
-                    ->where('e.prix=:value')
-                    ->setParameter('value', 'null')
-                    ->getQuery()->getResult();
+        $equipesSansPrix = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->where('e.prix IS NULL')
+            ->getQuery()->getResult();
 
-        if (isset($equipe)){
-            $equipesSansPrix[count($equipesSansPrix)]=$equipe;//pour afficher la valeur de l'équipe dans le formulaire
+        if (isset($equipe)) {
+            $equipesSansPrix[count($equipesSansPrix)] = $equipe;//pour afficher la valeur de l'équipe dans le formulaire
         }
         $prix = TextField::new('prix');;
         $niveau = TextField::new('niveau');
@@ -78,9 +77,9 @@ use Symfony\Component\Routing\Annotation\Route;
         $intervenant = TextField::new('intervenant');
         $remisPar = TextField::new('remisPar');
         $id = IntegerField::new('id', 'ID');
-        $equipe=AssociationField::new('equipe')->setFormType(EntityType::class)->setFormTypeOptions(
-            ['class'=>Equipes::class,
-             'choices' =>$equipesSansPrix,
+        $equipe = AssociationField::new('equipe')->setFormType(EntityType::class)->setFormTypeOptions(
+            ['class' => Equipes::class,
+                'choices' => $equipesSansPrix,
 
             ]
         );
@@ -88,39 +87,40 @@ use Symfony\Component\Routing\Annotation\Route;
         if (Crud::PAGE_INDEX === $pageName) {
             return [$id, $prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $prix, $niveau,  $equipe, $voix, $intervenant, $remisPar];
+            return [$id, $prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$prix, $niveau,  $equipe, $voix, $intervenant, $remisPar];
+            return [$prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         }
     }
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
 
-        $qb = $this->doctrine->getRepository(Prix::class)->createQueryBuilder('p')
-            ->select('p')
-            ->leftJoin('p.equipe', 'eq')
-            ->join('eq.equipeinter','ei');
+    /*  public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+      {
 
-        if (isset($_REQUEST['sort'])){
-            $sort=$_REQUEST['sort'];
-            if (key($sort)=='equipe'){
-                $qb->addOrderBy('ei.lettre', $sort['equipe']);
-            }
-            if (key($sort)=='niveau'){
-                $qb->addOrderBy('p.niveau', $sort['niveau']);
-                $qb->addOrderBy('ei.lettre', 'ASC');
-            }
-        }
-        else {
-            $qb->addOrderBy('ei.lettre', 'ASC');
-        }
+          $qb = $this->doctrine->getRepository(Prix::class)->createQueryBuilder('p')
+              ->select('p')
+              ->leftJoin('p.equipe', 'eq')
+              ->join('eq.equipeinter','ei');
+
+          if (isset($_REQUEST['sort'])){
+              $sort=$_REQUEST['sort'];
+              if (key($sort)=='equipe'){
+                  $qb->addOrderBy('ei.lettre', $sort['equipe']);
+              }
+              if (key($sort)=='niveau'){
+                  $qb->addOrderBy('p.niveau', $sort['niveau']);
+                  $qb->addOrderBy('ei.lettre', 'ASC');
+              }
+          }
+          else {
+              $qb->addOrderBy('ei.lettre', 'ASC');
+          }
 
 
-        ;
-        return $qb;
-    }
+          ;
+          return $qb;
+      }*/
 
     public function configureActions(Actions $actions): Actions
     {
@@ -128,33 +128,34 @@ use Symfony\Component\Routing\Annotation\Route;
         $uploadPrix = Action::new('excel_prix', 'Charger les prix', 'fa fa-upload')
             ->linkToRoute('secretariatjury_excel_prix')
             ->createAsGlobalAction();
-        $tableauExcel=Action::new('prix_tableau_excel','Extraire un tableau Excel', 'fa fa_array')
+        $tableauExcel = Action::new('prix_tableau_excel', 'Extraire un tableau Excel', 'fa fa_array')
             ->linkToRoute('prix_tableau_excel')
             ->createAsGlobalAction();
 
         return $actions->add(Crud::PAGE_INDEX, $uploadPrix)
-                        ->add(Crud::PAGE_INDEX, $tableauExcel)
-                        ->add(Crud::PAGE_EDIT,'index');
+            ->add(Crud::PAGE_INDEX, $tableauExcel)
+            ->add(Crud::PAGE_EDIT, 'index');
     }
-    #[Route("/Admin/PrixCrud/prix_tableau_excel", name:"prix_tableau_excel")]
+
+    #[Route("/Admin/PrixCrud/prix_tableau_excel", name: "prix_tableau_excel")]
     public function prixtableauexcel()
     {
         $repositoryPrix = $this->doctrine->getRepository(Prix::class);
-        $listEquipes =  $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
-            ->join('e.equipeinter','eq')
+        $listEquipes = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
+            ->join('e.equipeinter', 'eq')
             ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery()->getResult();
 
         $edition = $this->requeststack->getSession()->get('edition');
-        if(date('now')<$this->requeststack->getSession()->get('dateouverturesite')){
-            $edition=$this->doctrine->getRepository(Edition::class)->findOneBy(['ed'=>$edition->getEd()-1]);
+        if (date('now') < $this->requeststack->getSession()->get('dateouverturesite')) {
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         $liste_prix = [];
-        $i=0;
-        foreach($listEquipes as $equipe){
+        $i = 0;
+        foreach ($listEquipes as $equipe) {
 
-            $liste_prix[$i]=$equipe->getprix();
-            $i=$i+1;
+            $liste_prix[$i] = $equipe->getprix();
+            $i = $i + 1;
         }
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()

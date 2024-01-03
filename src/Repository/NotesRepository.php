@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Coefficients;
 use App\Entity\Notes;
 use Doctrine\ORM\EntityRepository;
 
@@ -15,15 +16,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class NotesRepository extends EntityRepository
 {
-    public function get_rangs($jure_id)
+
+    public function get_rangs($jure_id, $coef)
     {
         $queryBuilder = $this->createQueryBuilder('n');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
 
         // On ajoute des critères de tri, etc.
+
         $queryBuilder
             ->where('n.jure=:jure_id')
             ->setParameter('jure_id', $jure_id)
-            ->orderBy('n.exper*15 + n.demarche*10 + n.oral*10 + n.origin*15 + n.wgroupe*5 + n.ecrit*15 + n.repquestions*10', 'DESC');
+            ->orderBy('n.exper*' . $coef->getExper() . ' + n.demarche*' . $coef->getDemarche() . ' + n.oral*' . $coef->getOral() . ' + n.origin*' . $coef->getOrigin() . ' + n.wgroupe*' . $coef->getWgroupe() . ' + n.ecrit*' . $coef->getEcrit() . ' + n.repquestions*' . $coef->getRepquestions(), 'DESC');
 
         // on récupère la query
         $query = $queryBuilder->getQuery();
@@ -40,7 +43,7 @@ class NotesRepository extends EntityRepository
         return $rangs;
     }
 
-    public function EquipeDejaNotee($jure_id, $equipe_id)
+    public function EquipeDejaNotee($jure_id, $equipe_id)//donne la note si l'équipe a déjà une note de ce juré
     {
         $queryBuilder = $this->createQueryBuilder('n');  // n est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
 

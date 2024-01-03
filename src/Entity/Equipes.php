@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DoctrineExtensions\Query\Mysql\Time;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 #[ORM\Entity(repositoryClass: EquipesRepository::class)]
 class Equipes
@@ -61,11 +63,11 @@ class Equipes
     #[ORM\OneToMany(mappedBy: 'equipe', targetEntity: Phrases::class)]
     private ?Collection $phrases;
 
-    #[ORM\ManyToMany(targetEntity: Jures::class, mappedBy: 'Equipes')]
-    private Collection $jures;
+    #[ORM\ManyToMany(targetEntity: Jures::class, mappedBy: 'equipe')]
+    private ?Collection $jures;
 
-    #[ORM\OneToOne(mappedBy: 'equipe', cascade: ['persist', 'remove'])]
-    private ?Attributions $attribution = null;
+    #[ORM\OneToMany(targetEntity: Attributions::class, mappedBy: 'equipe')]
+    private ?Collection $attributions = null;
 
     public function __toString(): string
     {
@@ -78,6 +80,7 @@ class Equipes
         $this->notess = new ArrayCollection();
         $this->phrases = new ArrayCollection();
         $this->jures = new ArrayCollection();
+        $this->attributions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -202,14 +205,7 @@ class Equipes
 
     public function setCadeau(?Cadeaux $cadeau): self
     {
-        if ($cadeau === null && $this->cadeau !== null) {
-            $this->cadeau->setEquipe(null);
-        }
 
-        // set the owning side of the relation if necessary
-        if ($cadeau !== null && $cadeau->getEquipe() !== $this) {
-            $cadeau->setEquipe($this);
-        }
         $this->cadeau = $cadeau;
 
         return $this;
@@ -222,14 +218,7 @@ class Equipes
 
     public function setPrix(?Prix $prix): self
     {
-        if ($prix === null && $this->prix !== null) {
-            $this->prix->setEquipe(null);
-        }
 
-        // set the owning side of the relation if necessary
-        if ($prix !== null && $prix->getEquipe() !== $this) {
-            $prix->setEquipe($this);
-        }
         $this->prix = $prix;
 
         return $this;
@@ -365,24 +354,27 @@ class Equipes
         return $this;
     }
 
-    public function getAttribution(): ?Attributions
+    public function getAttributions(): ?Collection
     {
-        return $this->attribution;
+        return $this->attributions;
     }
 
-    public function setAttribution(?Attributions $attribution): self
+    public function addAttribution(?Attributions $attribution): self
     {
         // unset the owning side of the relation if necessary
-        if ($attribution === null && $this->attribution !== null) {
-            $this->attribution->setEquipe(null);
+        if (!$this->attributions->contains($attribution)) {
+            $this->attributions->add($attribution);
+            $attribution->addEquipe($this);
         }
 
-        // set the owning side of the relation if necessary
-        if ($attribution !== null && $attribution->getEquipe() !== $this) {
-            $attribution->setEquipe($this);
-        }
+        return $this;
+    }
 
-        $this->attribution = $attribution;
+    public function removeAttribution(Attributions $attribution): self
+    {
+        if ($this->attributions->removeElement($attribution)) {
+            $attribution->removeEquipe($this);
+        }
 
         return $this;
     }
