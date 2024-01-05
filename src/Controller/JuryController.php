@@ -61,8 +61,7 @@ class JuryController extends AbstractController
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
         if ($jure === null) {
-            $request->getSession()
-                ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
+            $request->getSession()->set('info', 'Vous n\'êtes pas membre du jury national cette année');
             return $this->redirectToRoute('core_home');
         }
 
@@ -400,7 +399,7 @@ class JuryController extends AbstractController
 
             $em->persist($notes);
             $em->flush();
-            
+
             //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
             // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
             return $this->redirectToroute('cyberjury_tableau_de_bord', array('critere' => 'TOT', 'sens' => 'DESC'));
