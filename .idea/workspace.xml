@@ -4,18 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 20-11 quelques améliorations">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 06-01  passage en 6.4">
+      <change afterPath="$PROJECT_DIR$/migrations/Version20231220201803.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230101103713.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20231110224719.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20231119191045.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20231110225000.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Cia/SecretariatjuryCiaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/modales/modale_envoi_conseils_jurycia.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20231119191045.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/CadeauxType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/CadeauxType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ClassementType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ClassementType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ConfirmType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ConfirmType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ConseilJuryCiaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ConseilJuryCiaType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/EditionType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/EditionType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/EquipesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/EquipesType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/FichessecurType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/FichessecurType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Filter/PhotosequipescnFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Filter/PhotosequipescnFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Filter/PhotosequipesinterFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Filter/PhotosequipesinterFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Filter/PhotosinterFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Filter/PhotosinterFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Filter/ProfesseursFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Filter/ProfesseursFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/Filter/VideosequipesFilterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/Filter/VideosequipesFilterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/InscrireEquipeType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/InscrireEquipeType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/JuresCiaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/JuresCiaType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/JuresType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/JuresType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/LiaisonType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/LiaisonType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ListefichiersType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ListefichiersType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ModifEquipeType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ModifEquipeType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/NewsletterType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/NewsletterType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/NotesCiaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/NotesCiaType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/NotesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/NotesType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PalmaresType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PalmaresType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PhotosType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PhotosType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PhrasesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PhrasesType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PresentationType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PresentationType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PrixExcelType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PrixExcelType.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +57,19 @@
     <option name="BRANCH" value="master" />
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="cyberjury_cn" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="PREVIOUS_COMMIT_AUTHORS">
       <list>
         <option value="AlainJouve &lt;alain.jouve@wanadoo.fr&gt;" />
@@ -45,7 +77,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="modales_grdes_photos" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_COMMON_BRANCH" value="main" />
@@ -72,6 +104,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/bin/php8.2">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/composer" />
@@ -83,7 +116,6 @@
       <path value="$PROJECT_DIR$/vendor/twig/extra-bundle" />
       <path value="$PROJECT_DIR$/vendor/twig/twig" />
       <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
-      <path value="$PROJECT_DIR$/vendor/sensio/framework-extra-bundle" />
       <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-code" />
       <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
@@ -211,14 +243,12 @@
       <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
       <path value="$PROJECT_DIR$/vendor/phpoffice/phpword" />
       <path value="$PROJECT_DIR$/vendor/howtomakeaturn/pdfinfo" />
-      <path value="$PROJECT_DIR$/vendor/friendsofsymfony/ckeditor-bundle" />
       <path value="$PROJECT_DIR$/vendor/helios-ag/fm-elfinder-bundle" />
       <path value="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle" />
       <path value="$PROJECT_DIR$/vendor/beberlei/doctrineextensions" />
       <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
       <path value="$PROJECT_DIR$/vendor/markbaker/complex" />
       <path value="$PROJECT_DIR$/vendor/markbaker/matrix" />
-      <path value="$PROJECT_DIR$/vendor/fabpot/goutte" />
       <path value="$PROJECT_DIR$/vendor/vich/uploader-bundle" />
       <path value="$PROJECT_DIR$/vendor/symfony/uid" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-uuid" />
@@ -245,6 +275,23 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
       <path value="$PROJECT_DIR$/vendor/friendsofsymfony/jsrouting-bundle" />
       <path value="$PROJECT_DIR$/vendor/willdurand/jsonp-callback-validator" />
+      <path value="$PROJECT_DIR$/vendor/victor-prdh/recaptcha-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/twig-pack" />
+      <path value="$PROJECT_DIR$/vendor/google/recaptcha" />
+      <path value="$PROJECT_DIR$/vendor/dompdf/dompdf" />
+      <path value="$PROJECT_DIR$/vendor/sabberworm/php-css-parser" />
+      <path value="$PROJECT_DIR$/vendor/phenx/php-svg-lib" />
+      <path value="$PROJECT_DIR$/vendor/phenx/php-font-lib" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-snappy-bundle" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-snappy" />
+      <path value="$PROJECT_DIR$/vendor/setasign/fpdi" />
+      <path value="$PROJECT_DIR$/vendor/mpdf/mpdf" />
+      <path value="$PROJECT_DIR$/vendor/mpdf/psr-http-message-shim" />
+      <path value="$PROJECT_DIR$/vendor/mpdf/psr-log-aware-trait" />
+      <path value="$PROJECT_DIR$/vendor/fpdf/fpdf" />
+      <path value="$PROJECT_DIR$/vendor/friendsofsymfony/ckeditor-bundle" />
+      <path value="$PROJECT_DIR$/vendor/psr/clock" />
+      <path value="$PROJECT_DIR$/vendor/symfony/clock" />
     </include_path>
   </component>
   <component name="ProblemsViewState">
@@ -262,50 +309,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "git-widget-placeholder": "vers__Symfony__64",
+    "last_opened_file_path": "/media/alain/T7 Touch/PhpstormProjects/Olymphys-5/templates/cyberjury",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "editor.preferences.tabs",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/templates/cyberjuryCia" />
+      <recent name="$PROJECT_DIR$/templates/cyberjury" />
       <recent name="$PROJECT_DIR$/templates/modales" />
-      <recent name="$PROJECT_DIR$/templates/email" />
+      <recent name="$PROJECT_DIR$/templates" />
+      <recent name="$PROJECT_DIR$/templates/secretariatjury" />
       <recent name="$PROJECT_DIR$/public/odpf/odpf-images" />
-      <recent name="$PROJECT_DIR$/templates/bundles/EasyAdminBundle" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/templates/secretariatjury" />
+      <recent name="$PROJECT_DIR$/src/Controller/OdpfAdmin" />
       <recent name="$PROJECT_DIR$/src/Repository/Cia" />
       <recent name="$PROJECT_DIR$/src/Entity/Cia" />
       <recent name="$PROJECT_DIR$/templates/cyberjuryCia" />
-      <recent name="$PROJECT_DIR$/src/Controller/Cia" />
-      <recent name="$PROJECT_DIR$/src/Controller/cia" />
     </key>
   </component>
   <component name="RunManager" selected="PHPUnit.phpunit.xml.dist">
@@ -325,6 +372,13 @@
         <item itemvalue="PHP Script.CustomAttributionsType.php" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-php-predefined-ba97393d7c68-b4dcf6bb9de9-com.jetbrains.php.sharedIndexes-PS-233.13135.108" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -623,6 +677,70 @@
       <workItem from="1700418509780" duration="10919000" />
       <workItem from="1700464149783" duration="38032000" />
       <workItem from="1700551121856" duration="4916000" />
+      <workItem from="1701414576298" duration="604000" />
+      <workItem from="1701431389664" duration="2000" />
+      <workItem from="1701435999024" duration="382000" />
+      <workItem from="1701436387127" duration="1574000" />
+      <workItem from="1701440817891" duration="11062000" />
+      <workItem from="1701467648744" duration="14000" />
+      <workItem from="1701468357544" duration="6000" />
+      <workItem from="1701468663583" duration="106000" />
+      <workItem from="1701499087138" duration="16871000" />
+      <workItem from="1701591308947" duration="5138000" />
+      <workItem from="1701597498133" duration="5855000" />
+      <workItem from="1701623244891" duration="2148000" />
+      <workItem from="1701626405133" duration="17000" />
+      <workItem from="1701804010293" duration="1478000" />
+      <workItem from="1701892234390" duration="2724000" />
+      <workItem from="1701900375147" duration="21000" />
+      <workItem from="1701958532133" duration="12000" />
+      <workItem from="1701958570318" duration="12331000" />
+      <workItem from="1702018263738" duration="6347000" />
+      <workItem from="1702048767859" duration="9355000" />
+      <workItem from="1702133939675" duration="19215000" />
+      <workItem from="1702191670885" duration="627000" />
+      <workItem from="1702237302790" duration="7000" />
+      <workItem from="1702277203746" duration="162000" />
+      <workItem from="1702282564057" duration="26000" />
+      <workItem from="1702315475614" duration="2047000" />
+      <workItem from="1702320572355" duration="5022000" />
+      <workItem from="1702380843693" duration="148000" />
+      <workItem from="1702408420834" duration="9000" />
+      <workItem from="1702408464115" duration="6384000" />
+      <workItem from="1702450064280" duration="6578000" />
+      <workItem from="1702459725880" duration="72000" />
+      <workItem from="1702459804906" duration="129000" />
+      <workItem from="1702459940634" duration="4667000" />
+      <workItem from="1702655151468" duration="2924000" />
+      <workItem from="1702658094100" duration="6159000" />
+      <workItem from="1702664350924" duration="7483000" />
+      <workItem from="1702799948377" duration="11833000" />
+      <workItem from="1702834556977" duration="152000" />
+      <workItem from="1702842666369" duration="5438000" />
+      <workItem from="1702883111890" duration="8730000" />
+      <workItem from="1702893229911" duration="15176000" />
+      <workItem from="1702931657328" duration="8451000" />
+      <workItem from="1703000948826" duration="10268000" />
+      <workItem from="1703016927964" duration="6883000" />
+      <workItem from="1703070119009" duration="22954000" />
+      <workItem from="1703143489167" duration="5348000" />
+      <workItem from="1703172203335" duration="20880000" />
+      <workItem from="1703257318266" duration="10934000" />
+      <workItem from="1703363787282" duration="2683000" />
+      <workItem from="1703662475054" duration="704000" />
+      <workItem from="1703915579498" duration="22484000" />
+      <workItem from="1704008860052" duration="40750000" />
+      <workItem from="1704060997945" duration="78000" />
+      <workItem from="1704076486583" duration="334000" />
+      <workItem from="1704076967528" duration="1099000" />
+      <workItem from="1704078382937" duration="1849000" />
+      <workItem from="1704137957288" duration="3483000" />
+      <workItem from="1704164047482" duration="3643000" />
+      <workItem from="1704195082747" duration="19918000" />
+      <workItem from="1704295119648" duration="3927000" />
+      <workItem from="1704315597788" duration="15000" />
+      <workItem from="1704475782766" duration="8656000" />
+      <workItem from="1704524293095" duration="4858000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -967,7 +1085,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -992,12 +1110,12 @@
             <list>
               <RecentGroup>
                 <option name="FILTER_VALUES">
-                  <option value="origin/master" />
+                  <option value="master" />
                 </option>
               </RecentGroup>
               <RecentGroup>
                 <option name="FILTER_VALUES">
-                  <option value="master" />
+                  <option value="origin/master" />
                 </option>
               </RecentGroup>
               <RecentGroup>
@@ -1029,6 +1147,14 @@
                       </list>
                     </value>
                   </entry>
+                  <entry key="date">
+                    <value>
+                      <list>
+                        <option value="" />
+                        <option value="" />
+                      </list>
+                    </value>
+                  </entry>
                 </map>
               </option>
             </State>
@@ -1042,21 +1168,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="première ligne page inscriptions" />
-    <MESSAGE value="CyberjuryCIa, couleurs pour les équipes sélectionnées, mailing vers le jurésCia lors de la création de leur compte par l'orgacia" />
-    <MESSAGE value="CyberjuryCIa, amélioration du tableau de gestion des jurés et du tableau excel" />
-    <MESSAGE value="Ajustements avant la mise en ligne" />
-    <MESSAGE value="Correction du dysfonctionnement de vichuploader pour les carrousels" />
-    <MESSAGE value="Utilisation de la table coef dans le notesCias Repo et correction classement équipes sous-jury" />
-    <MESSAGE value="Comit du 16-10-23 après réinstallation d'olymphy-5 en local" />
-    <MESSAGE value="Comit du 22-10-23 amélioration saisie du tableau répartition des jurés cia" />
-    <MESSAGE value="Comit du 23-10-23 apéliotion du cyberjury+ autres bricoles" />
-    <MESSAGE value="Comit du 31-10 cyberjurycia gestion erreur juré" />
-    <MESSAGE value="Comit du 2-11 cyberjurycia améliorations" />
-    <MESSAGE value="Comit du 6-11 cyberjurycia correction erreur création juré" />
-    <MESSAGE value="Comit du 8-11 cyberjurycia correction erreur création juré" />
-    <MESSAGE value="Comit du 8-11 cyberjurycia redaction des conseils par le comité" />
-    <MESSAGE value="Comit du 8-11 cyberjurycia édition des mails, noms et prénoms des jurés CIA par les organisateurs" />
     <MESSAGE value="Comit du 10-11 cyberjurycia transfert d'une note de juré après erreur d'équipe du juré" />
     <MESSAGE value="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs" />
     <MESSAGE value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
@@ -1067,7 +1178,22 @@
     <MESSAGE value="Comit du 18-11 corrrection erreur de calcul du total des points d'une équipe avec mémoire" />
     <MESSAGE value="Comit du 20-11 mise au point de la saisie des horaires et salles cia" />
     <MESSAGE value="Comit du 20-11 quelques améliorations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 20-11 quelques améliorations" />
+    <MESSAGE value="Comit du 01-12 essai indexation fichiers" />
+    <MESSAGE value="Comit du 03-12 essai indexation fichiers" />
+    <MESSAGE value="Comit du 07-12 Voir les photos des CIA" />
+    <MESSAGE value="Comit du 08-12 amélioration de la liste des élèves" />
+    <MESSAGE value="Comit du 09-12 limitation accès edition en cours" />
+    <MESSAGE value="Comit du 09-12 permettre le dépôt des autorisations aux non sélectionnés 20 jours après les cia" />
+    <MESSAGE value="Comit du 11-12 utiliser une gestion des juré analogue à celle des cia" />
+    <MESSAGE value="Comit du 11-12 permettre un dépôt de photos de 7,5 M, correction bud dépôt de fichier dans l'admin." />
+    <MESSAGE value="Comit du 11-12 permettre un dépôt de photos de 7,5 M, correction bug dépôt de fichier dans l'admin." />
+    <MESSAGE value="Comit du 13-12 Limiter l'accès aux photos d'équipe avec toutes les autorisations photos + commentaire du calcul des notes cia" />
+    <MESSAGE value="Comit du 20-12 création en ligne des atestations CIA pdf et doc" />
+    <MESSAGE value="Comit du 20-12 création en ligne des attestations CIA pdf et doc" />
+    <MESSAGE value="Comit du 03-01 cyberjuryCN utilisation d'une table attribution, gestion des jurés, et modifs diverses" />
+    <MESSAGE value="Comit du 05-01 suppression du sensioframework" />
+    <MESSAGE value="Comit du 06-01  passage en 6.4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 06-01  passage en 6.4" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1080,7 +1206,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Controller/JuryController.php</url>
-          <line>500</line>
+          <line>503</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

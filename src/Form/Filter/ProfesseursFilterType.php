@@ -25,7 +25,7 @@ class ProfesseursFilterType extends FilterType
 
     }
 
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata): void
     {
 
         $datas = $form->getParent()->getData();
@@ -43,7 +43,7 @@ class ProfesseursFilterType extends FilterType
 
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'choice_label' => [

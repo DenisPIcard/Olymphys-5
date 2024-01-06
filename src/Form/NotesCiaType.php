@@ -16,7 +16,7 @@ class NotesCiaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->EST_PasEncoreNotee = $options['EST_PasEncoreNotee'];
         $this->EST_Lecteur = $options['EST_Lecteur'];
@@ -83,7 +83,7 @@ class NotesCiaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => NotesCia::class,

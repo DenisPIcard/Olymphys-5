@@ -50,7 +50,7 @@ class EquipesType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->Modifier_Rang = $options['Modifier_Rang'];
         $this->Attrib_Phrases = $options['Attrib_Phrases'];
@@ -115,7 +115,7 @@ class EquipesType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => 'App\Entity\Equipes',
