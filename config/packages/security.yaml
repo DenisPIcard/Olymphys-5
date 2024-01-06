@@ -27,7 +27,7 @@ security:
       lazy: true
       provider: app_user_provider
       custom_authenticator: App\Security\LoginFormAuthenticator
-      user_checker: App\Security\UserChecker
+      #user_checker: App\Security\UserChecker
       remember_me:
         secret: '%kernel.secret%'
         lifetime: 2592000 # 30 days in seconds

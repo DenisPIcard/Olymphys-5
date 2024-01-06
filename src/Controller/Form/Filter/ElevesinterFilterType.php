@@ -12,21 +12,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElevesinterFilterType extends FiltersFormType
 {
-    
+
     private RequestStack $requestStack;
-    
-    
+
+
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }
-    
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata): void
     {
-        
+
         $datas = $form->getParent()->getData();
         if (!isset($datas['edition'])) {
-            
+
             $this->requestStack->getSession()->set('edition_titre', $this->requestStack->getSession()->get('edition')->getEd());
         }
         if (isset($datas['edition'])) {
@@ -36,16 +36,16 @@ class ElevesinterFilterType extends FiltersFormType
             $this->requestStack->getSession()->set('edition_titre', $datas['edition']->getEd());
         }
         if (isset($datas['equipe'])) {
-            
+
             $queryBuilder->andWhere('entity.equipe =:equipe')
                 ->setParameter('equipe', $datas['equipe'])
                 ->orderBy('equipe.numero', 'ASC');
-            
+
         }
-        
-        
+
+
     }
-    
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -55,15 +55,15 @@ class ElevesinterFilterType extends FiltersFormType
                 // ...
             ],
         ]);
-        
+
     }
-    
+
     public function getParent(): string
     {
         return EntityType::class;
     }
-    
-    
+
+
 }
 
 
