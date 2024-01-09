@@ -4,9 +4,9 @@ twig:
   form_themes:
     - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
 fos_ck_editor:
-  default_config: default
-
   configs:
-
-    default:
+    main_config:
+      language: fr
       toolbar: full
+      filebrowserBrowseRouteParameters: [ instance: "ckeditor" ]
+      filebrowserBrowseRoute: "elfinder"

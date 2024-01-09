@@ -4,19 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 06-01  passage en 6.4">
-      <change afterPath="$PROJECT_DIR$/config/routes/fos_js_routing.yaml" afterDir="false" />
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 08-01  retrogradage vers 6.1">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpunit.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpunit.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/fos_ckeditor.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/fos_ckeditor.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/google_recaptcha.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/recaptcha.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfArticleCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OdpfAdmin/OdpfArticleCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/EquipesadminRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EquipesadminRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -721,7 +710,7 @@
       <workItem from="1704475782766" duration="8656000" />
       <workItem from="1704524293095" duration="4858000" />
       <workItem from="1704744237851" duration="10690000" />
-      <workItem from="1704785216193" duration="618000" />
+      <workItem from="1704785216193" duration="741000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -1066,7 +1055,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="105" />
+    <option name="localTasksCounter" value="106" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1149,7 +1138,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="Comit du 10-11 cyberjurycia transfert d'une note de juré après erreur d'équipe du juré" />
     <MESSAGE value="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs" />
     <MESSAGE value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
     <MESSAGE value="Comit du 12-11 mailing conseil juru : modale de confirmation d'envoi" />
@@ -1174,7 +1162,8 @@
     <MESSAGE value="Comit du 03-01 cyberjuryCN utilisation d'une table attribution, gestion des jurés, et modifs diverses" />
     <MESSAGE value="Comit du 05-01 suppression du sensioframework" />
     <MESSAGE value="Comit du 06-01  passage en 6.4" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 06-01  passage en 6.4" />
+    <MESSAGE value="Comit du 08-01  retrogradage vers 6.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 08-01  retrogradage vers 6.1" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
