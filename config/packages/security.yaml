@@ -34,7 +34,7 @@ security:
         signature_properties: [ password ]
       switch_user: true
       logout: true
-      #   path: /logout
+      # path: /logout
       entry_point: App\Security\LoginFormAuthenticator
 
 

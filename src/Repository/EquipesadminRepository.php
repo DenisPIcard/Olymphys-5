@@ -168,7 +168,7 @@ class EquipesadminRepository extends ServiceEntityRepository
 
             if (in_array('ROLE_PROF', $user->getRoles()) and (!in_array('ROLE_JURY', $user->getRoles()))) {// à cause du juré qui est prof et juré selon les années
                 $qb->andWhere('e.idProf1 =:prof or e.idProf2 =:prof')
-                    ->andWhere('e.selectionne =:selectionnee')
+                    ->andWhere('e.selectionnee =:selectionnee')
                     ->setParameters(['edition' => $edition, 'prof' => $user, 'selectionnee' => $selectionnee]);
                 $listeEquipes = $qb->getQuery()->getResult();
             }

@@ -57,36 +57,39 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $listCarousels = $this->doctrine->getRepository(OdpfCarousels::class)->findAll();
-        $idField = IdField::new('id')->hideOnForm();
+
+        yield IdField::new('id')->hideOnForm();
 
         // Add a tab
-        $tab1 = FormField::addTab('Article ');
+        yield FormField::addTab('Article ');
 
         // You can use a Form Panel inside a Form Tab
-        $panel1 = FormField::addPanel('Données');
-        $panel2 = FormField::addPanel('Autre');
-        $titre = TextField::new('titre')->setSortable(true);
-        $categorie = AssociationField::new('categorie')->setSortable(true);
-        $choix = TextField::new('choix')->setSortable(true);
-        $texte = AdminCKEditorField::new('texte');
-        $alt_image = TextField::new('alt_image');
-        $descr_image = AdminCKEditorField::new('descr_image');
-        $titre_objectifs = TextField::new('titre_objectifs');
-        $texte_objectifs = AdminCKEditorField::new('texte_objectifs');
-        $carousel = AssociationField::new('carousel')->setFormTypeOptions(['choices' => $listCarousels]);
-        $createdAt = DateTimeField::new('createdAt', 'Créé  le ')->setSortable(true);
-        $updatedAt = DateTimeField::new('updatedAt')->setSortable(true);
+        yield FormField::addPanel('Données');
+
+        yield TextField::new('titre')->setSortable(true);
+        yield AssociationField::new('categorie')->setSortable(true);
+        yield TextField::new('choix')->setSortable(true);
+        yield AdminCKEditorField::new('texte');
+        yield TextField::new('alt_image');
+        yield AdminCKEditorField::new('descr_image');
+        yield FormField::addPanel('Autre');
+        yield TextField::new('titre_objectifs');
+        yield AdminCKEditorField::new('texte_objectifs');
+        yield AssociationField::new('carousel')->setFormTypeOptions(['choices' => $listCarousels]);
+        yield DateTimeField::new('createdAt', 'Créé  le ')->setSortable(true);
+        yield DateTimeField::new('updatedAt')->setSortable(true);
         //$updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ')->setSortable(true);
-        $publie = BooleanField::new('publie', 'publié');
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$titre, $choix, $categorie, $texte, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$titre, $choix, $categorie, $texte, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$titre, $choix, $categorie, $texte, $publie, $titre_objectifs, $texte_objectifs, $carousel];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$tab1, $titre, $publie, $panel1, $choix, $categorie, $texte, $panel2, $titre_objectifs, $texte_objectifs, $carousel];
-        }
+        yield BooleanField::new('publie', 'publié');
+
+        /*  if (Crud::PAGE_INDEX === $pageName) {
+              return [$titre, $choix, $categorie, $texte, $titre_objectifs, $texte_objectifs, $carousel, $publie, $createdAt, $updatedAt];
+          } elseif (Crud::PAGE_DETAIL === $pageName) {
+              return [$titre, $choix, $categorie, $texte, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
+          } elseif (Crud::PAGE_NEW === $pageName) {
+              return [$titre, $choix, $categorie, $texte, $publie, $titre_objectifs, $texte_objectifs, $carousel];
+          } elseif (Crud::PAGE_EDIT === $pageName) {
+              return [$tab1, $titre, $publie, $panel1, $choix, $categorie, $texte, $panel2, $titre_objectifs, $texte_objectifs, $carousel];
+          }*/
 
 
     }
