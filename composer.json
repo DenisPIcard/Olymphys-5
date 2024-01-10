@@ -20,7 +20,7 @@
     "egulias/email-validator": "^3.1",
     "fabpot/goutte": "^4.0",
     "fpdf/fpdf": "^1.86",
-    "friendsofsymfony/ckeditor-bundle": "^2.4",
+    "friendsofsymfony/ckeditor-bundle": "2.4.0",
     "helios-ag/fm-elfinder-bundle": "*",
     "howtomakeaturn/pdfinfo": "1.*",
     "knplabs/knp-snappy-bundle": "^1.10",
@@ -70,7 +70,8 @@
     "twig/cssinliner-extra": "^3.5",
     "twig/extra-bundle": "^3.5",
     "twig/inky-extra": "^3.5",
-    "twig/twig": "^2.12|^3.0"
+    "twig/twig": "^2.12|^3.0",
+    "vich/uploader-bundle": "^1.10"
   },
   "config": {
     "allow-plugins": {
@@ -108,7 +109,7 @@
     "auto-scripts": {
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
-      "ckeditor:install --clear=drop": "symfony-cmd",
+      "ckeditor:install  --tag=4.22.1": "symfony-cmd",
       "elfinder:install": "symfony-cmd",
       "requirements-checker": "script",
       "ckeditor:install": "symfony-cmd"

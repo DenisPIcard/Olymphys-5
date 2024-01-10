@@ -50,6 +50,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Exception;
 
+use setasign\Fpdi\PdfParser\CrossReference\AbstractReader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -689,15 +690,16 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             $concours = $context->getRequest()->query->get('concours');
 
-            $concours == '0' ? $national = false : $national = true;
+            $concours == '0' ? $national = 0 : $national = 1;
+            $concours == '0' ? $selectionnee = false : $selectionnee = true;
 
+            $qb->andWhere('entity.national =:national');
 
-            $qb->andWhere('entity.national =:national')
-                ->setParameter('national', $national);
             $qb->andWhere('entity.edition =:edition');
 
 
             if (!isset($_REQUEST['filters'])) {
+
                 if ($typefichier == 0) {
                     $qb->andWhere('entity.typefichier <=:typefichier');
                     $typefichier = $typefichier + 1;
@@ -709,6 +711,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 $qb->setParameter('typefichier', $typefichier);
 
             } else {
+
                 if (!isset($_REQUEST['filters']['edition'])) {
                     $qb->setParameter('edition', $edition);
                 } else {
@@ -723,7 +726,8 @@ class FichiersequipesCrudController extends AbstractCrudController
                         if ($typefichier > 1) {
                             $qb->andWhere('entity.typefichier=:typefichier');
                         }
-                        $qb->setParameter('typefichier', $typefichier);
+                        $qb->setParameter('typefichier', $typefichier)
+                            ->setParameter('national', $national);;
                     }
                 }
                 $qb->setParameter('edition', $edition);
@@ -731,18 +735,21 @@ class FichiersequipesCrudController extends AbstractCrudController
             $qb->leftJoin('entity.equipe', 'eq');
             if ((($typefichier == 4) or ($typefichier == 8)) and ($concours == 1)) {//affiche uniquement les fiches sécurité expo et oral des équipes sélectionnées pour le choix du concours national
 
-                $qb->andWhere('eq.selectionnee = TRUE')
+                $qb->andWhere('eq.selectionnee =:selectionnee')
                     ->orWhere('entity.typefichier =:type')//condition ou pour les fiches secur expo du national
-                    ->setParameter('type', 8);;
+                    ->setParameter('type', 8)
+                    ->setParameter('national', $national)
+                    ->setParameter('selectionnee', $selectionnee);
             } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours cette condition n'a pas être testée pour elles
 
                 $qb->andWhere('entity.national =:concours')
                     ->setParameter('concours', $concours);
+
             }
 
 
             if (isset($_REQUEST['sort'])) {
-                $qb->resetDQLPart('orderBy');
+                $qb->resetDQLPart('orderBy');;
                 $sort = $_REQUEST['sort'];
                 if (key($sort) == 'equipe.lettre') {
                     $qb->addOrderBy('eq.lettre', $sort['equipe.lettre']);
@@ -757,9 +764,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 if (key($sort) == 'equipe.titreProjet') {
                     $qb->addOrderBy('eq.titreProjet', $sort['equipe.titreProjet']);
                 }
-                if (key($sort) == 'updatedat') {
-                    $qb->addOrderBy('entity.updatedAt', $sort['updatedat']);
-                }
+
             } else {
                 if ($concours == 0) {
                     $qb->addOrderBy('eq.numero', 'ASC');
@@ -774,6 +779,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             $session->set('titreedition', $this->getParameter('type_fichier_lit')[$typefichier]);
         }
+
         return $qb;
     }
 
