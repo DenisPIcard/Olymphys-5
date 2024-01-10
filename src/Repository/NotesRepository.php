@@ -35,6 +35,7 @@ class NotesRepository extends EntityRepository
         // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
         $results = $query->getResult();
         $i = 1;
+        $rangs = [];
         foreach ($results as $result) {
             $id = $result->getEquipe()->getId();
             $rangs[$id] = $i;

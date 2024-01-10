@@ -20,7 +20,7 @@
     "egulias/email-validator": "^3.1",
     "fabpot/goutte": "^4.0",
     "fpdf/fpdf": "^1.86",
-    "friendsofsymfony/ckeditor-bundle": "2.4.0",
+    "friendsofsymfony/ckeditor-bundle": "*",
     "helios-ag/fm-elfinder-bundle": "*",
     "howtomakeaturn/pdfinfo": "1.*",
     "knplabs/knp-snappy-bundle": "^1.10",
@@ -107,12 +107,11 @@
   },
   "scripts": {
     "auto-scripts": {
-      "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
       "ckeditor:install  --tag=4.22.1": "symfony-cmd",
       "elfinder:install": "symfony-cmd",
       "requirements-checker": "script",
-      "ckeditor:install": "symfony-cmd"
+      "cache:clear": "symfony-cmd"
     },
     "post-install-cmd": [
       "@auto-scripts"

@@ -1798,7 +1798,9 @@ class SecretariatjuryController extends AbstractController
 
                         $user->setPrenom($prenom);
                         $user->setEmail($email);
-                        $user->setRoles(['ROLE_JURY']);
+                        $roles = $user->getRoles();
+                        $roles[count($roles)] = 'ROLE_JURY';
+                        $user->setRoles($roles);
                         $username = $prenomNorm[0] . '_' . $slugger->slug($nom);//Création d'un username avec caratères ASCII
                         $pwd = $prenomNorm;
                         $i = 1;
@@ -1818,7 +1820,11 @@ class SecretariatjuryController extends AbstractController
 
                 } else {
                     $user = $repositoryUser->findOneBy(['email' => $email]);
-                    $user->setRoles(['ROLE_JURY']);//Si le compte Olymphys existe déjà, on s'assure que son rôle sera jurycia
+                    $roles = $user->getRoles();
+                    if (!in_array('ROLE_JURY', $roles)) {
+                        $roles[count($roles)] = 'ROLE_JURY';
+                        $user->setRoles($roles);
+                    };//Si le compte Olymphys existe déjà, on s'assure que son rôle sera jurycia
                     $this->doctrine->getManager()->persist($user);
                     $this->doctrine->getManager()->flush();
                 }
@@ -1838,7 +1844,7 @@ class SecretariatjuryController extends AbstractController
                     $jure->setInitialesJure($initiales);
                     $this->doctrine->getManager()->persist($jure);
                     $this->doctrine->getManager()->flush();
-                    $mailer->sendInscriptionJure($jure);//envoie d'un mail au juré pour l'informer que son compte jurévcia est ouvert avec copie au comité
+                    $mailer->sendInscriptionJureCN($jure);//envoie d'un mail au juré pour l'informer que son compte jurévcia est ouvert avec copie au comité
                 } else {
                     $texte = 'Ce juré existe déjà !';
                     $this->requestStack->getSession()->set('info', $texte);//fenêtre modale d'avertissement déclenchée

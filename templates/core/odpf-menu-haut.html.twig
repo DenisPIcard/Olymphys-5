@@ -84,6 +84,17 @@
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Page Comité</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        {% if app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
+                            <a class="dropdown-item login py-0"
+                               href="{{ path('fichiers_choix_equipe',{choix : 'liste_cn_comite'}) }}" role="button"
+                               aria-pressed="true">Les équipes et leurs documents</a>
+
+                            {% if date()<=app.session.get('edition').concoursCn %}
+                                <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les
+                                    équipes</a>
+                            {% endif %}
+
+                        {% endif %}
                         <a class="dropdown-item login py-0" href="{{ path('admin') }}" role="button"
                            aria-pressed="true">Gérer les équipes et leurs documents</a>
                         <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord du Site</a>
