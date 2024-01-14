@@ -4,7 +4,7 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.2",
     "ext-fileinfo": "*",
     "ext-iconv": "*",
     "ext-imagick": "*",
@@ -109,8 +109,8 @@
     "auto-scripts": {
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
       "ckeditor:install  --tag=4.22.1": "symfony-cmd",
-      "elfinder:install": "symfony-cmd",
       "requirements-checker": "script",
+      "elfinder:install": "symfony-cmd",
       "cache:clear": "symfony-cmd"
     },
     "post-install-cmd": [

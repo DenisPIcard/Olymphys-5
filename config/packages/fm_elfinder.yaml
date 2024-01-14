@@ -4,7 +4,7 @@ fm_elfinder:
     default:
       locale: fr # Langue
       editor: ckeditor # Éditeur utilisé
-      relative_path : false
+      relative_path: false
       fullscreen: true # Taille d'affichage
       theme: smoothness # Thème à utiliser
       #path_prefix : '../public/odpf/'
@@ -18,8 +18,8 @@ fm_elfinder:
           uploads:
             show_hidden: false # Masque les fichiers cachés
             driver: LocalFileSystem # Pilote des fichiers
-            path:  'odpf/'
-            url : '../odpf/'
+            path: 'odpf/'
+            url: '../odpf/'
             #sur le site ajouter url : '../odpf/'
             upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG','application/pdf' ] # Fichiers autorisés
             upload_deny: [ 'all' ] # Fichiers interdits
@@ -37,7 +37,7 @@ fm_elfinder:
           uploads:
             driver: LocalFileSystem
             path: 'odpf/'
-            url : '../odpf/'
+            url: '../odpf/'
             #sur le site ajouter url : '../odpf/'
             upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg', 'image/JPG','application/pdf' ]
             upload_deny: [ 'all' ]

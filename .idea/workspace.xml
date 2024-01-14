@@ -4,11 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 08-01  retrogradage vers 6.1">
+    <list default="true" id="f010a56d-8320-4c5b-b347-a0c1c56a954d" name="Changes" comment="Comit du 10-01  Modif menu pour comité juré">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/fm_elfinder.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/fm_elfinder.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/fos_ckeditor.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/fos_ckeditor.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes/fm_elfinder.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes/fm_elfinder.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +215,6 @@
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-common" />
       <path value="$PROJECT_DIR$/vendor/twig/cssinliner-extra" />
-      <path value="$PROJECT_DIR$/vendor/studio-42/elfinder" />
       <path value="$PROJECT_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
       <path value="$PROJECT_DIR$/vendor/psr/http-message" />
@@ -216,7 +223,6 @@
       <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
       <path value="$PROJECT_DIR$/vendor/phpoffice/phpword" />
       <path value="$PROJECT_DIR$/vendor/howtomakeaturn/pdfinfo" />
-      <path value="$PROJECT_DIR$/vendor/helios-ag/fm-elfinder-bundle" />
       <path value="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle" />
       <path value="$PROJECT_DIR$/vendor/beberlei/doctrineextensions" />
       <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
@@ -258,6 +264,8 @@
       <path value="$PROJECT_DIR$/vendor/friendsofsymfony/ckeditor-bundle" />
       <path value="$PROJECT_DIR$/vendor/jms/metadata" />
       <path value="$PROJECT_DIR$/vendor/vich/uploader-bundle" />
+      <path value="$PROJECT_DIR$/vendor/helios-ag/fm-elfinder-bundle" />
+      <path value="$PROJECT_DIR$/vendor/studio-42/elfinder" />
     </include_path>
   </component>
   <component name="ProblemsViewState">
@@ -289,7 +297,7 @@
     &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5/public/bundles&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/media/alain/T7 Touch/PhpstormProjects/Olymphys-5/vendor/studio-42/elfinder&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -307,11 +315,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/vendor/studio-42/elfinder" />
       <recent name="$PROJECT_DIR$/public/bundles" />
+      <recent name="$PROJECT_DIR$/public/odpf/odpf-documents" />
       <recent name="$PROJECT_DIR$/config/packages" />
       <recent name="$PROJECT_DIR$/public" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/templates/cyberjury" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/public/bundles" />
@@ -717,6 +725,16 @@
       <workItem from="1704819795699" duration="9301000" />
       <workItem from="1704893357254" duration="72000" />
       <workItem from="1704893471256" duration="512000" />
+      <workItem from="1704897436061" duration="2907000" />
+      <workItem from="1704912490735" duration="8878000" />
+      <workItem from="1704967906025" duration="3742000" />
+      <workItem from="1704980189102" duration="15000" />
+      <workItem from="1705055420545" duration="6172000" />
+      <workItem from="1705164181164" duration="2413000" />
+      <workItem from="1705172271324" duration="47000" />
+      <workItem from="1705172348237" duration="5251000" />
+      <workItem from="1705188050855" duration="1568000" />
+      <workItem from="1705216628806" duration="9511000" />
     </task>
     <task id="LOCAL-00019" summary="Corrections après essais sur le site">
       <created>1680462347673</created>
@@ -1061,7 +1079,7 @@
       <option name="project" value="LOCAL" />
       <updated>1686636083885</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <option name="localTasksCounter" value="108" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1144,7 +1162,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/master" />
     </ignored-roots>
-    <MESSAGE value="Comit du 11-11 cyberjurycia :  mises au points de plusieurs bugs" />
     <MESSAGE value="Comit du 11-11 mailing profs creation function creation tableau dans l'admin" />
     <MESSAGE value="Comit du 12-11 mailing conseil juru : modale de confirmation d'envoi" />
     <MESSAGE value="Comit du 14-11 amélioration tableaux excel" />
@@ -1169,7 +1186,8 @@
     <MESSAGE value="Comit du 05-01 suppression du sensioframework" />
     <MESSAGE value="Comit du 06-01  passage en 6.4" />
     <MESSAGE value="Comit du 08-01  retrogradage vers 6.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comit du 08-01  retrogradage vers 6.1" />
+    <MESSAGE value="Comit du 10-01  Modif menu pour comité juré" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comit du 10-01  Modif menu pour comité juré" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">

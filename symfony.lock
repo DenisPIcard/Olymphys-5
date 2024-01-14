@@ -69,7 +69,7 @@
         ]
     },
     "helios-ag/fm-elfinder-bundle": {
-        "version": "12.1",
+        "version": "12.5",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
