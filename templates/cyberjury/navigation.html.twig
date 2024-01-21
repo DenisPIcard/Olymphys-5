@@ -4,10 +4,16 @@
 
 </li>
 <li class="nav-item dropdown menu_haut">
-    <a class="nav-link" href="{{ path('cyberjury_tableau_de_bord',{'critere':'TOT','sens':'DESC'}) }}" role="button"
-       aria-haspopup="true"
-       aria-expanded="false">Tableau de bord</a>
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+       aria-expanded="false"> Tableau de bord</a>
+    <div class="dropdown-menu ">
+        <a class="dropdown-item login py-0"
+           href="{{ path('cyberjury_tableau_de_bord',{'critere':'TOT','sens':'DESC'}) }}">
+            Classement de mes équipes</a>
 
+        <a class="dropdown-item login py-0" href="{{ path('cyberjury_liste_recommandations') }}">
+            Recommandations sur les mémoires</a>
+    </div>
 </li>
 <li class="nav-item dropdown menu_haut">
     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"

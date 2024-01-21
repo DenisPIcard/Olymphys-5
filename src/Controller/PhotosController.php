@@ -97,7 +97,7 @@ class PhotosController extends AbstractController
                         [
                             new NotBlank(),
                             new File([
-                                'maxSize' => '8000k',
+                                'maxSize' => '13000k',
                             ])
                         ]
                     );

@@ -1,0 +1,38 @@
+{% extends "base1.html.twig" %}
+{% block title %} Recommandations {% endblock %}
+
+
+
+{% block navigation %}
+
+    {{ include ('cyberjury/navigation.html.twig') }}
+
+{% endblock %}
+{% block titre3 %} Recommandations sur le mémoire des équipes dont je suis lecteur ou rapporteur{% endblock %}
+
+{% block body %}
+    {% if recommandations!=null %}
+        {% for recommandation in recommandations %}
+            <div class="row">
+                <div class="col-1">
+                    <a
+                            class="btn btn-primary btn-lg"
+                            href="{{ path('cyberjury_evaluer_une_equipe', {'id': recommandation.equipe.id} ) }}">{{ recommandation.equipe.equipeinter.lettre }}</a>
+                </div>
+                <div class="col-4">
+                    {{ recommandation.equipe.equipeinter.titreProjet }}
+                </div>
+                <div class="col-4">{{ recommandation.texte|raw }}
+                </div>
+                <div class="col-3">
+                    <a href="{{ path('cyberjury_recommandations',{'id':recommandation.equipe.id}) }}"
+                       type="button" class="fas fa-pencil-alt" title="Modifier"></a>
+                </div>
+
+            </div>
+
+
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

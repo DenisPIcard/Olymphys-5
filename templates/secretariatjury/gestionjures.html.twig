@@ -28,7 +28,7 @@
             </th>
             <th>
                 <a href="{{ path('secretariatjury_charge_jures') }}"
-                   title="Télécharger le tableau d'attribution de sjurés">
+                   title="Télécharger le tableau d'attribution des jurés">
                     <i class="fas fa-download fa-2x"></i>
                 </a>
             </th>
@@ -163,14 +163,14 @@
                         <label for="prenom{{ jure.id }}"></label><input type="text" value="{{ jure.prenomJure }}"
                                                                         id="prenom{{ jure.id }}"
                                                                         name="prenom" style="width: 100px"
-                                                                        onchange="changejure({{ 'prenom'~jure.id }})">
+                                                                        onchange="changejurecn({{ 'prenom'~jure.id }})">
 
                     </td>
                     <td>
                         <label for="{{ 'nom'~jure.id }}"></label><input type="text" value="{{ jure.nomJure }}"
                                                                         id="{{ 'nom'~jure.id }}" name="nom"
                                                                         style="width:100px"
-                                                                        onchange="changejure({{ 'nom'~jure.id }})">
+                                                                        onchange="changejurecn({{ 'nom'~jure.id }})">
                     </td>
                     <td>
 
@@ -178,7 +178,7 @@
                                                                               value="{{ jure.initialesJure }}"
                                                                               id="{{ 'initiales'~jure.id }}"
                                                                               name="initiales" style="width: 50px"
-                                                                              onchange="changejure({{ 'initiales'~jure.id }})">
+                                                                              onchange="changejurecn({{ 'initiales'~jure.id }})">
                     </td>
 
                 </form>

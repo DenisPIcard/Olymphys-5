@@ -1,0 +1,20 @@
+{% extends "base1.html.twig" %}
+{% block title %} Modifierla recommandation  {% endblock %}
+
+{% block titre3 %}
+
+    Modification de  la recommandation concernant le mémoire de l'équipe<br>
+    <a
+            href="#"> {{ recommandation.equipe.equipeinter.lettre }} </a>
+    : {{ recommandation.equipe.equipeinter.titreProjet }}
+
+
+{% endblock %}
+
+{% block navigation %}
+    {{ include ('secretariatjury/navigation.html.twig') }}
+{% endblock %}
+{% block body %}
+
+    {{ form(form) }}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base1.html.twig" %}
+{% block title %} Saisir la recommandation  {% endblock %}
+
+{% block titre3 %}
+    {{ jure.prenomJure }} {{ jure.nomJure }}<br>
+    Saisir la recommandation concernant le mémoire de l'équipe<br>
+    <a
+            href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipe.id} ) }}"> {{ equipe.equipeinter.lettre }} </a>
+    : {{ equipe.equipeinter.titreProjet }}
+
+    <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
+       title="En savoir plus sur cette équipe"> </a>
+    {% if memoire!=null %}
+        
+        <a href="{{ path('telecharger_un_fichier_prof',{'idFichier': memoire.id}) }}"
+           class="fas fa-book-reader"
+           title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+    {% endif %}
+
+{% endblock %}
+
+{% block navigation %}
+    {{ include ('cyberjury/navigation.html.twig') }}
+{% endblock %}
+{% block body %}
+
+    {{ form(form) }}
+{% endblock %}

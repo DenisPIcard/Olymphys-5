@@ -53,6 +53,7 @@ use Exception;
 use setasign\Fpdi\PdfParser\CrossReference\AbstractReader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,6 +74,7 @@ class FichiersequipesCrudController extends AbstractCrudController
     private ParameterBagInterface $parameterBag;
     private EntityManagerInterface $em;
     private ManagerRegistry $doctrine;
+    private AdminUrlGenerator $adminUrlGenerator;
 
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine, AdminUrlGenerator $adminUrlGenerator)
@@ -80,7 +82,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
         $this->validator = $validator;
-
+        $this->adminUrlGenerator = $adminUrlGenerator;
         $this->parameterBag = $parameterBag;
         $this->em = $entitymanager;
         $this->doctrine = $doctrine;
@@ -958,18 +960,18 @@ class FichiersequipesCrudController extends AbstractCrudController
         } else {
             if ($typefichier != 6) {
                 $entityInstance->setNational($concours);
-                $oldfichier = $repositoryFichiers->createQueryBuilder('f')
-                    ->where('f.equipe =:equipe')
+                $oldfichier = $repositoryFichiers->createQueryBuilder('f')//Pour vérifier si l'équipe choisie n'a pas déposé ce fichier, le choix des équipes ne filtrant pas ces dernières
+                ->where('f.equipe =:equipe')
                     ->setParameter('equipe', $equipe)
                     ->andWhere('f.typefichier =:typefichier')
                     ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
 
-                if (null !== $oldfichier) {
-                    $oldfichier->setFichierFile($entityInstance->getFichierFile());
+                if (null !== $oldfichier) {//Ce fichier existe déjà
+                    $oldfichier->setFichierFile($entityInstance->getFichierFile());//On remplace le fichier par le nouveau
                     $oldfichier->setNational($concours);
                     $this->em->persist($oldfichier);
                     $this->em->flush();
-
+                    //la création du fichier passé n'est pas à effectuer puisqu'il doit déjà exister, lié au fichier du même nom
                 } else {
 
                     if ($_REQUEST['concours'] == 0) {
@@ -983,13 +985,14 @@ class FichiersequipesCrudController extends AbstractCrudController
                     $this->em->flush();
                     $rempliEquipePassee = new OdpfRempliEquipesPassees($this->doctrine);
                     $rempliEquipePassee->RempliOdpfFichiersPasses($entityInstance);
-                    // parent::persistEntity($entityManager, $entityInstance);
+                    if (($entityInstance->getTypefichier() < 4) and ($entityInstance->getNational() == true)) {
+                        $this->fichierspublies($entityInstance);
+                    }
+                    //parent::persistEntity($entityManager, $entityInstance);
 
 
                 }
-                if (($entityInstance->getTypefichier() < 4) and ($entityInstance->getNational() == true)) {
-                    $this->fichierspublies($entityInstance);
-                }
+
 
             }
             if ($typefichier == 6) {
@@ -1037,7 +1040,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             }
 
         }
-        parent::persistEntity($entityManager, $entityInstance);
+
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void

@@ -18,12 +18,14 @@ use App\Entity\Jures;
 use App\Entity\Notes;
 use App\Entity\Phrases;
 use App\Entity\Prix;
+use App\Entity\RecommandationsJuryCn;
 use App\Entity\Repartprix;
 use App\Entity\Uai;
 use App\Entity\Visites;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
+use App\Form\RecommandationsCnType;
 use App\Service\Mailer;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -1964,6 +1966,7 @@ class SecretariatjuryController extends AbstractController
                                  ->setParameter('lettre',  $worksheet->getCellByColumnAndRow($colonne, 1)->getValue())
                                  ->getQuery()->getSingleResult();*/
                             $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();//Le tableau comporte les attributions des jurés classées par lettre équipe croissantes, vide  pas attribué, 0 examinateur, 1 lecteur
+
                             switch ($value) {
                                 case '1':
                                     $value = 0;
@@ -2035,5 +2038,52 @@ class SecretariatjuryController extends AbstractController
         $content = $this
             ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('titre' => 'Remplissage de la table Jurés', 'form' => $form->createView(),));
         return new Response($content);
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("secretariatjury/liste_recommandations", name: "secretariatjury_liste_recommandations")]
+    public function liste_recommandations(Request $request): Response
+    {
+        $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findAll();
+
+        return $this->render('secretariatjury/liste_recommandations.html.twig', ['recommandations' => $recommandations]);
+
+
+    }
+
+    #[IsGranted('ROLE_COMITE')]
+    #[Route("secretariatjury/modif_recommandations,{id}", name: "secretariatjury_modif_recommandations")]
+    public function modif_recommandations(Request $request, $id): Response
+    {
+
+        $recommandation = $this->doctrine->getRepository(RecommandationsJuryCn::class)->find($id);
+        $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findAll();
+        $form = $this->createForm(RecommandationsCnType::class, $recommandation);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() and $form->isValid()) {
+            $this->doctrine->getManager()->persist($recommandation);
+            $this->doctrine->getManager()->flush();
+            return $this->redirectToRoute('secretariatjury_liste_recommandations');
+        }
+        return $this->render('secretariatjury/modif_recommandation.html.twig', ['form' => $form->createView(), 'recommandation' => $recommandation]);
+
+
+    }
+
+    #[IsGranted('ROLE_COMITE')]
+    #[Route("secretariatjury/envoi_recommandations,{id}", name: "secretariatjury_envoi_recommandations")]
+    public function envoi_recommandations(Request $request, $id, Mailer $mailer): Response
+    {
+
+        
+        $recommandation = $this->doctrine->getRepository(RecommandationsJuryCn::class)->find($id);
+        $equipeinter = $recommandation->getEquipe()->getEquipeinter();
+        $prof1 = $equipeinter->getIdProf1();
+        $prof2 = $equipeinter->getIdProf2();
+        $mailer->sendConseilCn($recommandation, $prof1, $prof2);
+
+        return $this->render('secretariatjury/liste_recommandations.html.twig', ['recommandations' => $recommandations]);
+
+
     }
 }

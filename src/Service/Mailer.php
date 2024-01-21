@@ -78,10 +78,14 @@ class Mailer
     {
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
-            ->to('webmestre2@olymphys.fr')//'webmestre2@olymphys.fr', 'Denis'
-            ->addCc('webmestre3@olymphys.fr')
-            ->htmlTemplate('email/confirm_fichier.html.twig')
-            ->subject('Depot du fichier ' . $type_fichier . ' de l\'équipe ' . $equipe->getInfoequipe())
+            ->to('webmestre2@olymphys.fr')
+            ->addCc('webmestre3@olymphys.fr');//'webmestre2@olymphys.fr', 'Denis'
+        if ($type_fichier == 'fiche securité(présentation)' or $type_fichier == 'fiche securité(exposition)') {
+            $email->addCc('lahmidani.fouad@free.fr', 'pascale.rv@gmail.com', 'claire.chalnot@gmail.com');
+        }
+        $equipe->getSelectionnee() == true ? $infoequipe = $equipe->getInfoequipe() : $infoequipe = $equipe->getInfoequipenat();
+        $email->htmlTemplate('email/confirm_fichier.html.twig')
+            ->subject('Depot du fichier ' . $type_fichier . ' de l\'équipe ' . $infoequipe)
             //->text('L\'equipe ' . $equipe->getInfoequipe() . ' a déposé un fichier : ' . $type_fichier)
             ->context(['equipe' => $equipe, 'typeFichier' => $type_fichier, 'userNom' => $user->getPrenomNom()]);
 
@@ -245,6 +249,25 @@ class Mailer
             ->context([
                 'conseil' => $conseil->getTexte(),
                 'equipe' => $conseil->getEquipe()
+
+            ]);
+        $this->mailer->send($email);
+        return $email;
+    }
+
+    public function sendConseilCn($conseil, $prof1, User $prof2 = null): TemplatedEmail
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('info@olymphys.fr'))
+            ->to($prof1->getEmail());
+        if ($prof2 !== null) {
+            $email->cc($prof2->getEmail());
+        }
+        $email->subject('31e-OdPF-Conseils du jury du concours national  à votre équipe')
+            ->htmlTemplate('email/conseilCn.html.twig')
+            ->context([
+                'conseil' => $conseil->getTexte(),
+                'equipe' => $conseil->getEquipe()->getEquipeinter()
 
             ]);
         $this->mailer->send($email);

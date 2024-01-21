@@ -19,7 +19,11 @@
     <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipe.equipeinter.id~'-'~'national-'~'liste_cn_comite'} ) }}"
        class="far fa-address-card"
        title="Tous les fichiers de l'équipe(diaporama)"> </a>
-
+    {% if flag==1 %}
+        <a href="{{ path('cyberjury_recommandations', {'id': equipe.id} ) }}"
+           class="far fa fa-list-ol"
+           title="Ecrire les remarques sur le mémoire"> </a>
+    {% endif %}
 {% endblock %}
 {% block navigation %}
 

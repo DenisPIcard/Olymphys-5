@@ -3,8 +3,31 @@ function changejure(j) {//j est l'objet input qui a lancé la fonction, pour le 
     var data_value = j.value;
     var data_type = j.name;
     var id_jure = j.id.split(data_type)[1];
-
     var formURL = document.getElementsByTagName('form')[2].action;
+
+    $.ajax({
+        url: formURL,
+        type: "POST",
+        data: {value: data_value, type: data_type, idjure: id_jure},
+
+        success: function () {
+            document.querySelector('#gestionjures').click()
+        },
+
+        error: function (data) {
+            alert("Error while submitting Data");
+        },
+    });
+
+
+}
+
+function changejurecn(j) {//j est l'objet input qui a lancé la fonction, pour le formulaire de gestion des jures des cia
+
+    var data_value = j.value;
+    var data_type = j.name;
+    var id_jure = j.id.split(data_type)[1];
+    var formURL = document.getElementsByTagName('form')[3].action;
 
     $.ajax({
         url: formURL,
