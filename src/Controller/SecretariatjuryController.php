@@ -2057,7 +2057,7 @@ class SecretariatjuryController extends AbstractController
     {
 
         $recommandation = $this->doctrine->getRepository(RecommandationsJuryCn::class)->find($id);
-        $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findAll();
+
         $form = $this->createForm(RecommandationsCnType::class, $recommandation);
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
@@ -2075,7 +2075,7 @@ class SecretariatjuryController extends AbstractController
     public function envoi_recommandations(Request $request, $id, Mailer $mailer): Response
     {
 
-        
+        $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findAll();
         $recommandation = $this->doctrine->getRepository(RecommandationsJuryCn::class)->find($id);
         $equipeinter = $recommandation->getEquipe()->getEquipeinter();
         $prof1 = $equipeinter->getIdProf1();
