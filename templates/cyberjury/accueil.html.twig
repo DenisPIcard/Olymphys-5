@@ -12,47 +12,52 @@
 
 {% block body %}
     <div class="small">Dans l'ordre de passage</div>
-    {% for equipes in listeEquipes %}
-        {% if equipes.equipeinter.lettre in progression|keys %}
+    {% for equipe in listeEquipes %}
+        {% if equipe.equipeinter.lettre in progression|keys %}
 
-            {% set lettre = equipes.equipeinter.lettre %}
+            {% set lettre = equipe.equipeinter.lettre %}
             <p>
                 <a
                         {% if (progression[lettre]) %}  class="btn btn-outline-primary btn-lg"
                         {% else %}class ="btn btn-primary btn-lg"
                         {% endif %}
-                        href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}">{{ equipes.equipeinter.lettre }}</a>
-                {{ equipes.equipeinter.titreProjet }}
-                {% if equipes.heure==null %}
+                        href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipe.id} ) }}">{{ equipe.equipeinter.lettre }}</a>
+                {{ equipe.equipeinter.titreProjet }}
+                {% if equipe.heure==null %}
                     {% set heure=' x ' %}
                 {% else %}
-                    {% set heure=equipes.heure %}
+                    {% set heure=equipe.heure %}
                 {% endif %}
-                {% if equipes.salle==null %}
+                {% if equipe.salle==null %}
                     {% set salle=' x ' %}
                 {% else %}
-                    {% set salle=equipes.salle %}
+                    {% set salle=equipe.salle %}
                 {% endif %}
                 <a href="#" class="fas fa-clock" title="{{ heure }} {{ salle }}"> </a>
                 {% for key,mem in memoires %}
                     {% if key == lettre %}
                         {% if mem.publie==false %}
-                            <a href="{{ asset('odpf/odpf-archives/'~equipes.equipeinter.edition.ed~'/fichiers/memoires/prive/'~ mem.fichier) }}"
+                            <a href="{{ asset('odpf/odpf-archives/'~equipe.equipeinter.edition.ed~'/fichiers/memoires/prive/'~ mem.fichier) }}"
                                class="fas fa-book-reader"
                                title="Accéder au mémoire de l'équipe" target="_blank"> </a>
                         {% endif %}
                         {% if mem.publie==true %}
-                            <a href="{{ asset('odpf/odpf-archives/'~equipes.equipeinter.edition.ed~'/fichiers/memoires/public/'~ mem.fichier) }}"
+                            <a href="{{ asset('odpf/odpf-archives/'~equipe.equipeinter.edition.ed~'/fichiers/memoires/public/'~ mem.fichier) }}"
                                class="fas fa-book-reader"
                                title="Accéder au mémoire de l'équipe" target="_blank"> </a>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
-                <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle"
+                <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
                    title="En savoir plus sur cette équipe"> </a>
-                <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt"
+                <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="fas fa-pencil-alt"
                    title="Les phrases amusantes"> </a>
-                {#  <a href="{{ equipes.salleZoom }}" class="fas fa-wifi"
+                {% if attributions[equipe.equipeinter.lettre]>0 %}
+                    <a href="{{ path('cyberjury_recommandations', {'id': equipe.id} ) }}"
+                       class="far fa fa-list-ol"
+                       title="Ecrire les remarques sur le mémoire"> </a>
+                {% endif %}
+                {#  <a href="{{ equipe.salleZoom }}" class="fas fa-wifi"
                    title="Vers la salle Zoom de l'équipe" target="_blank"> </a> #}
             </p>
         {% endif %}

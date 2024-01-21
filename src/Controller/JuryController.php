@@ -114,7 +114,7 @@ class JuryController extends AbstractController
         }
 
         $content = $this->renderView('cyberjury/accueil.html.twig',
-            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
+            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires, 'attributions' => $attrib)
         );
 
 
@@ -823,15 +823,21 @@ class JuryController extends AbstractController
         $attributions = $this->doctrine->getRepository(Jures::class)->getAttribution($jure);
         $equipes = $this->doctrine->getRepository(Equipes::class)->findAll();
         $recommandations = null;
-        
+
         for ($i = 0; $i < count($attributions); $i++) {
 
             foreach ($equipes as $equipe) {
 
                 if ($equipe->getEquipeinter()->getLettre() == key($attributions)) {
-                    dump(key($attributions));
+
                     if ($attributions[$equipe->getEquipeinter()->getLettre()] > 0) {
                         $recommandations[$equipe->getId()] = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findOneBy(['equipe' => $equipe]);
+                        if ($recommandations[$equipe->getId()] === null) {
+                            $recommandations[$equipe->getId()] = new RecommandationsJuryCn();
+                            $recommandations[$equipe->getId()]->setEquipe($equipe);
+                            $this->doctrine->getManager()->persist($recommandations[$equipe->getId()]);
+                            $this->doctrine->getManager()->flush();
+                        }
                     }
                 }
             }
