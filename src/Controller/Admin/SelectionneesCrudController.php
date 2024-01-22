@@ -319,7 +319,9 @@ class SelectionneesCrudController extends AbstractCrudController
             ->setCellValue('G' . $ligne, 'prix')
             ->setCellValue('H' . $ligne, 'cadeau')
             ->setCellValue('I' . $ligne, 'visite')
-            ->setCellValue('J' . $ligne, 'rang');
+            ->setCellValue('J' . $ligne, 'rang')
+            ->setCellValue('K' . $ligne, 'heure')
+            ->setCellValue('L' . $ligne, 'salle');;
         $ligne += 1;
         foreach ($liste_equipes as $equipe) {
             $sheet->setCellValue('A' . $ligne, $equipe->getEquipeinter()->getLettre())
@@ -331,7 +333,9 @@ class SelectionneesCrudController extends AbstractCrudController
                 ->setCellValue('G' . $ligne, $equipe->getPrix())
                 ->setCellValue('H' . $ligne, $equipe->getCadeau())
                 ->setCellValue('I' . $ligne, $equipe->getVisite())
-                ->setCellValue('J' . $ligne, $equipe->getRang());
+                ->setCellValue('J' . $ligne, $equipe->getRang())
+                ->setCellValue('K' . $ligne, $equipe->getHeure())
+                ->setCellValue('L' . $ligne, $equipe->getSalle());
             $ligne += 1;
         }
         header('Content-Type: application/vnd.ms-excel');

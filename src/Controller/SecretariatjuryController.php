@@ -260,7 +260,7 @@ class SecretariatjuryController extends AbstractController
 
     #[IsGranted('ROLE_SUPER_ADMIN')]
     #[Route("/secretariatjury/classement", name: "secretariatjury_classement")]
-    public function classement(): Response//L'apel de cette fonction permet de mettre à jour la table équipes avec le rang et le total de chaque équipe
+    public function classement(): Response//L'appel de cette fonction permet de mettre à jour la table équipes avec le rang et le total de chaque équipe
     {
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
@@ -285,12 +285,17 @@ class SecretariatjuryController extends AbstractController
                 $em->flush();
             } else {//calcul de la moyenne des notes de l'équipe
                 foreach ($listesNotes as $note) {
+
                     $points = $points + $note->getPoints();//Calcul de la somme des points sans les notes d'écrit
 
-                    $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;//Détermination du nombre de notes d'écrit
+                    if ($note->getEcrit() != 0) {
+
+                        $nbre_notes_ecrit = $nbre_notes_ecrit + 1;
+                    }//Détermination du nombre de notes d'écrit
                     $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();//Détermination du total des poins de l'écrit
 
                 }
+               
                 if ($nbre_notes_ecrit != 0) {
                     $moyenne_ecrit = $points_ecrit / $nbre_notes_ecrit;
                 }

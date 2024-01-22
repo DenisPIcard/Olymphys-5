@@ -376,19 +376,18 @@ class ProfesseursCrudController extends AbstractCrudController
         $repositoryProfs = $this->doctrine->getManager()->getRepository(Professeurs::class);
 
         $queryBuilder = $repositoryProfs->createQueryBuilder('p')
-            ->groupBy('p.user')
             ->leftJoin('p.equipes', 'eqs')
             ->andWhere('eqs.edition =:edition')
-            ->andWhere('eqs.selectionnee = true')
+            ->andWhere('eqs.selectionnee = TRUE')
             ->setParameter('edition', $edition)
             ->leftJoin('p.user', 'u')
             ->orderBY('u.nom', 'ASC');
         $listProfs = $queryBuilder->getQuery()->getResult();
-
+        $lettres = [];
         if ($listProfs != null) {
             foreach ($listProfs as $prof) {
                 $equipestring = '';
-
+                $equipesLettres = '';
                 $equipes = $repositoryEquipes->createQueryBuilder('e')
                     ->where('e.edition =:edition')
                     ->setParameter('edition', $edition)
@@ -405,12 +404,15 @@ class ProfesseursCrudController extends AbstractCrudController
                             $encad = '(prof2)';
                         }
                         $equipestring = $equipestring . $equipe->getTitreProjet() . $encad;
+                        $equipesLettres == '' ? $equipesLettres = $equipe->getLettre() : $equipesLettres = $equipesLettres . '/' . $equipe->getLettre();
                         if (next($equipes) != null) {
                             $equipestring = $equipestring . "\n";
+
                         }
                     }
                     $equipestring = count($equipes) . '-' . $equipestring;
                     $prof->setEquipesstring($equipestring);
+                    $lettres[$prof->getId()] = $equipesLettres;
                     $em->persist($prof);
                     $em->flush();
                 }
@@ -429,7 +431,7 @@ class ProfesseursCrudController extends AbstractCrudController
             ->setCategory("Test result file");
 
         $sheet = $spreadsheet->getActiveSheet();
-        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'] as $letter) {
+        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'] as $letter) {
             $sheet->getColumnDimension($letter)->setAutoSize(true);
 
         }
@@ -449,8 +451,8 @@ class ProfesseursCrudController extends AbstractCrudController
             ->setCellValue('I' . $ligne, 'Lycée')
             ->setCellValue('J' . $ligne, 'Commune lycée')
             ->setCellValue('K' . $ligne, 'Académie')
-            ->setCellValue('L' . $ligne, 'Equipes');;
-
+            ->setCellValue('L' . $ligne, 'Equipes')
+            ->setCellValue('M' . $ligne, 'Lettres');
         $ligne += 1;
 
         foreach ($listProfs as $prof) {
@@ -471,7 +473,9 @@ class ProfesseursCrudController extends AbstractCrudController
             $equipesstring = explode('-', $prof->getEquipesstring());
             $sheet->getRowDimension($ligne)->setRowHeight(12.5 * intval($equipesstring[0]));
             $sheet->getCell('L' . $ligne)->setValueExplicit($equipesstring[1], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);//'abc \n cde'
-            $sheet->getStyle('A' . $ligne . ':L' . $ligne)->getAlignment()->setWrapText(true);
+            $sheet->getCell('M' . $ligne)->setValue($lettres[$prof->getId()]);
+
+            $sheet->getStyle('A' . $ligne . ':M' . $ligne)->getAlignment()->setWrapText(true);
             $ligne += 1;
         }
 

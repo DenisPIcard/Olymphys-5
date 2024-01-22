@@ -26,6 +26,10 @@
                         <a class="dropdown-item login py-0" href="{{ path('admin') }}">Tableau de bord Concours</a>
                         {# le chemin admin est la rout de l'Admin Concours (src/Controller/Admin/DahboardController.php) #}
                         <a class="dropdown-item login py-0" href="{{ path('odpfadmin') }}">Tableau de bord Site</a>
+                        {% if app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}<!-- pour les membres du comité membres du jury cn -->
+                            <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les
+                                équipes</a>
+                        {% endif %}
                         {#  odpfadmin est la route de  src/Controller/OdpfAdmin/OdpfDashboardController.php #}
                         <a class="dropdown-item login py-0" href="{{ path('secretariatjury_accueil') }}" role="button">Secrétariat
                             du Jury</a>
@@ -84,15 +88,15 @@
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false">Page Comité</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        {% if app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}
-                            <a class="dropdown-item login py-0"
-                               href="{{ path('fichiers_choix_equipe',{choix : 'liste_cn_comite'}) }}" role="button"
-                               aria-pressed="true">Les équipes et leurs documents</a>
+                        {% if app.user.roles|filter(v => v =='ROLE_JURY')!=[] %}<!-- pour les membres du comité membres du jury cn -->
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('fichiers_choix_equipe',{choix : 'liste_cn_comite'}) }}" role="button"
+                           aria-pressed="true">Les équipes et leurs documents</a>
 
-                            {% if date()<=app.session.get('edition').concoursCn %}
-                                <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les
-                                    équipes</a>
-                            {% endif %}
+
+                        <a class="dropdown-item login py-0" href="{{ path('cyberjury_accueil') }}">Evaluer les
+                            équipes</a>
+
 
                         {% endif %}
                         <a class="dropdown-item login py-0" href="{{ path('admin') }}" role="button"
@@ -115,6 +119,9 @@
                         <a class="dropdown-item login py-0"
                            href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" role="button"
                            aria-pressed="true"> Liste des fichiers des équipes du CN</a>
+                        <a class="dropdown-item login py-0"
+                           href="{{ path('secretariatjury_liste_recommandations') }}" role="button"
+                           aria-pressed="true"> Les recommandations du jury du CN</a>
                     </div>
                 </li>
             {% elseif is_granted('ROLE_ORGACIA') %}
