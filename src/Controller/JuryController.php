@@ -458,7 +458,7 @@ class JuryController extends AbstractController
         $memoires = array();
         $listEquipes = array();
         $j = 1;
-        foreach ($MonClassement as $notes) {// création du tazbleau des notes des équipes du juré
+        foreach ($MonClassement as $notes) {// création du tableau des notes des équipes du juré
             $equipe = $notes->getEquipe();
 
             $listEquipes[$j]['id'] = $equipe->getId();
@@ -583,8 +583,8 @@ class JuryController extends AbstractController
     }
 
     #[IsGranted('ROLE_JURY')]
-    #[Route("/edit_phrases/{id}", name: "cyberjury_edit_phrases_amusantes", requirements: ["id_equipe" => "\d{1}|\d{2}"])]
-    public function edit_phrases(Request $request, Equipes $equipe, $id): RedirectResponse|Response
+    #[Route("/edit_phrases/{id}", name: "cyberjury_edit_phrases_amusantes")]
+    public function edit_phrases(Request $request, $id): RedirectResponse|Response
     {
 
         $user = $this->getUser();
@@ -607,6 +607,7 @@ class JuryController extends AbstractController
         $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository(Equipes::class);
+        $equipe = $repositoryEquipes->find($id);
         $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository(Fichiersequipes::class);
