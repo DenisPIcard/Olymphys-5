@@ -269,10 +269,14 @@ class SecretariatjuryController extends AbstractController
 
         $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
-        $listEquipes = $repositoryEquipes->findAll();
+        $listEquipes = $repositoryEquipes->createQueryBuilder('e')
+            ->leftJoin('e.equipeinter', 'eq')
+            ->orderBy('eq.lettre', 'ASC')
+            ->getQuery()->getResult();
 
         foreach ($listEquipes as $equipe) {
             $listesNotes = $equipe->getNotess();
+
             $nbre_notes = count($equipe->getNotess());//a la place de $equipe->getNbNotes();
 
             $nbre_notes_ecrit = 0;
@@ -308,16 +312,15 @@ class SecretariatjuryController extends AbstractController
 
         }
 
-        $nbre_equipes = 0;
-        $qb = $repositoryEquipes->createQueryBuilder('e');
+        $nbre_equipes = count($listEquipes);
+        /*$qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->select('COUNT(e)');
         try {
             $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
         } catch (NoResultException|NonUniqueResultException) {
-        }
+        }*/
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);//
-
 
         $i = 1;
         foreach ($classement as $equipe) {//Enregistrement du rang de chaque équipe dans la table équipes
@@ -328,7 +331,6 @@ class SecretariatjuryController extends AbstractController
         }
 
         $em->flush();
-        //dd($classement);
         $content = $this->renderView('secretariatjury/classement.html.twig',
             array('classement' => $classement)
         );

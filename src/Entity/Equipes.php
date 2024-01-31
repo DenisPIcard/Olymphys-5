@@ -379,4 +379,9 @@ class Equipes
         return $this;
     }
 
+    public function getLettre(): string
+    {
+        return $this->equipeinter->getLettre();
+    }
+
 }
