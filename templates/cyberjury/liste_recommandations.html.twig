@@ -28,11 +28,12 @@
                     <div class="col-4">{{ recommandation.texte|raw }}
                     </div>
                     <div class="col-3">
-                        <a href="{{ path('cyberjury_recommandations',{'id':recommandation.equipe.id}) }}"
+                        <a href="{{ path('cyberjury_recommandations',{'id':recommandation.equipe.id,'origin':'liste'}) }}"
                            type="button" class="fas fa-pencil-alt" title="Modifier"></a>
                     </div>
 
                 </div>
+                <hr style="border-top: 1px solid #0a53be ">
             {% endif %}
 
 

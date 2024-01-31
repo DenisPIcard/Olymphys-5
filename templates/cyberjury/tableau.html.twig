@@ -85,6 +85,11 @@
                            title="En savoir plus sur cette équipe"> </a>
                         <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}"
                            class="fas fa-pencil-alt" title="Les phrases amusantes"> </a>
+                        {% if attributions[equipes.lettre]>0 %}
+                            <a href="{{ path('cyberjury_recommandations', {'id': equipes.id,'origin':'liste'} ) }}"
+                               class="far fa fa-list-ol"
+                               title="Ecrire les remarques sur le mémoire"> </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

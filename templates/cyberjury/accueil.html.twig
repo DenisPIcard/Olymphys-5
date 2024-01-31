@@ -53,7 +53,7 @@
                 <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="fas fa-pencil-alt"
                    title="Les phrases amusantes"> </a>
                 {% if attributions[equipe.equipeinter.lettre]>0 %}
-                    <a href="{{ path('cyberjury_recommandations', {'id': equipe.id} ) }}"
+                    <a href="{{ path('cyberjury_recommandations', {'id': equipe.id,'origin':'liste'} ) }}"
                        class="far fa fa-list-ol"
                        title="Ecrire les remarques sur le mémoire"> </a>
                 {% endif %}

@@ -47,7 +47,8 @@
                     <div class="col-3">
                         <a href="{{ path('secretariatjury_modif_recommandations',{'id':recommandation.id}) }}"
                            type="button" class="fas fa-pencil-alt" title="Modifier"></a>
-                        <a href="{{ path('secretariatjury_envoi_recommandations',{'id':recommandation.id}) }}"
+                        <a href="#" data-toggle="modal" data-target="#modalenvoiconseilscn"
+                           data-id="{{ recommandation.id }}"
                            type="button" class="fas fa-envelope" title="Envoyer"></a>
                     </div>
 
@@ -56,5 +57,5 @@
             {% endfor %}
         </div>
     {% endif %}
-
+    {{ include('modales/modale_envoi_conseils_jurycn.html.twig') }}
 {% endblock %}

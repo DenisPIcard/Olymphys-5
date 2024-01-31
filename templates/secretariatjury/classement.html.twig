@@ -8,7 +8,9 @@
 {% endblock %}
 
 {% block body %}
-
+    <div>
+        <a href="#" data-toggle="modal" data-target="#modalinfocalculnote" class="fa fa-question-circle"></a>
+    </div>
     <div class="table-responsive">
 
         <table class="table table-striped">
@@ -36,5 +38,5 @@
         </table>
     </div>
 
-
+    {{ include('modales/modale_info_calcul_note_equipe.html.twig') }}
 {% endblock %}

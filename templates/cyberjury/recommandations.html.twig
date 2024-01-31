@@ -11,7 +11,7 @@
     <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
        title="En savoir plus sur cette équipe"> </a>
     {% if memoire!=null %}
-        
+
         <a href="{{ path('telecharger_un_fichier_prof',{'idFichier': memoire.id}) }}"
            class="fas fa-book-reader"
            title="Accéder au mémoire de l'équipe" target="_blank"> </a>
@@ -23,6 +23,5 @@
     {{ include ('cyberjury/navigation.html.twig') }}
 {% endblock %}
 {% block body %}
-
     {{ form(form) }}
 {% endblock %}

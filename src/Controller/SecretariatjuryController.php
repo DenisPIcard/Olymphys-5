@@ -295,7 +295,7 @@ class SecretariatjuryController extends AbstractController
                     $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();//Détermination du total des poins de l'écrit
 
                 }
-               
+
                 if ($nbre_notes_ecrit != 0) {
                     $moyenne_ecrit = $points_ecrit / $nbre_notes_ecrit;
                 }
@@ -1331,7 +1331,7 @@ class SecretariatjuryController extends AbstractController
             $ligne++;
             //$spreadsheet->getActiveSheet()->getStyle('A' . $ligne)->getFont()->getColor()->setARGB(Color::COLOR_RED);
             $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':D' . $ligne)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
-            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':D' . $ligne)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
+            $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':D' . $ligne)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_BLACK);
 
             $ligne = $ligne + 1;
         }
@@ -1550,7 +1550,9 @@ class SecretariatjuryController extends AbstractController
     #[Route("/secretariatjury/tableauexcelRepartition", name: "secretariatjury_tableauexcel_repartition")]
     public function tableauexcelRepartition()
     {
-        $listejures = $this->doctrine->getRepository(Jures::class)->findAll();
+        $listejures = $this->doctrine->getRepository(Jures::class)->createQueryBuilder('j')
+            ->orderBy('j.nomJure', 'ASC')
+            ->getQuery()->getResult();
         $listeEquipes = $this->doctrine->getRepository(Equipes::class)->createQueryBuilder('e')
             ->leftJoin('e.equipeinter', 'eq')
             ->addOrderBy('eq.lettre', 'ASC')
@@ -1669,7 +1671,7 @@ class SecretariatjuryController extends AbstractController
         $sheet
             ->setCellValue('D5', 'Lettres des équipes');
 
-        $ligne = 8;
+        $ligne = 9;
 
         $sheet->getRowDimension($ligne)->setRowHeight(25, 'pt');
 
@@ -1677,21 +1679,22 @@ class SecretariatjuryController extends AbstractController
             ->setCellValue('A' . $ligne, 'Prénom juré')
             ->setCellValue('B' . $ligne, 'Nom juré')
             ->setCellValue('C' . $ligne, 'Initiales')
-            ->setCellValue('D' . $ligne, 'sous-jury')
-            ->setCellValue('D' . $ligne - 1, 'salle')
-            ->setCellValue('D' . $ligne - 2, 'horaire');
+            ->setCellValue('C' . $ligne - 2, 'salle')
+            ->setCellValue('C' . $ligne - 3, 'horaire')
+            ->setCellValue('C' . $ligne - 1, 'ordre');
         $i = 0;
         $spreadsheet->getActiveSheet()->getStyle('A' . $ligne . ':' . $lettres[count($listeEquipes) - 1] . $ligne)->applyFromArray($styleArrayTop);
         foreach ($listeEquipes as $equipe) {
 
             $sheet->setCellValue($lettres[$i] . $ligne, $equipe->getEquipeinter()->getLettre());
-
+            $sheet->getStyle($lettres[$i] . $ligne - 3)->applyFromArray($styleArray);
             $sheet->getStyle($lettres[$i] . $ligne - 2)->applyFromArray($styleArray);
             $sheet->getStyle($lettres[$i] . $ligne - 1)->applyFromArray($styleArray);
             if ($equipe->getHeure() != null) {
-                $sheet->setCellValue($lettres[$i] . $ligne - 2, $equipe->getHeure());
+                $sheet->setCellValue($lettres[$i] . $ligne - 3, $equipe->getHeure());
             }
-            $sheet->setCellValue($lettres[$i] . $ligne - 1, $equipe->getSalle());
+            $sheet->setCellValue($lettres[$i] . $ligne - 2, $equipe->getSalle());
+            $sheet->setCellValue($lettres[$i] . $ligne - 1, $equipe->getordre());
 
             $i = $i + 1;
         }
@@ -2049,7 +2052,11 @@ class SecretariatjuryController extends AbstractController
     #[Route("secretariatjury/liste_recommandations", name: "secretariatjury_liste_recommandations")]
     public function liste_recommandations(Request $request): Response
     {
-        $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findAll();
+        $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->createQueryBuilder('r')
+            ->leftJoin('r.equipe', 'eq')
+            ->leftJoin('eq.equipeinter', 'eqi')
+            ->orderBy('eqi.lettre', 'ASC')
+            ->getQuery()->getResult();
 
         return $this->render('secretariatjury/liste_recommandations.html.twig', ['recommandations' => $recommandations]);
 
@@ -2076,10 +2083,10 @@ class SecretariatjuryController extends AbstractController
     }
 
     #[IsGranted('ROLE_COMITE')]
-    #[Route("secretariatjury/envoi_recommandations,{id}", name: "secretariatjury_envoi_recommandations")]
-    public function envoi_recommandations(Request $request, $id, Mailer $mailer): Response
+    #[Route("secretariatjury/envoi_recommandations", name: "secretariatjury_envoi_recommandations")]
+    public function envoi_recommandations(Request $request, Mailer $mailer): Response
     {
-
+        $id = $request->query->get('idequipe');
         $recommandations = $this->doctrine->getRepository(RecommandationsJuryCn::class)->findAll();
         $recommandation = $this->doctrine->getRepository(RecommandationsJuryCn::class)->find($id);
         $equipeinter = $recommandation->getEquipe()->getEquipeinter();

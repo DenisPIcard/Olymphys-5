@@ -1,0 +1,27 @@
+<div class="modal fade" id="modalenvoiconseilscn" tabindex="-1" role="dialog">{# affiche les infos #}
+    <div class="modal-dialog" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalenvoiconseilscnLabel">Information </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form name="confirm_form" id="confirm_form"
+                      action="{{ path('secretariatjury_envoi_recommandations') }}">
+                    <input type="hidden" id="idequipe" name="idequipe" value="recipient-name"/>
+                    <button type="submit" id="submit_form" class="btn btn-primary">Envoyer</button>
+                    <p>Voulez-vous envoyer ces conseils aux professeurs de l'équipe?<h6 id="modal_body"></h6> </p>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            </div>
+
+        </div>
+    </div>
+</div>

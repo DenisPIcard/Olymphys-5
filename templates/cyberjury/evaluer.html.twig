@@ -20,7 +20,7 @@
        class="far fa-address-card"
        title="Tous les fichiers de l'équipe(diaporama)"> </a>
     {% if flag==1 %}
-        <a href="{{ path('cyberjury_recommandations', {'id': equipe.id} ) }}"
+        <a href="{{ path('cyberjury_recommandations', {'id': equipe.id,'origin':'evaluer'} ) }}"
            class="far fa fa-list-ol"
            title="Ecrire les remarques sur le mémoire"> </a>
     {% endif %}

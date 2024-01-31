@@ -80,12 +80,20 @@ $('#modalconfirmjure').on('show.bs.modal', function (event) {
     modal.find('.modal-title').text('Attention!!!!')
     modal.find('.modal-body input').val(recipient)
 });
-$('#modalconfirmjurecn').on('show.bs.modal', function (event) {
+$('#modalconfirmjurecn').on('show.bs.modal', function (event) {//envoi des conseils jury cia
     var button = $(event.relatedTarget) // Button that triggered the modal
     var recipient = button.data('idjure');
 
     var modal = $(this)
     modal.find('.modal-title').text('Attention!!!!')
+    modal.find('.modal-body input').val(recipient)
+});
+$('#modalenvoiconseilscn').on('show.bs.modal', function (event) {//envoi des recommandations jury du cn
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('id');
+    console.log(recipient)
+    var modal = $(this)
+    modal.find('.modal-title').text('Attention')
     modal.find('.modal-body input').val(recipient)
 });
 $('#modalenvoiconseils').on('show.bs.modal', function (event) {

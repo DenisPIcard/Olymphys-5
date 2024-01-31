@@ -427,6 +427,7 @@ class JuryController extends AbstractController
     {
         $user = $this->getUser();
         $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
+        $attributions = $this->doctrine->getRepository(Jures::class)->getAttribution($jure);
         $id_jure = $jure->getId();
         $ordre = array(//Par défaut les critères ont classés par ordre décroissant, l'équipe la mieux notée est en haut
             'EXP' => 'DESC',
@@ -488,7 +489,13 @@ class JuryController extends AbstractController
         }
 
         $content = $this->renderView('cyberjury/tableau.html.twig',
-            array('listEquipes' => $listEquipes, 'jure' => $jure, 'memoires' => $memoires, 'ordre' => $ordre, 'critere' => $critere, 'rangs' => $rangs)
+            array('listEquipes' => $listEquipes,
+                'jure' => $jure,
+                'memoires' => $memoires,
+                'ordre' => $ordre,
+                'critere' => $critere,
+                'rangs' => $rangs,
+                'attributions' => $attributions)
         );
         return new Response($content);
     }
@@ -791,9 +798,10 @@ class JuryController extends AbstractController
     }
 
     #[IsGranted('ROLE_JURY')]
-    #[Route("recommandations,{id}", name: "cyberjury_recommandations")]
-    public function recommandations(Request $request, $id)
+    #[Route("recommandations,{id},{origin}", name: "cyberjury_recommandations")]
+    public function recommandations(Request $request, $id, $origin)
     {
+
         $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $this->getUser()]);
         $equipe = $this->doctrine->getRepository(Equipes::class)->find($id);
         $memoire = $this->doctrine->getRepository(Fichiersequipes::class)->findOneBy(['equipe' => $equipe->getEquipeinter(), 'typefichier' => 0]);
@@ -810,7 +818,9 @@ class JuryController extends AbstractController
         if ($form->isSubmitted() and $form->isValid()) {
             $this->doctrine->getManager()->persist($recommandation);
             $this->doctrine->getManager()->flush();
-            return $this->redirectToRoute('cyberjury_evaluer_une_equipe', ['id' => $equipe->getId()]);
+            if ($origin == 'evaluer') return $this->redirectToRoute('cyberjury_evaluer_une_equipe', ['id' => $equipe->getId()]);
+            if ($origin == 'liste') return $this->redirectToRoute('cyberjury_liste_recommandations');
+
         }
         return $this->render('cyberjury/recommandations.html.twig', ['form' => $form->createView(), 'equipe' => $equipe, 'jure' => $jure, 'memoire' => $memoire, 'attributions' => $attributions]);
     }
