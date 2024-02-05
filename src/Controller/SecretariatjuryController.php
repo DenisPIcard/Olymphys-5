@@ -78,6 +78,7 @@ class SecretariatjuryController extends AbstractController
         $edition = $this->requestStack->getSession()->get('edition');
 
         if (new \DateTime('now') < $this->requestStack->getSession()->get('edition')->getDateouverturesite()) {
+            
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['ed' => $edition->getEd() - 1]);
         }
         $repositoryEquipesadmin = $this->doctrine->getRepository(Equipesadmin::class);
@@ -420,7 +421,6 @@ class SecretariatjuryController extends AbstractController
     public function approche(Request $request): Response
     {
         $em = $this->doctrine->getManager();
-
         $repositoryEquipes = $em->getRepository(Equipes::class);
         $nbre_equipes = 0;
 
@@ -474,7 +474,7 @@ class SecretariatjuryController extends AbstractController
         }
 
         $content = $this->renderView('secretariatjury/approche.html.twig',
-            array('classement' => $classement,
+            array('classement' => $classement
             )
         );
 
@@ -590,15 +590,18 @@ class SecretariatjuryController extends AbstractController
             ->where('p.niveau = :nivo')
             ->setParameter('nivo', $niveau_court);
         $prixNiveau = $qb->getQuery()->getResult();
+
         $prixNonAttrib = [];
         $i = 0;
         foreach ($prixNiveau as $prix) {
-            if ($prix->getEquipe() === null) {
+            if ($prix->getEquipe() == null) {
+
                 $prixNonAttrib[$i] = $prix;
-                $i = +1;
+                $i = $i + 1;
             }
 
         }
+
         if ($request->query->get('equipe') != null) {
             $equipe = $repositoryEquipes->findOneBy(['id' => $request->query->get('equipe')]);
             $request->query->get('prix') == null ? $action = 'effacer' : $action = 'attribuer';
@@ -1237,7 +1240,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->getRowDimension($ligne)->setRowHeight(30);
             $lettre = $equipe->getEquipeinter()->getLettre();
             $sheet->mergeCells('B' . $ligne . ':C' . $ligne);
-            $sheet->setCellValue('A' . $ligne, 'Nathalie');
+            $sheet->setCellValue('A' . $ligne, 'Claire');
             $sheet->setCellValue('B' . $ligne, 'Remise du ' . $equipe->getClassement() . ' Prix');
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)
@@ -1259,7 +1262,7 @@ class SecretariatjuryController extends AbstractController
                     $sheet->getRowDimension($ligne)->setRowHeight(30);
                     $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
                     // $voix=$equipe->getPrix()->getVoix();
-                    $sheet->setCellValue('A' . $ligne, 'Nathalie');
+                    $sheet->setCellValue('A' . $ligne, 'Claire');
                     $sheet->setCellValue('B' . $ligne, 'Ce prix est remis par ' . $equipe->getPrix()->getIntervenant());
                     $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
                     $sheet->getStyle('A' . $ligne . ':D' . $ligne)
@@ -1273,7 +1276,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->getRowDimension($ligne)->setRowHeight(30);
 
             $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
-            $remispar = 'Philippe'; //remplacer $remispar par $voix1 et $voix2
+            $remispar = 'Oliver'; //remplacer $remispar par $voix1 et $voix2
 
             if ($equipe->getPhrases()[0] != null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
@@ -1285,7 +1288,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)->applyFromArray($borderArray);
 
             $ligne++;
-            $remispar = 'Nathalie';
+            $remispar = 'Claire';
             $sheet->getRowDimension($ligne)->setRowHeight(40);
             if ($equipe->getVisite() !== null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
@@ -1305,7 +1308,7 @@ class SecretariatjuryController extends AbstractController
                 $sheet->setCellValue('C' . $ligne, $equipe->getCadeau()->getRaccourci());//. ' offert par ' . $equipe->getCadeau()->getFournisseur());
             }
             $ligne = $this->getLigne($sheet, $ligne, $styleText, $borderArray);
-            $remispar = 'Philippe';
+            $remispar = 'Olivier';
             $lignep = $ligne + 1;
             $sheet->getRowDimension($ligne)->setRowHeight(40);
             $sheet->setCellValue('A' . $ligne, $remispar);

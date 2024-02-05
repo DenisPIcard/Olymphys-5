@@ -73,24 +73,29 @@ class CreatePageEdPassee
                 // en local
                 //$texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getLettre() . ' '. $equipe->getTitreProjet() .'</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
                 $repEquipe = $equipe->getLettre();
+                if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {
+                    $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
+                } else {
+                    $texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+
+                }
 
             }
             foreach ($listeEquipesNonsel as $equipe) {
                 $repEquipe = $equipe->getNumero();
+                if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {
+                    $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+
+                } else {
+                    $texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+
+                }
             }
             //sur le site
             //$texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getNumero() . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
             //en local
             //$texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' .$equipe->getNumero().' '. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
-
-            if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {
-                $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
-
-            } else {
-                $texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
-
-            }
 
 
         }

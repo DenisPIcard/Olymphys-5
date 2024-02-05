@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat\Wizard\DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -53,8 +54,13 @@ class JuryController extends AbstractController
 
     {
         $session = $this->requestStack->getSession();
-        $edition = $session->get('edition');
 
+        $edition = $session->get('edition');
+        $editionN1 = $session->get('editionN1');
+        $date = new \DateTime('now');
+        if ($date < $edition->getDateOuvertureSite() and $date > $editionN1->getConcoursCn()) {//Dans le cas où l'édition N+1 a été créée il que les jurés puisse accéder aux équipes de l'édition N
+            $edition = $editionN1;
+        }
 
         $repositoryJures = $this->doctrine
             ->getManager()

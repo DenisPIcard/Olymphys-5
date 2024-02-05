@@ -83,15 +83,16 @@ use Symfony\Component\Routing\Annotation\Route;
 
             ]
         );
+        $attribue = BooleanField::new('attribue');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
+            return [$id, $prix, $niveau, $equipe, $voix, $intervenant, $remisPar, $attribue];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$prix, $niveau, $equipe, $voix, $intervenant, $remisPar];
+            return [$prix, $niveau, $equipe, $voix, $intervenant, $remisPar, $attribue];
         }
     }
 

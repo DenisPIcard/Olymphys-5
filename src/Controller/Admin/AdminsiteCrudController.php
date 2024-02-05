@@ -219,9 +219,9 @@ class AdminsiteCrudController extends AbstractCrudController
                 $this->em->flush();
             }
             /* transfert des memoires, resumés et presentations du répertoire prive vers le répertoire publie*/
-            $listeFichiers = $repositoryFichiersequipes->createQueryBuilder(Fichiersequipes::class)
-                ->where('equipe =:equipe')
-                ->andWhere('typefichier <:value')
+            $listeFichiers = $repositoryFichiersequipes->createQueryBuilder('f')
+                ->where('f.equipe =:equipe')
+                ->andWhere('f.typefichier <:value')
                 ->setParameter('equipe', $equipe)
                 ->setParameter('value', 4)
                 ->getQuery()->getResult();
@@ -229,7 +229,7 @@ class AdminsiteCrudController extends AbstractCrudController
 
             if ($listeFichiers) {
                 foreach ($listeFichiers as $fichier) {
-                    if ($fichier->getTypefichier < 4) {
+                    if ($fichier->getTypefichier() < 4) {
                         if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/publie')) {
                             //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
                             $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/publie');

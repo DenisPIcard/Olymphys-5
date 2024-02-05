@@ -28,9 +28,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Fpdf\Fpdf;
+
 use Knp\Bundle\SnappyBundle\KnpSnappyBundle;
-use Knp\Snappy\Pdf;
-use Mpdf\Mpdf;
+
+//use Knp\Snappy\Pdf;
+//use Mpdf\Mpdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpWord\IOFactory;
@@ -44,7 +46,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\String\UnicodeString;
 use ZipArchive;
-use Dompdf\Dompdf;
+
+//use Dompdf\Dompdf;
 
 class ElevesinterCrudController extends AbstractCrudController
 {

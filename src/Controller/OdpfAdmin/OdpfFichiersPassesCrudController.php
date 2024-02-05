@@ -129,12 +129,16 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
     {
 
         $repositoryEdition = $this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $numtypefichier = 0;//par défaut mémoire
         if ($_REQUEST['crudAction'] == 'edit') {
+
             $fichier = $this->doctrine->getRepository(OdpfFichierspasses::class)->find(['id' => $_REQUEST['entityId']]);
             $numtypefichier = $fichier->getTypefichier();
 
         } else {
-            $numtypefichier = $_REQUEST['typefichier'];
+            if (isset($_REQUEST['typefichier']))
+                $numtypefichier = $_REQUEST['typefichier'];
+
         }
         if ($numtypefichier == 1) {
             $numtypefichier = 0;
@@ -310,34 +314,34 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         $fichier = $this->doctrine->getRepository(OdpfFichierspasses::class)->findOneBy(['id' => $idFichier]);
         $edition = $fichier->getEditionspassees();
         $typefichier = $fichier->getTypefichier();
-        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier].'/';
+        $chemintypefichier = $this->getParameter('type_fichier')[$typefichier] . '/';
         if ($typefichier == 1) {
-            $chemintypefichier = $this->getParameter('type_fichier')[0].'/';
+            $chemintypefichier = $this->getParameter('type_fichier')[0] . '/';
         }
         if ($typefichier < 4) {
             $fichier->getPublie() == true ? $acces = $this->getParameter('fichier_acces')[1] : $acces = $this->getParameter('fichier_acces')[0];
             $chemintypefichier = $chemintypefichier . '/' . $acces . '/';
         }
         $file = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEdition() . '/fichiers/' . $chemintypefichier . $fichier->getNomfichier();
-       /* header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $fichier->getNomfichier());
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
-        header('Cache-Control: private', false);
-        header('Pragma: no-cache');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);*/
+        /* header('Content-Description: File Transfer');
+         header('Content-Disposition: attachment; filename=' . $fichier->getNomfichier());
+         header('Content-Transfer-Encoding: binary');
+         header('Expires: 0');
+         header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+         header('Cache-Control: private', false);
+         header('Pragma: no-cache');
+         header('Content-Length: ' . filesize($file));
+         readfile($file);*/
         $response = new Response(file_get_contents($file));
 
-        $type=mime_content_type($file);
+        $type = mime_content_type($file);
         if (str_contains($_SERVER['HTTP_USER_AGENT'], 'iPad') or str_contains($_SERVER['HTTP_USER_AGENT'], 'Mac OS X')) {
             $response = new BinaryFileResponse($file);
 
         }
-        $response->headers->set('Content-Disposition: attachment','attachment; filename="'. $fichier->getNomFichier().'"' );
+        $response->headers->set('Content-Disposition: attachment', 'attachment; filename="' . $fichier->getNomFichier() . '"');
         $response->headers->set('Content-Description', 'File Transfer');
-        $response->headers->set('Content-type',$type);
+        $response->headers->set('Content-type', $type);
         $response->headers->set('Content-Length', filesize($file));
 
         return $response;
