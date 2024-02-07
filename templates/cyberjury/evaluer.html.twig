@@ -25,16 +25,6 @@
            title="Ecrire les remarques sur le mémoire"> </a>
     {% endif %}
 
-    {% for attribution in equipe.attributions %}
-        {% if attribution.estLecteur=='1' or attribution.estLecteur=='2' %}
-            <span style="font-size: smaller">
-                {{ attribution.jure.prenomJure }} {{ attribution.jure.nomJure }}
-                {% if attribution.estLecteur=='1' %} (L) {% endif %}
-                {% if attribution.estLecteur=='2' %} (R) {% endif %}
-            </span>
-        {% endif %}
-    {% endfor %}
-
 {% endblock %}
 {% block navigation %}
 
@@ -43,7 +33,15 @@
 {% endblock %}
 
 {% block body %}
+    {% for attribution in equipe.attributions %}
+        {% if attribution.estLecteur=='1' or attribution.estLecteur=='2' %}
 
+            {{ attribution.jure.prenomJure }} {{ attribution.jure.nomJure }}
+            {% if attribution.estLecteur=='1' %} (L) {% endif %}
+            {% if attribution.estLecteur=='2' %} (R) {% endif %}
+            <br>
+        {% endif %}
+    {% endfor %}
     {{ include ("cyberjury/form.html.twig") }}
 {% endblock %}
 {% block pied_de_page %}

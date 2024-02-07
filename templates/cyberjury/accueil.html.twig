@@ -57,7 +57,7 @@
                        class="far fa fa-list-ol"
                        title="Ecrire les remarques sur le mémoire"> </a>
                 {% endif %}
-                --
+                &nbsp;&nbsp;
                 {% for attribution in equipe.attributions %}
                     {% if attribution.estLecteur=='1' or attribution.estLecteur=='2' %}
                         {{ attribution.jure.prenomJure }} {{ attribution.jure.nomJure }}
