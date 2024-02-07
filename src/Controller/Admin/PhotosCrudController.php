@@ -191,13 +191,26 @@ class PhotosCrudController extends AbstractCrudController
         }
         */
         $concours == 'national' ? $tag = 1 : $tag = 0;
+        $listeEquipes = null;
+        if ($concours != 'national') {
+            $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+                ->andWhere('e.edition =:edition')
+                ->setParameter('edition', $edition)
+                ->addOrderBy('e.numero', 'ASC')
+                ->addOrderBy('e.lettre', 'ASC')
+                ->getQuery()->getResult();
+        }
+        if ($concours == 'national') {
+            $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
+                ->andWhere('e.edition =:edition')
+                ->andWhere('e.selectionnee =:value')
+                ->setParameter('edition', $edition)
+                ->setParameter('value', 1)
+                ->addOrderBy('e.lettre', 'ASC')
+                ->getQuery()->getResult();
+        }
 
-        $listeEquipes = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
-            ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $edition)
-            ->addOrderBy('e.numero', 'ASC')
-            ->addOrderBy('e.lettre', 'ASC')
-            ->getQuery()->getResult();
+
         $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer pour la ' . $this->requestStack->getSession()->get('edition')->getEd() . '<sup>e</sup> édition</p> ');
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['class' => Equipesadmin::class,
@@ -562,5 +575,17 @@ class PhotosCrudController extends AbstractCrudController
         return $fileName;
     }
 
+    public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+
+        $national = $context->getRequest()->request->all('Photos')['national'];
+        $national == false ? $concours = 'interacadémique' : $concours = 'national';
+        $url = $this->adminUrlGenerator->setController(PhotosCrudController::class)
+            ->setAction('index')
+            ->set('concours', $concours)
+            ->generateUrl();
+        return $this->redirect($url);
+
+    }
 
 }

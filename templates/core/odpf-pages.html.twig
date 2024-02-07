@@ -175,8 +175,10 @@
                                 {{ include('OdpfAdmin/carousel.html.twig') }}
                             {% endif %}
                             {% if titre =='Les Concours Interacadémiques' %}
-                                <a href="{{ path('photos_voir_galerie',{'infos':'editionEnCours-'~app.session.get('edition').id}) }}">Voir
-                                    la galerie des concours interacadémiques</a>
+                                {% if app.session.get('edition').concoursCia<date() %}
+                                    <a href="{{ path('photos_voir_galerie',{'infos':'editionEnCours-'~app.session.get('edition').id}) }}">Voir
+                                        la galerie des concours interacadémiques</a>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% endif %}

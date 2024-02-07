@@ -160,7 +160,7 @@ class OdpfEditionspasseesController extends AbstractController
     
                </table>';
         if ($equipe->getSelectionnee() == true) {
-            $texte = $texte . '<b>Sélectionnée pour le concours national</b><br>';
+            $texte = $texte . '<b>Sélectionnée pour le concours national, ' . $equipe->getPalmares() . ' prix, ' . $equipe->getPrix() . '</b><br>';
         }
         //$memoires=$this->em->getRepository(OdpfFichierspasses::class)->findBy(['equipepassee'=>$equipe]);
         $i = 0;

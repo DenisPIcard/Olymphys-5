@@ -270,7 +270,9 @@ class EquipesadminCrudController extends AbstractCrudController
         $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
         $qb = $this->doctrine->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $edition);
+            ->andWhere('e.numero <:value')
+            ->setParameter('edition', $edition)
+            ->setParameter('value', 100);;
         if (isset($_REQUEST['filters'])) {
             if (isset($_REQUEST['filters']['edition'])) {
                 $editionId = $_REQUEST['filters']['edition'];

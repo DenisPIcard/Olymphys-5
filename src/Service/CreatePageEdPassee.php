@@ -84,14 +84,16 @@ class CreatePageEdPassee
             }
             foreach ($listeEquipesNonsel as $equipe) {
                 $repEquipe = $equipe->getNumero();
-                if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {
+                if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {//en localhost
                     $texte = $texte . '<li class="rougeodpf"> <a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
-                } else {
+                } else {//sur le site
                     $texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $repEquipe . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
                 }
             }
+
+
             //sur le site
             //$texte = $texte . '<li class="rougeodpf"> <a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $equipe->getNumero() . ' ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
             //en local
@@ -100,7 +102,16 @@ class CreatePageEdPassee
 
         }
         $texte = $texte . '</ul>';
-
+        if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {//en localhost
+            $lienCarteFrance = '/odpf/odpf-archives/' . $editionsPassees->getEdition() . '/cartes/' . $editionsPassees->getEdition() . '-Carte_France.png';
+            $lienCarteMonde = '/odpf/odpf-archives/' . $editionsPassees->getEdition() . '/cartes/' . $editionsPassees->getEdition() . '-Carte_mrance.png';
+        } else {//sur le site
+            $lienCarteFrance = 'https://www.olymphys.fr/public/odpf/odpf-archives/' . $editionsPassees->getEdition() . '/cartes/' . $editionsPassees->getEdition() . '-Carte_France.png';
+            $lienCarteMonde = 'https://www.olymphys.fr/public/odpf/odpf-archives/' . $editionsPassees->getEdition() . '/cartes/' . $editionsPassees->getEdition() . '-Carte_mrance.png';
+        }
+        $texte = $texte . '<br> Les cartes des équipes : 
+                    <p><img src="' . $lienCarteFrance . '" style="width: 800px; height: auto" alt="carte de France">   </p>
+                    <p><img src="' . $lienCarteMonde . '" style="width: 800px; height: auto" alt="carte du monde">   </p>';
         $article->setTexte($texte);
         $categorie = $this->em->getRepository(odpfCategorie::class)->findOneBy(['id' => 4]);
         $article->setCategorie($categorie);

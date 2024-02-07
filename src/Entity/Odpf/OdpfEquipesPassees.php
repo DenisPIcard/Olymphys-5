@@ -47,6 +47,12 @@ class OdpfEquipesPassees
     #[ORM\Column(nullable: true)]
     private ?bool $autorisationsPhotos = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $palmares = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prix = null;
+
     public function __toString()
     {
         $this->getLettre() != null ? $num = $this->getNumero() . '-' . $this->getLettre() : $num = $this->getNumero();
@@ -192,6 +198,30 @@ class OdpfEquipesPassees
     public function setAutorisationsPhotos(?bool $autorisationsPhotos): static
     {
         $this->autorisationsPhotos = $autorisationsPhotos;
+
+        return $this;
+    }
+
+    public function getPalmares(): ?string
+    {
+        return $this->palmares;
+    }
+
+    public function setPalmares(?string $palmares): static
+    {
+        $this->palmares = $palmares;
+
+        return $this;
+    }
+
+    public function getPrix(): ?string
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(?string $prix): static
+    {
+        $this->prix = $prix;
 
         return $this;
     }

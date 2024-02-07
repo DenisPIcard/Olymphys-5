@@ -30,6 +30,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use http\Client\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -42,12 +47,14 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
     private AdminContextProvider $adminContextProvider;
     private ManagerRegistry $doctrine;
     private RequestStack $requestStack;
+    private AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, RequestStack $requestack)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, RequestStack $requestack, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
         $this->requestStack = $requestack;
+        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     public static function getEntityFqcn(): string
@@ -63,8 +70,9 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $setPublie = Action::new('setPublie', 'Publier les fichiers')
-            ->linkToRoute('setPublie')
+        $typefichier = $this->requestStack->getCurrentRequest()->query->get('typefichier');
+        $setPublie = Action::new('setPublies', 'Publier les fichiers')
+            ->linkToRoute('setPublies', ['typefichier' => $typefichier])
             ->createAsGlobalAction();
 
         $telechargerUnFichierOdpf = Action::new('telechargerunfichierOdpf', 'Télécharger', 'fa fa-file-download')
@@ -376,6 +384,50 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
         }
 
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route("setPublies,{typefichier}", name: "setPublies")]
+    public function setPublies(\Symfony\Component\HttpFoundation\Request $request, $typefichier): Response
+    {
+        $form = $this->createFormBuilder()
+            ->add('edition', EntityType::class,
+                [
+                    'class' => OdpfEditionsPassees::class,
+
+
+                ])
+            ->add('Valider', SubmitType::class)
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() and $form->isValid()) {
+            $edition = $form->get('edition')->getData();
+            $fichiersRepo = $this->doctrine->getRepository(OdpfFichierspasses::class);//Mémoires, annexes, résumes, diaporama national
+
+            if ($typefichier == 0) $fichiers = $fichiersRepo->createQueryBuilder('f')
+                ->where('f.typefichier <:type')
+                ->andWhere('f.editionspassees =:edition')
+                ->andWhere('f.national =:value')
+                ->setParameters(['edition' => $edition, 'type' => 2, 'value' => 1])
+                ->getQuery()->getResult();
+            if ($typefichier != 0) $fichiers = $fichiersRepo->findBy(
+                ['editionspassees' => $edition, 'typefichier' => $typefichier, 'national' => true]);//Mémoires, annexes, résumes, diaporama national
+
+            foreach ($fichiers as $fichier) {
+                $fichier->setPublie(true);
+                $this->doctrine->getManager()->persist($fichier);
+                $this->doctrine->getManager()->flush();
+                $this->fichierspublies($fichier);
+            }
+            $route = $this->adminUrlGenerator
+                ->setController(OdpfFichiersPassesCrudController::class)
+                ->setAction('index')->set('typefichier', $typefichier)
+                ->generateUrl();
+            return $this->redirect($route);
+
+        }
+
+        return $this->render('OdpfAdmin/setFichiersPublies.html.twig', ['form' => $form->createView(), 'Nomtypefichier' => $this->getParameter('type_fichier_lit')[$typefichier]]);
     }
 
 }
