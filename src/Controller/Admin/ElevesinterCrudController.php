@@ -8,6 +8,8 @@ use App\Controller\Admin\Filter\CustomEquipeSelectionnesFilter;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -1086,13 +1088,14 @@ class ElevesinterCrudController extends AbstractCrudController
         $slugger = new AsciiSlugger();
         $idedition = explode('-', $ideditionequipe)[0];
         $idequipe = explode('-', $ideditionequipe)[1];
-        $exp = new UnicodeString('e');
         $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
-
+        $repositoryEquipespassees = $this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $repositoryEditionsspassees = $this->doctrine->getRepository(OdpfEditionsPassees::class);
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
-        $day = $edition->getConcoursCn()->format('d') + 1;
+        $editionpassee = $repositoryEditionsspassees->findOneBy(['edition' => $edition->getEd()]);
+        $day = $edition->getConcoursCn()->format('d')-1;
         $queryBuilder = $repositoryEleves->createQueryBuilder('e');
         if ($idequipe == 'na') {
 
@@ -1121,6 +1124,7 @@ class ElevesinterCrudController extends AbstractCrudController
         if ($zipFile->open($fileNameZip, ZipArchive::CREATE) === TRUE) {
             if ($liste_eleves != null) {
                 foreach ($liste_eleves as $eleve) {
+                    $equipepassee = $repositoryEquipespassees->findOneBy(['editionspassees' => $editionpassee, 'lettre' => $eleve->getEquipe()->getLettre()]);
 
                     $filename = $this->getParameter('app.path.tempdirectory') . '/' . $eleve->getEquipe()->getEdition()->getEd() . '_' . $slugger->slug($eleve->getEquipe()->getCentre()->getCentre() . '_attestation_equipe_' . $eleve->getEquipe()->getNumero() . '_' . $eleve->getPrenom() . '_' . $eleve->getNom()) . '.doc';
                     $fileNamepdf = $this->getParameter('app.path.tempdirectory') . '/' . $edition->getEd() . '_ Eq ' . $slugger->slug($eleve->getEquipe()->getLettre() . '_attestation_élève_' . $eleve->getPrenom() . '_' . $eleve->getNom()) . '.pdf';
@@ -1228,19 +1232,43 @@ class ElevesinterCrudController extends AbstractCrudController
                     $pdf->Cell($w12, 10, iconv('UTF-8', 'windows-1252', 'Académie de '), '', 'R');
                     $x = $pdf->getX() + $w12;
                     $pdf->SetXY($x, $y);
-                    $pdf->Cell(0, 10, iconv('UTF-8', 'windows-1252', $eleve->getEquipe()->getLyceeAcademie()), '', 'L');
+                    $pdf->Cell(0, 10, iconv('UTF-8', 'windows-1252', $eleve->getEquipe()->getLyceeAcademie()), '', 'R');
                     $y = $pdf->getY();
-                    $pdf->setXY(20, $y + 8);
-
-                    $pdf->Write(8, iconv('UTF-8', 'windows-1252',
-                        'a participé le ' .
-                        $this->date_in_french($edition->getConcoursCn()->format('Y-m-d')) . ' au concours national à ' . $edition->getVille() . ', organisé à l\'' . $edition->getLieu()
-                    ));
-
+                    $w14 = $pdf->getStringWidth(iconv('UTF-8', 'windows-1252', 'a participé le ' . strval($day - 2) . ' et ' .
+                        $this->date_in_french($edition->getConcoursCn()->format('Y-m-d')) . ' au'));
+                    $w15 = $pdf->getStringWidth(iconv('UTF-8', 'windows-1252', 'au 31e concours national des'));
+                    $pdf->SetXY((210 - $w14) / 2, $y);
+                    $pdf->Cell($w14, 8, iconv('UTF-8', 'windows-1252',
+                        'a participé le ' . $day . ' et ' .
+                        $this->date_in_french($edition->getConcoursCn()->format('Y-m-d')) . ' au'), '', 'R');
+                    $y = $pdf->getY();
+                    $pdf->SetXY((210 - $w15) / 2, $y);
+                    $pdf->Cell(2, 8, iconv('UTF-8', 'windows-1252', '31'), '', 'R');
+                    $x = $pdf->GetX();
+                    $y = $y - 2;
+                    $pdf->setXY($x + 5, $y);
+                    $pdf->SetFont('helvetica', '', 10);
+                    $pdf->Cell(5, 8, 'e', 0, 0, 'L');
+                    $x = $pdf->GetX();
+                    $y = $y + 2;
+                    $pdf->SetFont('helvetica', '', 14);
+                    $pdf->setXY($x, $y);
+                    $pdf->Cell($w15, 8, iconv('UTF-8', 'windows-1252', ' concours national des'), '', 'L');
+                    $y = $pdf->GetY();
+                    $w16 = $pdf->getStringWidth(iconv('UTF-8', 'windows-1252', 'Olympiades de Physique France à'));
+                    $pdf->setXY((210 - $w16) / 2, $y);
+                    $pdf->Cell($w16, 8, iconv('UTF-8', 'windows-1252', 'Olympiades de Physique France à '), '', 'L');
+                    $w17 = $pdf->getStringWidth(iconv('UTF-8', 'windows-1252', 'l\'' . $edition->getLieu() . '.'));
+                    $y = $pdf->getY();
+                    $pdf->setXY((210 - $w17) / 2, $y);
+                    $pdf->Cell($w16, 8, iconv('UTF-8', 'windows-1252', 'l\'' . $editionpassee->getLieu() . '.'), '', 'R');
+                    $pdf->setXY(20, $y +12);
+                    $pdf->Write(8, iconv('UTF-8', 'windows-1252', 'Son équipe a obtenu un ' .
+                        $this->prixlit($equipepassee->getPalmares()) . ' prix.'));
                     $w13 = $pdf->getStringWidth(iconv('UTF-8', 'windows-1252', 'pour le comité national des Olympiades de Physique France'));
                     $x = (210 - $w13) / 2;
                     $y = $pdf->getY();
-                    $pdf->setXY($x, $y + 10);
+                    $pdf->setXY($x, $y + 12);
                     $pdf->Cell($w13, 8, iconv('UTF-8', 'windows-1252', 'Pour le comité national des Olympiades de Physique France'), '', 'C');
                     $y = $pdf->getY();
                     $pdf->image('odpf/odpf-images/signature_gd_format.png', 130, $y, 40);
@@ -1288,10 +1316,19 @@ class ElevesinterCrudController extends AbstractCrudController
                     $section->addTextBreak(1, ['bold' => true, 'size' => 14]);
                     $textrun5 = $section->addTextRun(['align' => 'center']);
                     $textrun5->addText('Académie de ' . $eleve->getEquipe()->getLyceeAcademie(), ['size' => 14,]);
-
-                    $filesystem = new Filesystem();
                     $section->addTextBreak(1, ['bold' => true, 'size' => 14]);
-                    $section->addText('a participé le 3 février 2024 au concours national à ' . $edition->getVille() . ', organisé à l\'' . $edition->getLieu() . '.', ['size' => 14,]);
+                    $textrun6=$section->addTextRun(['align'=>'center']);
+                    $textrun6->addText('a participé le '.$day.' et '.$this->date_in_french($edition->getConcoursCn()->format('Y-m-d')).' au'  , ['size' => 14,]);
+                    $textrun7=$section->addTextRun(['align'=>'center']);
+                    $textrun7->addText('31', ['size' => 14,]);
+                    $textrun7->addText('e',['size'=>14,'superScript' => true]);
+                    $textrun7->addText(' concours national des', ['size'=>14]);
+                    $textrun8=$section->addTextRun(['align'=>'center']);
+                    $textrun8->addText('Olympiades de  Physique France à', ['size' => 14,]);
+                    $textrun9=$section->addTextRun(['align'=>'center']);
+                    $textrun9->addText('l\'' . $editionpassee->getLieu() . '.', ['size' => 14,]);
+                    $section->addTextBreak(1, ['bold' => true, 'size' => 14]);
+                    $section->addText('Son équipe a obtenu un ' . $this->prixLit($equipepassee->getPalmares()) . ' prix.', ['size' => 14,]);
                     $section->addTextBreak(2, ['bold' => true, 'size' => 14]);
                     $section->addText('                     pour le Comité national des Olympiades de Physique France', ['size' => 12]);
                     $src2 = 'odpf/odpf-images/signature_gd_format.png';
@@ -1306,7 +1343,7 @@ class ElevesinterCrudController extends AbstractCrudController
                     ), false, 'signature');
                     $section->addTextBreak(2, ['bold' => true, 'size' => 14]);
                     $section->addText('Pascale Hervé      ', ['size' => 12], ['align' => 'right', '']);
-
+                    $filesystem = new Filesystem();
                     $fileName = $this->getParameter('app.path.tempdirectory') . '/' . $edition->getEd() . '_ Eq ' . $slugger->slug($eleve->getEquipe()->getLettre() . '_attestation_élève_' . $eleve->getPrenom() . '_' . $eleve->getNom()) . '.doc';
                     //$fileNamepdf = $this->getParameter('app.path.tempdirectory') . '/' . $eleve->getEquipe()->getEdition()->getEd() . '_' . $slugger->slug($eleve->getEquipe()->getCentre()->getCentre() . '_attestation_equipe_' . $eleve->getEquipe()->getNumero() . '_' . $eleve->getPrenom() . '_' . $eleve->getNom()) . '.pdf';
 
@@ -1336,6 +1373,24 @@ class ElevesinterCrudController extends AbstractCrudController
         return $response;
 
 
+    }
+
+    public function prixLit($palmares): string
+    {
+        $palmaresLit = '';
+        switch ($palmares) {
+
+            case '1er' :
+                $palmaresLit = 'premier';
+                break;
+            case '2ème' :
+                $palmaresLit = 'deuxième';
+                break;
+            case '3ème' :
+                $palmaresLit = 'troisième';
+                break;
+        }
+        return $palmaresLit;
     }
 
 
